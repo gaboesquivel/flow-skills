@@ -4,7 +4,7 @@ description: Obtain independent expert perspectives and evidence-based synthesis
 disable-model-invocation: true
 ---
 
-# Flow Council
+# Council
 
 ## Purpose
 

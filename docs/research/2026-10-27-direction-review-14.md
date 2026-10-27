@@ -46,7 +46,7 @@ That matches the decision to keep measurement as optional practice. It also mean
 
 ### F3. The catalog page still draws a pipeline
 
-[docs/skills.md](../skills.md) says every step is skippable and that no order is required. The diagram under that sentence is a single path: explore, grill, to-spec, to-tickets, implement, review, retro. [PRODUCT.md](../../PRODUCT.md) and [skills/flow/SKILL.md](../../skills/flow/SKILL.md) say there is no mandatory sequence. The diagram is the instruction a skimming agent will follow.
+[docs/skills.md](../skills.md) says every step is skippable and that no order is required. The diagram under that sentence is a single path: explore, grill, to-spec, to-tasks, implement, review, retro. [PRODUCT.md](../../PRODUCT.md) and [skills/flow/SKILL.md](../../skills/flow/SKILL.md) say there is no mandatory sequence. The diagram is the instruction a skimming agent will follow.
 
 ### F4. Flow Lite’s discoverable metadata is carefully worded and untested on an adopter
 

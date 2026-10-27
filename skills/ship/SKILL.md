@@ -4,7 +4,7 @@ description: Verify, commit, push, and validate delivery using evidence from act
 disable-model-invocation: true
 ---
 
-# Flow Ship
+# Ship
 
 ## Purpose
 

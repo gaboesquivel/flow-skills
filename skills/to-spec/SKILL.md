@@ -4,6 +4,8 @@ description: Turn the current conversation into a numbered specification using p
 disable-model-invocation: true
 ---
 
+# To Spec
+
 Turn conversation context and repository understanding into a proportionate specification. Do not run a separate interview; synthesize what is already known and label unresolved assumptions rather than inventing decisions. Keep consequential assumptions visible.
 
 Use the project's existing spec location when one exists. When the project has no convention, default new work to `docs/specs/NNN-short-name.md` (three-digit sequence, kebab-case slug) and follow the same pattern for updates. Use `docs/decisions/NNN-short-name.md` only for standalone consequential decisions, not for feature scope. Preserve existing numbering, labels, and trackers when the repository already uses them.

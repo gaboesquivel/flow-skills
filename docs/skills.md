@@ -1,8 +1,8 @@
 # Skill catalog
 
-Twenty-three skills in [`skills/`](../skills/). Install with `npx skills add gaboesquivel/flow-skills`. No workflow router and no mandatory sequence.
+Twenty-four skills in [`skills/`](../skills/). Install with `npx skills add gaboesquivel/flow-skills`. No workflow router and no mandatory sequence.
 
-[Agent compatibility](agent-compatibility.md) · [Decision 0006](decisions/0006-flow-lite-and-flat-docs.md) · [Decision 0008](decisions/0008-leading-words-and-visual-summaries.md) · [Decision 0009](decisions/0009-adopter-product-context.md) · [Decision 0013](decisions/0013-restore-engineering-skills.md) · [Decision 0014](decisions/0014-handoff-skill.md) · [Spec 002](specs/002-flow-lite-and-flat-docs.md)
+[Agent compatibility](agent-compatibility.md) · [Decision 0006](decisions/0006-flow-lite-and-flat-docs.md) · [Decision 0008](decisions/0008-leading-words-and-visual-summaries.md) · [Decision 0009](decisions/0009-adopter-product-context.md) · [Decision 0013](decisions/0013-restore-engineering-skills.md) · [Decision 0014](decisions/0014-handoff-skill.md) · [Decision 0015](decisions/0015-tasks-and-domain-modeling.md) · [Spec 002](specs/002-flow-lite-and-flat-docs.md) · [Spec 008](specs/008-tasks-and-domain-modeling.md)
 
 Each skill has one [leading word](../GLOSSARY.md#leading-word): a compact behavior anchor already used in that skill. The words are not a second catalog and not an invocation order.
 
@@ -19,7 +19,7 @@ flowchart LR
   subgraph delivery["Delivery skills — invoke any subset; no fixed order"]
     direction TB
     explore ~~~ grill ~~~ toSpec[to-spec]
-    toTickets[to-tickets] ~~~ implement ~~~ review ~~~ ship ~~~ retro
+    toTasks[to-tasks] ~~~ implement ~~~ review ~~~ ship ~~~ retro
   end
 ```
 
@@ -38,11 +38,17 @@ Product discovery, writing, advisory, prototype, quality, and misc skills are op
 | [explore](../skills/explore/SKILL.md) | Consequential uncertainty | Understand problem, users, repo context, and uncertainty before planning or building. |
 | [grill](../skills/grill/SKILL.md) | Stress-test | Stress-test an idea or plan with focused questions and evidence. |
 | [to-spec](../skills/to-spec/SKILL.md) | Label unresolved assumptions | Turn conversation into a numbered spec; label assumptions; save only when requested. |
-| [to-tickets](../skills/to-tickets/SKILL.md) | Vertical slice | Vertical-slice tasks with blockers; publish only when requested. |
+| [to-tasks](../skills/to-tasks/SKILL.md) | Vertical slice | Vertical-slice tasks with blockers; publish tracker issues only when requested. |
 | [implement](../skills/implement/SKILL.md) | Smallest useful increment | Implement an authorized change; no spec required for small clear work. |
 | [review](../skills/review/SKILL.md) | Actionable findings | Review repo, working tree, or committed comparison. |
 | [ship](../skills/ship/SKILL.md) | Evidence | Verify, commit, push, and check the deployment this repo actually configures. Explicit only; not a router. |
 | [retro](../skills/retro/SKILL.md) | Improvement candidates | Retrospective on the agent environment after a session. |
+
+## Shared language
+
+| Skill | Leading word | When to use |
+| --- | --- | --- |
+| [domain-modeling](../skills/domain-modeling/SKILL.md) | Resolved meaning | Refine terminology and update `GLOSSARY.md`; offer `docs/decisions/` records sparingly. |
 
 ## Advisory
 

@@ -35,7 +35,7 @@ Hosts may surface this skill when they honor discoverable metadata. That is opti
 - Do not require installation, initialization, or a prior skill invocation.
 - Do not treat alignment edits as permission to implement unrelated code. For authorized implementation and tests, invoke the `implement` skill when installed.
 - Do not create `docs/specs/` or `docs/decisions/` records here; use `to-spec` or explicit decision work when durable bounded artifacts are justified.
-- Suggest other skills (`to-spec`, `review`, …) only when the user asks; no mandatory chain.
+- Suggest other skills (`to-spec`, `domain-modeling`, `review`, …) only when the user asks; no mandatory chain.
 
 ## Completion
 

@@ -18,6 +18,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0012-start-bootstrap-lib.md](0012-start-bootstrap-lib.md) | Accepted | `start` bootstrap helpers under `skills/start/lib/` with executable tests |
 | [0013-restore-engineering-skills.md](0013-restore-engineering-skills.md) | Accepted (`handoff` added by 0014) | Restore `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug` |
 | [0014-handoff-skill.md](0014-handoff-skill.md) | Accepted | Explicit `handoff` skill for a fresh agent |
+| [0015-tasks-and-domain-modeling.md](0015-tasks-and-domain-modeling.md) | Accepted | `to-tasks` rename; restore `domain-modeling` for glossary practice |
 
 ## Rules
 

@@ -1,10 +1,12 @@
 ---
 name: retro
-description: "Conduct a retrospective on a coding session."
+description: Retrospective on the agent environment after a session; propose improvement candidates with evidence.
 disable-model-invocation: true
 ---
 
-The user asked for a **retrospective** on how the agent environment could improve future sessions. One agent can run this directly; separate implementation and review roles are optional context, not a prerequisite.
+# Retro
+
+The user asked for a retrospective on how the agent environment could improve future sessions. One agent can run this directly; separate implementation and review roles are optional context, not a prerequisite.
 
 ## Steps
 

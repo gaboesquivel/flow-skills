@@ -69,7 +69,7 @@ Primary internal dogfooding targets: **flow-skills** first, then experience vali
 
 ## This repository: flow-skills
 
-Status: twenty-three-skill portable catalog on `main` ([0004](docs/decisions/0004-portable-skill-catalog.md), [0005](docs/decisions/0005-misc-tldr-skill.md), [0006](docs/decisions/0006-flow-lite-and-flat-docs.md), [0007](docs/decisions/0007-flow-product-identity.md), [0008](docs/decisions/0008-leading-words-and-visual-summaries.md), [0009](docs/decisions/0009-adopter-product-context.md), [0010](docs/decisions/0010-optional-start-skill.md), [0013](docs/decisions/0013-restore-engineering-skills.md), [0014](docs/decisions/0014-handoff-skill.md)); live verification in multiple agent hosts remains ongoing.
+Status: twenty-four-skill portable catalog on `main` ([0004](docs/decisions/0004-portable-skill-catalog.md), [0005](docs/decisions/0005-misc-tldr-skill.md), [0006](docs/decisions/0006-flow-lite-and-flat-docs.md), [0007](docs/decisions/0007-flow-product-identity.md), [0008](docs/decisions/0008-leading-words-and-visual-summaries.md), [0009](docs/decisions/0009-adopter-product-context.md), [0010](docs/decisions/0010-optional-start-skill.md), [0013](docs/decisions/0013-restore-engineering-skills.md), [0014](docs/decisions/0014-handoff-skill.md), [0015](docs/decisions/0015-tasks-and-domain-modeling.md)); live verification in multiple agent hosts remains ongoing.
 
 ### Problem
 
@@ -86,7 +86,7 @@ flow-skills offers a small catalog: **Flow Lite** for root context alignment, pl
 | Layer | Skills |
 | --- | --- |
 | Flow Lite | [`flow`](skills/flow/SKILL.md) — align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md` where hosts support discovery. Not always-on, and not project initialization. |
-| Delivery | `explore`, `grill`, `to-spec`, `to-tickets`, `implement`, `review`, `ship`, `retro` |
+| Delivery | `explore`, `grill`, `to-spec`, `to-tasks`, `implement`, `review`, `ship`, `retro` |
 | Advisory | `council` |
 | Prototype | `prototype` |
 | Quality | `simplify`, `security`, `performance`, `debug` |
@@ -106,11 +106,11 @@ Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Every skil
 | Chain stage | How the current catalog supports it |
 | --- | --- |
 | Product thinking | `explore`, `grill`, `interview`, `jtbd`, `competitors`, `council`; `flow` keeps product intent in root docs |
-| Engineering discipline | `to-spec`, `to-tickets`, `write-agents`, `write-humans`, `prototype`, `simplify`, `security`, `performance`, `debug`; specs and decisions as flat durable artifacts |
+| Engineering discipline | `to-spec`, `to-tasks`, `domain-modeling`, `write-agents`, `write-humans`, `prototype`, `simplify`, `security`, `performance`, `debug`; specs and decisions as flat durable artifacts |
 | Agent execution | `implement`, `ship`; portable packages with no mandatory router |
 | Verified value | `review`, `ship`, `retro`, `tldr`; evidence, alignment, and visual summaries without claiming a feature shipped |
 
-Further catalog growth needs its own decision. [0013](docs/decisions/0013-restore-engineering-skills.md) restored `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug`. [0014](docs/decisions/0014-handoff-skill.md) adds `handoff`.
+Further catalog growth needs its own decision. [0013](docs/decisions/0013-restore-engineering-skills.md) restored `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug`. [0014](docs/decisions/0014-handoff-skill.md) adds `handoff`. [0015](docs/decisions/0015-tasks-and-domain-modeling.md) renames `to-tasks` and restores `domain-modeling`.
 
 ### Open choices
 

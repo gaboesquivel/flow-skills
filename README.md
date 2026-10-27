@@ -34,12 +34,12 @@ flowchart TB
 
 Details and links to every `SKILL.md`: **[docs/skills.md](docs/skills.md)**.
 
-## Catalog (23)
+## Catalog (24)
 
 | Group | Skills |
 | --- | --- |
 | Flow Lite | `flow` |
-| Delivery | `explore`, `grill`, `to-spec`, `to-tickets`, `implement`, `review`, `ship`, `retro` |
+| Delivery | `explore`, `grill`, `to-spec`, `to-tasks`, `implement`, `review`, `ship`, `retro` |
 | Advisory | `council` |
 | Prototype | `prototype` |
 | Quality | `simplify`, `security`, `performance`, `debug` |

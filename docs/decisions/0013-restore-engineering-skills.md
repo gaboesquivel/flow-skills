@@ -1,6 +1,6 @@
 # 0013 — Restore selected engineering skills
 
-Status: **Accepted** (2026-10-27). Partially supersedes the retirement list in [0004](0004-portable-skill-catalog.md). Does not supersede [0006](0006-flow-lite-and-flat-docs.md). [0014](0014-handoff-skill.md) later ships `handoff`.
+Status: **Accepted** (2026-10-27). Partially supersedes the retirement list in [0004](0004-portable-skill-catalog.md). Does not supersede [0006](0006-flow-lite-and-flat-docs.md). [0014](0014-handoff-skill.md) later ships `handoff`. [0015](0015-tasks-and-domain-modeling.md) later restores `domain-modeling` and renames `to-tickets` to `to-tasks`.
 
 ## Context
 
