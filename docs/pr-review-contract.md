@@ -70,7 +70,7 @@ Configure in the GitHub repository (not in the npm skills package):
 | `FLOW_REVIEW_API_BASE` | Optional base URL (default: `https://api.openai.com/v1`) |
 | `FLOW_REVIEW_MODEL` | Model id (default: `gpt-4o-mini` if unset) |
 
-The `context-review` workflow job runs only on same-repository pull requests when `FLOW_REVIEW_API_KEY` is present. The prompt includes the PR title, body, and labels. Fork PRs skip the LLM job; deterministic alignment still runs. Without the API key the job skips the call and passes.
+The `context-review` workflow job runs on every pull request. When `FLOW_REVIEW_API_KEY` is present on same-repository pull requests, it calls the API with the PR title, body, and labels. Fork pull requests never receive repository secrets; the job skips the API call and passes. Deterministic alignment still runs on all pull requests.
 
 ## Escape hatches (maintainers)
 
@@ -78,6 +78,6 @@ The `context-review` workflow job runs only on same-repository pull requests whe
 - A line of its own, `Alignment: docs-only`, skips only the root-context spec-or-decision requirement, and only when every changed path is a root context path listed at the top of `scripts/check-pr-alignment.mjs`. Quoting that phrase inside a sentence does not exempt the PR.
 - Adding or removing the label, or editing the PR title or body, reruns the check.
 
-`main` requires a pull request and passing `alignment` and `validate` checks before merge. Direct pushes to `main` are rejected.
+`main` requires a pull request and passing `alignment`, `validate`, and `context-review` checks before merge when `FLOW_REVIEW_API_KEY` is configured. Direct pushes to `main` are rejected.
 
 Review is read-only unless the author requests fixes. Automated comments do not authorize commits on behalf of the reviewer.

@@ -3,7 +3,7 @@
  * Adopters: adjust ROOT_CONTEXT_PATHS and path patterns at the top for your layout.
  */
 import { execSync } from 'node:child_process'
-import { existsSync, readFileSync, readdirSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { dirname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
