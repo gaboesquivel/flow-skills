@@ -4,6 +4,17 @@ Central index of references captured in Flow Skills research, consolidated on 20
 
 Current research notes record what was inspected and its limits. Sources found only in the historical archive are marked historical; they were not reverified during this consolidation. Live upstream links can change. Detailed assessments and exact citations remain in research rather than being duplicated here.
 
+## Engineering methods (skill reliability)
+
+Primary sources for the 2026 skill-reliability initiative. Flow adapts ideas; it does not vend, sync, or depend on these repositories at runtime. Full comparison: [research/2026-10-27-skill-engineering-methods.md](research/2026-10-27-skill-engineering-methods.md).
+
+- [Matt Pocock — skills](https://github.com/mattpocock/skills) — `writing-for-agents`, `grill-me`, `grill-with-docs`, `prototype`, `handoff`, `implement` (inspected 2026-10-27).
+- [Lauren Tan — pstack](https://github.com/cursor/plugins/tree/main/pstack) — `correct`, `blast-radius`, `architect`, `how`, `why`, `interrogate`, `create-verification-skill`, `poteto-mode/playbooks/eval.md` (inspected 2026-10-27). Central mode and full playbook orchestration not adopted.
+- [Addy Osmani — agent-skills](https://github.com/addyosmani/agent-skills) — verification, simplification, review, Git workflow, specification-related skills (prior research plus spot checks 2026-10-27).
+- [Jesse Vincent — Superpowers](https://github.com/obra/superpowers) — test-driven skill authoring, systematic debugging (inspected 2026-10-27). Full workflow chaining not adopted.
+- [Anthropic Agent Skills](https://github.com/anthropics/skills) — Skill Creator evaluation approach (inspected 2026-10-27).
+- [Vercel Agent Skills](https://github.com/vercel-labs/agent-skills) — focused packaging and engineering rules (inspected 2026-10-27). Framework-specific rules stay out of universal Flow skills.
+
 ## Workflow and engineering
 
 Primary workflow and engineering influence.
@@ -130,7 +141,8 @@ User-selected references for the two planned writing skills; specific upstream r
 
 ## Distribution evaluation
 
-- [Skill catalog](skills.md) — current fourteen skills (Flow Lite + manual catalog), leading words, and `SKILL.md` links.
+- [Skill catalog](skills.md) — current fifteen skills (Flow Lite + manual catalog), leading words, and `SKILL.md` links.
+- [Spec 006](specs/006-skill-reliability.md) — behavioral verification and skill reliability bounded work.
 - [Decision 0008](decisions/0008-leading-words-and-visual-summaries.md) — leading words; visual human summaries stay in `tldr`.
 - [Decision 0009](decisions/0009-adopter-product-context.md) — adopter product identity stays in the adopter's `PRODUCT.md`.
 - [Decision 0004](decisions/0004-portable-skill-catalog.md) — catalog and `npx skills add gaboesquivel/flow-skills` install path.

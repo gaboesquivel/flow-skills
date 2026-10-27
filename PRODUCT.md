@@ -75,7 +75,7 @@ Status: fifteen-skill portable catalog on `main` ([0004](docs/decisions/0004-por
 
 AI makes it easy to ship faster than teams establish what matters. Disparate skills and heavy methodology leave founders reconciling workflows, terminology, and documentation alone.
 
-flow-skills offers a small catalog: **Flow Lite** for root context alignment, plus optional skills invoked only when you ask. No initialization, no pipeline router, no requirement to modify adopter `AGENTS.md`, `CLAUDE.md`, or equivalent files.
+flow-skills offers a small catalog: **Flow Lite** for root context alignment, plus optional skills invoked only when you ask. Optional project initialization is the explicit [`start`](skills/start/SKILL.md) skill only — not Flow Lite, not `flow start`, and not mandatory. Templates work without Flow Skills. There is no pipeline router and no requirement to modify adopter `AGENTS.md`, `CLAUDE.md`, or equivalent files.
 
 **Adopter product context.** In another repository, `PRODUCT.md` is that product. This file is Flow's identity only. Flow Lite and `implement` update an adopter's product docs when that product changes. They do not overwrite them with the mission, principles, or tagline above. [Decision 0009](docs/decisions/0009-adopter-product-context.md).
 
