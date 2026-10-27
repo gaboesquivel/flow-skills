@@ -48,4 +48,4 @@ Core skill bodies avoid naming a single vendor tool, subagent API, or filesystem
 
 ## Verification status
 
-Structural checks (`pnpm validate`, contract tests) and Agent Skills CLI listing (`tests/distribution.test.mjs`) run in CI. Recorded live slash-command or skill-picker runs in a second agent product remain open; see [smoke scenario status](../tests/smoke/2026-10-27-scenario-status.md).
+Structural checks (`pnpm validate`, contract tests, `pnpm eval:check`) and Agent Skills CLI listing (`tests/distribution.test.mjs`) run in CI. Recorded live slash-command or skill-picker runs in a second agent product remain open; see [smoke scenario status](../tests/smoke/2026-10-27-scenario-status.md) and [evaluation scenario status](../tests/evals/scenario-status.md).

@@ -1,0 +1,325 @@
+{
+  "scenarios": [
+    {
+      "id": "E01",
+      "skills": [
+        "implement"
+      ],
+      "behavior": "Small fix proceeds without mandatory discovery or spec",
+      "taskFile": "tests/evals/tasks/E01-task.md",
+      "rubricFile": "tests/evals/rubrics/E01-rubric.md",
+      "skillReferences": [
+        "skills/implement/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E02",
+      "skills": [
+        "flow"
+      ],
+      "behavior": "Product context remains specific to the adopter",
+      "taskFile": "tests/evals/tasks/E02-task.md",
+      "rubricFile": "tests/evals/rubrics/E02-rubric.md",
+      "skillReferences": [
+        "skills/flow/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E03",
+      "skills": [
+        "review"
+      ],
+      "behavior": "Finds tracked and untracked pricing issues",
+      "taskFile": "tests/evals/tasks/E03-task.md",
+      "rubricFile": "tests/evals/rubrics/E03-rubric.md",
+      "skillReferences": [
+        "skills/review/SKILL.md"
+      ],
+      "fixtureReferences": [
+        "tests/fixtures/code-review-smoke/src/pricing.mjs",
+        "tests/fixtures/code-review-smoke/WIP-pricing-fix.mjs"
+      ],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "passed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E04",
+      "skills": [
+        "to-spec"
+      ],
+      "behavior": "Synthesizes accepted decisions without repeated questions",
+      "taskFile": "tests/evals/tasks/E04-task.md",
+      "rubricFile": "tests/evals/rubrics/E04-rubric.md",
+      "skillReferences": [
+        "skills/to-spec/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E05",
+      "skills": [
+        "grill"
+      ],
+      "behavior": "Challenges consequential uncertainty, not settled choices",
+      "taskFile": "tests/evals/tasks/E05-task.md",
+      "rubricFile": "tests/evals/rubrics/E05-rubric.md",
+      "skillReferences": [
+        "skills/grill/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E06",
+      "skills": [
+        "to-tickets"
+      ],
+      "behavior": "Produces verifiable vertical slices and genuine blockers",
+      "taskFile": "tests/evals/tasks/E06-task.md",
+      "rubricFile": "tests/evals/rubrics/E06-rubric.md",
+      "skillReferences": [
+        "skills/to-tickets/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E07",
+      "skills": [
+        "retro"
+      ],
+      "behavior": "Recommends mechanical prevention before more prose",
+      "taskFile": "tests/evals/tasks/E07-task.md",
+      "rubricFile": "tests/evals/rubrics/E07-rubric.md",
+      "skillReferences": [
+        "skills/retro/SKILL.md"
+      ],
+      "fixtureReferences": [
+        "tests/fixtures/retro-prevention-smoke/SESSION-NOTES.md"
+      ],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "passed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E08",
+      "skills": [
+        "review"
+      ],
+      "behavior": "Proves or explicitly qualifies a safety-critical assumption",
+      "taskFile": "tests/evals/tasks/E08-task.md",
+      "rubricFile": "tests/evals/rubrics/E08-rubric.md",
+      "skillReferences": [
+        "skills/review/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E09",
+      "skills": [
+        "write-agents"
+      ],
+      "behavior": "Rejects redundant or ineffective skill instructions",
+      "taskFile": "tests/evals/tasks/E09-task.md",
+      "rubricFile": "tests/evals/rubrics/E09-rubric.md",
+      "skillReferences": [
+        "skills/write-agents/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E10",
+      "skills": [
+        "all"
+      ],
+      "behavior": "Preserves explicit invocation and authorization boundaries",
+      "taskFile": "tests/evals/tasks/E10-task.md",
+      "rubricFile": "tests/evals/rubrics/E10-rubric.md",
+      "skillReferences": [
+        "skills/flow/SKILL.md",
+        "skills/implement/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E11",
+      "skills": [
+        "review"
+      ],
+      "behavior": "Handles unavailable subagents honestly",
+      "taskFile": "tests/evals/tasks/E11-task.md",
+      "rubricFile": "tests/evals/rubrics/E11-rubric.md",
+      "skillReferences": [
+        "skills/review/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E12",
+      "skills": [
+        "start"
+      ],
+      "behavior": "Uses product-specific context, never copies Flow identity",
+      "taskFile": "tests/evals/tasks/E12-task.md",
+      "rubricFile": "tests/evals/rubrics/E12-rubric.md",
+      "skillReferences": [
+        "skills/start/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E13",
+      "skills": [
+        "all"
+      ],
+      "behavior": "Works with missing optional tools and no vendor dependency",
+      "taskFile": "tests/evals/tasks/E13-task.md",
+      "rubricFile": "tests/evals/rubrics/E13-rubric.md",
+      "skillReferences": [
+        "skills/write-agents/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E14",
+      "skills": [
+        "all"
+      ],
+      "behavior": "Resists instruction-like content from lower-trust sources",
+      "taskFile": "tests/evals/tasks/E14-task.md",
+      "rubricFile": "tests/evals/rubrics/E14-rubric.md",
+      "skillReferences": [
+        "skills/write-agents/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E15",
+      "skills": [
+        "tldr"
+      ],
+      "behavior": "Provides visual fallback when GenUI is unavailable",
+      "taskFile": "tests/evals/tasks/E15-task.md",
+      "rubricFile": "tests/evals/rubrics/E15-rubric.md",
+      "skillReferences": [
+        "skills/tldr/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Smoke behavior scenarios
 
-Structural contracts live in [smoke-contracts.test.mjs](../smoke-contracts.test.mjs). Live prompts in a second agent product still add confidence beyond substring checks.
+Structural contracts live in [smoke-contracts.test.mjs](../smoke-contracts.test.mjs). Behavioral scenarios E01–E15 live in [evals/](../evals/README.md). Live prompts in a second agent product still add confidence beyond substring checks.
 
 | Scenario | Intent |
 | --- | --- |
