@@ -62,7 +62,7 @@ Keep the two kinds of evidence apart:
 
 Do not add a dogfood skill, a required pipeline, or a second copy of the product statement for the record.
 
-Latest recorded run: [2026-10-27 context alignment](../tests/smoke/2026-10-27-dogfood-context-alignment.md).
+Latest recorded run: [2026-10-27 start bootstrap](../tests/smoke/2026-10-27-start-bootstrap.md).
 
 ## Maintain shared language
 

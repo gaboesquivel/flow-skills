@@ -29,7 +29,7 @@ All skills except `flow` require explicit user invocation in Flow's design.
 
 That alignment updates the **current project's** product context. It does not copy this repository's Flow identity into an adopter `PRODUCT.md`. [Decision 0009](decisions/0009-adopter-product-context.md).
 
-`flow` is not a project-start command. `flow start` and "start project" do not authorize scaffolding or instruction-file edits. The optional [`start`](../skills/start/SKILL.md) skill initializes from flow-next or flow-mono when explicitly invoked. It is not discoverable like Flow Lite.
+`flow` is not a project-start command. `flow start` and "start project" do not authorize scaffolding or instruction-file edits. The optional [`start`](../skills/start/SKILL.md) skill initializes from flow-next or flow-mono when explicitly invoked: template isolation, renamed Portless identity, verification (`pnpm setup`, `pnpm qa`, `pnpm build`, `pnpm eval`, Portless dev smoke), baseline product docs, and an initial Git commit only after essential checks pass. It does not invoke `flow` or `explore` automatically. It is not discoverable like Flow Lite.
 
 Metadata and contract tests show the intended invocation split. They do not show that a host surfaced `flow` during ordinary edits. A second agent product has not been recorded; see [smoke scenario status](../tests/smoke/2026-10-27-scenario-status.md).
 

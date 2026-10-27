@@ -13,7 +13,7 @@
 | E09 | write-agents | passed | not_executed | not_executed | not_executed |
 | E10 | all | passed | not_executed | not_executed | not_executed |
 | E11 | review | passed | not_executed | not_executed | not_executed |
-| E12 | start | passed | not_executed | not_executed | not_executed |
+| E12 | start | passed | passed | not_executed | not_executed |
 | E13 | all | passed | not_executed | not_executed | not_executed |
 | E14 | all | passed | not_executed | not_executed | not_executed |
 | E15 | tldr | passed | not_executed | not_executed | not_executed |

@@ -96,7 +96,7 @@ Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Every skil
 
 **Default durable docs in adopter projects:** `docs/specs/NNN-short-name.md` and `docs/decisions/NNN-short-name.md`, plus root context files when useful.
 
-**Not shipped as skills:** validation-board UI, OMTM automation, commercial discovery pipelines, repository bootstrap, workflow orchestration, or Flow Factory. Optional judgment for measurement and validation lives in [methodology](docs/methodology.md) as practice, not product enforcement.
+**Not shipped as skills:** validation-board UI, OMTM automation, commercial discovery pipelines, workflow orchestration, or Flow Factory. Project initialization is the optional [`start`](skills/start/SKILL.md) skill only (not a router or mandatory pipeline). Optional judgment for measurement and validation lives in [methodology](docs/methodology.md) as practice, not product enforcement.
 
 ### Catalog alignment (evaluate before adding skills)
 
@@ -113,6 +113,6 @@ Gaps to respect: no new skills unless they clearly strengthen the chain or reduc
 
 Strategic themes (measurable learning, API-first agentic products) may inform maintainer research. No OMTM is selected for Flow itself; broader demand remains unvalidated.
 
-**Starting a project.** Invoke the optional [`start`](skills/start/SKILL.md) skill when you want help choosing flow-next or flow-mono and creating product-specific root docs. There is no `flow start` command; discoverable `flow` must not be treated as initialization ([0010](docs/decisions/0010-optional-start-skill.md)).
+**Starting a project.** Invoke the optional [`start`](skills/start/SKILL.md) skill when you want a verified new repository from flow-next or flow-mono: renamed identity, template setup and QA/build/eval, Portless startup smoke, baseline `PRODUCT.md` / `DESIGN.md` / `ARCHITECTURE.md`, and an independent initial commit when checks pass. There is no `flow start` command; discoverable `flow` must not be treated as initialization ([0010](docs/decisions/0010-optional-start-skill.md)).
 
 See [documentation guide](docs/README.md) and [AGENTS.md](AGENTS.md) for maintenance.

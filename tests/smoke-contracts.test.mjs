@@ -20,6 +20,20 @@ const contracts = [
   { skill: 'retro', file: 'SKILL.md', includes: ['do not modify', 'explicit user authorization', 'do not invent mistakes', 'Types or deterministic checks', 'single occurrence'] },
   { skill: 'flow', file: 'SKILL.md', includes: ['PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'workflow router', 'Do not edit adopter', 'Do not require installation', 'implement` and `review`', 'Do not create `docs/specs/`', "Do not replace a project's product identity", 'flow start', 'decision 0010', 'not an always-on hook'] },
   { skill: 'tldr', file: 'SKILL.md', includes: ["Show, don't tell", 'GenUI', 'Check alignment', 'write-humans', 'does not authorize'] },
+  {
+    skill: 'start',
+    file: 'SKILL.md',
+    includes: [
+      'Do not invoke `flow`',
+      'AGENTS.md',
+      'canCreateInitialCommit',
+      'chore: initialize',
+      'Never `reset`',
+      'invoke `explore` when discovery is needed',
+      'pnpm eval',
+      'operator_fail_closed',
+    ],
+  },
 ]
 
 test('catalog passes validator including required adapters', () => assert.deepEqual(validateSkills(skillsRoot), []))
