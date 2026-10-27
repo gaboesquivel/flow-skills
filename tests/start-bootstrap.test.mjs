@@ -111,6 +111,8 @@ test('git safety refuses nonempty destination and template remotes', () => {
 test('fresh git repo can drop template origin', () => {
   const dir = mkdtempSync(join(tmpdir(), 'start-git-'))
   execSync('git init', { cwd: dir })
+  execSync('git config user.email "start-bootstrap@test.invalid"', { cwd: dir })
+  execSync('git config user.name "Start Bootstrap Test"', { cwd: dir })
   writeFileSync(join(dir, 'README.md'), 'flow-next')
   execSync('git add README.md', { cwd: dir })
   execSync('git commit -m "template"', { cwd: dir })
