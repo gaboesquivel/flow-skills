@@ -20,6 +20,8 @@ const contracts = [
   { skill: 'retro', file: 'SKILL.md', includes: ['do not modify', 'explicit user authorization', 'do not invent mistakes', 'Types or deterministic checks', 'single occurrence'] },
   { skill: 'flow', file: 'SKILL.md', includes: ['PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'workflow router', 'Do not edit adopter', 'Do not require installation', 'implement` and `review`', 'Do not create `docs/specs/`', "Do not replace a project's product identity", 'flow start', 'decision 0010', 'not an always-on hook'] },
   { skill: 'tldr', file: 'SKILL.md', includes: ["Show, don't tell", 'GenUI', 'Check alignment', 'write-humans', 'does not authorize'] },
+  { skill: 'handoff', file: 'SKILL.md', includes: ['temporary directory', 'suggested-skills', 'does not authorize'] },
+  { skill: 'ship', file: 'SKILL.md', includes: ['evidence', 'does not authorize destructive'] },
   {
     skill: 'start',
     file: 'SKILL.md',
@@ -69,5 +71,5 @@ test('every shipped skill matches the expected catalog', () => {
     const expectImplicit = name === 'flow'
     assert.match(adapter, expectImplicit ? /allow_implicit_invocation:\s*true/u : /allow_implicit_invocation:\s*false/u, name)
   }
-  assert.equal(names.length, 15)
+  assert.equal(names.length, 23)
 })

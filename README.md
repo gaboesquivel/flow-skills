@@ -34,16 +34,19 @@ flowchart TB
 
 Details and links to every `SKILL.md`: **[docs/skills.md](docs/skills.md)**.
 
-## Catalog (15)
+## Catalog (23)
 
 | Group | Skills |
 | --- | --- |
 | Flow Lite | `flow` |
-| Delivery | `explore`, `grill`, `to-spec`, `to-tickets`, `implement`, `review`, `retro` |
+| Delivery | `explore`, `grill`, `to-spec`, `to-tickets`, `implement`, `review`, `ship`, `retro` |
+| Advisory | `council` |
+| Prototype | `prototype` |
+| Quality | `simplify`, `security`, `performance`, `debug` |
 | Product discovery | `interview`, `jtbd`, `competitors` |
 | Writing | `write-agents`, `write-humans` |
 | Project start | `start` |
-| Misc | `tldr` |
+| Misc | `tldr`, `handoff` |
 
 Default durable docs in adopter projects: `docs/specs/NNN-short-name.md`, `docs/decisions/NNN-short-name.md` (or existing conventions).
 

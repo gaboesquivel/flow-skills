@@ -7,7 +7,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0001-curated-distribution.md](0001-curated-distribution.md) | Superseded (maintenance/install details) | Initial curated distribution shape |
 | [0002-local-skill-ownership.md](0002-local-skill-ownership.md) | Accepted (install path superseded by 0004) | Local source and composition policy |
 | [0003-skill-naming.md](0003-skill-naming.md) | Superseded by 0004 | Twenty-five-skill catalog (historical) |
-| [0004-portable-skill-catalog.md](0004-portable-skill-catalog.md) | Accepted (flow id superseded by 0006) | Portable catalog and Agent Skills install |
+| [0004-portable-skill-catalog.md](0004-portable-skill-catalog.md) | Accepted (parts superseded by 0006 and 0013) | Portable catalog and Agent Skills install |
 | [0005-misc-tldr-skill.md](0005-misc-tldr-skill.md) | Accepted | Misc group and `tldr` visual recap skill |
 | [0006-flow-lite-and-flat-docs.md](0006-flow-lite-and-flat-docs.md) | Accepted | Flow Lite `flow` skill and flat specs/decisions docs |
 | [0007-flow-product-identity.md](0007-flow-product-identity.md) | Accepted | Official Flow identity in PRODUCT.md |
@@ -16,6 +16,8 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0010-optional-start-skill.md](0010-optional-start-skill.md) | Accepted | Optional `start` skill authorized (shipped on catalog PR); does not supersede 0009 |
 | [0011-homepage-and-genui-playground.md](0011-homepage-and-genui-playground.md) | Accepted | `/` replaceable homepage; `/genui` public GenUI playground (dogfood baseline) |
 | [0012-start-bootstrap-lib.md](0012-start-bootstrap-lib.md) | Accepted | `start` bootstrap helpers under `skills/start/lib/` with executable tests |
+| [0013-restore-engineering-skills.md](0013-restore-engineering-skills.md) | Accepted (`handoff` added by 0014) | Restore `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug` |
+| [0014-handoff-skill.md](0014-handoff-skill.md) | Accepted | Explicit `handoff` skill for a fresh agent |
 
 ## Rules
 

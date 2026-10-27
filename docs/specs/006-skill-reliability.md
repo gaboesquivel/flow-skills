@@ -17,7 +17,7 @@ Flow's structural validation already checks packaging, metadata, links, and some
 
 ## Acceptance criteria
 
-- README intro, fifteen-skill catalog, optional `start` row, and influences section match approved copy.
+- README intro, optional `start` row, and influences section match approved copy. Catalog count for this spec was fifteen skills; [0013](../decisions/0013-restore-engineering-skills.md) later set it at twenty-two, and [0014](../decisions/0014-handoff-skill.md) set the live catalog at twenty-three.
 - [docs/references.md](../references.md) indexes the six primary sources and spec 006.
 - `write-agents`, `retro`, and `review` skill text reflects the disciplines above without mandatory workflow or new skills.
 - E01–E15 exist with honest evidence statuses; checker rejects duplicate IDs, broken references, and false live-run claims.
@@ -30,7 +30,7 @@ Flow's structural validation already checks packaging, metadata, links, and some
 - Stacked pull requests: documentation and spec first, then authoring/retro, then review/implement, then eval tooling.
 - Smoke contract tests extend substring checks; they remain structural evidence, not live skill verification.
 - PR alignment script stays deterministic; it does not become a general agent evaluator.
-- Historical decisions and specs 003–005 are not rewritten for catalog count; current count is fifteen including `start` ([0010](../decisions/0010-optional-start-skill.md)).
+- Historical decisions and specs 003–005 are not rewritten for catalog count. This spec shipped against fifteen skills including `start` ([0010](../decisions/0010-optional-start-skill.md)). [0013](../decisions/0013-restore-engineering-skills.md) later restored seven skills. [0014](../decisions/0014-handoff-skill.md) added `handoff`; the live catalog is twenty-three.
 
 ## Testing decisions
 
