@@ -6,9 +6,10 @@
 - Principles or workflow: `docs/principles.md` and the relevant section of `docs/methodology.md`.
 - Document ownership or locating context: `docs/README.md`.
 - Project terminology: `GLOSSARY.md`.
-- Current work: `docs/initiatives/README.md`, then the relevant initiative.
-- Possibilities or source evidence: `docs/ideas/README.md` or `docs/references.md`, then the relevant note.
+- Bounded work and rationale: `docs/specs/`, `docs/decisions/`.
+- Source evidence (maintainer): `docs/references.md` and `docs/research/`.
 - Experience or technical changes: root `DESIGN.md` or `ARCHITECTURE.md` when present; create only when useful.
+- Root context alignment: `skills/flow/SKILL.md` (Flow Lite).
 
 Load only what the task needs. `docs/archive/` is historical evidence, never current instructions or authority.
 
@@ -18,7 +19,7 @@ Develop Flow through its own practices using conversation and available tools. T
 
 ## Distribution maintenance
 
-Flow ships a portable `skills/` tree for the [Agent Skills](https://agentskills.io) ecosystem. Consumers install with `npx skills add gaboesquivel/flow-skills` and invoke skills explicitly. This repository does not ship a bootstrap installer or require changes to adopter instruction files.
+Flow ships a portable `skills/` tree for the [Agent Skills](https://agentskills.io) ecosystem. Consumers install with `npx skills add gaboesquivel/flow-skills` and invoke skills explicitly except where hosts surface `flow`. This repository does not ship a bootstrap installer or require changes to adopter instruction files.
 
 | Task | Command |
 | --- | --- |
@@ -37,6 +38,5 @@ Maintain useful context without waiting for a note-taking request. Respect expli
 - Apply project-specific meanings and surface conflicts. When a meaning is resolved, update `GLOSSARY.md` and affected current documents together. Loading the glossary alone does not require an edit.
 - Preserve durable findings with sources and limitations in research, indexed in `docs/references.md`; distinguish historical and candidate sources from adopted influences. Avoid transcripts.
 - Record significant rationale in a numbered decision record under `docs/decisions/` and update current context. Routine clarification needs no decision record.
-- Follow `docs/README.md` for ideas and initiatives. Challenge initiative purpose and evidence; tasks inherit context with minimal ceremony. Preserve new ideas without silently expanding scope.
-- Maintain `docs/ideas/README.md`. Pruning may shorten or relocate ideas, never silently change their status. Preserve reasons for deferral or rejection; mark uncertain dispositions unresolved. Link resulting work rather than duplicating scope.
+- Record bounded increments in `docs/specs/` when the work warrants a durable artifact.
 - Keep personal motivations and private context out of project documents. Use concise, professional language.

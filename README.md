@@ -1,6 +1,6 @@
 # Flow Skills
 
-Portable, manually invoked [agent skills](https://agentskills.io) for product and engineering work. Works across agents and UIs; no Flow router, setup command, or changes to adopter instruction files.
+Lean, portable [agent skills](https://agentskills.io) for product and engineering work. **Flow Lite** keeps root context docs aligned; the rest of the catalog is optional and manually invoked. No setup command, workflow router, or changes to adopter instruction files.
 
 [Product direction](PRODUCT.md) · **[Skill catalog](docs/skills.md)** · [Methodology](docs/methodology.md) · [Documentation guide](docs/README.md)
 
@@ -12,22 +12,39 @@ npx skills add gaboesquivel/flow-skills
 
 Choose agent and scope in the installer. [Agent compatibility](docs/agent-compatibility.md) covers other install paths and metadata limits.
 
-## Invoke
+## How it fits together
 
-Run skills only when you explicitly ask: slash commands (`/explore`, `/to-spec`, …), skill picker, or the host’s equivalent. `disable-model-invocation: true` requests manual activation where supported.
+```mermaid
+flowchart TB
+  install[Install skills]
+  work[Build your product]
+  flowLite["/flow Flow Lite optional"]
+  manual["Other skills when you choose"]
+  rootDocs[PRODUCT DESIGN GLOSSARY ARCHITECTURE]
+  durable[docs/specs and docs/decisions]
+  install --> work
+  work --> flowLite
+  work --> manual
+  flowLite --> rootDocs
+  manual --> durable
+```
 
-## Catalog (13)
+- **`flow` (Flow Lite)** — align root context documents after meaningful changes. Hosts may surface it when supported; it is not a pipeline.
+- **Other skills** — invoke explicitly (`/explore`, `/to-spec`, `/implement`, …). Each is independent; no mandatory sequence.
+
+Details and links to every `SKILL.md`: **[docs/skills.md](docs/skills.md)**.
+
+## Catalog (14)
 
 | Group | Skills |
 | --- | --- |
+| Flow Lite | `flow` |
 | Delivery | `explore`, `grill`, `to-spec`, `to-tickets`, `implement`, `review`, `retro` |
 | Product discovery | `interview`, `jtbd`, `competitors` |
 | Writing | `write-agents`, `write-humans` |
 | Misc | `tldr` |
 
-Each skill is independent. Optional flow, descriptions, and links to `SKILL.md` files: **[docs/skills.md](docs/skills.md)**.
-
-Default docs in adopter projects: `docs/specs/NNN-short-name.md`, `docs/decisions/NNN-short-name.md` (or existing conventions).
+Default durable docs in adopter projects: `docs/specs/NNN-short-name.md`, `docs/decisions/NNN-short-name.md` (or existing conventions).
 
 ## Maintain
 

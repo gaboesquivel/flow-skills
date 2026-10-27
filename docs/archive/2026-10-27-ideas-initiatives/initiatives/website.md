@@ -29,7 +29,7 @@ The description expresses intended value, not current skill availability. Show d
 
 1. **Introduction:** headline and supporting description. Mission and motto placement remain open; avoid repeating the same promise in several adjacent lines.
 2. **Principles:** draw from [the principles draft](../principles.md): validation, observability, agentic, lean, and velocity. Preserve room for exploration without presenting every principle as a checklist.
-3. **Workflow:** explain how discovery, refinement, delivery, and learning connect, using [the methodology](../methodology.md). Stage names and visual form remain proposals, not a new mandatory sequence or implemented commands.
+3. **Workflow:** explain how discovery, refinement, delivery, and learning connect, using [the methodology](../../methodology.md). Stage names and visual form remain proposals, not a new mandatory sequence or implemented commands.
 
 Later sections, navigation, calls to action, and a future skill catalog remain open. Do not show installation instructions or availability claims before they are supported.
 
@@ -37,9 +37,9 @@ Later sections, navigation, calls to action, and a future skill catalog remain o
 
 ### Agentic Product Engineer definition
 
-Use the working meanings in [GLOSSARY.md](../../GLOSSARY.md#agentic-product-engineering), consolidated there on 2026-10-20. PRODUCT.md owns the audience; this initiative owns how to explain the role on the page. Placement and final public wording remain open; avoid expanding the hero into a role manifesto.
+Use the working meanings in [GLOSSARY.md](../../../GLOSSARY.md#agentic-product-engineering), consolidated there on 2026-10-20. PRODUCT.md owns the audience; this initiative owns how to explain the role on the page. Placement and final public wording remain open; avoid expanding the hero into a role manifesto.
 
-The [role assessment](../research/2026-10-20-agentic-product-engineering.md) preserves the proposed responsibilities, boundaries, and Rangle attribution limits.
+The [role assessment](../../research/2026-10-20-agentic-product-engineering.md) preserves the proposed responsibilities, boundaries, and Rangle attribution limits.
 
 ### Differentiator, mission, and motto
 

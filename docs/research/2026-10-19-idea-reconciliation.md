@@ -28,7 +28,7 @@ This review did not inspect every unrelated or earlier chat. No new external-sou
 | Glossary, design decision placement, alignment checks, evaluation, skill contracts | Newly indexed from archive; unresolved |
 | Agent readiness, marketing category, environments and distribution | Newly indexed; unresolved packaging and checks |
 
-See the [idea index](../ideas/README.md) for each topic's source links. No omitted historical proposal was automatically re-adopted, and no idea was newly rejected.
+See the [archived idea index](../archive/2026-10-27-ideas-initiatives/ideas/README.md) for each topic's source links. No omitted historical proposal was automatically re-adopted, and no idea was newly rejected.
 
 ## Remaining gap
 

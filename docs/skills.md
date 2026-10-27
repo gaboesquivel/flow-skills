@@ -1,29 +1,35 @@
 # Skill catalog
 
-Thirteen manually invoked skills in [`skills/`](../skills/). Install with `npx skills add gaboesquivel/flow-skills`. No router skill and no mandatory sequence.
+Fourteen skills in [`skills/`](../skills/). Install with `npx skills add gaboesquivel/flow-skills`. No workflow router and no mandatory sequence.
 
-[Agent compatibility](agent-compatibility.md) · [Decision 0004](decisions/0004-portable-skill-catalog.md) · [Spec 001](specs/001-portable-skill-catalog.md)
+[Agent compatibility](agent-compatibility.md) · [Decision 0006](decisions/0006-flow-lite-and-flat-docs.md) · [Spec 002](specs/002-flow-lite-and-flat-docs.md)
 
 ## Process
 
 1. **Install** — Agent Skills CLI copies this repository’s `skills/` tree into the agent you choose.
-2. **Invoke** — Run one skill explicitly (`/to-spec`, skill picker, or equivalent).
+2. **Work** — Build your product; use **`flow`** when root docs need alignment, or invoke any other skill explicitly.
 3. **Document** — When saving artifacts, default to `docs/specs/NNN-short-name.md` and `docs/decisions/NNN-short-name.md` unless the project already uses something else.
 
-Optional delivery flow (every step skippable):
+Optional skills (every step skippable; no required order):
 
 ```mermaid
 flowchart LR
   explore --> grill
-  explore --> to-spec
-  grill --> to-spec
-  to-spec --> to-tickets
-  to-tickets --> implement
+  explore --> toSpec[to-spec]
+  grill --> toSpec
+  toSpec --> toTickets[to-tickets]
+  toTickets --> implement
   implement --> review
   review --> retro
 ```
 
-Product discovery skills are optional and do not block delivery skills.
+Product discovery and writing skills are optional and do not block delivery.
+
+## Flow Lite
+
+| Skill | When to use |
+| --- | --- |
+| [flow](../skills/flow/SKILL.md) | Align `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` after meaningful changes. Not a pipeline; hosts may suggest it when supported. |
 
 ## Delivery
 
@@ -53,8 +59,6 @@ Product discovery skills are optional and do not block delivery skills.
 | [write-agents](../skills/write-agents/SKILL.md) | Draft or edit agent instructions and navigable context. |
 
 ## Misc
-
-Session utilities that do not replace delivery or writing skills.
 
 | Skill | When to use |
 | --- | --- |

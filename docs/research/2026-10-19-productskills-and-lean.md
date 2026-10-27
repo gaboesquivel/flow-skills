@@ -72,7 +72,7 @@ Illustrative example, not an actual finding: new accounts struggle to complete a
 
 The proposed starting point is optional depth within the existing discovery and learning loop. Business discovery overlaps heavily with commercial discovery and initiative refinement. Metrics has a stronger potential standalone trigger because definitions, instrumentation planning, and interpretation can be needed independently. Experimentation already spans refinement and reviewing outcomes.
 
-The [candidate skill boundaries](../ideas/business-discovery-and-product-metrics.md) remain open. Evaluate whether discovery and refinement need distinct entry points, whether business discovery is repeatedly useful independently, and whether a metrics specialist reduces work without duplicating outcome selection. Actual use should inform these choices before implementation.
+The [archived candidate skill boundaries](../archive/2026-10-27-ideas-initiatives/ideas/business-discovery-and-product-metrics.md) remain open in archive. Evaluate whether discovery and refinement need distinct entry points, whether business discovery is repeatedly useful independently, and whether a metrics specialist reduces work without duplicating outcome selection. Actual use should inform these choices before implementation.
 
 ## Lean Analytics and One Metric That Matters
 
@@ -91,4 +91,4 @@ Limits: do not import the mandatory 0–10 score, universal five-stage gates, si
 
 For Flow's application, AARRR remains a candidate lens for locating a constraint; OMTM gives the current measurement effort a primary focus; an optional North Star expresses recurring customer value over a longer horizon. They can complement each other without requiring three separate measurement systems. An experiment may measure a nearer-term signal, but its relationship to the product's OMTM must be explained rather than assumed.
 
-The concept belongs in the product and measurement practice, not as a generic glossary entry. [PRODUCT.md](../../PRODUCT.md#business-context-and-measurable-outcomes) owns adopted direction; [the methodology](../methodology.md#observe-and-revisit) owns application; the [metrics idea](../ideas/business-discovery-and-product-metrics.md) owns unresolved skill packaging. No metric or target has been selected for Flow itself, and no skill implementation follows from this adoption.
+The concept belongs in the product and measurement practice, not as a generic glossary entry. [PRODUCT.md](../../PRODUCT.md#business-context-and-measurable-outcomes) owns adopted direction; [the methodology](../methodology.md#observe-and-revisit) owns application; the [archived metrics idea](../archive/2026-10-27-ideas-initiatives/ideas/business-discovery-and-product-metrics.md) owns unresolved skill packaging in archive. No metric or target has been selected for Flow itself, and no skill implementation follows from this adoption.

@@ -7,8 +7,9 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0001-curated-distribution.md](0001-curated-distribution.md) | Superseded (maintenance/install details) | Initial curated distribution shape |
 | [0002-local-skill-ownership.md](0002-local-skill-ownership.md) | Accepted (install path superseded by 0004) | Local source and composition policy |
 | [0003-skill-naming.md](0003-skill-naming.md) | Superseded by 0004 | Twenty-five-skill catalog (historical) |
-| [0004-portable-skill-catalog.md](0004-portable-skill-catalog.md) | Accepted | Twelve-skill portable catalog and Agent Skills install |
+| [0004-portable-skill-catalog.md](0004-portable-skill-catalog.md) | Accepted (flow id superseded by 0006) | Portable catalog and Agent Skills install |
 | [0005-misc-tldr-skill.md](0005-misc-tldr-skill.md) | Accepted | Misc group and `tldr` visual recap skill |
+| [0006-flow-lite-and-flat-docs.md](0006-flow-lite-and-flat-docs.md) | Accepted | Flow Lite `flow` skill and flat specs/decisions docs |
 
 ## Rules
 

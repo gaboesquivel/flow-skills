@@ -17,6 +17,7 @@ const contracts = [
   { skill: 'write-agents', file: 'SKILL-MECHANICS.md', includes: ['explicit workflow activation', 'fallback'] },
   { skill: 'interview', file: 'SKILL.md', includes: ['do not authorize', 'limitations'] },
   { skill: 'retro', file: 'SKILL.md', includes: ['do not modify', 'explicit user authorization'] },
+  { skill: 'flow', file: 'SKILL.md', includes: ['PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'workflow router', 'Do not edit adopter', 'Do not require installation'] },
 ]
 
 test('catalog passes validator including required adapters', () => assert.deepEqual(validateSkills(skillsRoot), []))
@@ -33,6 +34,7 @@ test('every shipped skill matches the expected catalog', () => {
   assert.deepEqual(names, EXPECTED_SKILL_NAMES)
   for (const name of names) {
     const adapter = readFileSync(join(skillsRoot, name, 'agents/openai.yaml'), 'utf8')
-    assert.match(adapter, /allow_implicit_invocation:\s*false/u, name)
+    const expectImplicit = name === 'flow'
+    assert.match(adapter, expectImplicit ? /allow_implicit_invocation:\s*true/u : /allow_implicit_invocation:\s*false/u, name)
   }
 })

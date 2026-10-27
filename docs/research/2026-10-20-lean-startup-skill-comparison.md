@@ -59,7 +59,7 @@ Flow's intended emphasis is a maintained connection between business and custome
 
 One candidate relationship to explore is: refine a consequential uncertainty, choose a useful test, deliver only what that test needs, inspect evidence, and revisit the decision. This is a discussion aid, not an adopted sequence; open exploration and ordinary implementation remain valid entry points.
 
-The [development initiative](../initiatives/methodology-and-skills.md) owns the next discussion. [Business discovery and metrics](../ideas/business-discovery-and-product-metrics.md) and [collaborative refinement](../ideas/collaborative-refinement.md) retain unresolved packaging choices.
+The [archived development initiative](../archive/2026-10-27-ideas-initiatives/initiatives/methodology-and-skills.md) owned historical discussion. [Business discovery and metrics](../archive/2026-10-27-ideas-initiatives/ideas/business-discovery-and-product-metrics.md) and [collaborative refinement](../archive/2026-10-27-ideas-initiatives/ideas/collaborative-refinement.md) retain unresolved packaging choices in archive.
 
 ## Refound AI: idea validation
 

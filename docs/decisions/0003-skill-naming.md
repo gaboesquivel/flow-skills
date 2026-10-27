@@ -20,4 +20,4 @@ Installation and catalog size were superseded by [0004](0004-portable-skill-cata
 
 ## Supersedes
 
-None. This decision narrows the descriptive naming proposals recorded in [writing.md](../ideas/writing.md#descriptive-technical-naming-plan) without adopting that document's longer alternative names.
+None. This decision narrows the descriptive naming proposals recorded in [writing.md](../archive/2026-10-27-ideas-initiatives/ideas/writing.md#descriptive-technical-naming-plan) without adopting that document's longer alternative names.

@@ -1,6 +1,6 @@
 # Agent and host compatibility
 
-Flow skills target the [Agent Skills](https://agentskills.io) package layout: `skills/<name>/SKILL.md` with YAML frontmatter. The [skill catalog](skills.md) lists all thirteen packages and when to use each.
+Flow skills target the [Agent Skills](https://agentskills.io) package layout: `skills/<name>/SKILL.md` with YAML frontmatter. The [skill catalog](skills.md) lists all fourteen packages and when to use each.
 
 ## Installation
 
@@ -16,22 +16,26 @@ Flow does not modify adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or simila
 
 | Host style | How users run Flow |
 | --- | --- |
-| Slash commands | `/to-spec`, `/implement`, … when the host maps skill names to commands |
+| Slash commands | `/flow`, `/to-spec`, `/implement`, … when the host maps skill names to commands |
 | Skill picker | Explicit selection by skill name |
+| Host suggestion | **`flow` only** — some hosts may surface Flow Lite after context work; not guaranteed |
 | Chat instruction | User names the skill in plain language where slash commands are unavailable |
+
+All skills except `flow` require explicit user invocation in Flow's design.
 
 ## Metadata
 
-- `disable-model-invocation: true` — intended to prevent automatic skill activation. **Observed support varies.** Cursor and several CLI agents document or honor similar fields; always confirm in your host's skill documentation.
-- `skills/<name>/agents/openai.yaml` with `allow_implicit_invocation: false` — optional adapter for hosts that read it. Hosts that ignore adapter files rely on frontmatter and user invocation only.
+Dual policy ([decision 0006](decisions/0006-flow-lite-and-flat-docs.md)):
+
+| Skill | `disable-model-invocation` | `allow_implicit_invocation` (adapter) |
+| --- | --- | --- |
+| `flow` | `false` | `true` |
+| All others | `true` | `false` |
+
+**Observed support varies.** Confirm behavior in your host's skill documentation. Hosts that ignore adapter files rely on frontmatter and user invocation only.
 
 Core skill bodies avoid naming a single vendor tool, subagent API, or filesystem layout. Hosts may still expose different tools; skills describe outcomes and fallbacks in generic terms.
 
 ## Verification status
 
 Structural checks (`pnpm validate`, contract tests) and Agent Skills CLI listing (`tests/distribution.test.mjs`) run in CI. Recorded live slash-command or skill-picker runs in a second agent product remain open; see [smoke scenario status](../tests/smoke/2026-10-27-scenario-status.md).
-
-| Metadata | Typical intent | Enforcement |
-| --- | --- | --- |
-| `disable-model-invocation: true` in SKILL.md frontmatter | User must invoke the skill explicitly | Honored in several hosts; not universal |
-| `allow_implicit_invocation: false` in `agents/openai.yaml` | Same policy for adapters that read it | Optional file; ignored where unsupported |

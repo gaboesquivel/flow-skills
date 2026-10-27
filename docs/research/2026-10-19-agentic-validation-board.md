@@ -25,4 +25,4 @@ No scan was run. Flow's applicable checks and acceptance criteria remain open.
 
 ## Persona feedback
 
-The speculative skill is retained in [ideas](../ideas/README.md). The supplied [LinkedIn reference](https://www.linkedin.com/posts/illaigescheit_tomorrow-i-will-present-some-of-the-concepts-share-7497608709372571648-zbpp/) was inaccessible, so no conclusions are attributed to it.
+The speculative skill is retained in [archived ideas](../archive/2026-10-27-ideas-initiatives/ideas/README.md). The supplied [LinkedIn reference](https://www.linkedin.com/posts/illaigescheit_tomorrow-i-will-present-some-of-the-concepts-share-7497608709372571648-zbpp/) was inaccessible, so no conclusions are attributed to it.

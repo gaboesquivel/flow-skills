@@ -108,7 +108,7 @@ Source history, not methodological authority.
 - [Rangle — Agentic Product Engineering](https://rangle.io/expertise/agentic-product-engineering) — candidate role-framing reference; [assessment and attribution limits](research/2026-10-20-agentic-product-engineering.md). Flow's working meanings live in [GLOSSARY.md](../GLOSSARY.md#agentic-product-engineering).
 - [Lean Startup Machine Validation Board — Grace Ng's explanation](https://www.lean.org/the-lean-post/articles/why-lean-startup-experiments-are-hard-to-design/) — [board reference and adaptation notes](research/2026-10-19-agentic-validation-board.md).
 - [Is Agentic methodology](https://is-agentic.com/methodology) and [developer documentation](https://is-agentic.com/docs) — agent readiness reference; [assessment](research/2026-10-19-agentic-validation-board.md).
-- [Illai Gescheit — LinkedIn post](https://www.linkedin.com/posts/illaigescheit_tomorrow-i-will-present-some-of-the-concepts-share-7497608709372571648-zbpp/) — user-supplied inspiration, inaccessible and unverified; [persona-testing idea](ideas/README.md).
+- [Illai Gescheit — LinkedIn post](https://www.linkedin.com/posts/illaigescheit_tomorrow-i-will-present-some-of-the-concepts-share-7497608709372571648-zbpp/) — user-supplied inspiration, inaccessible and unverified; [archived persona-testing idea](archive/2026-10-27-ideas-initiatives/ideas/README.md).
 
 ## Writing
 
@@ -119,8 +119,8 @@ User-selected references for the two planned writing skills; specific upstream r
 
 ## Miscellaneous
 
-- [Addy Osmani — skills website](https://skills.addy.ie/) — adopted primary website presentation reference; [website plan, inspection notes, and limitations](initiatives/website.md#references-and-limits).
-- [Gabo Esquivel — website](https://gaboesquivel.com/) — adopted website visual identity and palette reference; exact tokens await visual inspection. [Website plan](initiatives/website.md#references-and-limits).
+- [Addy Osmani — skills website](https://skills.addy.ie/) — adopted primary website presentation reference; [archived website plan](archive/2026-10-27-ideas-initiatives/initiatives/website.md#references-and-limits).
+- [Gabo Esquivel — website](https://gaboesquivel.com/) — adopted website visual identity and palette reference; exact tokens await visual inspection. [Archived website plan](archive/2026-10-27-ideas-initiatives/initiatives/website.md#references-and-limits).
 
 - [HumanLayer — skills](https://github.com/humanlayer/skills) — saved for possible Git and pull-request workflow inspiration. Low-priority reference only; not an adopted influence. Repository overview inspected on 2026-10-19; individual skills not assessed.
 
@@ -130,7 +130,7 @@ User-selected references for the two planned writing skills; specific upstream r
 
 ## Distribution evaluation
 
-- [Skill catalog](skills.md) — current thirteen skills, optional flow, and `SKILL.md` links.
+- [Skill catalog](skills.md) — current fourteen skills (Flow Lite + manual catalog) and `SKILL.md` links.
 - [Decision 0004](decisions/0004-portable-skill-catalog.md) — catalog and `npx skills add gaboesquivel/flow-skills` install path.
 - [Agent compatibility](agent-compatibility.md) — invocation metadata and host limitations.
 - [October 27 pre-0004 reviews (archive)](archive/2026-10-27-reviews/README.md) — direction review, distribution review, and retired bootstrap smoke notes.

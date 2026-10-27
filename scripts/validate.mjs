@@ -2,9 +2,12 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { dirname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+export const DISCOVERABLE_SKILL_NAMES = new Set(['flow'])
+
 export const EXPECTED_SKILL_NAMES = [
   'competitors',
   'explore',
+  'flow',
   'grill',
   'implement',
   'interview',
@@ -43,7 +46,10 @@ export function validateSkills(root) {
     }
     if (fields.name !== name) errors.push(`${name}: name mismatch`)
     if (!fields.description) errors.push(`${name}: missing description`)
-    if (fields['disable-model-invocation'] !== 'true') errors.push(`${name}: explicit activation metadata required`)
+    const discoverable = DISCOVERABLE_SKILL_NAMES.has(name)
+    const invocation = fields['disable-model-invocation']
+    if (discoverable && invocation !== 'false') errors.push(`${name}: discoverable skill must set disable-model-invocation: false`)
+    if (!discoverable && invocation !== 'true') errors.push(`${name}: explicit activation metadata required`)
     for (const key of Object.keys(fields)) if (!['name', 'description', 'disable-model-invocation'].includes(key)) errors.push(`${name}: unsupported frontmatter field ${key}`)
     const files = listMarkdownAndSupportFiles(folder)
     if (files.includes('ATTRIBUTION.md') && !files.includes('LICENSE')) errors.push(`${name}: attribution requires bundled license`)
@@ -66,7 +72,11 @@ export function validateSkills(root) {
     }
     const adapter = join(folder, 'agents', 'openai.yaml')
     if (!existsSync(adapter)) errors.push(`${name}: missing agents/openai.yaml`)
-    else if (!/^\s+allow_implicit_invocation:\s*false\s*$/mu.test(readFileSync(adapter, 'utf8'))) errors.push(`${name}: adapter must express explicit activation`)
+    else {
+      const adapterText = readFileSync(adapter, 'utf8')
+      const implicit = discoverable ? /allow_implicit_invocation:\s*true/u : /allow_implicit_invocation:\s*false/u
+      if (!implicit.test(adapterText)) errors.push(`${name}: adapter implicit-invocation policy mismatch`)
+    }
   }
   return errors
 }

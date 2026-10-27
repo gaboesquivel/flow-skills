@@ -22,6 +22,6 @@ Use one glossary for the current shared vocabulary. Do not infer bounded context
 - Created root [GLOSSARY.md](../../GLOSSARY.md); preserved the archived glossary unchanged. Its older distinction between Flow and Flow Skills and its design-decision convention remain historical, not automatically restored.
 - Moved idea/initiative meanings from the documentation guide into the glossary; the guide retains ownership and relationship rules.
 - Moved the role definitions out of website planning. The [role assessment](2026-10-20-agentic-product-engineering.md) retains the fuller framing and the website retains presentation choices.
-- Updated the [context idea](../ideas/context-and-evaluation.md) from an unresolved glossary proposal to adopted practice, and linked the [development initiative](../initiatives/methodology-and-skills.md). Design-decision placement, alignment mechanisms, and evaluation proposals remain preserved with their existing status.
+- Updated the [archived context idea](../archive/2026-10-27-ideas-initiatives/ideas/context-and-evaluation.md) from an unresolved glossary proposal to adopted practice, and linked the [archived development initiative](../archive/2026-10-27-ideas-initiatives/initiatives/methodology-and-skills.md). Design-decision placement, alignment mechanisms, and evaluation proposals remain preserved with their existing status.
 
 The [methodology](../methodology.md#maintain-shared-language) owns current practice. No research or idea was rejected by this consolidation, and no skill implementation was authorized by it.

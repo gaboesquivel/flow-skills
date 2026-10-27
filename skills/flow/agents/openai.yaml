@@ -1,0 +1,5 @@
+interface:
+  display_name: "Flow Lite"
+  short_description: "Align root product, design, glossary, and architecture docs"
+policy:
+  allow_implicit_invocation: true

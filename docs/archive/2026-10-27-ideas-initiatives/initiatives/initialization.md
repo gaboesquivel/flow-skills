@@ -4,7 +4,7 @@ Status: experimental prompt development; first intended external trial is gaboes
 
 ## Purpose
 
-Test whether initialization gives agents enough product intent and architectural orientation to work correctly with less unnecessary reading and documentation maintenance. This initiative owns the trial; the [methodology](../methodology.md#write-context-for-agents-and-humans) owns ongoing documentation practices.
+Test whether initialization gives agents enough product intent and architectural orientation to work correctly with less unnecessary reading and documentation maintenance. This initiative owns the trial; the [methodology](../../methodology.md#write-context-for-agents-and-humans) owns ongoing documentation practices.
 
 ## Accepted constraints
 
@@ -16,7 +16,7 @@ Recovered from the October 20 “Create Init Prompt” and “Architecture Templ
 - Apply progressive disclosure and aggressive pruning. Keep canonical documents concise and connected; document what agents need to preserve or would otherwise struggle to recover.
 - Keep product intent, documentation, and implementation aligned. Initialization must preserve existing work and surface contradictions rather than overwrite it with a generic template.
 
-Root Markdown and `docs/` remain Flow's current layout. Moving to `.flow/` was discussed, not adopted; the [competitive report](../research/2026-10-20-competitive-landscape.md) contains unverified research and recommendations about that choice.
+Root Markdown and `docs/` remain Flow's current layout. Moving to `.flow/` was discussed, not adopted; the [competitive report](../../research/2026-10-20-competitive-landscape.md) contains unverified research and recommendations about that choice.
 
 ## Trial status and evidence
 

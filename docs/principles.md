@@ -30,10 +30,10 @@ Test consequential uncertainty, limit concurrent scope, and prefer small experim
 
 Move quickly with intent, and use feedback to correct direction.
 
-Shorten the path from an assumption to useful evidence and a decision. Progress may mean shipping, narrowing scope, changing direction, or stopping. Challenge purpose and evidence at the initiative level; let tasks inherit that context and proceed with minimal ceremony.
+Shorten the path from an assumption to useful evidence and a decision. Progress may mean shipping, narrowing scope, changing direction, or stopping. Challenge purpose and evidence when it matters; let small tasks proceed with minimal ceremony.
 
 ## Room for exploration
 
 Open exploration may begin with curiosity rather than a formal hypothesis. When it becomes a product commitment, make its intent and validation approach explicit. Apply these principles with judgment rather than as a checklist for every action.
 
-The [methodology](methodology.md) describes current practices. [References](references.md) preserve influences and research. Shipped [skills](../skills/) are manually invoked packages; they do not enforce this draft as a mandatory workflow. This draft is not a finalized skill specification.
+The [methodology](methodology.md) describes optional practices. [References](references.md) preserve influences and research. Shipped [skills](../skills/) include discoverable Flow Lite (`flow`) and otherwise manual packages; none enforce this draft as a mandatory workflow. This draft is not a finalized skill specification.

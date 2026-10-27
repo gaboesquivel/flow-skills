@@ -4,10 +4,16 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
-import { validateSkills } from '../scripts/validate.mjs'
+import { DISCOVERABLE_SKILL_NAMES, validateSkills } from '../scripts/validate.mjs'
 
 const skillsRoot = join(dirname(fileURLToPath(import.meta.url)), '..', 'skills')
 test('all shipped references and metadata validate', () => assert.deepEqual(validateSkills(skillsRoot), []))
+
+test('flow is the only discoverable skill', () => {
+  assert.deepEqual([...DISCOVERABLE_SKILL_NAMES], ['flow'])
+  const flowSkill = readFileSync(join(skillsRoot, 'flow/SKILL.md'), 'utf8')
+  assert.match(flowSkill, /disable-model-invocation: false/u)
+})
 
 test('validator catches missing supporting-file links and escaped dependency closure', (t) => {
   const dir = mkdtempSync(join(tmpdir(), 'flow-reference-test-'))

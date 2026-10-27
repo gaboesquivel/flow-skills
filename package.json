@@ -1,6 +1,6 @@
 {
   "name": "@gaboesquivel/flow-skills",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Portable, manually invoked agent skills for product and engineering work",
   "type": "module",
   "license": "MIT",

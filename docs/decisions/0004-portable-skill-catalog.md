@@ -23,3 +23,7 @@ The repository previously shipped twenty-five skills, a `flow` workflow router, 
 ## Supersedes
 
 Partially supersedes [0003](0003-skill-naming.md) catalog shape and install guidance. Local ownership principles in [0002](0002-local-skill-ownership.md) still apply to editing `skills/` in this repository.
+
+## Superseded in part by
+
+[0006](0006-flow-lite-and-flat-docs.md) reintroduces the `flow` skill id as Flow Lite (context alignment only), not as the workflow router retired above.

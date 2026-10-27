@@ -1,6 +1,6 @@
 # 001: Portable skill catalog
 
-Status: implemented (2026-10-27). Authoritative decision: [0004](../decisions/0004-portable-skill-catalog.md).
+Status: implemented (2026-10-27). Superseded for catalog size by [002](002-flow-lite-and-flat-docs.md) (fourteen skills with Flow Lite). Authoritative decision: [0004](../decisions/0004-portable-skill-catalog.md).
 
 ## Problem Statement
 
