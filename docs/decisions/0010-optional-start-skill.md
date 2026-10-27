@@ -36,3 +36,4 @@ GitHub **Use this template** remains valid without the skill. A dedicated option
 - Update [PRODUCT.md](../../PRODUCT.md), [GLOSSARY.md](../../GLOSSARY.md), [agent-compatibility.md](../agent-compatibility.md), and boundary text in `flow`, `implement`, and `review` skills to reference this decision instead of an "open" initializer question.
 - [0009](0009-adopter-product-context.md) is **not** edited and **not** superseded; this record **resolves** its unresolved paragraph only.
 - Validator skill count stays **fourteen** until the `start` skill directory exists.
+- **Update (2026-10-27):** `skills/start/` ships on `main`; the validator expects **fifteen** skills including optional `start`.

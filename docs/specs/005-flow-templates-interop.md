@@ -61,6 +61,22 @@ Recorded at spec authoring. **Code is authoritative; READMEs may lag.**
 
 **Unverified in this pass:** live Vercel deployments, Operator OIDC with a real IdP, MCP `2026-07-28` against production SDKs, embedded MCP App in an external host, Is Agentic scores, WAF and Gateway budget enforcement, performance baselines.
 
+### Dogfood baseline (2026-10-27, post–skills cleanup)
+
+Recorded for manual dogfooding readiness. **Code and each template’s `docs/INTEROP.md` are authoritative** for day-to-day behavior; this table is not a release sign-off.
+
+| Area | Implemented on template `main` (flow-next `9c124ca`, flow-mono `b8b04b0`) | Still outstanding vs this spec |
+| --- | --- | --- |
+| Public routes | `/` minimal homepage; `/genui` GenUI playground ([0011](../decisions/0011-homepage-and-genui-playground.md)) | PRD-2 Studio-first polished public site |
+| Eve agents | Assistant and Operator agent workspaces | PRD-1 Gateway-only normal path; Operator OAuth/OIDC |
+| Operator auth | `OPERATOR_SECRET` + session; fail closed | PROTO-3 / REL-3 OIDC |
+| Inference | AI Gateway when `AI_GATEWAY_API_KEY`; optional direct Anthropic with explicit override | Eliminate redundant direct paths for normal dev/CI |
+| MCP | Public and operator endpoints; shared tool names; tests use `2025-03-26` | PROTO-1 `2026-07-28`, MCP Apps release evidence |
+| Template skills | Workflow duplicates removed from lockfile; technical skills retained (PRD-4 partial) | Full PRD-4/5/6 migration items as listed above |
+| flow-skills catalog | Fifteen skills including optional `start` shipped | Template convergence and REL gates |
+
+The **flow-skills acceptance** bullet “do not add `start` until step 9” applied to the first spec increment only; `start` is now in the catalog. Migration step 9 remains relevant for template parity work, not for retracting `start`.
+
 ---
 
 ## Product requirements (PRD)
