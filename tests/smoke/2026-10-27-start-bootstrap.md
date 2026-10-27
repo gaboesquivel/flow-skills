@@ -41,10 +41,12 @@ Live bootstrap followed the `start` verification table (not a separate host skil
 | Destination | `/tmp/start-dogfood-acme-mono` |
 | Rename + stale scan | pass (17 allowlisted files) |
 | `pnpm setup` + `pnpm qa` | pass after `oxfmt` on baseline root docs |
-| Portless startup smoke | not run (time-boxed; flow-next path covered startup) |
+| `pnpm build` | pass (`/tmp/start-dogfood-acme-mono`, 2026-10-27 follow-up) |
+| `pnpm eval` | offline GenUI **102/102** pass; Eve `eval --tag smoke` requires `--agent` (not run) |
+| Portless HTTP smoke | not run (flow-next path covered startup + HTTP) |
 
 ## Not verified
 
 - Push to user GitHub remote.
 - Second agent host invocation of `start`.
-- flow-mono full `pnpm build` / `pnpm eval` / Portless HTTP smoke in this pass.
+- flow-mono Portless startup + HTTP table (same as flow-next checks).

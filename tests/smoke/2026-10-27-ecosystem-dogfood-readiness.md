@@ -8,7 +8,7 @@
 
 | Repository | `main` SHA | CI on merge | Notes |
 | --- | --- | --- | --- |
-| flow-skills | `54cdcc0` | success | [PR #10](https://github.com/gaboesquivel/flow-skills/pull/10) |
+| flow-skills | `74a54f1` | success | [PR #13](https://github.com/gaboesquivel/flow-skills/pull/13) `start` bootstrap; [live smoke](2026-10-27-start-bootstrap.md) |
 | flow-next | `e63fb72` | success | [PR #3](https://github.com/gaboesquivel/flow-next/pull/3); 23 technical skills in lockfile |
 | flow-mono | `5055c2d` | success | [PR #3](https://github.com/gaboesquivel/flow-mono/pull/3); 24 technical skills in lockfile |
 
@@ -34,6 +34,6 @@ flow-skills: `pnpm validate`, `pnpm test` — passed on doc branch and on `main`
 
 ## Adopter repos
 
-**gaboesquivel.com** (`main` `abb961e1` as of 2026-10-27): Flow skills installed; homepage GenUI modules largely shipped; OU-08 json-render removal on connect; automated acceptance [record](https://github.com/gaboesquivel/gaboesquivel.com/blob/main/docs/research/2026-10-27-acceptance-automated-record.md). **Still open:** live ChatGPT/Claude MCP gate; stale local branches documented in adopter [branch merge status](https://github.com/gaboesquivel/gaboesquivel.com/blob/main/docs/research/2026-10-27-branch-merge-status.md).
+**gaboesquivel.com** (`main` `fa5cb04e` as of 2026-10-27): Flow skills installed; homepage GenUI largely shipped; OU-08 complete; automated acceptance [record](https://github.com/gaboesquivel/gaboesquivel.com/blob/main/docs/research/2026-10-27-acceptance-automated-record.md). **Still open:** live MCP host ([checklist](https://github.com/gaboesquivel/gaboesquivel.com/blob/main/docs/testing/live-mcp-host-checklist.md)); connect surface [product choice](https://github.com/gaboesquivel/gaboesquivel.com/blob/main/docs/research/2026-10-27-connect-surface-status.md).
 
 Template adopters may still invoke [`start`](../../skills/start/SKILL.md) or **Use this template** on flow-next / flow-mono.
