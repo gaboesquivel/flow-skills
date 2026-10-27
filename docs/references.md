@@ -136,6 +136,7 @@ User-selected references for the two planned writing skills; specific upstream r
 - [Decision 0004](decisions/0004-portable-skill-catalog.md) — catalog and `npx skills add gaboesquivel/flow-skills` install path.
 - [Agent compatibility](agent-compatibility.md) — invocation metadata and host limitations.
 - [October 27 pre-0004 reviews (archive)](archive/2026-10-27-reviews/README.md) — direction review, distribution review, and retired bootstrap smoke notes.
+- [October 27 direction review, fourteen-skill catalog](research/2026-10-27-direction-review-14.md) — advisory review of `main` after decisions 0004–0009. Not an adopted decision.
 
 ## Maintenance
 

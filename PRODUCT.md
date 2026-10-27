@@ -52,8 +52,8 @@ The methodology defines what good product engineering looks like. Reusable skill
 | --- | --- |
 | **Flow** | The methodology (this document and related practice docs) |
 | **flow-skills** (this repository) | Reusable skills and conventions for agents |
-| **flow-next / flow-mono** | Independent application foundations (templates) |
-| **Flow Factory** | Optional agent orchestration and automated execution built on Flow—not Flow itself |
+| **[flow-next](https://github.com/gaboesquivel/flow-next)** / **[flow-mono](https://github.com/gaboesquivel/flow-mono)** | Independent application foundations (templates); [shared baseline v2](docs/specs/003-flow-templates-baseline-v2.md) |
+| **[Flow Factory](https://github.com/gaboesquivel/flow-factory)** | Optional agent orchestration and automated execution built on Flow—not Flow itself |
 
 Templates remain usable without Flow. Flow owns the methodology; flow-skills implements portable agent behavior; templates own their application foundations.
 
