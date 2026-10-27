@@ -41,14 +41,17 @@ jobs:
         env:
           FLOW_PR_BODY: ${{ github.event.pull_request.body }}
           FLOW_PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
-        run: node scripts/check-pr-alignment.mjs --base "${{ github.event.pull_request.base.sha }}" --head "${{ github.sha }}"
+        run: |
+          merge_base="$(git merge-base "${{ github.event.pull_request.base.sha }}" "${{ github.sha }}")"
+          node scripts/check-pr-alignment.mjs --base "$merge_base" --head "${{ github.sha }}"
 
   context-review:
-    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    if: github.event_name == 'pull_request'
     needs: [validate, alignment]
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      issues: write
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
@@ -67,4 +70,6 @@ jobs:
           FLOW_PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
           GH_TOKEN: ${{ github.token }}
           GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: node scripts/run-context-review.mjs --base "${{ github.event.pull_request.base.sha }}" --head "${{ github.sha }}" --pr-number "${{ github.event.pull_request.number }}"
+        run: |
+          merge_base="$(git merge-base "${{ github.event.pull_request.base.sha }}" "${{ github.sha }}")"
+          node scripts/run-context-review.mjs --base "$merge_base" --head "${{ github.sha }}" --pr-number "${{ github.event.pull_request.number }}"

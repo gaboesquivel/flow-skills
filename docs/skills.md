@@ -15,14 +15,16 @@ Each skill has one [leading word](../GLOSSARY.md#leading-word): a compact behavi
 Optional skills (every step skippable; no required order):
 
 ```mermaid
-flowchart LR
-  explore --> grill
-  explore --> toSpec[to-spec]
-  grill --> toSpec
-  toSpec --> toTickets[to-tickets]
-  toTickets --> implement
-  implement --> review
-  review --> retro
+flowchart TB
+  subgraph delivery["Delivery skills (invoke any; no fixed order)"]
+    explore
+    grill
+    toSpec[to-spec]
+    toTickets[to-tickets]
+    implement
+    review
+    retro
+  end
 ```
 
 Product discovery, writing, and misc skills are optional and do not block delivery.
