@@ -34,4 +34,6 @@ flow-skills: `pnpm validate`, `pnpm test` — passed on doc branch and on `main`
 
 ## Adopter repos
 
-No adopter product repository was initialized in this pass. Next product work should pick a real repo and optionally invoke [`start`](../../skills/start/SKILL.md) or **Use this template** on flow-next / flow-mono.
+**gaboesquivel.com** (`main` `abb961e1` as of 2026-10-27): Flow skills installed; homepage GenUI modules largely shipped; OU-08 json-render removal on connect; automated acceptance [record](https://github.com/gaboesquivel/gaboesquivel.com/blob/main/docs/research/2026-10-27-acceptance-automated-record.md). **Still open:** live ChatGPT/Claude MCP gate; stale local branches documented in adopter [branch merge status](https://github.com/gaboesquivel/gaboesquivel.com/blob/main/docs/research/2026-10-27-branch-merge-status.md).
+
+Template adopters may still invoke [`start`](../../skills/start/SKILL.md) or **Use this template** on flow-next / flow-mono.
