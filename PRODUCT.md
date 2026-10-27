@@ -1,6 +1,6 @@
 # Flow Skills
 
-Status: portable twelve-skill catalog on `main` ([decision 0004](docs/decisions/0004-portable-skill-catalog.md)); live verification in multiple agent hosts remains ongoing.
+Status: portable thirteen-skill catalog on `main` ([decision 0004](docs/decisions/0004-portable-skill-catalog.md), [0005](docs/decisions/0005-misc-tldr-skill.md)); live verification in multiple agent hosts remains ongoing.
 
 ## Purpose and audience
 
@@ -18,7 +18,7 @@ Flow offers a small, composable catalog with explicit invocation, no mandatory p
 
 **Install:** `npx skills add gaboesquivel/flow-skills` via the [Agent Skills ecosystem](https://github.com/vercel-labs/skills).
 
-**Skills:** seven delivery, three optional product discovery, two writing — grouped and described in **[docs/skills.md](docs/skills.md)**.
+**Skills:** seven delivery, three optional product discovery, two writing, one misc — grouped and described in **[docs/skills.md](docs/skills.md)**.
 
 Skills are editable, composable when explicitly invoked, and independent (`/implement` does not require `/to-spec`; `/to-spec` does not require `/grill`).
 

@@ -12,7 +12,7 @@ A practitioner who uses product and engineering expertise to decide what is wort
 
 ## Flow skill
 
-A portable `skills/<name>/SKILL.md` package in the Flow Skills distribution. Skills run only when the user explicitly invokes them; they may read local supporting files and optional linked skills without imposing a mandatory workflow. A practice can exist before a skill supports it, and a practice does not necessarily require its own skill.
+A portable `skills/<name>/SKILL.md` package in the Flow Skills distribution. Skills run only when the user explicitly invokes them; they may read local supporting files and optional linked skills without imposing a mandatory workflow. A practice can exist before a skill supports it, and a practice does not necessarily require its own skill. The [skill catalog](docs/skills.md) groups skills for navigation (delivery, product discovery, writing, misc); groups do not enforce invocation order.
 
 ## Decision record
 

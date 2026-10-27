@@ -1,6 +1,6 @@
 # Skill catalog
 
-Twelve manually invoked skills in [`skills/`](../skills/). Install with `npx skills add gaboesquivel/flow-skills`. No router skill and no mandatory sequence.
+Thirteen manually invoked skills in [`skills/`](../skills/). Install with `npx skills add gaboesquivel/flow-skills`. No router skill and no mandatory sequence.
 
 [Agent compatibility](agent-compatibility.md) · [Decision 0004](decisions/0004-portable-skill-catalog.md) · [Spec 001](specs/001-portable-skill-catalog.md)
 
@@ -51,6 +51,14 @@ Product discovery skills are optional and do not block delivery skills.
 | --- | --- |
 | [write-humans](../skills/write-humans/SKILL.md) | Draft or edit clear writing for human readers. |
 | [write-agents](../skills/write-agents/SKILL.md) | Draft or edit agent instructions and navigable context. |
+
+## Misc
+
+Session utilities that do not replace delivery or writing skills.
+
+| Skill | When to use |
+| --- | --- |
+| [tldr](../skills/tldr/SKILL.md) | Visual recap of the conversation and a quick user–agent alignment check. |
 
 ## Maintain (this repository)
 

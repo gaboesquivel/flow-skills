@@ -13,6 +13,7 @@ export const EXPECTED_SKILL_NAMES = [
   'review',
   'to-spec',
   'to-tickets',
+  'tldr',
   'write-agents',
   'write-humans',
 ].sort()

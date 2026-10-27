@@ -130,7 +130,7 @@ User-selected references for the two planned writing skills; specific upstream r
 
 ## Distribution evaluation
 
-- [Skill catalog](skills.md) — current twelve skills, optional flow, and `SKILL.md` links.
+- [Skill catalog](skills.md) — current thirteen skills, optional flow, and `SKILL.md` links.
 - [Decision 0004](decisions/0004-portable-skill-catalog.md) — catalog and `npx skills add gaboesquivel/flow-skills` install path.
 - [Agent compatibility](agent-compatibility.md) — invocation metadata and host limitations.
 - [October 27 pre-0004 reviews (archive)](archive/2026-10-27-reviews/README.md) — direction review, distribution review, and retired bootstrap smoke notes.

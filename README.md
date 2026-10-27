@@ -16,13 +16,14 @@ Choose agent and scope in the installer. [Agent compatibility](docs/agent-compat
 
 Run skills only when you explicitly ask: slash commands (`/explore`, `/to-spec`, …), skill picker, or the host’s equivalent. `disable-model-invocation: true` requests manual activation where supported.
 
-## Catalog (12)
+## Catalog (13)
 
 | Group | Skills |
 | --- | --- |
 | Delivery | `explore`, `grill`, `to-spec`, `to-tickets`, `implement`, `review`, `retro` |
 | Product discovery | `interview`, `jtbd`, `competitors` |
 | Writing | `write-agents`, `write-humans` |
+| Misc | `tldr` |
 
 Each skill is independent. Optional flow, descriptions, and links to `SKILL.md` files: **[docs/skills.md](docs/skills.md)**.
 

@@ -10,7 +10,7 @@ Develop a lean, coherent methodology and supporting skills that help solo founde
 
 ## Current work and next steps
 
-- **Portable catalog (2026-10-27):** twelve manually invoked skills; see [decision 0004](../decisions/0004-portable-skill-catalog.md). Retired the `flow` router, bootstrap installer, and non-core quality/delivery helpers from the distribution.
+- **Portable catalog (2026-10-27):** manually invoked skills; see [decision 0004](../decisions/0004-portable-skill-catalog.md) and [0005](../decisions/0005-misc-tldr-skill.md) (`tldr` in **Misc**). Retired the `flow` router, bootstrap installer, and non-core quality/delivery helpers from the distribution.
 - **Pre-0004 remediation (2026-10-27):** [archive reviews](../archive/2026-10-27-reviews/README.md) record the old tree and bootstrap installer. Current catalog: [decision 0004](../decisions/0004-portable-skill-catalog.md) and [skill catalog](../skills.md).
 - **Current research focus (2026-10-20):** study product discovery and Lean Startup practices before defining Flow's product skills and workflow. The [Founder Playbook and Booklib comparison](../research/2026-10-20-lean-startup-skill-comparison.md) records mechanisms, limitations, and questions for that discussion. Connect this work to the existing discovery, metrics, refinement, and validation-board ideas; skill names and workflow composition remain open.
 - **Established:** apply the practices manually through conversation and repository documents. Maintain [shared terminology](../../GLOSSARY.md), including agentic product engineering and the distinction between ideas and initiatives. The glossary convention was adopted on 2026-10-20 from the [context and evaluation idea](../ideas/context-and-evaluation.md).

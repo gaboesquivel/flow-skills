@@ -8,7 +8,7 @@ Founders and small teams need agent skills that work across IDEs and agents with
 
 ## Solution
 
-Ship twelve manually invoked skills installable via `npx skills add gaboesquivel/flow-skills`, with portable `SKILL.md` instructions and optional `agents/openai.yaml` adapters.
+Ship manually invoked skills installable via `npx skills add gaboesquivel/flow-skills`, with portable `SKILL.md` instructions and optional `agents/openai.yaml` adapters. Catalog size after [0005](../decisions/0005-misc-tldr-skill.md): thirteen skills.
 
 ## Delivered skills
 
@@ -18,7 +18,7 @@ Authoritative grouped catalog: [docs/skills.md](../skills.md).
 
 - Removed `flow` router, bootstrap installer, and non-core quality/delivery skills from the distribution.
 - Default spec path for adopters without a convention: `docs/specs/NNN-short-name.md`.
-- Validator enforces a fixed twelve-skill list; npm package ships `skills/` and `ATTRIBUTION.md` only.
+- Validator enforces a fixed skill list; npm package ships `skills/` and `ATTRIBUTION.md` only.
 - Tests include Agent Skills CLI listing (`tests/distribution.test.mjs`).
 
 ## Testing decisions
