@@ -26,9 +26,11 @@ Assess both:
 - **Correctness and intent:** missing requirements, regressions, broken references, failure paths, unsafe side effects, preservation of existing work, and useful test coverage.
 - **Maintainability and conventions:** documented standards, duplication, misleading names, unnecessary abstraction, and changes that scatter one responsibility across unrelated modules. Treat design smells as hypotheses, not automatic violations.
 
-Follow important paths through callers and dependencies. A passing test is evidence only for behavior it actually covers. Distinguish confirmed defects from risks and preferences.
+Follow important paths through callers and dependencies. A passing test is evidence only for behavior it actually covers. Distinguish **confirmed findings**, **plausible risks**, and **preferences**.
 
-Use independent reviewers only when available and authorized. Otherwise perform both perspectives directly and label the review single-agent. Never claim independence or model diversity without actual separate execution.
+For **consequential** changes (behavior many callers rely on, migrations, concurrency, security boundaries, or data-shape changes), add proportional blast-radius checks: state the observable behavior that must stay true, identify callers and indirect dependents beyond the diff, name the **safety-critical assumption** that makes the change safe, and prove that assumption with code or an executable test when cheap. A convincing explanation is not proof. Qualify unverified assumptions explicitly. Minor documentation or copy edits do not require this depth.
+
+Use independent workers only when available and authorized and the change justifies separate execution (for example specification compliance versus correctness, or adversarial review of a high-impact change). Give each worker a bounded goal; do not edit overlapping files concurrently. Verify findings and synthesize disagreements; record actual models when available. When workers are unavailable, continue directly or sequentially and label the review **single-agent**. Never claim independence or model diversity without actual separate execution.
 
 ## Report
 

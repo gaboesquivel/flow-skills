@@ -19,6 +19,8 @@ Assess:
 
 Distinguish confirmed defects from risks and preferences. A passing structural test suite is not proof of intent alignment.
 
+For consequential changes, state observable behavior, affected callers beyond the diff, the safety-critical assumption, and executable evidence when practical. Label findings as confirmed, plausible risk, or preference. Qualify assumptions that were not verified.
+
 ## Align
 
 When the change affects product intent, experience, architecture, or shared vocabulary:
