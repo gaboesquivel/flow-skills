@@ -116,13 +116,13 @@
     {
       "id": "E06",
       "skills": [
-        "to-tickets"
+        "to-tasks"
       ],
       "behavior": "Produces verifiable vertical slices and genuine blockers",
       "taskFile": "tests/evals/tasks/E06-task.md",
       "rubricFile": "tests/evals/rubrics/E06-rubric.md",
       "skillReferences": [
-        "skills/to-tickets/SKILL.md"
+        "skills/to-tasks/SKILL.md"
       ],
       "fixtureReferences": [],
       "evidence": {

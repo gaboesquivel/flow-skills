@@ -1,6 +1,6 @@
 # Shared domain language for Flow
 
-Reviewed 2026-10-20. The user adopted a focused glossary and terminology maintenance as manual practice and a responsibility of future Flow skills. Skill packaging remains open.
+Reviewed 2026-10-20. The user adopted a focused glossary and terminology maintenance as manual practice. Shipped as the explicit [`domain-modeling`](../../skills/domain-modeling/SKILL.md) skill ([0015](../decisions/0015-tasks-and-domain-modeling.md)).
 
 ## Sources and assessment
 

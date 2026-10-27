@@ -12,4 +12,4 @@ Map the important uncertainty and ask a small round of independent questions, ea
 
 Stop when the intended outcome, constraints, and next useful action are clear enough for the requested work. Reuse existing authorization; do not require an exhaustive interview or a second approval of settled decisions. Keep unrelated possibilities outside the current scope.
 
-Return the resolved direction, remaining assumptions, and next action. A request to discuss or explore does not itself authorize implementation.
+Return the resolved direction, remaining assumptions, and a sensible next action (for example `to-spec`, `domain-modeling`, or `to-tasks` when the user wants those). Discussion does not itself authorize implementation.

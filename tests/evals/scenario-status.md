@@ -7,7 +7,7 @@
 | E03 | review | passed | passed | passed | not_executed |
 | E04 | to-spec | passed | not_executed | not_executed | not_executed |
 | E05 | grill | passed | not_executed | not_executed | not_executed |
-| E06 | to-tickets | passed | not_executed | not_executed | not_executed |
+| E06 | to-tasks | passed | not_executed | not_executed | not_executed |
 | E07 | retro | passed | passed | passed | not_executed |
 | E08 | review | passed | passed | passed | not_executed |
 | E09 | write-agents | passed | not_executed | not_executed | not_executed |

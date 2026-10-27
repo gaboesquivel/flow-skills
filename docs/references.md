@@ -31,7 +31,7 @@ Primary workflow and engineering influence.
 Concise skills, questioning, composition, and implementation.
 
 - [Matt Pocock — skills](https://github.com/mattpocock/skills) — [Historical research](archive/2026-10-18/docs/context.md).
-- [domain modeling](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/SKILL.md) and [glossary format](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/GLOSSARY-FORMAT.md) — adopted focused glossary and active terminology-maintenance practices; [assessment and boundaries](research/2026-10-20-domain-language.md). Skill packaging remains open.
+- [domain modeling](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/SKILL.md) and [glossary format](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/GLOSSARY-FORMAT.md) — adopted focused glossary and active terminology-maintenance practices; [assessment and boundaries](research/2026-10-20-domain-language.md). Shipped as [`domain-modeling`](../skills/domain-modeling/SKILL.md) ([0015](decisions/0015-tasks-and-domain-modeling.md)).
 - [Eric Evans — DDD Reference](https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf) — primary shared-language reference; [assessment](research/2026-10-20-domain-language.md). No wholesale adoption of DDD architecture patterns.
 - [grill with docs](https://github.com/mattpocock/skills/blob/main/skills/engineering/grill-with-docs/SKILL.md) — [Current research](research/2026-10-19-refinement-comparison.md).
 - [implement spec](https://github.com/mattpocock/skills/blob/main/skills/engineering/implement-spec/SKILL.md) — [Current research](research/2026-10-19-refinement-comparison.md).
@@ -141,7 +141,7 @@ User-selected references for the two planned writing skills; specific upstream r
 
 ## Distribution evaluation
 
-- [Skill catalog](skills.md) — current twenty-three skills (Flow Lite + manual catalog), leading words, and `SKILL.md` links.
+- [Skill catalog](skills.md) — current twenty-four skills (Flow Lite + manual catalog), leading words, and `SKILL.md` links.
 - [Decision 0013](decisions/0013-restore-engineering-skills.md) — restored `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug`.
 - [Decision 0014](decisions/0014-handoff-skill.md) — `handoff` compacts a conversation for a fresh agent.
 - [Spec 006](specs/006-skill-reliability.md) — behavioral verification and skill reliability bounded work.
