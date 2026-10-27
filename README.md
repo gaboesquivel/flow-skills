@@ -1,38 +1,55 @@
 # Flow Skills
 
-[Flow](PRODUCT.md) helps solo founders and small teams turn product intent into useful, verified work. Its skills are maintained here, work with existing repository conventions, and require no external skill packages or fixed agent, UI, or technology stack.
+Portable, manually invoked [agent skills](https://agentskills.io) for product and engineering work. Install into the agent and interface you already use. No Flow initialization, workflow router, or changes to the adopter project's instruction files.
+
+[Product direction](PRODUCT.md) · [Methodology](docs/methodology.md) · [Documentation guide](docs/README.md)
 
 ## Install
 
 ```bash
-npx skills@latest add gaboesquivel/flow-skills
+npx skills add gaboesquivel/flow-skills
 ```
 
-This installs the bundled `skills/` tree from this repository. No companion repositories or upstream skill catalogs are required.
+The installer lets you choose a supported agent and installation scope. Flow does not ship a separate installer or bootstrap step.
 
-Optional project bootstrap (AGENTS.md markers and `.flow-skills/manifest.json`) from a local checkout:
+Other hosts may import skills through their own UI or copy mechanism; use the Agent Skills CLI where it is supported. Hosts that cannot load standard skill packages need a manual copy; behavior then depends on that host.
 
-```bash
-node /path/to/flow-skills/scripts/init/cli.mjs
+## Invoke
+
+Skills run only when you explicitly invoke them:
+
+- Slash-command hosts: `/explore`, `/grill`, `/to-spec`, and the other skill names below.
+- Skill-picker hosts: select the skill by name.
+- Elsewhere: use that environment's explicit invocation mechanism.
+
+`disable-model-invocation: true` expresses manual activation where hosts honor it. Enforcement varies by product; treat automatic skill picking as unsupported unless the host documents otherwise.
+
+## Skills (12)
+
+Each skill stands alone. Optional order for delivery work:
+
+```mermaid
+flowchart LR
+  explore --> grill
+  explore --> to-spec
+  grill --> to-spec
+  to-spec --> to-tickets
+  to-tickets --> implement
+  implement --> review
+  review --> retro
 ```
-
-The bootstrap installer copies the same bundled tree into `.agents/skills` by default, merges a small `AGENTS.md` snippet, and records content hashes for upgrades. Use `--skills-dir path/to/skills` for an existing host convention, or `--skip-skills` for bootstrap only. Repeat installs preserve surrounding instructions and stop before overwriting customized content.
-
-## Skills (25)
-
-Request skills by name in your agent's supported interface. Start with `flow` for a broad task, or a focused skill when the work is clear. No mandatory setup interview or tracker is required.
 
 | Group | Skills |
 | --- | --- |
-| Core | `flow`, `council`, `doctor`, `extract`, `ship` |
-| Discovery | `explore`, `requirements`, `grill`, `grill-with-docs`, `domain-modeling`, `research`, `prototype` |
-| Delivery | `to-spec`, `to-tickets`, `implement`, `tdd`, `review`, `retro` |
-| Quality | `simplify`, `security`, `performance`, `debug`, `verify` |
-| Writing | `write-for-humans`, `write-for-agents` |
+| Delivery | `explore`, `grill`, `to-spec`, `to-tickets`, `implement`, `review`, `retro` |
+| Product discovery | `interview`, `jtbd`, `competitors` |
+| Writing | `write-agents`, `write-humans` |
 
-Typical optional sequence: explore → requirements → to-spec → to-tickets → implement → review → ship → retro. Each step is independently invokable.
+Discovery skills are optional extensions for commercial and positioning questions. They do not gate delivery skills.
 
-Skills express explicit workflow activation. An activated skill may read linked supporting guidance within its scope; that does not authorize unrelated workflows or delivery actions. Host metadata support varies, so cross-host behavior remains subject to [evaluation](tests/smoke/README.md).
+Default documentation for cross-discipline specs: `docs/specs/NNN-short-name.md`. Standalone decisions: `docs/decisions/NNN-short-name.md`. Adopter projects keep their own conventions when they differ.
+
+[Agent compatibility](docs/agent-compatibility.md) summarizes installation, invocation, and metadata support across hosts.
 
 ## Maintain
 
@@ -41,6 +58,4 @@ pnpm validate
 pnpm test
 ```
 
-Checks need no dependency installation. Tests include packing and installing the release offline; npm and tar must be available. Edit `skills/` directly. There is no upstream sync or patch pipeline. Adapted material retains its [attribution and original licenses](ATTRIBUTION.md).
-
-[Methodology](docs/methodology.md) · [Documentation guide](docs/README.md) · [Local ownership decision](docs/decisions/0002-local-skill-ownership.md) · [Skill naming decision](docs/decisions/0003-skill-naming.md) · [Release checks](docs/RELEASE.md)
+Edit `skills/` directly. Adapted material keeps [attribution and licenses](ATTRIBUTION.md). [Release checks](docs/RELEASE.md).

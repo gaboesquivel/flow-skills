@@ -1,26 +1,20 @@
 {
   "name": "@gaboesquivel/flow-skills",
-  "version": "0.1.0",
-  "description": "Flow-owned, portable agent skills and offline project installation",
+  "version": "0.2.0",
+  "description": "Portable, manually invoked agent skills for product and engineering work",
   "type": "module",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/gaboesquivel/flow-skills.git"
   },
-  "bin": {
-    "flow-skills-init": "./scripts/init/cli.mjs"
-  },
   "files": [
-    "bootstrap",
     "skills",
-    "scripts/init",
     "ATTRIBUTION.md"
   ],
   "scripts": {
     "validate": "node scripts/validate.mjs",
-    "test": "node --test tests/*.test.mjs",
-    "init": "node scripts/init/cli.mjs"
+    "test": "node --test tests/*.test.mjs"
   },
   "engines": {
     "node": ">=22"

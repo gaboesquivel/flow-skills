@@ -1,8 +1,8 @@
 # Exploration and disposable prototypes
 
-Status: Adopted flexibility; dedicated skill boundaries unresolved.
+Status: Adopted flexibility; `explore` skill shipped; disposable prototype skill deferred.
 
-Retain spontaneous brainstorming, evidence-seeking exploration, and disposable UI or logic prototypes. Earlier proposals include a bounded research question, meaningful UI alternatives, technical spikes, and recording findings even when executable artifacts are discarded. Experiments can challenge existing direction without replacing accepted decisions. Separate explore, brainstorm, or prototype entry points and their output contracts remain unselected.
+Retain spontaneous brainstorming, evidence-seeking exploration, and disposable UI or logic prototypes. The [`explore`](../../skills/explore/SKILL.md) skill covers repository and problem context before planning; it does not authorize implementation. A dedicated prototype skill is not in the current twelve-skill catalog ([0004](../decisions/0004-portable-skill-catalog.md)).
 
 Sources and current home: [Principles](../principles.md#room-for-exploration); [historical exploration and prototypes](../archive/2026-10-18/docs/ideas/2026-10-18-exploration-and-explanation.md).
 

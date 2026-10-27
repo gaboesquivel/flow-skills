@@ -1,5 +1,0 @@
-interface:
-  display_name: "Extract"
-  short_description: "Extract reusable capabilities to a library"
-policy:
-  allow_implicit_invocation: false

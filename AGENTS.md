@@ -18,12 +18,14 @@ Develop Flow through its own practices using conversation and available tools. T
 
 ## Distribution maintenance
 
+Flow ships a portable `skills/` tree for the [Agent Skills](https://agentskills.io) ecosystem. Consumers install with `npx skills add gaboesquivel/flow-skills` and invoke skills explicitly. This repository does not ship a bootstrap installer or require changes to adopter instruction files.
+
 | Task | Command |
 | --- | --- |
 | Policy checks | `pnpm validate` |
 | Tests | `pnpm test` |
 
-Release checklist: [docs/RELEASE.md](docs/RELEASE.md).
+Release checklist: [docs/RELEASE.md](docs/RELEASE.md). Host notes: [docs/agent-compatibility.md](docs/agent-compatibility.md).
 
 Maintain useful context without waiting for a note-taking request. Respect explicit requests to discuss without edits. Before editing shared documents, read their current contents and preserve other chats' contributions.
 

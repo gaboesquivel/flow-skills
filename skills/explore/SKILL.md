@@ -12,8 +12,8 @@ Classify the work (new product, existing product change, or internal improvement
 
 Map users, jobs to be done, constraints, risks, and open questions. Distinguish accepted decisions from proposals. Separate missing product information from implementation detail that can remain undecided.
 
-Use [Research](../research/SKILL.md) when primary sources can resolve consequential uncertainty. Use [Prototype](../prototype/SKILL.md) when firsthand comparison of options would materially improve a decision. Read supporting files directly; no automatic workflow chain is required.
+Optional supporting skills may help when explicitly invoked or when the user asks for that kind of work: `interview` or `jtbd` for customer evidence, `competitors` for alternatives, `grill` for focused challenge, `to-spec` when the next step is a written increment. Missing optional skills must not block exploration.
 
-Stop when the problem, intended outcome, and next useful activity are clear enough for the requested work. Return a concise summary: known facts, unresolved assumptions, recommended next activity (`requirements`, `grill`, `to-spec`, or another skill), and whether implementation is still unauthorized.
+Stop when the problem, intended outcome, and next useful activity are clear enough for the requested work. Return a concise summary: known facts, unresolved assumptions, recommended next activity, and whether implementation is still unauthorized.
 
 Discussion and exploration do not authorize implementation.

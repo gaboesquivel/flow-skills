@@ -1,6 +1,6 @@
 # 0003. Skill naming and catalog shape
 
-Status: accepted (2026-10-27)
+Status: superseded for catalog shape by [0004](0004-portable-skill-catalog.md) (2026-10-27). Naming patterns below remain historical context.
 
 ## Context
 
@@ -10,13 +10,7 @@ Flow consolidated upstream skills into a self-contained `skills/` directory. Leg
 
 Adopt twenty-five short, technically accurate skill names grouped as core, discovery, delivery, quality, and writing. Rename managed skills on upgrade when the prior copy matches the installation manifest and has not been customized. Retire `handoff` and `setup-matt-pocock-skills` from the catalog; preserve customized copies on disk until reconciled.
 
-Primary public installation:
-
-```bash
-npx skills@latest add gaboesquivel/flow-skills
-```
-
-The optional `flow-skills-init` bootstrap remains available for AGENTS.md markers and manifest-based upgrades.
+Installation and catalog size were superseded by [0004](0004-portable-skill-catalog.md).
 
 ## Consequences
 

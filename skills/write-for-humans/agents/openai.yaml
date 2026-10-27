@@ -1,5 +1,0 @@
-interface:
-  display_name: "Write for Humans"
-  short_description: "Clear writing for people"
-policy:
-  allow_implicit_invocation: false

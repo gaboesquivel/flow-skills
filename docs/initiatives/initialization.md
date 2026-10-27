@@ -1,6 +1,6 @@
 # Initialization experiment
 
-Status: experimental prompt development; first intended external trial is gaboesquivel.com. No context-initialization skill or successful external trial is established. The bundled `flow-skills-init` command installs skills and bootstrap only; it does not perform this product-context experiment.
+Status: experimental prompt development; first intended external trial is gaboesquivel.com. No context-initialization skill or successful external trial is established. Skills install through the Agent Skills CLI; Flow no longer ships a bootstrap installer that merges adopter instruction files.
 
 ## Purpose
 

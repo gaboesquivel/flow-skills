@@ -15,6 +15,7 @@ Starting structure adopted on 2026-10-19 for Flow Skills. Create documents only 
 | [references.md](references.md) | Source index, status, and links to assessments |
 | [research/](research) | Evidence, comparisons, source limitations, and exploratory proposals |
 | [decisions/](decisions/README.md) | Significant decision records (product, design, architecture, infrastructure, process) |
+| [specs/](specs/README.md) | Numbered specifications for bounded increments of work |
 | [assets/](assets) | Documentation images |
 | [skills/](../skills) at the root | Locally maintained skill implementations and required supporting resources |
 

@@ -130,8 +130,11 @@ User-selected references for the two planned writing skills; specific upstream r
 
 ## Distribution evaluation
 
-- [October 27 distribution review and remediation plan](research/2026-10-27-distribution-review.md) — historical working-tree evidence on upstream coupling, conflicting skill contracts, reference integrity, installation, and test coverage. Subsequent [remediation verification](../tests/smoke/2026-10-27-remediation.md) records automated artifact checks and two bounded fresh-context behavior checks; live cross-host behavior and external publication remain unverified.
-- [October 27 direction review, second pass](research/2026-10-27-direction-review.md) — advisory review of the 25-skill tree after naming and the `explore` / `requirements` addition. Not an adopted decision.
+- [Decision 0004](decisions/0004-portable-skill-catalog.md) — current twelve-skill catalog and `npx skills add gaboesquivel/flow-skills` install path.
+- [Agent compatibility](agent-compatibility.md) — invocation metadata and host limitations.
+- [October 27 distribution review and remediation plan](research/2026-10-27-distribution-review.md) — historical evidence on the pre-0004 tree; not current instructions.
+- [October 27 direction review, second pass](research/2026-10-27-direction-review.md) — historical advisory review of the superseded 25-skill tree. Superseded for action by decision 0004.
+- [October 27 remediation verification](../tests/smoke/2026-10-27-remediation.md) — historical smoke notes for the retired bootstrap installer; not current install behavior.
 
 ## Maintenance
 

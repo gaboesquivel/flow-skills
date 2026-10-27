@@ -2,12 +2,12 @@
 
 Status: two skills adopted on 2026-10-19; local implementations added on 2026-10-27; behavior evaluation continues. Current commitment: [PRODUCT.md](../../PRODUCT.md).
 
-The names identify the intended reader: `write-for-humans` and `write-for-agents`. The user requested both capabilities and identified Factory's human-writing and Matt Pocock's writing-for-agents as references. See the [source assessment](../research/2026-10-19-writing.md).
+Shipped skill names: `write-humans` and `write-agents` (see [decision 0004](../decisions/0004-portable-skill-catalog.md)). Historical discussion used `write-for-humans` and `write-for-agents`. The user requested both capabilities and identified Factory's human-writing and Matt Pocock's writing-for-agents as references. See the [source assessment](../research/2026-10-19-writing.md).
 
 ## Boundaries
 
-- `write-for-humans`: draft and edit product copy, documentation, and communications for their audience and purpose. Preserve meaning and the author's voice; favor concrete, readable language.
-- `write-for-agents`: draft and edit skill instructions, agent guidance, and supporting context so agents can find relevant information, act on it, and recognize completion.
+- `write-humans`: draft and edit product copy, documentation, and communications for their audience and purpose. Preserve meaning and the author's voice; favor concrete, readable language.
+- `write-agents`: draft and edit skill instructions, agent guidance, and supporting context so agents can find relevant information, act on it, and recognize completion.
 
 Shared project documents can serve both audiences. Apply both perspectives to the same authoritative content when useful; avoid maintaining duplicate versions solely for different readers.
 
@@ -17,8 +17,8 @@ On October 20, progressive disclosure and concise task-specific documentation we
 
 | Skill | Prompt shape | Pass properties |
 | --- | --- | --- |
-| `write-for-humans` | Shorten a status update for a non-technical reader; keep launch date uncertain | Shorter lead, preserved uncertainty, no invented facts |
-| `write-for-agents` | Add completion criteria to a skill that runs tests | Observable checks, scope boundary, no implicit invocation promise |
+| `write-humans` | Shorten a status update for a non-technical reader; keep launch date uncertain | Shorter lead, preserved uncertainty, no invented facts |
+| `write-agents` | Add completion criteria to a skill that runs tests | Observable checks, scope boundary, no implicit invocation promise |
 
 Recorded runs: [remediation verification](../../tests/smoke/2026-10-27-remediation.md). Contract checks: [smoke-contracts.test.mjs](../../tests/smoke-contracts.test.mjs).
 
@@ -28,7 +28,7 @@ These capabilities span product and engineering. The local implementations and e
 
 ## Descriptive technical naming plan
 
-Direction adopted by the user on 2026-10-27: prefer concise, technically accurate, descriptive names. **Implemented** catalog names and migration are recorded in [decision 0003](../decisions/0003-skill-naming.md). The table below is historical proposal material retained for rationale; it does not describe the current skill directories.
+Direction adopted by the user on 2026-10-27: prefer concise, technically accurate, descriptive names. **Current** catalog: [decision 0004](../decisions/0004-portable-skill-catalog.md). The table below is historical proposal material retained for rationale; it does not describe the current skill directories.
 
 ### Naming rules
 

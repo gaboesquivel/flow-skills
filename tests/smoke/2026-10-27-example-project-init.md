@@ -1,5 +1,7 @@
 # Smoke evidence — example project init
 
+**Historical.** Bootstrap installer removed in [decision 0004](../../docs/decisions/0004-portable-skill-catalog.md).
+
 Date: 2026-10-27
 
 ## Automated

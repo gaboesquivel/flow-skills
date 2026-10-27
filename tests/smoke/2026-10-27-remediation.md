@@ -1,5 +1,7 @@
 # Local-source remediation verification
 
+**Historical.** Bootstrap installer and 25-skill catalog superseded by [decision 0004](../../docs/decisions/0004-portable-skill-catalog.md).
+
 Date: 2026-10-27. Scope: current working tree and npm-packed artifact, on macOS with Node 24.20.0. This is implementation evidence, not a published release or a cross-host compatibility claim.
 
 ## Changes verified

@@ -1,6 +1,6 @@
 # Direction review, second pass
 
-Date: 2026-10-27. Status: advisory evidence for review. This note does not adopt a decision, start an initiative, or authorize edits.
+Date: 2026-10-27. Status: **historical evidence** — superseded for catalog and install by [decision 0004](../decisions/0004-portable-skill-catalog.md). This note does not adopt a decision, start an initiative, or authorize edits.
 
 A first pass the same day, on the pre-rename tree, recommended narrowing Flow's claim: the installable catalog was an engineering pipeline, and the Lean Startup methodology was documented but unbuilt. The source then changed. This pass reviews that updated tree.
 

@@ -4,7 +4,7 @@ See the [glossary](../../GLOSSARY.md#initiative) for the meaning of initiative a
 
 | Initiative | Status |
 |---|---|
-| [Methodology and skill development](methodology-and-skills.md) | Local-source remediation complete; cross-host live evaluation optional |
+| [Methodology and skill development](methodology-and-skills.md) | Portable twelve-skill catalog shipped ([0004](../decisions/0004-portable-skill-catalog.md)); cross-host live evaluation optional |
 | [Initialization experiment](initialization.md) | Prompt constraints recovered; intended external trial pending |
 | [Flow Skills website](website.md) | Planning: positioning, landing-page structure, and visual direction |
 
