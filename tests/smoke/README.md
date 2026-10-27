@@ -9,5 +9,7 @@ Structural contracts live in [smoke-contracts.test.mjs](../smoke-contracts.test.
 | Review working tree | `/review` reads untracked files |
 | Explicit activation | Skills include `disable-model-invocation: true` and adapter metadata |
 | Install without adopter edits | `npx skills add` does not require changing `AGENTS.md` |
+| Adopter product context | Align root docs without copying Flow's identity; do not treat `flow start` as initialization |
+| Review untracked pricing fix | `review` on the checkout fixture, including untracked work |
 
-Record host, version, date, and outcome when running manual scenarios.
+Record host, version, date, and outcome when running manual scenarios. A contract match is a structural check. A host session is live agent verification. Latest recorded run: [2026-10-27 context alignment](2026-10-27-dogfood-context-alignment.md).

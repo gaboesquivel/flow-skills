@@ -62,6 +62,8 @@ Keep the two kinds of evidence apart:
 
 Do not add a dogfood skill, a required pipeline, or a second copy of the product statement for the record.
 
+Latest recorded run: [2026-10-27 context alignment](../tests/smoke/2026-10-27-dogfood-context-alignment.md).
+
 ## Maintain shared language
 
 Use [GLOSSARY.md](../GLOSSARY.md) for project-specific meanings. Apply discipline through discussion and examples, informed by [domain language research](research/2026-10-20-domain-language.md).

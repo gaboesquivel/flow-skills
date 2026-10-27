@@ -13,7 +13,7 @@ This skill is **not** a workflow router: it does not run explore → spec → bu
 ## Whose product
 
 - **Adopter project:** `PRODUCT.md` is that project's product identity. Update only the sections the change affected.
-- **This flow-skills repository:** `PRODUCT.md` is Flow's methodology identity. Leave it here.
+- **This flow-skills repository:** `PRODUCT.md` is Flow's methodology identity. Edit it when that identity changes. Do not copy it into another repository.
 
 Do not replace a project's product identity with Flow's tagline, mission, principles, or strategic chain.
 
