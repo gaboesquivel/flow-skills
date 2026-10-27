@@ -17,7 +17,7 @@ This skill is **not** a workflow router: it does not run explore → spec → bu
 
 Do not replace a project's product identity with Flow's tagline, mission, principles, or strategic chain.
 
-`flow start` and "start project" are not this skill. Flow does not ship a bootstrap or initializer. If someone asks to scaffold a repository, say that initialization is an open product decision and stop. Do not create starter trees, instruction-file snippets, or a Flow-branded `PRODUCT.md`.
+`flow start` and "start project" are not this skill. Decision 0010 authorizes a future optional `start` skill; it is not in the catalog yet. If someone asks to scaffold a repository, invoke `start` only when that skill is installed and explicitly requested; otherwise stop and do not create starter trees, instruction-file snippets, or a Flow-branded `PRODUCT.md`.
 
 ## Invocation
 

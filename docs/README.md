@@ -26,7 +26,7 @@ Default paths when a project has no existing convention:
 - `docs/specs/NNN-short-name.md` — bounded work and intent
 - `docs/decisions/NNN-short-name.md` — significant choices and rationale
 
-Keep the current product, design, architecture, and shared language in that project's root `PRODUCT.md`, `DESIGN.md`, `ARCHITECTURE.md`, and `GLOSSARY.md`. Use the [`flow`](../skills/flow/SKILL.md) skill (Flow Lite) or manual edits to align them after meaningful changes. Do not copy this repository's Flow identity into an adopter `PRODUCT.md`. Do not require PRD, PDR, or ADR parallel trees. Do not treat `flow` as a project initializer.
+Keep the current product, design, architecture, and shared language in that project's root `PRODUCT.md`, `DESIGN.md`, `ARCHITECTURE.md`, and `GLOSSARY.md`. Use the [`flow`](../skills/flow/SKILL.md) skill (Flow Lite) or manual edits to align them after meaningful changes. Do not copy this repository's Flow identity into an adopter `PRODUCT.md`. Do not require PRD, PDR, or ADR parallel trees. Do not treat `flow` as a project initializer. Optional template initialization may use a future `start` skill ([0010](decisions/0010-optional-start-skill.md)); until it ships, use GitHub templates on flow-next or flow-mono.
 
 ## Maintainer archive
 

@@ -29,7 +29,7 @@ All skills except `flow` require explicit user invocation in Flow's design.
 
 That alignment updates the **current project's** product context. It does not copy this repository's Flow identity into an adopter `PRODUCT.md`. [Decision 0009](decisions/0009-adopter-product-context.md).
 
-`flow` is not a project-start command. `flow start` and "start project" do not authorize scaffolding or instruction-file edits. An initializer is an open product decision; it is not implemented.
+`flow` is not a project-start command. `flow start` and "start project" do not authorize scaffolding or instruction-file edits. An optional `start` skill is [authorized](decisions/0010-optional-start-skill.md) but not shipped in the fourteen-skill catalog; use GitHub template creation or explicit `start` when available.
 
 Metadata and contract tests show the intended invocation split. They do not show that a host surfaced `flow` during ordinary edits. A second agent product has not been recorded; see [smoke scenario status](../tests/smoke/2026-10-27-scenario-status.md).
 
