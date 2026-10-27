@@ -10,7 +10,7 @@ The user asked for a **retrospective** on how the agent environment could improv
 
 1. Follow `write-agents` conventions when that skill is installed and you propose instruction or skill changes.
 
-2. Read primary sources for the session the user names. If none is named, use the current session. Use available session or transcript tools when the host provides them.
+2. Read primary sources for the session the user names. If none is named, use the current session. Use available session or transcript tools when the host provides them. Separate evidence from inference; do not invent mistakes that are not supported by the session.
 
 3. Look for improvement candidates:
 
@@ -22,7 +22,16 @@ The user asked for a **retrospective** on how the agent environment could improv
 - **No-ops:** instructions that do not change behavior.
 - **Information access:** logs or readonly access that would have changed the outcome.
 
-4. Present candidates by severity. Separate evidence from inference. Implementation of recommendations requires explicit user authorization.
+4. For **recurring mistakes** (the same class of error more than once in the session or recent history), propose the strongest workable prevention, in order:
+
+   1. **Architecture** — one owner, one supported path, invalid operations impossible by structure.
+   2. **Types or deterministic checks** — the bad state cannot be written, or CI fails with a message that names the fix.
+   3. **Executable tests** — behavior that broke is covered; delete tests that still pass when the behavior breaks.
+   4. **Agent guidance** — only for judgment calls that cannot be enforced mechanically.
+
+   For each important candidate, state: evidence the mistake occurred, root cause, why the chosen prevention level fits, how to verify the correction, and whether an existing instruction is now redundant. A single occurrence is a candidate only; do not turn it into a permanent rule without recurrence or explicit user direction.
+
+5. Present candidates by severity. Implementation of recommendations requires explicit user authorization. This retrospective does not authorize file edits by itself.
 
 ## Reference
 
