@@ -89,7 +89,7 @@ flow-skills offers a small catalog: **Flow Lite** for root context alignment, pl
 | Delivery | `explore`, `grill`, `to-spec`, `to-tickets`, `implement`, `review`, `retro` |
 | Product discovery | `interview`, `jtbd`, `competitors` |
 | Writing | `write-agents`, `write-humans` |
-| Project start | [`start`](skills/start/SKILL.md) — initialize from flow-next or flow-mono (manual only) |
+| Project start | [`start`](skills/start/SKILL.md) — verified bootstrap from flow-next or flow-mono (manual only) |
 | Misc | `tldr` |
 
 Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Every skill except `flow` requires explicit invocation. No skill enforces a sequence (`/implement` does not require `/to-spec`).
