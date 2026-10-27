@@ -1,6 +1,6 @@
 # 003: Flow Templates — Shared Technical Baseline v2
 
-**Status:** Initial baseline shipped on `main` (2026-10-27); §10 release gates and parity polish ongoing  
+**Status:** Historical baseline shipped on `main` (2026-10-27). For new interoperability and release work, use [005-flow-templates-interop.md](005-flow-templates-interop.md); this file is preserved unchanged as evidence.  
 **Repositories:** [gaboesquivel/flow-next](https://github.com/gaboesquivel/flow-next), [gaboesquivel/flow-mono](https://github.com/gaboesquivel/flow-mono)  
 **References:** [gaboesquivel/gaboesquivel.com](https://github.com/gaboesquivel/gaboesquivel.com), [gaboesquivel/flow-starter](https://github.com/gaboesquivel/flow-starter) (`simple`)
 

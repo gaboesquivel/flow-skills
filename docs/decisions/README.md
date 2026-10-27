@@ -14,6 +14,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0008-leading-words-and-visual-summaries.md](0008-leading-words-and-visual-summaries.md) | Accepted | Leading words in the catalog; visual summaries stay in `tldr` |
 | [0009-adopter-product-context.md](0009-adopter-product-context.md) | Accepted | Adopter `PRODUCT.md` is that product; no `flow start` |
 | [0010-optional-start-skill.md](0010-optional-start-skill.md) | Accepted | Optional `start` skill authorized (shipped on catalog PR); does not supersede 0009 |
+| [0011-homepage-and-genui-playground.md](0011-homepage-and-genui-playground.md) | Accepted | `/` replaceable homepage; `/genui` public GenUI playground (dogfood baseline) |
 
 ## Rules
 
