@@ -1,6 +1,6 @@
 # 006: Skill reliability and behavioral verification
 
-Status: in progress (2026-10-27). Research: [2026-10-27-skill-engineering-methods.md](../research/2026-10-27-skill-engineering-methods.md). Public attribution: [README](../../README.md#influences-and-engineering-philosophy).
+Status: implemented (2026-10-27). Research: [2026-10-27-skill-engineering-methods.md](../research/2026-10-27-skill-engineering-methods.md). Public attribution: [README](../../README.md#influences-and-engineering-philosophy).
 
 ## Problem statement
 
