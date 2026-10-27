@@ -1,0 +1,392 @@
+{
+  "version": 1,
+  "repositories": {
+    "mattpocock/skills": {
+      "commit": "59db609eb1e18aaf59b63284d0e52255aff0c63c",
+      "license": "MIT"
+    },
+    "addyosmani/agent-skills": {
+      "commit": "aeac41d4d005999432bb7312f7ff06383a91d59d",
+      "license": "MIT"
+    },
+    "obra/superpowers": {
+      "commit": "2ce8aa15d05bd57213e6f746f953aafb7ded7a8b",
+      "license": "MIT"
+    }
+  },
+  "skills": {
+    "setup-matt-pocock-skills": {
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/setup-matt-pocock-skills",
+      "commit": "59db609eb1e18aaf59b63284d0e52255aff0c63c",
+      "license": "MIT",
+      "importedFiles": [
+        "SKILL.md",
+        "UPSTREAM.md",
+        "agents/openai.yaml",
+        "domain.md",
+        "issue-tracker-github.md",
+        "issue-tracker-gitlab.md",
+        "issue-tracker-local.md",
+        "triage-labels.md"
+      ],
+      "contentHash": "6ce7a635262cd842a8ebf1f284ec4def5c9ae8b2c3da618b7e529b8513ab922c",
+      "flowModifications": [
+        "Unified decision records: docs/decisions/ instead of docs/adr/",
+        "disable-model-invocation: true on curated skills",
+        "Superpowers: tdd and verification-before-completion skill references",
+        "setup-matt-pocock-skills: Flow curated install note"
+      ]
+    },
+    "grill-with-docs": {
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/grill-with-docs",
+      "commit": "59db609eb1e18aaf59b63284d0e52255aff0c63c",
+      "license": "MIT",
+      "importedFiles": [
+        "SKILL.md",
+        "UPSTREAM.md",
+        "agents/openai.yaml"
+      ],
+      "contentHash": "e1794be17e6315b33b328a13a3b4157a8613f0c840b856b1f728290b1f57e5eb",
+      "flowModifications": [
+        "Unified decision records: docs/decisions/ instead of docs/adr/",
+        "disable-model-invocation: true on curated skills",
+        "Superpowers: tdd and verification-before-completion skill references",
+        "setup-matt-pocock-skills: Flow curated install note"
+      ]
+    },
+    "grilling": {
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/productivity/grilling",
+      "commit": "59db609eb1e18aaf59b63284d0e52255aff0c63c",
+      "license": "MIT",
+      "importedFiles": [
+        "SKILL.md",
+        "UPSTREAM.md",
+        "agents/openai.yaml"
+      ],
+      "contentHash": "412a65fdacd67e5a7db7b3cbe30dea312b61c4676262f8b861f7083b46b2a81f",
+      "flowModifications": [
+        "Unified decision records: docs/decisions/ instead of docs/adr/",
+        "disable-model-invocation: true on curated skills",
+        "Superpowers: tdd and verification-before-completion skill references",
+        "setup-matt-pocock-skills: Flow curated install note"
+      ]
+    },
+    "domain-modeling": {
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/domain-modeling",
+      "commit": "59db609eb1e18aaf59b63284d0e52255aff0c63c",
+      "license": "MIT",
+      "importedFiles": [
+        "ADR-FORMAT.md",
+        "GLOSSARY-FORMAT.md",
+        "SKILL.md",
+        "UPSTREAM.md",
+        "agents/openai.yaml"
+      ],
+      "contentHash": "50a86eeaffc9ecaad590a1a98c86531dc35200f99a661e02f1597c1360c15df2",
+      "flowModifications": [
+        "Unified decision records: docs/decisions/ instead of docs/adr/",
+        "disable-model-invocation: true on curated skills",
+        "Superpowers: tdd and verification-before-completion skill references",
+        "setup-matt-pocock-skills: Flow curated install note"
+      ]
+    },
+    "research": {
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/research",
+      "commit": "59db609eb1e18aaf59b63284d0e52255aff0c63c",
+      "license": "MIT",
+      "importedFiles": [
+        "SKILL.md",
+        "UPSTREAM.md",
+        "agents/openai.yaml"
+      ],
+      "contentHash": "7bef65d8455acd628f8512f173b926abbaaa52eb36de9ef503cd693ea1a6b541",
+      "flowModifications": [
+        "Unified decision records: docs/decisions/ instead of docs/adr/",
+        "disable-model-invocation: true on curated skills",
+        "Superpowers: tdd and verification-before-completion skill references",
+        "setup-matt-pocock-skills: Flow curated install note"
+      ]
+    },
+    "prototype": {
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/prototype",
+      "commit": "59db609eb1e18aaf59b63284d0e52255aff0c63c",
+      "license": "MIT",
+      "importedFiles": [
+        "LOGIC.md",
+        "SKILL.md",
+        "UI.md",
+        "UPSTREAM.md",
+        "agents/openai.yaml"
+      ],
+      "contentHash": "bddb7685c92065bb51872195e239daae967d42d60e9943d2fe8168217d70d8af",
+      "flowModifications": [
+        "Unified decision records: docs/decisions/ instead of docs/adr/",
+        "disable-model-invocation: true on curated skills",
+        "Superpowers: tdd and verification-before-completion skill references",
+        "setup-matt-pocock-skills: Flow curated install note"
+      ]
+    },
+    "to-spec": {
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/to-spec",
+      "commit": "59db609eb1e18aaf59b63284d0e52255aff0c63c",
+      "license": "MIT",
+      "importedFiles": [
+        "SKILL.md",
+        "UPSTREAM.md",
+        "agents/openai.yaml"
+      ],
+      "contentHash": "f9d6389b22a879ef90f78b3f444a9b227c69413fd162b1524b018eb5c60ef4d7",
+      "flowModifications": [
+        "Unified decision records: docs/decisions/ instead of docs/adr/",
+        "disable-model-invocation: true on curated skills",
+        "Superpowers: tdd and verification-before-completion skill references",
+        "setup-matt-pocock-skills: Flow curated install note"
+      ]
+    },
+    "to-tickets": {
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/to-tickets",
+      "commit": "59db609eb1e18aaf59b63284d0e52255aff0c63c",
+      "license": "MIT",
+      "importedFiles": [
+        "SKILL.md",
+        "UPSTREAM.md",
+        "agents/openai.yaml"
+      ],
+      "contentHash": "60e05e7df7310a1c2fe716c3182c3d9679d6071aa17812eae0ab7d7ddb9bd88f",
+      "flowModifications": [
+        "Unified decision records: docs/decisions/ instead of docs/adr/",
+        "disable-model-invocation: true on curated skills",
+        "Superpowers: tdd and verification-before-completion skill references",
+        "setup-matt-pocock-skills: Flow curated install note"
+      ]
+    },
+    "implement": {
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/implement",
+      "commit": "59db609eb1e18aaf59b63284d0e52255aff0c63c",
+      "license": "MIT",
+      "importedFiles": [
+        "SKILL.md",
+        "UPSTREAM.md",
+        "agents/openai.yaml"
+      ],
+      "contentHash": "2627c3af90574f7fae55087a433df6fd1527e90f557a56bb8ca2a6b1b4244d6e",
+      "flowModifications": [
+        "Unified decision records: docs/decisions/ instead of docs/adr/",
+        "disable-model-invocation: true on curated skills",
+        "Superpowers: tdd and verification-before-completion skill references",
+        "setup-matt-pocock-skills: Flow curated install note"
+      ]
+    },
+    "tdd": {
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/tdd",
+      "commit": "59db609eb1e18aaf59b63284d0e52255aff0c63c",
+      "license": "MIT",
+      "importedFiles": [
+        "SKILL.md",
+        "UPSTREAM.md",
+        "agents/openai.yaml",
+        "mocking.md",
+        "tests.md"
+      ],
+      "contentHash": "425b5825b093c2d014306947d5edc90f86b98427d1f1143a27bdd3002817ab59",
+      "flowModifications": [
+        "Unified decision records: docs/decisions/ instead of docs/adr/",
+        "disable-model-invocation: true on curated skills",
+        "Superpowers: tdd and verification-before-completion skill references",
+        "setup-matt-pocock-skills: Flow curated install note"
+      ]
+    },
+    "code-review": {
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/code-review",
+      "commit": "59db609eb1e18aaf59b63284d0e52255aff0c63c",
+      "license": "MIT",
+      "importedFiles": [
+        "SKILL.md",
+        "UPSTREAM.md",
+        "agents/openai.yaml"
+      ],
+      "contentHash": "ba16c362dccae8d1048bec4eb6251bebb117760f2e1d665ba27ad9e7755ccbac",
+      "flowModifications": [
+        "Unified decision records: docs/decisions/ instead of docs/adr/",
+        "disable-model-invocation: true on curated skills",
+        "Superpowers: tdd and verification-before-completion skill references",
+        "setup-matt-pocock-skills: Flow curated install note"
+      ]
+    },
+    "retro": {
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/retro",
+      "commit": "59db609eb1e18aaf59b63284d0e52255aff0c63c",
+      "license": "MIT",
+      "importedFiles": [
+        "SKILL.md",
+        "UPSTREAM.md",
+        "agents/openai.yaml"
+      ],
+      "contentHash": "39d4dcfe50257921909f98d42e160f968340e1fffa3141baef3f60913f77a017",
+      "flowModifications": [
+        "Unified decision records: docs/decisions/ instead of docs/adr/",
+        "disable-model-invocation: true on curated skills",
+        "Superpowers: tdd and verification-before-completion skill references",
+        "setup-matt-pocock-skills: Flow curated install note"
+      ]
+    },
+    "writing-for-agents": {
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/productivity/writing-for-agents",
+      "commit": "59db609eb1e18aaf59b63284d0e52255aff0c63c",
+      "license": "MIT",
+      "importedFiles": [
+        "SKILL-MECHANICS.md",
+        "SKILL.md",
+        "UPSTREAM.md",
+        "agents/openai.yaml"
+      ],
+      "contentHash": "85cc8c86e8eb047ea48641fbb2559c003de4613b279ab3e2a9a743a3a384cbf8",
+      "flowModifications": [
+        "Unified decision records: docs/decisions/ instead of docs/adr/",
+        "disable-model-invocation: true on curated skills",
+        "Superpowers: tdd and verification-before-completion skill references",
+        "setup-matt-pocock-skills: Flow curated install note"
+      ]
+    },
+    "code-simplification": {
+      "repository": "addyosmani/agent-skills",
+      "upstreamPath": "skills/code-simplification",
+      "commit": "aeac41d4d005999432bb7312f7ff06383a91d59d",
+      "license": "MIT",
+      "importedFiles": [
+        "SKILL.md",
+        "UPSTREAM.md"
+      ],
+      "contentHash": "b8a6bf53181d43b40f9c27942accdb848f9e278965ef24f14e85b78ea7cadb4c",
+      "flowModifications": [
+        "Unified decision records: docs/decisions/ instead of docs/adr/",
+        "disable-model-invocation: true on curated skills",
+        "Superpowers: tdd and verification-before-completion skill references",
+        "setup-matt-pocock-skills: Flow curated install note"
+      ]
+    },
+    "security-and-hardening": {
+      "repository": "addyosmani/agent-skills",
+      "upstreamPath": "skills/security-and-hardening",
+      "commit": "aeac41d4d005999432bb7312f7ff06383a91d59d",
+      "license": "MIT",
+      "importedFiles": [
+        "SKILL.md",
+        "UPSTREAM.md",
+        "references/hardening-patterns.md"
+      ],
+      "contentHash": "4caef6b48b2478b1475970f793777f6f94b2f483346f3d6758eb5a36f716a4ff",
+      "flowModifications": [
+        "Unified decision records: docs/decisions/ instead of docs/adr/",
+        "disable-model-invocation: true on curated skills",
+        "Superpowers: tdd and verification-before-completion skill references",
+        "setup-matt-pocock-skills: Flow curated install note"
+      ]
+    },
+    "performance-optimization": {
+      "repository": "addyosmani/agent-skills",
+      "upstreamPath": "skills/performance-optimization",
+      "commit": "aeac41d4d005999432bb7312f7ff06383a91d59d",
+      "license": "MIT",
+      "importedFiles": [
+        "SKILL.md",
+        "UPSTREAM.md",
+        "references/optimization-patterns.md"
+      ],
+      "contentHash": "47ff1077d32c792d21d2a69690d1e94bd9b3b66331b0234b1ceb7c310ecd61fd",
+      "flowModifications": [
+        "Unified decision records: docs/decisions/ instead of docs/adr/",
+        "disable-model-invocation: true on curated skills",
+        "Superpowers: tdd and verification-before-completion skill references",
+        "setup-matt-pocock-skills: Flow curated install note"
+      ]
+    },
+    "systematic-debugging": {
+      "repository": "obra/superpowers",
+      "upstreamPath": "skills/systematic-debugging",
+      "commit": "2ce8aa15d05bd57213e6f746f953aafb7ded7a8b",
+      "license": "MIT",
+      "importedFiles": [
+        "CREATION-LOG.md",
+        "SKILL.md",
+        "UPSTREAM.md",
+        "condition-based-waiting-example.ts",
+        "condition-based-waiting.md",
+        "defense-in-depth.md",
+        "find-polluter.sh",
+        "root-cause-tracing.md",
+        "test-academic.md",
+        "test-pressure-1.md",
+        "test-pressure-2.md",
+        "test-pressure-3.md"
+      ],
+      "contentHash": "eca4184ae0e5e34d260db696a328694fafedbf6f4809a6abea1657f0bae72804",
+      "flowModifications": [
+        "Unified decision records: docs/decisions/ instead of docs/adr/",
+        "disable-model-invocation: true on curated skills",
+        "Superpowers: tdd and verification-before-completion skill references",
+        "setup-matt-pocock-skills: Flow curated install note"
+      ]
+    },
+    "verification-before-completion": {
+      "repository": "obra/superpowers",
+      "upstreamPath": "skills/verification-before-completion",
+      "commit": "2ce8aa15d05bd57213e6f746f953aafb7ded7a8b",
+      "license": "MIT",
+      "importedFiles": [
+        "SKILL.md",
+        "UPSTREAM.md"
+      ],
+      "contentHash": "76f721f63dc95cc2a879491d84b3761135459053dfbf8210dd7fdff4fe678788",
+      "flowModifications": [
+        "Unified decision records: docs/decisions/ instead of docs/adr/",
+        "disable-model-invocation: true on curated skills",
+        "Superpowers: tdd and verification-before-completion skill references",
+        "setup-matt-pocock-skills: Flow curated install note"
+      ]
+    },
+    "flow": {
+      "flowOriginal": true,
+      "flowModifications": [
+        "Authored for Flow Skills distribution"
+      ]
+    },
+    "council": {
+      "flowOriginal": true,
+      "flowModifications": [
+        "Authored for Flow Skills distribution"
+      ]
+    },
+    "extract": {
+      "flowOriginal": true,
+      "flowModifications": [
+        "Authored for Flow Skills distribution"
+      ]
+    },
+    "ship": {
+      "flowOriginal": true,
+      "flowModifications": [
+        "Authored for Flow Skills distribution"
+      ]
+    },
+    "doctor": {
+      "flowOriginal": true,
+      "flowModifications": [
+        "Authored for Flow Skills distribution"
+      ]
+    }
+  }
+}

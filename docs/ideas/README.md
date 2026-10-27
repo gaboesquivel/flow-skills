@@ -7,7 +7,7 @@ Index of substantial ideas, including accepted capabilities whose implementation
 | [Business discovery and product metrics](business-discovery-and-product-metrics.md) | Commercial context and OMTM adopted; skill boundaries exploring |
 | [Agent personas](agent-personas.md) | Exploring |
 | [Collaborative refinement](collaborative-refinement.md) | Capability adopted; composition unresolved |
-| [Writing for humans and agents](writing.md) | Two skills adopted; detailed behavior and packaging open |
+| [Writing for humans and agents](writing.md) | Two skills implemented; descriptive technical naming direction adopted, rename plan proposed; evaluation continues |
 | [Explanation and methodology learning](explanation-and-learning.md) | Methodology learning adopted; project explanation unresolved |
 | [Validation board and business canvas](validation-board-and-canvas.md) | Board direction adopted; format and separate canvas unresolved |
 | [Exploration and prototypes](exploration-and-prototyping.md) | Flexibility adopted; dedicated skills unresolved |

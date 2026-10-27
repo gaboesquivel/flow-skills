@@ -30,7 +30,7 @@ Keep product intent, experience design, and architecture distinct while allowing
 
 ## Write context for agents and humans
 
-Use progressive disclosure: AGENTS.md routes by task, root documents summarize their own concern, and deeper notes hold detail only when needed. This follows the adopted writing-for-agents direction; [source assessment](research/2026-10-19-writing.md#matt-pocock-writing-for-agents) retains the upstream review limits.
+Use progressive disclosure: AGENTS.md routes by task, root documents summarize their own concern, and deeper notes hold detail only when needed. This follows the adopted write-for-agents direction; [source assessment](research/2026-10-19-writing.md#matt-pocock-writing-for-agents) retains the upstream review limits.
 
 Documentation should preserve intent, constraints, consequential boundaries, and information that is difficult or expensive to rediscover. A concise architecture overview can orient an agent without requiring a full codebase read; link to the relevant implementation and deeper rationale. Avoid exhaustive trees, version lists, and descriptions that merely duplicate readily discoverable code. Shared documents must remain readable by humans.
 
@@ -38,7 +38,7 @@ Assess documentation impact during implementation and review. Code establishes o
 
 ## Documentation responsibilities across skills
 
-These responsibilities are applied manually while Flow's skills are being developed. Future skills should support the same practices and maintain the relationships described in the [documentation guide](README.md#ideas-and-initiatives):
+These responsibilities apply to manual work and the local skill implementations. Maintain the relationships described in the [documentation guide](README.md#ideas-and-initiatives):
 
 | Activity | Documentation responsibility |
 |---|---|
@@ -51,10 +51,10 @@ These are responsibilities, not a fixed sequence or a commitment to a separate s
 
 ## Maintain shared language
 
-Use [GLOSSARY.md](../GLOSSARY.md) for the project-specific meanings humans and agents need to share. Apply Domain-Driven Design's shared-language discipline through discussion and concrete examples, informed by [Matt Pocock's domain-modeling approach](research/2026-10-20-domain-language.md). This is current manual practice; no Flow skill is executing it yet.
+Use [GLOSSARY.md](../GLOSSARY.md) for the project-specific meanings humans and agents need to share. Apply Domain-Driven Design's shared-language discipline through discussion and concrete examples, informed by [Matt Pocock's domain-modeling approach](research/2026-10-20-domain-language.md). The local domain-modeling skill supports this practice; effectiveness in fresh sessions remains under evaluation.
 
 Add a term when its local meaning or a consequential ambiguity cannot be safely inferred from ordinary usage. Keep definitions short, describe the concept and necessary distinctions, and omit generic technical vocabulary. Implementation details, proposals, and decision rationale stay in their owning documents.
 
 When language is ambiguous, check existing context, propose a precise meaning, and test relevant boundaries with an example. For instance, one initiative can contain several experiments, and saving an idea does not start an initiative. Surface unresolved conflicts rather than silently redefining an established concept. Record a meaning when resolved and update affected current documentation and, when present, skill instructions, code, and tests. Historical research retains its original context.
 
-Use this during normal work rather than as a separate mandatory phase. Loading the glossary does not require editing it, and routine terminology clarification does not require a PDR or ADR. Skill composition and evaluation are tracked in the [development initiative](initiatives/methodology-and-skills.md).
+Use this during normal work rather than as a separate mandatory phase. Loading the glossary does not require editing it, and routine terminology clarification does not require a decision record. Skill composition and evaluation are tracked in the [development initiative](initiatives/methodology-and-skills.md).

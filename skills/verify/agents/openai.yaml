@@ -1,0 +1,5 @@
+interface:
+  display_name: "Verify"
+  short_description: "Verify claims against observed evidence"
+policy:
+  allow_implicit_invocation: false

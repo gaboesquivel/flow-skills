@@ -1,0 +1,5 @@
+interface:
+  display_name: "Flow"
+  short_description: "Lean product workflow from spec to ship"
+policy:
+  allow_implicit_invocation: false

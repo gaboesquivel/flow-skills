@@ -1,0 +1,5 @@
+interface:
+  display_name: "Requirements"
+  short_description: "Capture scope and acceptance criteria"
+policy:
+  allow_implicit_invocation: false

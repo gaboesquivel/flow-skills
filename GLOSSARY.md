@@ -14,6 +14,10 @@ A practitioner who uses product and engineering expertise to decide what is wort
 
 A reusable set of agent instructions that supports part of Flow's methodology using the project's shared context. A practice can exist before a skill supports it, and a practice does not necessarily require its own skill.
 
+## Decision record
+
+A numbered document under `docs/decisions/` that preserves the context, decision, and rationale for a significant choice. Accepted records are historical evidence; superseding creates a new record. Current product, design, and architecture documents reflect the accepted position today.
+
 ## Idea
 
 A possibility worth preserving: a problem, feature, approach, or question. Recording an idea does not commit to pursuing it.

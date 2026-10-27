@@ -1,6 +1,6 @@
 # Flow Skills
 
-Status: direction established; skill design and implementation remain open.
+Status: local skill distribution implemented with offline install and structural remediation (2026-10-27); broader product validation and a second live agent host remain open before wide release claims.
 
 ## Purpose and audience
 
@@ -12,7 +12,9 @@ AI makes it easy to add features faster than founders establish whether they mat
 
 Flow helps founders choose worthwhile work, test assumptions, and preserve decision context while retaining control of their workflow. Broader demand for Flow itself remains unvalidated.
 
-## Capabilities
+## Implemented scope and capability direction
+
+The local distribution supports exploration, requirements, planning, engineering, review, delivery, and writing across twenty-five bundled skills. The list below includes broader adopted methodology direction; dedicated commercial discovery, validation-board UI, methodology-learning, and context-initialization capabilities remain under development. Installation alone does not implement or validate them.
 
 - Collaborative refinement through focused questions, research, and suggested directions, leading to initiatives linked to assumptions and validation approaches.
 - Product and commercial discovery connected to experience design and engineering, with room for open exploration and disposable prototypes.
@@ -21,9 +23,9 @@ Flow helps founders choose worthwhile work, test assumptions, and preserve decis
 - Repository-agnostic initialization that inspects existing code and documents, asks about consequential unknowns, and establishes minimal context without imposing a technology stack. The [initialization experiment](docs/initiatives/initialization.md) owns the trial and its limitations.
 - Repository context covering current product, design, architecture, and [project-specific language](GLOSSARY.md), supported by research and significant decision rationale. Maintain shared meanings across discussion, documentation, and implementation. Preserve ideas as possibilities and initiatives as intentional work; their [relationships](docs/README.md#ideas-and-initiatives) do not impose a mandatory pipeline.
 - A skill for understanding and questioning Flow's methodology and influences.
-- Two writing skills: `writing-for-humans` for clear, natural communication and `writing-for-agents` for effective instructions and context. [Scope and open packaging choices](docs/ideas/writing.md).
+- Two writing skills: `write-for-humans` for clear, natural communication and `write-for-agents` for effective instructions and context. [Scope and implementation status](docs/ideas/writing.md).
 
-Skills should be clear, concise, composable, and editable. Reuse existing work where useful; technology-specific skills may remain external. The process must work for a solo founder without requiring a separate process-management system.
+Skills should be clear, concise, composable, and editable. Adapt outside work where useful while maintaining local source and required notices. Core skills have no external skill-package dependency; optional technology-specific capabilities may be supplied by the user's environment. The process must work for a solo founder without requiring a separate process-management system.
 
 ## Approach and open choices
 
@@ -41,13 +43,13 @@ Candidate complementary approaches include AARRR as a diagnostic lens, an option
 
 ### Design and implementation
 
-Establish the methodology, evaluate it through use, and implement incrementally. No skills are implemented yet. Apply the [principles](docs/principles.md) through the [methodology](docs/methodology.md).
+Establish the methodology, evaluate it through use, and implement incrementally. A [Flow-owned skill distribution](README.md) is available for installation; continue evaluating it through real projects. Apply the [principles](docs/principles.md) through the [methodology](docs/methodology.md).
 
-The [methodology and skill-development initiative](docs/initiatives/methodology-and-skills.md) tracks this work. Use Flow's practices manually on Flow itself, including a focused glossary and active clarification of domain concepts. Future skills should consume the same glossary and maintain it when meanings change; whether domain modeling needs a dedicated skill or composes into other skills remains open.
+The [methodology and skill-development initiative](docs/initiatives/methodology-and-skills.md) tracks this work. Use Flow's practices manually on Flow itself, including a focused glossary and active clarification of domain concepts. The domain-modeling skill consumes and maintains the shared glossary; supporting guidance composes through local file reads. [Decision 0002](docs/decisions/0002-local-skill-ownership.md) owns local maintenance, portable composition, and offline installation.
 
 Still open:
 
-- Skill names, boundaries, composition, supported environments, evaluation, and distribution.
+- Further skill boundaries and evidence of effectiveness; live compatibility across supported environments.
 - Whether business discovery belongs within product discovery, how discovery relates to initiative refinement, and whether product metrics warrants a separate specialist skill.
 - Initiative format and validation criteria.
 - Board format, synchronization of its views, and the need for a separate business canvas.

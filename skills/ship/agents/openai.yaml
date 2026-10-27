@@ -1,0 +1,5 @@
+interface:
+  display_name: "Ship"
+  short_description: "Verify, commit, push, and validate delivery"
+policy:
+  allow_implicit_invocation: false

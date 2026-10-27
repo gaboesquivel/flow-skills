@@ -1,6 +1,6 @@
 # Develop Flow's methodology and skills
 
-Status: manual methodology refinement in progress; skill design and implementation remain open. Plan captured 2026-10-20.
+Status: distribution remediation and skill naming refactor implemented (2026-10-27); ongoing methodology validation remains. Initial plan captured 2026-10-20.
 
 ## Outcome and scope
 
@@ -10,11 +10,14 @@ Develop a lean, coherent methodology and supporting skills that help solo founde
 
 ## Current work and next steps
 
+- **Naming (2026-10-27):** twenty-five skills with short technical names; see [decision 0003](../decisions/0003-skill-naming.md). Added `explore` and `requirements`; renamed legacy directories; retired `handoff` from the catalog.
+- **Review and proposed remediation (2026-10-27):** [distribution review](../research/2026-10-27-distribution-review.md) records confirmed defects, legacy workflow conflicts, catalog dispositions, and a six-step remediation sequence with acceptance evidence. The subsequent implementation follows [decision 0002](../decisions/0002-local-skill-ownership.md); current evidence and remaining limitations are recorded in [remediation verification](../../tests/smoke/2026-10-27-remediation.md).
 - **Current research focus (2026-10-20):** study product discovery and Lean Startup practices before defining Flow's product skills and workflow. The [Founder Playbook and Booklib comparison](../research/2026-10-20-lean-startup-skill-comparison.md) records mechanisms, limitations, and questions for that discussion. Connect this work to the existing discovery, metrics, refinement, and validation-board ideas; skill names and workflow composition remain open.
 - **Established:** apply the practices manually through conversation and repository documents. Maintain [shared terminology](../../GLOSSARY.md), including agentic product engineering and the distinction between ideas and initiatives. The glossary convention was adopted on 2026-10-20 from the [context and evaluation idea](../ideas/context-and-evaluation.md).
 - **Next:** observe whether agents recover the intended meanings in fresh sessions, identify real contradictions, and update affected context without creating unnecessary documents or questions. Record concrete findings here as they occur.
-- **Then:** use those findings to define the smallest useful skill behavior and evaluate existing skills for reuse. Include glossary consumption wherever terminology matters and active maintenance where concepts change. A standalone domain-modeling skill versus composition into refinement and review remains open.
-- **When ready to implement:** try a small adaptation on real work, compare its behavior with the manual practice, and revise before expanding. Preserve upstream provenance and licensing when reusing implementation material.
+- **Then:** use those findings to define the smallest useful skill behavior and evaluate existing skills for reuse. Include glossary consumption wherever terminology matters and active maintenance where concepts change. Domain-modeling is now a local skill with supporting-reference composition; further consolidation depends on observed use.
+- **Distribution (2026-10-27):** locally maintained skills, an offline bundled installer, and unified decisions. Automated checks: `pnpm validate` and `pnpm test`. Host-neutral behavior scenarios: [tests/smoke/README.md](../../tests/smoke/README.md). Example init fixture: [tests/fixtures/example-project](../../tests/fixtures/example-project/).
+- **When adapting further:** try changes on real work, compare with manual practice, and revise before expanding. Edit `skills/` as local source; preserve [attribution](../../ATTRIBUTION.md) when material originated elsewhere—no remote sync or catalog imports.
 
 These are development priorities, not a required workflow for every product task. Other candidate capabilities remain in the [idea index](../ideas/README.md); this plan does not silently adopt their packaging or start their implementation.
 
@@ -32,4 +35,4 @@ These are evaluation cases, not completed tests. Useful evidence includes correc
 
 ## Evidence and limitations
 
-The existing idea/initiative distinction and the agentic-product-engineering discussion provide concrete vocabulary needs. The glossary and maintenance instructions are now present; no fresh-session or implemented-skill evaluation has been performed. [Source assessment and adoption boundaries](../research/2026-10-20-domain-language.md).
+Structural remediation is covered by `pnpm validate`, `pnpm test`, and [remediation smoke notes](../../tests/smoke/2026-10-27-remediation.md). Live cross-host agent behavior remains partially evaluated; see the smoke matrix for open scenarios. The glossary and maintenance instructions are present. [Source assessment and adoption boundaries](../research/2026-10-20-domain-language.md).

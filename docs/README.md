@@ -14,9 +14,9 @@ Starting structure adopted on 2026-10-19 for Flow Skills. Create documents only 
 | [initiatives/](initiatives/README.md) | Intentional work toward an outcome, including experiments, tasks, and findings |
 | [references.md](references.md) | Source index, status, and links to assessments |
 | [research/](research) | Evidence, comparisons, source limitations, and exploratory proposals |
-| pdr/ / adr/ | Significant product / architecture decision rationale |
+| [decisions/](decisions/README.md) | Significant decision records (product, design, architecture, infrastructure, process) |
 | [assets/](assets) | Documentation images |
-| skills/product/ / skills/engineering/ at the root | Skill implementations when created |
+| [skills/](../skills) at the root | Locally maintained skill implementations and required supporting resources |
 
 Follow [AGENTS.md](../AGENTS.md#maintain-context) for context maintenance and decision-record rules.
 

@@ -29,7 +29,7 @@ Concise skills, questioning, composition, and implementation.
 - [to spec](https://github.com/mattpocock/skills/blob/main/skills/engineering/to-spec/SKILL.md) — [Historical research](archive/2026-10-18/docs/research/2026-10-18-focused-refinement.md).
 - [wayfinder](https://github.com/mattpocock/skills/blob/main/skills/engineering/wayfinder/SKILL.md) — [Historical research](archive/2026-10-18/docs/research/2026-10-18-exploration-and-explanation.md).
 - [grill me](https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md) — [Current research](research/2026-10-19-refinement-comparison.md).
-- [grilling](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md) — [Current research](research/2026-10-19-refinement-comparison.md).
+- [grilling](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md) — adapted locally as `grill`; [Current research](research/2026-10-19-refinement-comparison.md).
 
 ## Product discovery and strategy
 
@@ -127,6 +127,11 @@ User-selected references for the two planned writing skills; specific upstream r
 ## Competitive landscape and directory conventions
 
 [Imported October 20 report](research/2026-10-20-competitive-landscape.md) compares Flow-named tools, workflow frameworks, and `docs/` versus `.flow/`. Its primary-source link table is retained in the report. Claims and original session citation tokens were not reverified during cleanup; proposed adoption, rejection, naming, and workflow changes remain unadopted.
+
+## Distribution evaluation
+
+- [October 27 distribution review and remediation plan](research/2026-10-27-distribution-review.md) — historical working-tree evidence on upstream coupling, conflicting skill contracts, reference integrity, installation, and test coverage. Subsequent [remediation verification](../tests/smoke/2026-10-27-remediation.md) records automated artifact checks and two bounded fresh-context behavior checks; live cross-host behavior and external publication remain unverified.
+- [October 27 direction review, second pass](research/2026-10-27-direction-review.md) — advisory review of the 25-skill tree after naming and the `explore` / `requirements` addition. Not an adopted decision.
 
 ## Maintenance
 

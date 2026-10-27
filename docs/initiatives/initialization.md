@@ -1,6 +1,6 @@
 # Initialization experiment
 
-Status: experimental prompt development; first intended external trial is gaboesquivel.com. No implemented Flow init skill or successful trial is established.
+Status: experimental prompt development; first intended external trial is gaboesquivel.com. No context-initialization skill or successful external trial is established. The bundled `flow-skills-init` command installs skills and bootstrap only; it does not perform this product-context experiment.
 
 ## Purpose
 

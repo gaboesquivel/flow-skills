@@ -1,0 +1,146 @@
+{
+  "repositories": {
+    "mattpocock/skills": {
+      "license": "MIT",
+      "defaultRef": "main"
+    },
+    "addyosmani/agent-skills": {
+      "license": "MIT",
+      "defaultRef": "main"
+    },
+    "obra/superpowers": {
+      "license": "MIT",
+      "defaultRef": "main"
+    }
+  },
+  "skills": [
+    {
+      "name": "setup-matt-pocock-skills",
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/setup-matt-pocock-skills",
+      "flowOriginal": false
+    },
+    {
+      "name": "grill-with-docs",
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/grill-with-docs",
+      "flowOriginal": false
+    },
+    {
+      "name": "grilling",
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/productivity/grilling",
+      "flowOriginal": false
+    },
+    {
+      "name": "domain-modeling",
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/domain-modeling",
+      "flowOriginal": false
+    },
+    {
+      "name": "research",
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/research",
+      "flowOriginal": false
+    },
+    {
+      "name": "prototype",
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/prototype",
+      "flowOriginal": false
+    },
+    {
+      "name": "to-spec",
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/to-spec",
+      "flowOriginal": false
+    },
+    {
+      "name": "to-tickets",
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/to-tickets",
+      "flowOriginal": false
+    },
+    {
+      "name": "implement",
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/implement",
+      "flowOriginal": false
+    },
+    {
+      "name": "tdd",
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/tdd",
+      "flowOriginal": false
+    },
+    {
+      "name": "code-review",
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/code-review",
+      "flowOriginal": false
+    },
+    {
+      "name": "retro",
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/engineering/retro",
+      "flowOriginal": false
+    },
+    {
+      "name": "writing-for-agents",
+      "repository": "mattpocock/skills",
+      "upstreamPath": "skills/productivity/writing-for-agents",
+      "flowOriginal": false
+    },
+    {
+      "name": "code-simplification",
+      "repository": "addyosmani/agent-skills",
+      "upstreamPath": "skills/code-simplification",
+      "flowOriginal": false
+    },
+    {
+      "name": "security-and-hardening",
+      "repository": "addyosmani/agent-skills",
+      "upstreamPath": "skills/security-and-hardening",
+      "flowOriginal": false
+    },
+    {
+      "name": "performance-optimization",
+      "repository": "addyosmani/agent-skills",
+      "upstreamPath": "skills/performance-optimization",
+      "flowOriginal": false
+    },
+    {
+      "name": "systematic-debugging",
+      "repository": "obra/superpowers",
+      "upstreamPath": "skills/systematic-debugging",
+      "flowOriginal": false
+    },
+    {
+      "name": "verification-before-completion",
+      "repository": "obra/superpowers",
+      "upstreamPath": "skills/verification-before-completion",
+      "flowOriginal": false
+    },
+    {
+      "name": "flow",
+      "flowOriginal": true
+    },
+    {
+      "name": "council",
+      "flowOriginal": true
+    },
+    {
+      "name": "extract",
+      "flowOriginal": true
+    },
+    {
+      "name": "ship",
+      "flowOriginal": true
+    },
+    {
+      "name": "doctor",
+      "flowOriginal": true
+    }
+  ]
+}
