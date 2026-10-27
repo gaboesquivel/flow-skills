@@ -4,6 +4,6 @@ Numbered specifications describe a bounded increment of work: product, research,
 
 Default path: `docs/specs/NNN-short-name.md` (three-digit sequence, kebab-case slug). Choose the next free number from existing files. Projects with an established convention keep it.
 
-Examples in this repository: [001-portable-skill-catalog.md](001-portable-skill-catalog.md), [002-flow-lite-and-flat-docs.md](002-flow-lite-and-flat-docs.md).
+Examples in this repository: [001-portable-skill-catalog.md](001-portable-skill-catalog.md), [002-flow-lite-and-flat-docs.md](002-flow-lite-and-flat-docs.md), [004-pr-alignment-review.md](004-pr-alignment-review.md).
 
 Significant standalone decisions belong in `docs/decisions/`, not in a spec. See [decisions](../decisions/README.md).

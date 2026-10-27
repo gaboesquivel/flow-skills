@@ -23,7 +23,9 @@ Flow does not modify adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or simila
 
 All skills except `flow` require explicit user invocation in Flow's design.
 
-**Root context alignment** is not guaranteed by implicit `flow` invocation alone. Hosts that only task-match skills may skip alignment on ordinary implementation work. The portable contract is: `implement` and `review` remind agents to align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` when meaningful changes warrant it; adopters can also invoke `/flow` or rely on host surfacing when supported. Always-on alignment without those mechanisms requires host-specific hooks (for example always-loaded project instructions), which Flow skills do not modify.
+**Root context alignment** is not guaranteed by implicit `flow` invocation alone. Hosts that only task-match skills may skip alignment on ordinary implementation work. The portable contract is: `implement` and `review` remind agents to align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` when meaningful changes warrant it; adopters can also invoke `/flow` or rely on host surfacing when supported.
+
+**Pull request automation** (optional, per repository): [pr-review-contract.md](pr-review-contract.md) is agent-agnostic — any IDE or model can follow it before opening a PR. This repository adds a deterministic checker (`scripts/check-pr-alignment.mjs`) and an optional OpenAI-compatible CI job on `pull_request`; see [spec 004](specs/004-pr-alignment-review.md). Flow skills do not install workflows or edit adopter instruction files; copy the contract and scripts when adopting the pattern.
 
 That alignment updates the **current project's** product context. It does not copy this repository's Flow identity into an adopter `PRODUCT.md`. [Decision 0009](decisions/0009-adopter-product-context.md).
 

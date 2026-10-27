@@ -12,6 +12,7 @@ Conventions for Flow Skills and a default pattern adopters may follow. Create do
 | [AGENTS.md](../AGENTS.md) | Instructions for maintaining this repository |
 | DESIGN.md / ARCHITECTURE.md at the root | Current experience and technical decisions; create when useful |
 | [specs/](specs/README.md) | Numbered specifications for bounded increments of work |
+| [pr-review-contract.md](pr-review-contract.md) | Agent-agnostic PR review and alignment checklist (CI-enforced on this repo) |
 | [decisions/](decisions/README.md) | Significant decision records and rationale |
 | [references.md](references.md) | Source index for maintainer research |
 | [research/](research) | Evidence and assessments (maintainer context, not adopter scaffolding) |

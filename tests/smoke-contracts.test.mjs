@@ -13,7 +13,7 @@ const contracts = [
   { skill: 'grill', file: 'SKILL.md', includes: ['do not require an exhaustive interview', 'does not itself authorize implementation'] },
   { skill: 'to-spec', file: 'SKILL.md', includes: ['docs/specs/NNN-short-name.md', 'Do not run a separate interview'] },
   { skill: 'implement', file: 'SKILL.md', includes: ['untracked', 'not a prerequisite', 'PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'do not open new spec or decision', 'product identity', 'flow start'] },
-  { skill: 'review', file: 'SKILL.md', includes: ['untracked', 'single-agent', 'PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'product identity', 'flow start'] },
+  { skill: 'review', file: 'SKILL.md', includes: ['untracked', 'single-agent', 'PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'product identity', 'flow start', 'Pull request', 'pr-review-contract'] },
   { skill: 'write-agents', file: 'SKILL-MECHANICS.md', includes: ['explicit workflow activation', 'fallback'] },
   { skill: 'interview', file: 'SKILL.md', includes: ['do not authorize', 'limitations'] },
   { skill: 'retro', file: 'SKILL.md', includes: ['do not modify', 'explicit user authorization'] },

@@ -13,6 +13,7 @@ Read repository instructions and inspect Git status before choosing the review s
 - **Repository audit:** inspect current relevant source, supporting files, tests, and owning documents, including untracked files. No baseline commit is required.
 - **Working tree:** inspect staged and unstaged diffs plus relevant untracked files. Use `git diff --cached`, `git diff`, and `git ls-files --others --exclude-standard`; read untracked content explicitly.
 - **Committed comparison:** resolve the requested reference and use its merge-base with HEAD when appropriate. State the actual comparison. Include working-tree changes only when requested or relevant to the stated scope.
+- **Pull request:** treat the PR as a committed comparison from `merge-base(base, head)` through `head`. Product, design, spec, and marketing edits get the same bar as code. Repositories that enforce the **pr-review-contract** (documented in the project's docs tree) in CI expect the same checks without a separate manual invocation.
 
 Default an unspecified review to the current working tree. If it has no changes, inspect the repository area implied by the request and state that scope. Ask only when scope ambiguity materially changes the work. An empty committed diff does not establish that there is nothing to review.
 
