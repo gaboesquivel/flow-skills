@@ -28,4 +28,4 @@ Never run competing writing agents against the user's active workspace.
 
 ## Records
 
-Live and manual runs: [records/](records/). Latest structural index: [scenario-status.md](scenario-status.md).
+Live and manual runs: [records/](records/). Latest: [2026-10-27 Cursor E03, E07, E08](records/2026-10-27-cursor-live.md). Structural index: [scenario-status.md](scenario-status.md).

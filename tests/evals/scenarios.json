@@ -60,11 +60,16 @@
       "evidence": {
         "structural_contract": "passed",
         "executable_fixture": "passed",
-        "live_skill_execution": "not_executed",
+        "live_skill_execution": "passed",
         "independently_reviewed": "not_executed",
         "verified_second_host": "not_executed"
       },
-      "claimsLiveRun": false
+      "claimsLiveRun": true,
+      "liveObservation": {
+        "host": "Cursor",
+        "date": "2026-10-27",
+        "observation": "tests/evals/records/2026-10-27-cursor-live.md"
+      }
     },
     {
       "id": "E04",
@@ -146,11 +151,16 @@
       "evidence": {
         "structural_contract": "passed",
         "executable_fixture": "passed",
-        "live_skill_execution": "not_executed",
+        "live_skill_execution": "passed",
         "independently_reviewed": "not_executed",
         "verified_second_host": "not_executed"
       },
-      "claimsLiveRun": false
+      "claimsLiveRun": true,
+      "liveObservation": {
+        "host": "Cursor",
+        "date": "2026-10-27",
+        "observation": "tests/evals/records/2026-10-27-cursor-live.md"
+      }
     },
     {
       "id": "E08",
@@ -163,15 +173,24 @@
       "skillReferences": [
         "skills/review/SKILL.md"
       ],
-      "fixtureReferences": [],
+      "fixtureReferences": [
+        "tests/fixtures/code-review-smoke/src/pricing.mjs",
+        "tests/fixtures/code-review-smoke/WIP-pricing-fix.mjs",
+        "tests/fixtures/code-review-smoke/REQUIREMENTS.md"
+      ],
       "evidence": {
         "structural_contract": "passed",
-        "executable_fixture": "not_executed",
-        "live_skill_execution": "not_executed",
+        "executable_fixture": "passed",
+        "live_skill_execution": "passed",
         "independently_reviewed": "not_executed",
         "verified_second_host": "not_executed"
       },
-      "claimsLiveRun": false
+      "claimsLiveRun": true,
+      "liveObservation": {
+        "host": "Cursor",
+        "date": "2026-10-27",
+        "observation": "tests/evals/records/2026-10-27-cursor-live.md"
+      }
     },
     {
       "id": "E09",
