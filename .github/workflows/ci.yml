@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled, edited]
 
 jobs:
   validate:
@@ -61,6 +62,9 @@ jobs:
           FLOW_REVIEW_API_KEY: ${{ secrets.FLOW_REVIEW_API_KEY }}
           FLOW_REVIEW_API_BASE: ${{ secrets.FLOW_REVIEW_API_BASE }}
           FLOW_REVIEW_MODEL: ${{ secrets.FLOW_REVIEW_MODEL }}
+          FLOW_PR_TITLE: ${{ github.event.pull_request.title }}
+          FLOW_PR_BODY: ${{ github.event.pull_request.body }}
+          FLOW_PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
           GH_TOKEN: ${{ github.token }}
           GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
         run: node scripts/run-context-review.mjs --base "${{ github.event.pull_request.base.sha }}" --head "${{ github.sha }}" --pr-number "${{ github.event.pull_request.number }}"

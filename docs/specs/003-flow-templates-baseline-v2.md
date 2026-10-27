@@ -10,7 +10,7 @@ Flow needs independent, agent-first application templates that demonstrate real 
 
 ## Solution
 
-Ship **flow-next** and **flow-mono** as GitHub template repositories that implement the baseline below. **flow-skills** supplies optional portable initialization and template selection only; templates remain fully usable via **Use this template** with no Flow runtime dependency.
+Ship **flow-next** and **flow-mono** as GitHub template repositories that implement the baseline below. Templates remain fully usable via **Use this template** with no Flow runtime dependency. flow-skills does not initialize these repositories; project initialization is an open product decision ([PRODUCT.md](../../PRODUCT.md), [decision 0009](../decisions/0009-adopter-product-context.md)).
 
 ## 1. Principles
 
@@ -208,7 +208,7 @@ Run `pnpm qa`, `pnpm build`, appropriate agent evaluations and security checks i
 - No bundled Flow Skills or custom agent methodology.
 - Explicit Vercel configuration.
 - GitHub template repositories.
-- Flow Skills optionally handles clean Git initialization and project, package and Portless naming.
+- Project initialization and template selection stay outside flow-skills. Start a template with GitHub **Use this template**.
 
 Both templates must work independently through GitHub's **Use this template** workflow.
 
@@ -218,14 +218,13 @@ Both templates must work independently through GitHub's **Use this template** wo
 | --- | --- |
 | **flow-next** | Build and verify the complete single-app technical baseline. |
 | **flow-mono** | Deliver the same capabilities in a minimal Turborepo structure, reusing shared UI only where warranted. |
-| **flow-skills** | Implement portable project initialization and template selection without introducing runtime dependencies or changing Flow Lite into a workflow router. |
+| **flow-skills** | Do not implement project initialization or template selection. Templates stay independent of the skills catalog. |
 
 All agents follow this specification as the common contract and report verified behavior separately from untested claims.
 
 ## flow-skills acceptance criteria
 
-- Documented way to choose **flow-next** vs **flow-mono** and apply naming (project, packages, Portless) without modifying template source for Flow methodology.
-- Initialization does not install Flow Skills into generated projects unless the user explicitly adds them later.
+- flow-skills does not ship project initialization or template selection. [PRODUCT.md](../../PRODUCT.md) and [decision 0009](../decisions/0009-adopter-product-context.md) keep that as an open decision.
 - Flow Lite remains context alignment only; no template pipeline or mandatory skill sequence.
 - Validator and contract tests continue to enforce fourteen-skill boundaries and no init requirement in the distribution itself.
 
@@ -238,4 +237,4 @@ All agents follow this specification as the common contract and report verified 
 ## Testing decisions
 
 - Template verification lives in **flow-next** and **flow-mono** per section 10.
-- flow-skills changes prove initialization paths with structural or smoke tests where feasible without coupling to template runtime code.
+- flow-skills does not add initialization tests for template scaffolding. Template verification stays in flow-next and flow-mono.

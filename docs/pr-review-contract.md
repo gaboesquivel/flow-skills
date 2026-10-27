@@ -49,7 +49,7 @@ When an automated reviewer runs this contract, respond with **only** JSON (no ma
 
 - `verdict`: `pass` or `fail`.
 - `findings[].severity`: `blocking` or `advisory`.
-- CI fails the check when `verdict` is `fail` or any finding has `severity: blocking`.
+- CI fails the check when `verdict` is `fail`, any finding has `severity: blocking`, the diff cannot be read, or `verdict` is not `pass` or `fail`.
 
 ## Deterministic checks (this repository)
 
@@ -70,11 +70,14 @@ Configure in the GitHub repository (not in the npm skills package):
 | `FLOW_REVIEW_API_BASE` | Optional base URL (default: `https://api.openai.com/v1`) |
 | `FLOW_REVIEW_MODEL` | Model id (default: `gpt-4o-mini` if unset) |
 
-The `context-review` workflow job runs only on same-repository pull requests when `FLOW_REVIEW_API_KEY` is present. Fork PRs skip the LLM job; deterministic alignment still runs.
+The `context-review` workflow job runs only on same-repository pull requests when `FLOW_REVIEW_API_KEY` is present. The prompt includes the PR title, body, and labels. Fork PRs skip the LLM job; deterministic alignment still runs. Without the API key the job skips the call and passes.
 
 ## Escape hatches (maintainers)
 
-- Label `alignment-exempt` on the PR.
-- PR body contains `Alignment: docs-only` when the change is limited to root context documentation with no spec or decision trail required.
+- Label `alignment-exempt` skips the deterministic alignment rules except filename shape and broken in-skill links.
+- A line of its own, `Alignment: docs-only`, skips only the root-context spec-or-decision requirement, and only when every changed path is a root context path listed at the top of `scripts/check-pr-alignment.mjs`. Quoting that phrase inside a sentence does not exempt the PR.
+- Adding or removing the label, or editing the PR title or body, reruns the check.
+
+`main` requires a pull request and passing `alignment` and `validate` checks before merge. Direct pushes to `main` are rejected.
 
 Review is read-only unless the author requests fixes. Automated comments do not authorize commits on behalf of the reviewer.

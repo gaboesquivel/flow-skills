@@ -9,8 +9,8 @@ Flow treats every bounded change — product, design, engineering, marketing, or
 ## Solution
 
 1. **Contract** — [docs/pr-review-contract.md](../pr-review-contract.md): one checklist any agent or CI can follow.
-2. **Deterministic checker** — [scripts/check-pr-alignment.mjs](../../scripts/check-pr-alignment.mjs): merge-blocking path and documentation rules on this repository's PRs.
-3. **Judgment layer** — GitHub Actions job calling an OpenAI-compatible API with the contract and PR diff; merge-blocking when repository secrets are configured.
+2. **Deterministic checker** — [scripts/check-pr-alignment.mjs](../../scripts/check-pr-alignment.mjs): path and documentation rules on this repository's pull requests. The `main` branch ruleset requires that check, plus the `validate` matrix, and rejects direct pushes.
+3. **Judgment layer** — GitHub Actions job calling an OpenAI-compatible API with the contract, PR title, body, labels, and diff. The job fails when the diff cannot be read or the response has no `pass` or `fail` verdict. It runs when repository secrets are configured.
 4. **Portable adoption** — Copy the contract and script into an adopter repository; wire their own CI and API secrets. Flow skills do not install workflows into consumer projects.
 
 ## Acceptance criteria
@@ -24,13 +24,15 @@ Flow treats every bounded change — product, design, engineering, marketing, or
 
 ## Implementation decisions
 
-- Escape hatches: GitHub label `alignment-exempt`; PR body marker `Alignment: docs-only` for root-doc-only edits with checklist acknowledged.
+- Escape hatches: label `alignment-exempt` skips deterministic alignment rules except filename shape and broken in-skill links. A standalone line `Alignment: docs-only` skips only the root-context spec-or-decision requirement, and only when every changed path is a root context path. The check reruns on `labeled`, `unlabeled`, and `edited`.
+- New specs and decisions must be named in the index file contents. Renames are reviewed as a deletion plus an addition, so a renamed root context file still counts.
 - npm package continues to ship `skills/` only; automation stays in the repository root.
 
 ## Testing decisions
 
 - `pnpm validate` and existing contract tests unchanged unless skill text changes.
 - `tests/pr-alignment.test.mjs` — unit tests for `evaluatePrAlignment` exported from the checker script.
+- `tests/context-review.test.mjs` — verdict gate and prompt contents for the LLM job. No live API call.
 
 ## Out of scope
 
