@@ -1,0 +1,22 @@
+---
+name: handoff
+description: Compact the current conversation into a handoff document so a fresh agent can continue the work.
+disable-model-invocation: true
+---
+
+# Handoff
+
+Compact the current conversation into a handoff document a fresh agent can continue from. When the user describes what the next session is for, tailor the document to that focus.
+
+Save the document in the operating system's temporary directory (`$TMPDIR`, otherwise `/tmp`; `%TEMP%` on Windows). Do not write it into the workspace.
+
+Include:
+
+- The goal, what is decided, and what is still open.
+- The next useful action.
+- Paths or URLs for specs, plans, decisions, issues, commits, and diffs. Do not copy their contents.
+- A suggested-skills section that names relevant skills. The next agent invokes a skill only when asked.
+
+Redact secrets, credentials, and personal data.
+
+Writing the handoff does not authorize implementation, commits, or edits in the workspace.

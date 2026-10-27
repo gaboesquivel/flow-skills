@@ -27,3 +27,5 @@ Partially supersedes [0003](0003-skill-naming.md) catalog shape and install guid
 ## Superseded in part by
 
 [0006](0006-flow-lite-and-flat-docs.md) reintroduces the `flow` skill id as Flow Lite (context alignment only), not as the workflow router retired above.
+
+[0013](0013-restore-engineering-skills.md) restores `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug` as explicit skills. The router and the other retired names stay retired.

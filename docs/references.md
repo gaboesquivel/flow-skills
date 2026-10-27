@@ -141,7 +141,9 @@ User-selected references for the two planned writing skills; specific upstream r
 
 ## Distribution evaluation
 
-- [Skill catalog](skills.md) — current fifteen skills (Flow Lite + manual catalog), leading words, and `SKILL.md` links.
+- [Skill catalog](skills.md) — current twenty-three skills (Flow Lite + manual catalog), leading words, and `SKILL.md` links.
+- [Decision 0013](decisions/0013-restore-engineering-skills.md) — restored `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug`.
+- [Decision 0014](decisions/0014-handoff-skill.md) — `handoff` compacts a conversation for a fresh agent.
 - [Spec 006](specs/006-skill-reliability.md) — behavioral verification and skill reliability bounded work.
 - [Decision 0008](decisions/0008-leading-words-and-visual-summaries.md) — leading words; visual human summaries stay in `tldr`.
 - [Decision 0009](decisions/0009-adopter-product-context.md) — adopter product identity stays in the adopter's `PRODUCT.md`.
