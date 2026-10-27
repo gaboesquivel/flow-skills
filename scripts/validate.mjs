@@ -15,6 +15,7 @@ export const EXPECTED_SKILL_NAMES = [
   'jtbd',
   'retro',
   'review',
+  'start',
   'to-spec',
   'to-tickets',
   'tldr',

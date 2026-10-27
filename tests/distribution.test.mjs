@@ -18,7 +18,7 @@ test('README documents Agent Skills install without default agent flag', () => {
   assert.match(readme, /docs\/skills\.md/u)
   assert.match(readme, /Catalog \(14\)/u)
   const catalog = readFileSync(join(root, 'docs/skills.md'), 'utf8')
-  assert.match(catalog, /Fourteen skills/u)
+  assert.match(catalog, /Fifteen skills/u)
   assert.match(catalog, /Show, don't tell/u)
   assert.match(catalog, /Leading word/u)
   assert.match(readme, /flow/u)

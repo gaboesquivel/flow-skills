@@ -69,7 +69,7 @@ Primary internal dogfooding targets: **flow-skills** first, then experience vali
 
 ## This repository: flow-skills
 
-Status: fourteen-skill portable catalog on `main` ([0004](docs/decisions/0004-portable-skill-catalog.md), [0005](docs/decisions/0005-misc-tldr-skill.md), [0006](docs/decisions/0006-flow-lite-and-flat-docs.md), [0007](docs/decisions/0007-flow-product-identity.md), [0008](docs/decisions/0008-leading-words-and-visual-summaries.md), [0009](docs/decisions/0009-adopter-product-context.md), [0010](docs/decisions/0010-optional-start-skill.md)); live verification in multiple agent hosts remains ongoing.
+Status: fifteen-skill portable catalog on `main` ([0004](docs/decisions/0004-portable-skill-catalog.md), [0005](docs/decisions/0005-misc-tldr-skill.md), [0006](docs/decisions/0006-flow-lite-and-flat-docs.md), [0007](docs/decisions/0007-flow-product-identity.md), [0008](docs/decisions/0008-leading-words-and-visual-summaries.md), [0009](docs/decisions/0009-adopter-product-context.md), [0010](docs/decisions/0010-optional-start-skill.md)); live verification in multiple agent hosts remains ongoing.
 
 ### Problem
 
@@ -89,6 +89,7 @@ flow-skills offers a small catalog: **Flow Lite** for root context alignment, pl
 | Delivery | `explore`, `grill`, `to-spec`, `to-tickets`, `implement`, `review`, `retro` |
 | Product discovery | `interview`, `jtbd`, `competitors` |
 | Writing | `write-agents`, `write-humans` |
+| Project start | [`start`](skills/start/SKILL.md) — initialize from flow-next or flow-mono (manual only) |
 | Misc | `tldr` |
 
 Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Every skill except `flow` requires explicit invocation. No skill enforces a sequence (`/implement` does not require `/to-spec`).
@@ -112,6 +113,6 @@ Gaps to respect: no new skills unless they clearly strengthen the chain or reduc
 
 Strategic themes (measurable learning, API-first agentic products) may inform maintainer research. No OMTM is selected for Flow itself; broader demand remains unvalidated.
 
-**Starting a project.** The catalog has no `start` skill yet ([0010](docs/decisions/0010-optional-start-skill.md) authorizes a future optional one). There is no `flow start` command; discoverable `flow` must not be treated as initialization. Until `start` ships, use GitHub **Use this template** on flow-next or flow-mono, or ordinary work in the adopter repository—not Flow Lite or unauthorized scaffolding.
+**Starting a project.** Invoke the optional [`start`](skills/start/SKILL.md) skill when you want help choosing flow-next or flow-mono and creating product-specific root docs. There is no `flow start` command; discoverable `flow` must not be treated as initialization ([0010](docs/decisions/0010-optional-start-skill.md)).
 
 See [documentation guide](docs/README.md) and [AGENTS.md](AGENTS.md) for maintenance.
