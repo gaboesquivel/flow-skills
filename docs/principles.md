@@ -1,6 +1,6 @@
 # Flow principles
 
-Status: working draft, updated 2026-10-19. Themes reflect the discussion; wording and implementation remain open for refinement.
+Status: elaboration, updated 2026-10-27. The seven official principles live in [PRODUCT.md](../PRODUCT.md#principles). The themes below are optional methodology judgment; they do not replace that list.
 
 ## Validation
 
@@ -34,6 +34,6 @@ Shorten the path from an assumption to useful evidence and a decision. Progress 
 
 ## Room for exploration
 
-Open exploration may begin with curiosity rather than a formal hypothesis. When it becomes a product commitment, make its intent and validation approach explicit. Apply these principles with judgment rather than as a checklist for every action.
+Open exploration may begin with curiosity rather than a formal hypothesis. When it becomes a product commitment, make its intent and validation approach explicit. Apply these themes with judgment rather than as a checklist for every action.
 
-The [methodology](methodology.md) describes optional practices. [References](references.md) preserve influences and research. Shipped [skills](../skills/) include discoverable Flow Lite (`flow`) and otherwise manual packages; none enforce this draft as a mandatory workflow. This draft is not a finalized skill specification.
+The [methodology](methodology.md) describes optional practices. [References](references.md) preserve influences and research. Shipped [skills](../skills/) include discoverable Flow Lite (`flow`) and otherwise manual packages; none enforce these themes as a mandatory workflow.

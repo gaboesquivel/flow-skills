@@ -12,6 +12,8 @@ State the intended observable result and implement the smallest useful increment
 
 For meaningful behavior changes, prefer tests at established public interfaces when the project already tests that way. Run focused checks while working and applicable final checks once the change stabilizes.
 
-Review the actual changed files, including untracked files, against the request and project constraints. Optional [review](../review/SKILL.md) guidance can inform a self-check; a separate review pass is not required.
+Review the actual changed files, including untracked files, against the request and project constraints. Optional `review` skill guidance can inform a self-check when that skill is installed; a separate review pass is not required.
 
-Update owning documentation when behavior or accepted context changes. Report the result, files, checks, limitations, and remaining work. Commit, publish, push, or deploy only when that delivery action is already authorized; implementation alone does not require it.
+When behavior or accepted context changes, update owning documentation. For meaningful product, design, architecture, or terminology shifts, align `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` (create a root file only when it would hold meaningful content). Link to specs or decisions instead of duplicating durable rationale; do not open new spec or decision files unless the user asked or the work already uses that convention.
+
+Report the result, files, checks, limitations, and remaining work. Commit, publish, push, or deploy only when that delivery action is already authorized; implementation alone does not require it.

@@ -1,6 +1,6 @@
 # Flow methodology
 
-Current practices under refinement. The [principles draft](principles.md) guides judgment; this document describes application, not a mandatory sequence or skill pipeline.
+Current practices. Official identity and the seven principles live in [PRODUCT.md](../PRODUCT.md). The [principles](principles.md) draft elaborates optional themes; this document describes application, not a mandatory sequence or skill pipeline.
 
 ## Clarify intent
 

@@ -23,6 +23,8 @@ Flow does not modify adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or simila
 
 All skills except `flow` require explicit user invocation in Flow's design.
 
+**Root context alignment** is not guaranteed by implicit `flow` invocation alone. Hosts that only task-match skills may skip alignment on ordinary implementation work. The portable contract is: `implement` and `review` remind agents to align `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` when meaningful changes warrant it; adopters can also invoke `/flow` or rely on host surfacing when supported. Always-on alignment without those mechanisms requires host-specific hooks (for example always-loaded project instructions), which Flow skills do not modify.
+
 ## Metadata
 
 Dual policy ([decision 0006](decisions/0006-flow-lite-and-flat-docs.md)):

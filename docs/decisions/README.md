@@ -10,6 +10,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0004-portable-skill-catalog.md](0004-portable-skill-catalog.md) | Accepted (flow id superseded by 0006) | Portable catalog and Agent Skills install |
 | [0005-misc-tldr-skill.md](0005-misc-tldr-skill.md) | Accepted | Misc group and `tldr` visual recap skill |
 | [0006-flow-lite-and-flat-docs.md](0006-flow-lite-and-flat-docs.md) | Accepted | Flow Lite `flow` skill and flat specs/decisions docs |
+| [0007-flow-product-identity.md](0007-flow-product-identity.md) | Accepted | Official Flow identity in PRODUCT.md |
 
 ## Rules
 

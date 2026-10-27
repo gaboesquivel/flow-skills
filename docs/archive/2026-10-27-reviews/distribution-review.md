@@ -16,7 +16,7 @@ Baseline: `HEAD` was `94d43fd` (initial commit); much of the distribution was un
 
 ### 1. High — release maintenance can erase Flow edits
 
-Sources: [sync script](../archive/2026-10-27-distribution/sync-upstreams.ts), [patch script](../archive/2026-10-27-distribution/apply-flow-patches.mjs), [manifest](../archive/2026-10-27-distribution/upstreams.manifest.json), [release process](../RELEASE.md).
+Sources: [sync script](../2026-10-27-distribution/sync-upstreams.ts), [patch script](../2026-10-27-distribution/apply-flow-patches.mjs), [manifest](../2026-10-27-distribution/upstreams.manifest.json), [release process](../../RELEASE.md).
 
 The manifest resolves upstream `main` unless a pin is supplied. Sync recursively deletes each imported skill directory before copying upstream content and applying string replacements. The lock records the resolved revision; it does not constrain subsequent syncs. Release instructions require this refresh. Direct Flow edits outside the patch transforms can therefore disappear during normal maintenance.
 
@@ -26,7 +26,7 @@ Recommendation: keep local source authoritative; remove sync/patch machinery and
 
 ### 2. High — shipped skills contain broken references
 
-Sources: [domain modeling](../../skills/domain-modeling/SKILL.md), [performance](../../skills/performance-optimization/SKILL.md), [security](../../skills/security-and-hardening/SKILL.md), their supporting references.
+Sources: `skills/domain-modeling/SKILL.md`, `skills/performance-optimization/SKILL.md`, `skills/security-and-hardening/SKILL.md` (all removed), their supporting references.
 
 - Domain modeling links to `./decision record-FORMAT.md`; the actual file is `ADR-FORMAT.md`. Its directory diagrams also say `decision/`, while prose says `docs/decisions/`.
 - Performance references missing `../../references/performance-checklist.md`; its optimization-patterns reference also points outside the copied tree.
@@ -37,7 +37,7 @@ These are incomplete copies and faulty adaptations. Preserve or rewrite useful s
 
 ### 3. High — manual activation and composition contradict each other
 
-Sources: [bootstrap](../../bootstrap/AGENTS.snippet.md), [implement](../../skills/implement/SKILL.md), [grill-with-docs](../../skills/grill-with-docs/SKILL.md), [retro](../../skills/retro/SKILL.md), [skill mechanics](../../skills/write-for-agents/SKILL-MECHANICS.md), `skills/*/agents/openai.yaml`.
+Sources: `bootstrap/AGENTS.snippet.md`, [implement](../../../skills/implement/SKILL.md), `skills/grill-with-docs/SKILL.md`, [retro](../../../skills/retro/SKILL.md), `skills/write-for-agents/SKILL-MECHANICS.md` (bootstrap and removed skills), `skills/*/agents/openai.yaml`.
 
 Every entrypoint disables model invocation and the bootstrap promises manual specialized skills. Implement nevertheless calls TDD and code-review; grill-with-docs calls two other skills; retro calls writing-for-agents. The bundled skill-mechanics document itself says user-only skills cannot invoke one another. Adapter policy is also inconsistent: only some OpenAI metadata files explicitly disable implicit invocation.
 
@@ -45,7 +45,7 @@ Recommendation: distinguish explicit user activation, permitted supporting-refer
 
 ### 4. High — review can miss precisely the work under review
 
-Source: [code-review](../../skills/code-review/SKILL.md).
+Source: `skills/code-review/SKILL.md` (removed).
 
 The skill advertises work-in-progress review but restricts inspection to `git diff <ref>...HEAD`, requires a nonempty committed diff, and asks for a baseline when none was given. This excludes staged, unstaged, and untracked work. Here the distribution is largely untracked, so following that procedure would omit the principal review surface. It also requires upstream tracker setup and parallel agents without a single-agent fallback.
 
@@ -53,7 +53,7 @@ Recommendation: support repository audit, working-tree review, and committed com
 
 ### 5. High — installation identity and verification do not establish reproducibility
 
-Sources: [README](../../README.md), [package](../../package.json), [CLI](../../scripts/init/cli.mjs), [manifest writer](../../scripts/init/bootstrap.mjs).
+Sources: [README](../../../README.md), [package](../../../package.json), `scripts/init/cli.mjs` (removed), `scripts/init/bootstrap.mjs` (removed).
 
 - README recommends `npx flow-skills-init`, but the declared package is `@gaboesquivel/flow-skills`; the bin name alone does not establish an unscoped package with that name. No publication of that separate package was verified.
 - A versioned init package installs the default GitHub source independently of its own release version. Manifest version and bootstrap can therefore describe one release while installed skills come from another revision.
@@ -65,7 +65,7 @@ Recommendation: define one documented package/entrypoint, install the exact bund
 
 ### 6. Medium — malformed bootstrap markers are not safely handled
 
-Source: [bootstrap merge](../../scripts/init/bootstrap.mjs).
+Source: `scripts/init/bootstrap.mjs` (removed).
 
 The merge uses the first start and end markers independently. In an isolated reproduction, reversed markers duplicated intervening user content and left two start/end pairs. Duplicate blocks remained duplicated. Partial markers are appended around rather than diagnosed. Normal-case idempotency testing does not cover these states.
 
@@ -73,7 +73,7 @@ Recommendation: validate marker count and order before mutation; preserve bytes 
 
 ### 7. High — current tests give false confidence about distribution quality
 
-Sources: [validator](../../scripts/validate.mjs), [tests](../../tests), [CI](../../.github/workflows/ci.yml), [smoke checklist](../../tests/smoke/README.md).
+Sources: [validator](../../../scripts/validate.mjs), [tests](../../../tests), [CI](../../../.github/workflows/ci.yml), [smoke checklist](../../../tests/smoke/README.md).
 
 Validation reads entrypoints only, parses a small frontmatter subset, permits an external `triage`, and checks only a few reference phrasings. It does not verify supporting links, actual lock hashes, adapters, or workflow contradictions. Most unit checks assert a skill count or exact sentence. They pass despite findings 2–4. Integration asserts 23 directories and bootstrap existence, not the behavior promised by the skills.
 
@@ -83,7 +83,7 @@ Recommendation: validate the entire shipped dependency closure and package conte
 
 ### 8. Medium — upstream setup and ceremonies obstruct ordinary work
 
-Sources: [setup](../archive/2026-10-27-distribution/setup-matt-pocock-skills/SKILL.md), [spec](../../skills/to-spec/SKILL.md), [tickets](../../skills/to-tickets/SKILL.md), [TDD](../../skills/tdd/SKILL.md), [grilling](../../skills/grilling/SKILL.md).
+Sources: [setup](../2026-10-27-distribution/setup-matt-pocock-skills/SKILL.md), [spec](../../../skills/to-spec/SKILL.md), [tickets](../../../skills/to-tickets/SKILL.md), `skills/tdd/SKILL.md`, `skills/grilling/SKILL.md` (removed).
 
 Planning and review depend on `/setup-matt-pocock-skills`, extra `docs/agents/` configuration, triage labels, and a `.scratch/` task layout. Setup omits triage configuration when `triage` is absent, while spec/tickets still expect the vocabulary. Spec mandates an extremely extensive story list and publication; TDD requires user confirmation for every test seam and bans refactoring within its loop; grilling requires exhausting every branch and a final confirmation. These conflict with Flow's proportional process and reuse of established authorization.
 
@@ -91,7 +91,7 @@ Recommendation: discover existing project conventions, keep small tasks direct, 
 
 ### 9. Medium — delivery authority is inconsistent
 
-Sources: [implement](../../skills/implement/SKILL.md), [ship](../../skills/ship/SKILL.md), [prototype](../../skills/prototype/SKILL.md).
+Sources: [implement](../../../skills/implement/SKILL.md), `skills/ship/SKILL.md`, `skills/prototype/SKILL.md` (removed).
 
 Implement always commits; prototype mandates a throwaway branch and folding validated decisions into production code; ship defines explicit authority for delivery but treats absence of deployment as partial delivery even for a library. These are differing assumptions about what the original request authorizes.
 

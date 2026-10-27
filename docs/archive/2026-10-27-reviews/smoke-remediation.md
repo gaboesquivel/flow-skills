@@ -1,6 +1,6 @@
 # Local-source remediation verification
 
-**Historical.** Bootstrap installer and 25-skill catalog superseded by [decision 0004](../../docs/decisions/0004-portable-skill-catalog.md).
+**Historical.** Bootstrap installer and 25-skill catalog superseded by [decision 0004](../../decisions/0004-portable-skill-catalog.md).
 
 Date: 2026-10-27. Scope: current working tree and npm-packed artifact, on macOS with Node 24.20.0. This is implementation evidence, not a published release or a cross-host compatibility claim.
 
@@ -32,6 +32,6 @@ Two isolated agent contexts were given only a skill location and task-local inpu
 
 ## Remaining limits
 
-Scenario matrix status: [scenario status](2026-10-27-scenario-status.md). Structural remediation and local-source ownership are complete. A second live agent product and automatic-activation checks remain before broad cross-host release claims. Node 22 and Linux are configured in CI but were not executed locally. External package publication and production adoption are unverified. These limits prevent a claim of broad release readiness.
+Scenario matrix status: [scenario status](../../../tests/smoke/2026-10-27-scenario-status.md). Structural remediation and local-source ownership are complete. A second live agent product and automatic-activation checks remain before broad cross-host release claims. Node 22 and Linux are configured in CI but were not executed locally. External package publication and production adoption are unverified. These limits prevent a claim of broad release readiness.
 
 The installer stops on an old manifest without schemaVersion rather than guessing ownership from the legacy digest. Reconcile/back up any custom skills, AGENTS block, and old manifest explicitly before replacing legacy installation metadata. There is no destructive force option. Filesystem rollback is best-effort; if restoration itself fails, backups remain at the path named in the diagnostic for recovery.

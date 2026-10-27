@@ -33,4 +33,6 @@ Use independent reviewers only when available and authorized. Otherwise perform 
 
 Lead with actionable findings ordered by impact. For each, cite the file or line, concrete failure or mismatch, supporting evidence, and smallest viable correction. Separate open questions and verification limits. If no material findings remain, say what was checked.
 
+When the reviewed change affects product intent, experience, architecture, or shared vocabulary, note whether root context (`PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md`) still matches or needs alignment. Flag stale root docs as findings; do not silently rewrite them unless fixes are requested. The `flow` skill (when installed or surfaced by the host) owns detailed alignment passes.
+
 Review is read-only unless fixes are requested. A review request does not authorize publishing comments, changing source, committing, or modifying tracker state.

@@ -1,8 +1,8 @@
 # Writing for humans and agents
 
-Status: two skills adopted on 2026-10-19; local implementations added on 2026-10-27; behavior evaluation continues. Current commitment: [PRODUCT.md](../../../PRODUCT.md).
+Status: two skills adopted on 2026-10-19; local implementations added on 2026-10-27; behavior evaluation continues. Current commitment: [PRODUCT.md](../../../../PRODUCT.md).
 
-Shipped skill names: `write-humans` and `write-agents` (see [decision 0004](../../decisions/0004-portable-skill-catalog.md)). Historical discussion used `write-for-humans` and `write-for-agents`. The user requested both capabilities and identified Factory's human-writing and Matt Pocock's writing-for-agents as references. See the [source assessment](../../research/2026-10-19-writing.md).
+Shipped skill names: `write-humans` and `write-agents` (see [decision 0004](../../../decisions/0004-portable-skill-catalog.md)). Historical discussion used `write-for-humans` and `write-for-agents`. The user requested both capabilities and identified Factory's human-writing and Matt Pocock's writing-for-agents as references. See the [source assessment](../../../research/2026-10-19-writing.md).
 
 ## Boundaries
 
@@ -11,7 +11,7 @@ Shipped skill names: `write-humans` and `write-agents` (see [decision 0004](../.
 
 Shared project documents can serve both audiences. Apply both perspectives to the same authoritative content when useful; avoid maintaining duplicate versions solely for different readers.
 
-On October 20, progressive disclosure and concise task-specific documentation were adopted as [current practice](../../methodology.md#write-context-for-agents-and-humans). The later local implementation preserves this direction without adopting every source rule.
+On October 20, progressive disclosure and concise task-specific documentation were adopted as [current practice](../../../methodology.md#write-context-for-agents-and-humans). The later local implementation preserves this direction without adopting every source rule.
 
 ## Evaluation examples (2026-10-27)
 
@@ -24,11 +24,11 @@ Recorded runs (historical): [smoke remediation](../../../archive/2026-10-27-revi
 
 ## Open choices
 
-These capabilities span product and engineering. The local implementations and explicit-activation policy follow [decision 0002](../../decisions/0002-local-skill-ownership.md). The references inform design; their full rules are not automatically adopted. Further refinement depends on [behavior evaluation](../../../../tests/smoke/README.md).
+These capabilities span product and engineering. The local implementations and explicit-activation policy follow [decision 0002](../../../decisions/0002-local-skill-ownership.md). The references inform design; their full rules are not automatically adopted. Further refinement depends on [behavior evaluation](../../../../tests/smoke/README.md).
 
 ## Descriptive technical naming plan
 
-Direction adopted by the user on 2026-10-27: prefer concise, technically accurate, descriptive names. **Current** catalog: [decision 0004](../../decisions/0004-portable-skill-catalog.md). The table below is historical proposal material retained for rationale; it does not describe the current skill directories.
+Direction adopted by the user on 2026-10-27: prefer concise, technically accurate, descriptive names. **Current** catalog: [decision 0004](../../../decisions/0004-portable-skill-catalog.md). The table below is historical proposal material retained for rationale; it does not describe the current skill directories.
 
 ### Naming rules
 

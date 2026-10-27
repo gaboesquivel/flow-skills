@@ -4,10 +4,13 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
-import { DISCOVERABLE_SKILL_NAMES, validateSkills } from '../scripts/validate.mjs'
+import { DISCOVERABLE_SKILL_NAMES, validateRepository, validateSkills } from '../scripts/validate.mjs'
 
-const skillsRoot = join(dirname(fileURLToPath(import.meta.url)), '..', 'skills')
+const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
+const skillsRoot = join(repoRoot, 'skills')
 test('all shipped references and metadata validate', () => assert.deepEqual(validateSkills(skillsRoot), []))
+
+test('documentation markdown links resolve', () => assert.deepEqual(validateRepository(repoRoot).filter((e) => e.includes(': missing target')), []))
 
 test('flow is the only discoverable skill', () => {
   assert.deepEqual([...DISCOVERABLE_SKILL_NAMES], ['flow'])

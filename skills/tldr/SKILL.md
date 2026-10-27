@@ -21,7 +21,7 @@ Answer like a **show me** request: diagrams and charts carry the message; prose 
    - **Markdown table** for alignment checks: topic, user intent, agent understanding, status (aligned / unclear / drift).
    - **Short labels only** on diagrams and table cells — no paragraph under the visuals unless the user asked for narrative.
 
-2. **Keep text scarce.** When words are required (titles, legend, one-line verdict), apply [Write Humans](../write-humans/SKILL.md): lead with the point, concrete nouns, no filler, no invented facts or promises.
+2. **Keep text scarce.** When words are required (titles, legend, one-line verdict), write like the `write-humans` skill when installed: lead with the point, concrete nouns, no filler, no invented facts or promises.
 
 3. **Optional host visualization.** If the environment supports rich inline HTML charts or a visualize-style skill, prefer that for comparative or numeric session facts; otherwise Mermaid and tables are enough.
 

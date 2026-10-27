@@ -1,8 +1,8 @@
 # Flow Skills
 
-Lean, portable [agent skills](https://agentskills.io) for product and engineering work. **Flow Lite** keeps root context docs aligned; the rest of the catalog is optional and manually invoked. No setup command, workflow router, or changes to adopter instruction files.
+**From intent to verified software.** Portable [agent skills](https://agentskills.io) for [Flow](PRODUCT.md), a human-led product engineering methodology. **Flow Lite** keeps root context docs aligned; the rest of the catalog is optional and manually invoked. No setup command, workflow router, or changes to adopter instruction files.
 
-[Product direction](PRODUCT.md) · **[Skill catalog](docs/skills.md)** · [Methodology](docs/methodology.md) · [Documentation guide](docs/README.md)
+[Flow identity and catalog scope](PRODUCT.md) · **[Skill catalog](docs/skills.md)** · [Methodology](docs/methodology.md) · [Documentation guide](docs/README.md)
 
 ## Install
 

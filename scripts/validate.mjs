@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { dirname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { collectDocLinkErrors } from './check-doc-links.mjs'
 
 export const DISCOVERABLE_SKILL_NAMES = new Set(['flow'])
 
@@ -92,9 +93,15 @@ function listMarkdownAndSupportFiles(folder) {
   return out
 }
 
+export function validateRepository(repoRoot) {
+  const errors = validateSkills(join(repoRoot, 'skills'))
+  errors.push(...collectDocLinkErrors(join(repoRoot, 'docs')))
+  return errors
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const root = join(dirname(fileURLToPath(import.meta.url)), '..', 'skills')
-  const errors = validateSkills(root)
+  const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
+  const errors = validateRepository(repoRoot)
   if (errors.length) { console.error(errors.join('\n')); process.exitCode = 1 }
-  else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills and their local references.`)
+  else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills, documentation links, and local references.`)
 }

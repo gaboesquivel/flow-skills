@@ -1,7 +1,7 @@
 {
   "name": "@gaboesquivel/flow-skills",
   "version": "0.3.0",
-  "description": "Portable, manually invoked agent skills for product and engineering work",
+  "description": "Portable Agent Skills catalog: discoverable Flow Lite context alignment plus explicit discovery and delivery skills",
   "type": "module",
   "license": "MIT",
   "repository": {

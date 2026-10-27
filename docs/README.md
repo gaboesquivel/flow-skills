@@ -4,9 +4,9 @@ Conventions for Flow Skills and a default pattern adopters may follow. Create do
 
 | Location | Owns |
 |---|---|
-| [PRODUCT.md](../PRODUCT.md) | Purpose, problem, capabilities, scope, and open product choices |
+| [PRODUCT.md](../PRODUCT.md) | Flow identity, ecosystem boundaries, dogfooding; flow-skills catalog and scope |
 | [GLOSSARY.md](../GLOSSARY.md) | Project-specific meanings and essential distinctions |
-| [principles.md](principles.md) | Guiding principles (working draft) |
+| [principles.md](principles.md) | Optional methodology themes; the seven principles live in PRODUCT.md |
 | [methodology.md](methodology.md) | How principles apply in practice (optional judgment, not enforcement) |
 | [skills.md](skills.md) | Skill catalog and links to `skills/*/SKILL.md` |
 | [AGENTS.md](../AGENTS.md) | Instructions for maintaining this repository |

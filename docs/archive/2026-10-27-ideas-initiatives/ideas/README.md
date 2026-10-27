@@ -1,8 +1,8 @@
 # Ideas and dispositions
 
-**Archived** — superseded by [decision 0006](../../decisions/0006-flow-lite-and-flat-docs.md). Not current structure.
+**Archived** — superseded by [decision 0006](../../../decisions/0006-flow-lite-and-flat-docs.md). Not current structure.
 
-Index of substantial ideas, including accepted capabilities whose implementation remains open. Current product commitments live in [PRODUCT.md](../../../PRODUCT.md); an adopted idea does not authorize implementation.
+Index of substantial ideas, including accepted capabilities whose implementation remains open. Current product commitments live in [PRODUCT.md](../../../../PRODUCT.md); an adopted idea does not authorize implementation.
 
 | Idea | Disposition |
 |---|---|
@@ -19,7 +19,7 @@ Index of substantial ideas, including accepted capabilities whose implementation
 
 ## Moving an idea forward
 
-Follow the [current documentation guide](../../README.md) for active conventions.
+Follow the [current documentation guide](../../../README.md) for active conventions.
 
 ## Status rules
 
@@ -37,4 +37,4 @@ Pruning may shorten or relocate an idea, never silently change its status. Keep 
 
 Use the [historical archive](../../../archive/2026-10-18/INDEX.md), not a separate discarded folder. Archiving does not change disposition: retain the index entry, status, rationale, and working links.
 
-The [reconciliation report](../../research/2026-10-19-idea-reconciliation.md) records what was checked, what was recovered into this index, and remaining source limitations.
+The [reconciliation report](../../../research/2026-10-19-idea-reconciliation.md) records what was checked, what was recovered into this index, and remaining source limitations.

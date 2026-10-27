@@ -28,8 +28,8 @@ The description expresses intended value, not current skill availability. Show d
 ## Page outline
 
 1. **Introduction:** headline and supporting description. Mission and motto placement remain open; avoid repeating the same promise in several adjacent lines.
-2. **Principles:** draw from [the principles draft](../principles.md): validation, observability, agentic, lean, and velocity. Preserve room for exploration without presenting every principle as a checklist.
-3. **Workflow:** explain how discovery, refinement, delivery, and learning connect, using [the methodology](../../methodology.md). Stage names and visual form remain proposals, not a new mandatory sequence or implemented commands.
+2. **Principles:** draw from [the principles draft](../../../principles.md): validation, observability, agentic, lean, and velocity. Preserve room for exploration without presenting every principle as a checklist.
+3. **Workflow:** explain how discovery, refinement, delivery, and learning connect, using [the methodology](../../../methodology.md). Stage names and visual form remain proposals, not a new mandatory sequence or implemented commands.
 
 Later sections, navigation, calls to action, and a future skill catalog remain open. Do not show installation instructions or availability claims before they are supported.
 
@@ -37,9 +37,9 @@ Later sections, navigation, calls to action, and a future skill catalog remain o
 
 ### Agentic Product Engineer definition
 
-Use the working meanings in [GLOSSARY.md](../../../GLOSSARY.md#agentic-product-engineering), consolidated there on 2026-10-20. PRODUCT.md owns the audience; this initiative owns how to explain the role on the page. Placement and final public wording remain open; avoid expanding the hero into a role manifesto.
+Use the working meanings in [GLOSSARY.md](../../../../GLOSSARY.md#agentic-product-engineering), consolidated there on 2026-10-20. PRODUCT.md owns the audience; this initiative owns how to explain the role on the page. Placement and final public wording remain open; avoid expanding the hero into a role manifesto.
 
-The [role assessment](../../research/2026-10-20-agentic-product-engineering.md) preserves the proposed responsibilities, boundaries, and Rangle attribution limits.
+The [role assessment](../../../research/2026-10-20-agentic-product-engineering.md) preserves the proposed responsibilities, boundaries, and Rangle attribution limits.
 
 ### Differentiator, mission, and motto
 
@@ -68,4 +68,4 @@ Reviewed 2026-10-20:
 
 - https://skills.addy.ie/ — user-selected primary presentation reference. Extracted page content shows a hero, lifecycle, catalog, mechanisms, specialist review, and installation calls to action. This inspection establishes content structure, not visual styling. The user's principles-before-workflow order is Flow's direction, not a claim about Addy's section order.
 - https://gaboesquivel.com/ — user-selected visual identity reference. Extracted homepage copy connects product, design, architecture, and human/agent experiences. Palette and layout have not been visually inspected.
-- [Matt Pocock reference index](../references.md#composition-and-refinement) — secondary influence; no specific website layout was selected or inspected in this initiative.
+- [Matt Pocock reference index](../../../references.md#composition-and-refinement) — secondary influence; no specific website layout was selected or inspected in this initiative.

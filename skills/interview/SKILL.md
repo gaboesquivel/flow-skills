@@ -14,4 +14,4 @@ When the user supplies transcripts or notes, synthesize themes, contradictions, 
 
 Return the guide, synthesis, limitations, and recommended next activity. Interviews do not authorize implementation.
 
-Optional [jtbd](../jtbd/SKILL.md) or [competitors](../competitors/SKILL.md) skills may deepen related questions when available; they are not prerequisites.
+Optional `jtbd` or `competitors` skills may deepen related questions when installed; they are not prerequisites.

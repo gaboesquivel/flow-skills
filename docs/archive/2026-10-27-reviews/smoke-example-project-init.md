@@ -1,6 +1,6 @@
 # Smoke evidence — example project init
 
-**Historical.** Bootstrap installer removed in [decision 0004](../../docs/decisions/0004-portable-skill-catalog.md).
+**Historical.** Bootstrap installer removed in [decision 0004](../../decisions/0004-portable-skill-catalog.md).
 
 Date: 2026-10-27
 
@@ -13,4 +13,4 @@ Date: 2026-10-27
 
 ## Manual (Cursor)
 
-Bootstrap preservation on [example-project](../fixtures/example-project) matches `init-integration` expectations (preamble kept, single bootstrap block). Full scenario matrix: [scenario status](./2026-10-27-scenario-status.md).
+Bootstrap preservation on `example-project` (`tests/fixtures/`, historical bootstrap fixture removed) matches `init-integration` expectations (preamble kept, single bootstrap block). Full scenario matrix: [scenario status](../../../tests/smoke/2026-10-27-scenario-status.md).

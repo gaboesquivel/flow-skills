@@ -8,7 +8,7 @@ The user asked for a **retrospective** on how the agent environment could improv
 
 ## Steps
 
-1. Read [Write Agents](../write-agents/SKILL.md) when proposing instruction or skill changes.
+1. Follow `write-agents` conventions when that skill is installed and you propose instruction or skill changes.
 
 2. Read primary sources for the session the user names. If none is named, use the current session. Use available session or transcript tools when the host provides them.
 
