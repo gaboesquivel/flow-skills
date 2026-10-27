@@ -305,7 +305,7 @@ Each PR: establish repo state and contracts; write or update tests before claimi
 ## flow-skills acceptance (this increment)
 
 - Ship spec 005 and decision 0010; update indexes and root context; **do not** add the `start` skill until step 9 above.
-- Validator continues to enforce **fourteen** skills until `start` ships.
+- Validator enforces **fifteen** skills with optional `start` shipped per [0010](../decisions/0010-optional-start-skill.md).
 - Spec 003 file content unchanged.
 
 ---
