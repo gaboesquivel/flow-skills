@@ -1,8 +1,8 @@
 # Flow distribution review and remediation plan
 
-Date: 2026-10-27. Status: historical review baseline. Subsequent remediation is recorded in [verification evidence](../../tests/smoke/2026-10-27-remediation.md) and [decision 0002](../decisions/0002-local-skill-ownership.md). Findings below describe the pre-remediation state; linked maintained files may now differ.
+Date: 2026-10-27. Status: historical review baseline. Subsequent remediation is recorded in [verification evidence](smoke-remediation.md) and [decision 0002](../../decisions/0002-local-skill-ownership.md). Findings below describe the pre-remediation state; linked maintained files may now differ.
 
-**Post-remediation (same date):** Implementation follows [decision 0002](../decisions/0002-local-skill-ownership.md). Sync/patch scripts and active manifests live under [archive/2026-10-27-distribution/](../archive/2026-10-27-distribution/). File paths in findings below describe the tree **at review time** unless noted otherwise. Current automated evidence: [remediation smoke note](../../tests/smoke/2026-10-27-remediation.md).
+**Post-remediation (same date):** Implementation follows [decision 0002](../../decisions/0002-local-skill-ownership.md). Sync/patch scripts and active manifests live under [archive/2026-10-27-distribution/](../2026-10-27-distribution/). File paths in findings below describe the tree **at review time** unless noted otherwise. Automated evidence at the time: [smoke remediation](smoke-remediation.md). Current catalog: [decision 0004](../../decisions/0004-portable-skill-catalog.md).
 
 ## Assessment
 

@@ -1,6 +1,6 @@
 # Flow Skills
 
-Status: portable skill catalog implemented (2026-10-27); live verification across multiple agent hosts remains ongoing before broad compatibility claims.
+Status: portable twelve-skill catalog on `main` ([decision 0004](docs/decisions/0004-portable-skill-catalog.md)); live verification in multiple agent hosts remains ongoing.
 
 ## Purpose and audience
 
@@ -14,25 +14,18 @@ AI makes it easy to ship faster than teams establish what matters. Bundling disp
 
 Flow offers a small, composable catalog with explicit invocation, no mandatory pipeline, and no requirement to modify adopter `AGENTS.md`, `CLAUDE.md`, or equivalent files.
 
-## Implemented scope
+## Shipped catalog
 
-**Shipped today:** twelve installable skills (seven delivery, three optional product discovery, two writing). Installation through the [Agent Skills ecosystem](https://github.com/vercel-labs/skills) (`npx skills add`). Core instructions avoid host-specific tool names and proprietary APIs.
+**Install:** `npx skills add gaboesquivel/flow-skills` via the [Agent Skills ecosystem](https://github.com/vercel-labs/skills).
 
-**Broader methodology direction** (learning loops, validation board UI, commercial discovery automation, repository initialization products) remains documented in [methodology](docs/methodology.md) and [initiatives](docs/initiatives/README.md) but is **not** enforced by a router skill or setup command.
+**Skills:** seven delivery, three optional product discovery, two writing — grouped and described in **[docs/skills.md](docs/skills.md)**.
 
-Capabilities users get from skills:
+Skills are editable, composable when explicitly invoked, and independent (`/implement` does not require `/to-spec`; `/to-spec` does not require `/grill`).
 
-- Exploration and challenge before commitment (`explore`, `grill`).
-- Numbered specifications and optional task breakdown (`to-spec`, `to-tickets`).
-- Implementation and review on real repositories (`implement`, `review`).
-- Session retrospective for agent environment improvements (`retro`).
-- Optional customer and market framing (`interview`, `jtbd`, `competitors`).
-- Clear writing for humans and agents (`write-humans`, `write-agents`).
-
-Skills are editable, composable when explicitly invoked, and independent. `/implement` does not require `/to-spec`; `/to-spec` does not require `/grill`.
+**Not enforced by skills:** validation board UI, OMTM automation, commercial discovery pipelines, or repository initialization products. Those directions live in [methodology](docs/methodology.md) and [initiatives](docs/initiatives/README.md).
 
 ## Approach and open choices
 
-Strategic product direction (OMTM, validation board, API-first agentic products, initialization experiments) stays in this document and linked research. No OMTM is selected for Flow itself; demand for Flow remains unvalidated.
+Strategic product direction (OMTM, validation board, API-first agentic products) stays in this document and linked research. No OMTM is selected for Flow itself; demand for Flow remains unvalidated.
 
-See [principles](docs/principles.md), [methodology](docs/methodology.md), and [decision 0004](docs/decisions/0004-portable-skill-catalog.md) for the current catalog and distribution choices.
+See [principles](docs/principles.md), [methodology](docs/methodology.md), and [documentation guide](docs/README.md).

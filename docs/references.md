@@ -130,11 +130,10 @@ User-selected references for the two planned writing skills; specific upstream r
 
 ## Distribution evaluation
 
-- [Decision 0004](decisions/0004-portable-skill-catalog.md) — current twelve-skill catalog and `npx skills add gaboesquivel/flow-skills` install path.
+- [Skill catalog](skills.md) — current twelve skills, optional flow, and `SKILL.md` links.
+- [Decision 0004](decisions/0004-portable-skill-catalog.md) — catalog and `npx skills add gaboesquivel/flow-skills` install path.
 - [Agent compatibility](agent-compatibility.md) — invocation metadata and host limitations.
-- [October 27 distribution review and remediation plan](research/2026-10-27-distribution-review.md) — historical evidence on the pre-0004 tree; not current instructions.
-- [October 27 direction review, second pass](research/2026-10-27-direction-review.md) — historical advisory review of the superseded 25-skill tree. Superseded for action by decision 0004.
-- [October 27 remediation verification](../tests/smoke/2026-10-27-remediation.md) — historical smoke notes for the retired bootstrap installer; not current install behavior.
+- [October 27 pre-0004 reviews (archive)](archive/2026-10-27-reviews/README.md) — direction review, distribution review, and retired bootstrap smoke notes.
 
 ## Maintenance
 

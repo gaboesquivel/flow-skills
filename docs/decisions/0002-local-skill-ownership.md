@@ -11,7 +11,7 @@ Public installation is defined by [decision 0004](0004-portable-skill-catalog.md
 
 ## Context
 
-The user directed Flow to own copied skill implementations without upstream skill dependencies and remain agent/UI agnostic. The [distribution review](../research/2026-10-27-distribution-review.md) found that release-time synchronization could overwrite local changes, inherited workflows disagreed, and local installation depended on registry access.
+The user directed Flow to own copied skill implementations without upstream skill dependencies and remain agent/UI agnostic. The [distribution review](../archive/2026-10-27-reviews/distribution-review.md) found that release-time synchronization could overwrite local changes, inherited workflows disagreed, and local installation depended on registry access.
 
 ## Decision
 

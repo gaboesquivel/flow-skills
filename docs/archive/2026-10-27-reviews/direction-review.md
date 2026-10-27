@@ -1,6 +1,6 @@
 # Direction review, second pass
 
-Date: 2026-10-27. Status: **historical evidence** — superseded for catalog and install by [decision 0004](../decisions/0004-portable-skill-catalog.md). This note does not adopt a decision, start an initiative, or authorize edits.
+Date: 2026-10-27. Status: **archived historical evidence** — superseded by [decision 0004](../../decisions/0004-portable-skill-catalog.md) and [skill catalog](../../skills.md). This note does not adopt a decision, start an initiative, or authorize edits.
 
 A first pass the same day, on the pre-rename tree, recommended narrowing Flow's claim: the installable catalog was an engineering pipeline, and the Lean Startup methodology was documented but unbuilt. The source then changed. This pass reviews that updated tree.
 
@@ -60,7 +60,7 @@ npx skills@latest add gaboesquivel/flow-skills
 
 [scripts/validate.mjs](../../scripts/validate.mjs) treats `npx skills` and `skills add` as retired dependencies inside skill markdown. The check does not scan README or decision records, so validate can pass while the public install path is the dependency the validator forbids in skills. `pnpm validate` did pass on this tree.
 
-[tests/smoke/2026-10-27-remediation.md](../../tests/smoke/2026-10-27-remediation.md) still describes an installer that runs with an empty PATH so it cannot depend on `npx`. That evidence describes the local bootstrap. It does not describe the command README now tells a founder to run first.
+[smoke-remediation.md](smoke-remediation.md) still describes an installer that runs with an empty PATH so it cannot depend on `npx`. That evidence describes the local bootstrap. It does not describe the command README now tells a founder to run first.
 
 ### F3. Current indexes still describe the previous catalog
 
@@ -70,7 +70,7 @@ These files were not brought in line with the 25-skill tree:
 - [docs/ideas/writing.md](../ideas/writing.md) says the naming plan is implemented via decision 0003, then keeps a table of longer proposed names and says to retain `code-review`, `code-simplification`, `security-and-hardening`, `performance-optimization`, `systematic-debugging`, and `verification-before-completion`. The header calls that table historical. The idea index does not.
 - [docs/ideas/exploration-and-prototyping.md](../ideas/exploration-and-prototyping.md) says separate explore entry points "remain unselected" and that skill boundaries are unresolved. `skills/explore/SKILL.md` exists.
 - [docs/initiatives/methodology-and-skills.md](../initiatives/methodology-and-skills.md) records the 25-skill naming refactor as implemented, and still says the current research focus is to study Lean Startup practices before defining Flow's product skills.
-- [tests/smoke/2026-10-27-remediation.md](../../tests/smoke/2026-10-27-remediation.md) says `pnpm validate` passed with 23 skill directories. The validator now errors unless it finds 25. This pass's validate run reported 25. The remediation note is stale evidence, not a description of the current check.
+- [smoke-remediation.md](smoke-remediation.md) says `pnpm validate` passed with 23 skill directories. The validator now errors unless it finds 25. This pass's validate run reported 25. The remediation note is stale evidence, not a description of the current check.
 
 ### F4. Scenario passes for the new skills are text contracts
 
@@ -90,7 +90,7 @@ The idea index still says no reviewed idea has been marked deferred or dropped.
 
 ### F6. The catalog count is again a fixed check
 
-[docs/research/2026-10-27-distribution-review.md](2026-10-27-distribution-review.md) said not to keep a magic skill count as a product invariant, after tests treated 23 as one. [scripts/validate.mjs](../../scripts/validate.mjs) and [tests/smoke-contracts.test.mjs](../../tests/smoke-contracts.test.mjs) now require 25. The count matches the tree today. It will fail the next deliberate add or removal even when the references are intact.
+[distribution-review.md](distribution-review.md) said not to keep a magic skill count as a product invariant, after tests treated 23 as one. [scripts/validate.mjs](../../scripts/validate.mjs) and [tests/smoke-contracts.test.mjs](../../tests/smoke-contracts.test.mjs) now require 25. The count matches the tree today. It will fail the next deliberate add or removal even when the references are intact.
 
 ## What the update did establish
 

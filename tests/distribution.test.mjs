@@ -13,6 +13,7 @@ test('README documents Agent Skills install without default agent flag', () => {
   assert.match(readme, /npx skills add gaboesquivel\/flow-skills/u)
   assert.doesNotMatch(readme, /-a cursor/u)
   assert.doesNotMatch(readme, /flow-skills-init/u)
+  assert.match(readme, /docs\/skills\.md/u)
 })
 
 test('skills CLI lists all bundled skills from this repository', () => {

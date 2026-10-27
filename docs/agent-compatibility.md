@@ -1,6 +1,6 @@
 # Agent and host compatibility
 
-Flow skills target the [Agent Skills](https://agentskills.io) package layout: `skills/<name>/SKILL.md` with YAML frontmatter.
+Flow skills target the [Agent Skills](https://agentskills.io) package layout: `skills/<name>/SKILL.md` with YAML frontmatter. The [skill catalog](skills.md) lists all twelve packages and when to use each.
 
 ## Installation
 

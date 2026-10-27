@@ -2,7 +2,7 @@
 
 ## Read when relevant
 
-- Product purpose, scope, or priorities: `PRODUCT.md`.
+- Product purpose, scope, or priorities: `PRODUCT.md`. Current skill catalog: `docs/skills.md`.
 - Principles or workflow: `docs/principles.md` and the relevant section of `docs/methodology.md`.
 - Document ownership or locating context: `docs/README.md`.
 - Project terminology: `GLOSSARY.md`.

@@ -8,6 +8,7 @@ Starting structure adopted on 2026-10-19 for Flow Skills. Create documents only 
 | [GLOSSARY.md](../GLOSSARY.md) | Project-specific meanings and essential distinctions; excludes generic definitions and implementation specifications |
 | [principles.md](principles.md) | Guiding principles, currently a working draft |
 | [methodology.md](methodology.md) | How the principles apply in practice |
+| [skills.md](skills.md) | Current skill catalog, optional flow, and links to `skills/*/SKILL.md` |
 | [AGENTS.md](../AGENTS.md) | Instructions for maintaining and working in this repository |
 | DESIGN.md / ARCHITECTURE.md at the root | Current experience and technical decisions; create when needed |
 | [ideas/](ideas/README.md) | Substantial ideas, dispositions, rationale, and links to current direction |

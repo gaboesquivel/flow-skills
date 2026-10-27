@@ -12,11 +12,7 @@ Ship twelve manually invoked skills installable via `npx skills add gaboesquivel
 
 ## Delivered skills
 
-| Group | Skills |
-| --- | --- |
-| Delivery | `explore`, `grill`, `to-spec`, `to-tickets`, `implement`, `review`, `retro` |
-| Product discovery | `interview`, `jtbd`, `competitors` |
-| Writing | `write-agents`, `write-humans` |
+Authoritative grouped catalog: [docs/skills.md](../skills.md).
 
 ## Implementation decisions
 

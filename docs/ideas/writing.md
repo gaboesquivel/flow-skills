@@ -20,7 +20,7 @@ On October 20, progressive disclosure and concise task-specific documentation we
 | `write-humans` | Shorten a status update for a non-technical reader; keep launch date uncertain | Shorter lead, preserved uncertainty, no invented facts |
 | `write-agents` | Add completion criteria to a skill that runs tests | Observable checks, scope boundary, no implicit invocation promise |
 
-Recorded runs: [remediation verification](../../tests/smoke/2026-10-27-remediation.md). Contract checks: [smoke-contracts.test.mjs](../../tests/smoke-contracts.test.mjs).
+Recorded runs (historical): [smoke remediation](../../docs/archive/2026-10-27-reviews/smoke-remediation.md). Contract checks: [smoke-contracts.test.mjs](../../tests/smoke-contracts.test.mjs).
 
 ## Open choices
 

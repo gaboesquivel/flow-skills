@@ -10,4 +10,4 @@
 | GitHub remote install listing | Pass (manual) | `npx skills add gaboesquivel/flow-skills -l` after push to `main` at `2b93683` |
 | Second agent host live run | Open | Manual slash-command or skill-picker run outside Cursor not yet recorded |
 
-Historical notes for the retired bootstrap installer: [2026-10-27-remediation.md](./2026-10-27-remediation.md), [2026-10-27-example-project-init.md](./2026-10-27-example-project-init.md).
+Historical notes for the retired bootstrap installer: [archive](../../docs/archive/2026-10-27-reviews/README.md).
