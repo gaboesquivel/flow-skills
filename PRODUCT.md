@@ -52,7 +52,7 @@ The methodology defines what good product engineering looks like. Reusable skill
 | --- | --- |
 | **Flow** | The methodology (this document and related practice docs) |
 | **flow-skills** (this repository) | Reusable skills and conventions for agents |
-| **[flow-next](https://github.com/gaboesquivel/flow-next)** / **[flow-mono](https://github.com/gaboesquivel/flow-mono)** | Independent application foundations (templates); [shared baseline v2](docs/specs/003-flow-templates-baseline-v2.md) |
+| **[flow-next](https://github.com/gaboesquivel/flow-next)** / **[flow-mono](https://github.com/gaboesquivel/flow-mono)** | Independent application foundations (templates); [interop contract](docs/specs/005-flow-templates-interop.md) (supersedes [003](docs/specs/003-flow-templates-baseline-v2.md) for new work) |
 | **[Flow Factory](https://github.com/gaboesquivel/flow-factory)** | Optional agent orchestration and automated execution built on Flow—not Flow itself |
 
 Templates remain usable without Flow. Flow owns the methodology; flow-skills implements portable agent behavior; templates own their application foundations.
@@ -69,7 +69,7 @@ Primary internal dogfooding targets: **flow-skills** first, then experience vali
 
 ## This repository: flow-skills
 
-Status: fourteen-skill portable catalog on `main` ([0004](docs/decisions/0004-portable-skill-catalog.md), [0005](docs/decisions/0005-misc-tldr-skill.md), [0006](docs/decisions/0006-flow-lite-and-flat-docs.md), [0007](docs/decisions/0007-flow-product-identity.md), [0008](docs/decisions/0008-leading-words-and-visual-summaries.md), [0009](docs/decisions/0009-adopter-product-context.md)); live verification in multiple agent hosts remains ongoing.
+Status: fourteen-skill portable catalog on `main` ([0004](docs/decisions/0004-portable-skill-catalog.md), [0005](docs/decisions/0005-misc-tldr-skill.md), [0006](docs/decisions/0006-flow-lite-and-flat-docs.md), [0007](docs/decisions/0007-flow-product-identity.md), [0008](docs/decisions/0008-leading-words-and-visual-summaries.md), [0009](docs/decisions/0009-adopter-product-context.md), [0010](docs/decisions/0010-optional-start-skill.md)); live verification in multiple agent hosts remains ongoing.
 
 ### Problem
 
@@ -112,6 +112,6 @@ Gaps to respect: no new skills unless they clearly strengthen the chain or reduc
 
 Strategic themes (measurable learning, API-first agentic products) may inform maintainer research. No OMTM is selected for Flow itself; broader demand remains unvalidated.
 
-**Starting a project.** The catalog has no `flow start` command. Discoverable `flow` must not be treated as one. Whether a later optional start skill should exist is unresolved. Until then, starting a repository is ordinary work in that project, not a Flow scaffold.
+**Starting a project.** The catalog has no `start` skill yet ([0010](docs/decisions/0010-optional-start-skill.md) authorizes a future optional one). There is no `flow start` command; discoverable `flow` must not be treated as initialization. Until `start` ships, use GitHub **Use this template** on flow-next or flow-mono, or ordinary work in the adopter repository—not Flow Lite or unauthorized scaffolding.
 
 See [documentation guide](docs/README.md) and [AGENTS.md](AGENTS.md) for maintenance.
