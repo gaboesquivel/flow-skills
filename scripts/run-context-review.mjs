@@ -163,7 +163,13 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
         const gate = gateContextReview({ verdict: parsed.verdict, findings: parsed.findings })
         const comment = formatComment({ verdict: gate.verdict, findings: gate.findings })
         console.log(comment)
-        if (prNumber && process.env.GH_TOKEN) upsertPrComment({ prNumber, body: comment })
+        if (prNumber && process.env.GH_TOKEN) {
+          try {
+            upsertPrComment({ prNumber, body: comment })
+          } catch (err) {
+            console.warn(`Could not post context review comment: ${err.message}`)
+          }
+        }
         if (gate.blocking) {
           console.error('Context review failed (blocking findings, verdict fail, or missing verdict).')
           process.exitCode = 1
