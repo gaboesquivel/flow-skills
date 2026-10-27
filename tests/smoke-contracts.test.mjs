@@ -54,4 +54,5 @@ test('every shipped skill matches the expected catalog', () => {
     const expectImplicit = name === 'flow'
     assert.match(adapter, expectImplicit ? /allow_implicit_invocation:\s*true/u : /allow_implicit_invocation:\s*false/u, name)
   }
+  assert.equal(names.length, 15)
 })

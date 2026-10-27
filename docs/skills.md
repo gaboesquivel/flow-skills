@@ -1,6 +1,6 @@
 # Skill catalog
 
-Fourteen skills in [`skills/`](../skills/). Install with `npx skills add gaboesquivel/flow-skills`. No workflow router and no mandatory sequence.
+Fifteen skills in [`skills/`](../skills/). Install with `npx skills add gaboesquivel/flow-skills`. No workflow router and no mandatory sequence.
 
 [Agent compatibility](agent-compatibility.md) · [Decision 0006](decisions/0006-flow-lite-and-flat-docs.md) · [Decision 0008](decisions/0008-leading-words-and-visual-summaries.md) · [Decision 0009](decisions/0009-adopter-product-context.md) · [Spec 002](specs/002-flow-lite-and-flat-docs.md)
 
@@ -61,6 +61,12 @@ Product discovery, writing, and misc skills are optional and do not block delive
 | --- | --- | --- |
 | [write-humans](../skills/write-humans/SKILL.md) | Lead with the point | Draft or edit clear prose for human readers. |
 | [write-agents](../skills/write-agents/SKILL.md) | One authoritative home | Draft or edit agent instructions so each fact has one home. |
+
+## Project start
+
+| Skill | Leading word | When to use |
+| --- | --- | --- |
+| [start](../skills/start/SKILL.md) | New product | Initialize from flow-next or flow-mono with the adopter's product identity. Manual only; not Flow Lite. |
 
 ## Misc
 
