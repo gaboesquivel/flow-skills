@@ -106,7 +106,11 @@ function upsertPrComment({ prNumber, body }) {
   try {
     const list = JSON.parse(execSync(`gh api "repos/{owner}/{repo}/issues/${prNumber}/comments"`, { encoding: 'utf8' }))
     const existing = list.find((c) => c.body?.includes(marker))
-    if (existing) execSync(`gh api "repos/{owner}/{repo}/issues/comments/${existing.id}" -X PATCH -f "body@${tmp}"`, { stdio: 'inherit' })
+    if (existing)
+      execSync(`gh api "repos/{owner}/{repo}/issues/comments/${existing.id}" -X PATCH`, {
+        input: JSON.stringify({ body: fullBody }),
+        stdio: ['pipe', 'inherit', 'inherit'],
+      })
     else execSync(`gh pr comment ${prNumber} --body-file "${tmp}"`, { stdio: 'inherit' })
   } finally {
     unlinkSync(tmp)
