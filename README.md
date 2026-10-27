@@ -1,6 +1,6 @@
 # Flow Skills
 
-**From intent to verified software.** Portable [agent skills](https://agentskills.io) for [Flow](PRODUCT.md), a human-led product engineering methodology. **Flow Lite** keeps root context docs aligned; the rest of the catalog is optional and manually invoked. No setup command, workflow router, or changes to adopter instruction files.
+**From intent to verified software.** Portable [agent skills](https://agentskills.io) for [Flow](PRODUCT.md), a human-led product engineering methodology. **Flow Lite** keeps the current project's root context docs aligned; the rest of the catalog is optional and manually invoked. No setup command, workflow router, or changes to adopter instruction files.
 
 [Flow identity and catalog scope](PRODUCT.md) · **[Skill catalog](docs/skills.md)** · [Methodology](docs/methodology.md) · [Documentation guide](docs/README.md)
 
@@ -29,7 +29,7 @@ flowchart TB
   manual --> durable
 ```
 
-- **`flow` (Flow Lite)** — align root context documents after meaningful changes. Hosts may surface it when supported; it is not a pipeline.
+- **`flow` (Flow Lite)** — align the current project's root context after meaningful changes. Hosts may surface it when supported; it is not a pipeline and not initialization.
 - **Other skills** — invoke explicitly (`/explore`, `/to-spec`, `/implement`, …). Each is independent; no mandatory sequence.
 
 Details and links to every `SKILL.md`: **[docs/skills.md](docs/skills.md)**.

@@ -4,7 +4,7 @@ Working meanings for Flow's product-engineering practice. Include only project-s
 
 ## Flow
 
-The lightweight, human-led product engineering methodology defined in [PRODUCT.md](PRODUCT.md). Distinct from the flow-skills distribution, Flow Factory orchestration, and application templates (flow-next, flow-mono).
+The lightweight, human-led product engineering methodology defined in this repository's [PRODUCT.md](PRODUCT.md). Distinct from the flow-skills distribution, Flow Factory orchestration, application templates (flow-next, flow-mono), and an adopter project's own product. See [Product context](#product-context).
 
 ## Agentic product engineering
 
@@ -14,13 +14,25 @@ The practice of combining product judgment, design, and software engineering to 
 
 A practitioner who uses product and engineering expertise to decide what is worth building, guide AI agents in building it, and evaluate whether it creates value. Agents can help investigate and challenge direction as well as execute work; the practitioner retains accountability.
 
+## Product context
+
+An adopter project's own product identity, normally in that project's `PRODUCT.md`, with design, architecture, and glossary beside it when they earn a file. Flow Lite aligns product context. It does not copy Flow's mission or principles into it. [Decision 0009](docs/decisions/0009-adopter-product-context.md).
+
 ## Flow Lite
 
-The [`flow`](skills/flow/SKILL.md) skill: keep `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` aligned with meaningful changes. Not a workflow router. Hosts may surface it when supported; other Flow skills stay manually invoked.
+The [`flow`](skills/flow/SKILL.md) skill: keep the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` aligned with meaningful changes. Not a workflow router and not project initialization. Hosts may surface it when supported; that is not an always-on guarantee. Other Flow skills stay manually invoked.
 
 ## Flow skill
 
 A portable `skills/<name>/SKILL.md` package in the Flow Skills distribution. Except Flow Lite (`flow`), skills run only when the user explicitly invokes them. Skills may read local supporting files without imposing a mandatory workflow. The [skill catalog](docs/skills.md) groups skills for navigation; groups do not enforce invocation order.
+
+## Human summary
+
+A visual presentation for a person. Prefer generative UI (GenUI) when the host actually provides it; otherwise Mermaid, tables, and a short statement. The [`tldr`](skills/tldr/SKILL.md) skill owns this, including session recaps and "show me". [`write-humans`](skills/write-humans/SKILL.md) drafts prose. There is no separate `human` skill. [Decision 0008](docs/decisions/0008-leading-words-and-visual-summaries.md).
+
+## Leading word
+
+A compact, familiar concept that recruits existing model associations to guide behavior. Following Matt Pocock's terminology in [writing-for-agents](https://github.com/mattpocock/skills/blob/main/skills/productivity/writing-for-agents/SKILL.md), a leading word anchors both how an agent executes instructions and how it recognizes relevant instructions. Prefer established concepts over invented vocabulary. The [skill catalog](docs/skills.md) records one leading word per Flow skill, and that word appears in the skill. `flow start` is not a leading word and not a skill. Source limits: [writing research](docs/research/2026-10-19-writing.md#matt-pocock-writing-for-agents). [Decision 0008](docs/decisions/0008-leading-words-and-visual-summaries.md).
 
 ## Decision record
 

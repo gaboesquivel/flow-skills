@@ -12,15 +12,25 @@ const contracts = [
   { skill: 'explore', file: 'SKILL.md', includes: ['do not authorize implementation', 'to-spec'] },
   { skill: 'grill', file: 'SKILL.md', includes: ['do not require an exhaustive interview', 'does not itself authorize implementation'] },
   { skill: 'to-spec', file: 'SKILL.md', includes: ['docs/specs/NNN-short-name.md', 'Do not run a separate interview'] },
-  { skill: 'implement', file: 'SKILL.md', includes: ['untracked', 'not a prerequisite', 'PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'do not open new spec or decision'] },
-  { skill: 'review', file: 'SKILL.md', includes: ['untracked', 'single-agent', 'PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md'] },
+  { skill: 'implement', file: 'SKILL.md', includes: ['untracked', 'not a prerequisite', 'PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'do not open new spec or decision', 'product identity', 'flow start'] },
+  { skill: 'review', file: 'SKILL.md', includes: ['untracked', 'single-agent', 'PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'product identity', 'flow start'] },
   { skill: 'write-agents', file: 'SKILL-MECHANICS.md', includes: ['explicit workflow activation', 'fallback'] },
   { skill: 'interview', file: 'SKILL.md', includes: ['do not authorize', 'limitations'] },
   { skill: 'retro', file: 'SKILL.md', includes: ['do not modify', 'explicit user authorization'] },
-  { skill: 'flow', file: 'SKILL.md', includes: ['PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'workflow router', 'Do not edit adopter', 'Do not require installation', 'implement` and `review`', 'Do not create `docs/specs/`'] },
+  { skill: 'flow', file: 'SKILL.md', includes: ['PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'workflow router', 'Do not edit adopter', 'Do not require installation', 'implement` and `review`', 'Do not create `docs/specs/`', "Do not replace a project's product identity", 'flow start', 'not an always-on hook'] },
+  { skill: 'tldr', file: 'SKILL.md', includes: ["Show, don't tell", 'GenUI', 'Check alignment', 'write-humans', 'does not authorize'] },
 ]
 
 test('catalog passes validator including required adapters', () => assert.deepEqual(validateSkills(skillsRoot), []))
+
+test('glossary keeps Flow identity, product context, and human summary apart', () => {
+  const glossary = readFileSync(join(root, 'GLOSSARY.md'), 'utf8')
+  assert.match(glossary, /## Product context/u)
+  assert.match(glossary, /## Human summary/u)
+  assert.match(glossary, /## Leading word/u)
+  assert.match(glossary, /no separate `human` skill/u)
+  assert.match(glossary, /`flow start` is not a leading word/u)
+})
 
 test('smoke behavior contracts hold in skill text', () => {
   for (const { skill, file, includes = [] } of contracts) {

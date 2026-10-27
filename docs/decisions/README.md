@@ -11,6 +11,8 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0005-misc-tldr-skill.md](0005-misc-tldr-skill.md) | Accepted | Misc group and `tldr` visual recap skill |
 | [0006-flow-lite-and-flat-docs.md](0006-flow-lite-and-flat-docs.md) | Accepted | Flow Lite `flow` skill and flat specs/decisions docs |
 | [0007-flow-product-identity.md](0007-flow-product-identity.md) | Accepted | Official Flow identity in PRODUCT.md |
+| [0008-leading-words-and-visual-summaries.md](0008-leading-words-and-visual-summaries.md) | Accepted | Leading words in the catalog; visual summaries stay in `tldr` |
+| [0009-adopter-product-context.md](0009-adopter-product-context.md) | Accepted | Adopter `PRODUCT.md` is that product; no `flow start` |
 
 ## Rules
 

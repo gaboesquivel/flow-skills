@@ -51,6 +51,17 @@ These apply to manual work and skill use. They are not a fixed sequence.
 
 Create only the artifacts the work needs.
 
+## Dogfood
+
+Use this when changing Flow. Apply the skills already in the catalog, in proportion to the work, on a realistic task. Prefer this repository first. Record the run next to the other smoke notes: the task, which skills were actually followed, what happened, and what was not run.
+
+Keep the two kinds of evidence apart:
+
+- **Structural checks** — `pnpm validate`, `pnpm test`, and contract tests. They show that skill text, links, and package metadata match the catalog.
+- **Live agent verification** — a person or agent used a skill in a host. Name the host, the date, and what was observed. A structural pass is not a live run. One agent is not an independent review.
+
+Do not add a dogfood skill, a required pipeline, or a second copy of the product statement for the record.
+
 ## Maintain shared language
 
 Use [GLOSSARY.md](../GLOSSARY.md) for project-specific meanings. Apply discipline through discussion and examples, informed by [domain language research](research/2026-10-20-domain-language.md).

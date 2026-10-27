@@ -61,7 +61,7 @@ Templates remain usable without Flow. Flow owns the methodology; flow-skills imp
 
 Every meaningful improvement to Flow must be developed using Flow and validated against a realistic software development task.
 
-That means maintaining relevant living documentation, using existing skills proportionally, checking that changes work across supported environments, and running retrospectives that can eliminate unnecessary complexity.
+That means maintaining relevant living documentation, using existing skills proportionally, and running retrospectives that can eliminate unnecessary complexity. The repeatable practice, including how to separate structural checks from live agent verification, is [Dogfood](docs/methodology.md#dogfood).
 
 Primary internal dogfooding targets: **flow-skills** first, then experience validation on **flow-next** and **flow-mono**.
 
@@ -69,7 +69,7 @@ Primary internal dogfooding targets: **flow-skills** first, then experience vali
 
 ## This repository: flow-skills
 
-Status: fourteen-skill portable catalog on `main` ([0004](docs/decisions/0004-portable-skill-catalog.md), [0005](docs/decisions/0005-misc-tldr-skill.md), [0006](docs/decisions/0006-flow-lite-and-flat-docs.md), [0007](docs/decisions/0007-flow-product-identity.md)); live verification in multiple agent hosts remains ongoing.
+Status: fourteen-skill portable catalog on `main` ([0004](docs/decisions/0004-portable-skill-catalog.md), [0005](docs/decisions/0005-misc-tldr-skill.md), [0006](docs/decisions/0006-flow-lite-and-flat-docs.md), [0007](docs/decisions/0007-flow-product-identity.md), [0008](docs/decisions/0008-leading-words-and-visual-summaries.md), [0009](docs/decisions/0009-adopter-product-context.md)); live verification in multiple agent hosts remains ongoing.
 
 ### Problem
 
@@ -77,13 +77,15 @@ AI makes it easy to ship faster than teams establish what matters. Disparate ski
 
 flow-skills offers a small catalog: **Flow Lite** for root context alignment, plus optional skills invoked only when you ask. No initialization, no pipeline router, no requirement to modify adopter `AGENTS.md`, `CLAUDE.md`, or equivalent files.
 
+**Adopter product context.** In another repository, `PRODUCT.md` is that product. This file is Flow's identity only. Flow Lite and `implement` update an adopter's product docs when that product changes. They do not overwrite them with the mission, principles, or tagline above. [Decision 0009](docs/decisions/0009-adopter-product-context.md).
+
 ### Install and catalog
 
 **Install:** `npx skills add gaboesquivel/flow-skills` via the [Agent Skills ecosystem](https://github.com/vercel-labs/skills).
 
 | Layer | Skills |
 | --- | --- |
-| Flow Lite | [`flow`](skills/flow/SKILL.md) — align `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md` (discoverable where hosts support it) |
+| Flow Lite | [`flow`](skills/flow/SKILL.md) — align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md` where hosts support discovery. Not always-on, and not project initialization. |
 | Delivery | `explore`, `grill`, `to-spec`, `to-tickets`, `implement`, `review`, `retro` |
 | Product discovery | `interview`, `jtbd`, `competitors` |
 | Writing | `write-agents`, `write-humans` |
@@ -102,12 +104,14 @@ Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Every skil
 | Product thinking | `explore`, `grill`, `interview`, `jtbd`, `competitors`; `flow` keeps product intent in root docs |
 | Engineering discipline | `to-spec`, `to-tickets`, `write-agents`, `write-humans`; specs and decisions as flat durable artifacts |
 | Agent execution | `implement`; portable packages with no mandatory router |
-| Verified value | `review`, `retro`, `tldr`; evidence and alignment checks without claiming a feature shipped |
+| Verified value | `review`, `retro`, `tldr`; evidence, alignment, and visual summaries without claiming a feature shipped |
 
 Gaps to respect: no new skills unless they clearly strengthen the chain or reduce friction; prefer simplifying or extending existing skills over catalog growth.
 
 ### Open choices
 
 Strategic themes (measurable learning, API-first agentic products) may inform maintainer research. No OMTM is selected for Flow itself; broader demand remains unvalidated.
+
+**Starting a project.** The catalog has no `flow start` command. Discoverable `flow` must not be treated as one. Whether a later optional start skill should exist is unresolved. Until then, starting a repository is ordinary work in that project, not a Flow scaffold.
 
 See [documentation guide](docs/README.md) and [AGENTS.md](AGENTS.md) for maintenance.

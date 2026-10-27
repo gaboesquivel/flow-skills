@@ -115,7 +115,7 @@ Source history, not methodological authority.
 User-selected references for the two planned writing skills; specific upstream rules remain candidates.
 
 - [Factory — human-writing](https://www.skills.sh/factory-ai/factory-plugins/human-writing) — [source assessment](research/2026-10-19-writing.md#factory-human-writing).
-- [Matt Pocock — writing-for-agents](https://github.com/mattpocock/skills/blob/main/skills/productivity/writing-for-agents/SKILL.md) — progressive disclosure and task-specific routing adopted in [current practice](methodology.md#write-context-for-agents-and-humans); [source assessment and review limits](research/2026-10-19-writing.md#matt-pocock-writing-for-agents).
+- [Matt Pocock — writing-for-agents](https://github.com/mattpocock/skills/blob/main/skills/productivity/writing-for-agents/SKILL.md) — progressive disclosure and task-specific routing adopted in [current practice](methodology.md#write-context-for-agents-and-humans); the leading-word term is adopted in [GLOSSARY.md](../GLOSSARY.md#leading-word). Other mechanics stay as assessed in [writing research](research/2026-10-19-writing.md#matt-pocock-writing-for-agents).
 
 ## Miscellaneous
 
@@ -130,7 +130,9 @@ User-selected references for the two planned writing skills; specific upstream r
 
 ## Distribution evaluation
 
-- [Skill catalog](skills.md) — current fourteen skills (Flow Lite + manual catalog) and `SKILL.md` links.
+- [Skill catalog](skills.md) — current fourteen skills (Flow Lite + manual catalog), leading words, and `SKILL.md` links.
+- [Decision 0008](decisions/0008-leading-words-and-visual-summaries.md) — leading words; visual human summaries stay in `tldr`.
+- [Decision 0009](decisions/0009-adopter-product-context.md) — adopter product identity stays in the adopter's `PRODUCT.md`.
 - [Decision 0004](decisions/0004-portable-skill-catalog.md) — catalog and `npx skills add gaboesquivel/flow-skills` install path.
 - [Agent compatibility](agent-compatibility.md) — invocation metadata and host limitations.
 - [October 27 pre-0004 reviews (archive)](archive/2026-10-27-reviews/README.md) — direction review, distribution review, and retired bootstrap smoke notes.

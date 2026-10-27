@@ -1,6 +1,6 @@
 # 002: Flow Lite and flat documentation
 
-Status: implemented (2026-10-27). Authoritative decision: [0006](../decisions/0006-flow-lite-and-flat-docs.md).
+Status: implemented (2026-10-27). Authoritative decision: [0006](../decisions/0006-flow-lite-and-flat-docs.md). Catalog remains fourteen skills; [0008](../decisions/0008-leading-words-and-visual-summaries.md) extends `tldr` only.
 
 ## Problem Statement
 

@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Grill
 
-Read the relevant conversation, code, and accepted project decisions before asking questions. Find facts with available tools; ask the user only for consequential choices or missing information you cannot recover.
+Stress-test the idea or plan. Read the relevant conversation, code, and accepted project decisions before asking questions. Find facts with available tools; ask the user only for consequential choices or missing information you cannot recover.
 
 Map the important uncertainty and ask a small round of independent questions, each with a recommended answer and its tradeoff. Wait only for answers needed to proceed. Revise downstream questions when answers change their premise.
 

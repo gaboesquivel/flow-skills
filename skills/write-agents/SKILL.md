@@ -20,7 +20,7 @@ Identify the task, expected behavior, available capabilities, and observable com
 
 ## Skill packaging
 
-For skills, use [skill mechanics](SKILL-MECHANICS.md) to distinguish activation from supporting-reference reads. Bundle required resources, preserve applicable notices, and ensure local paths resolve in the installed artifact. A copied skill must work without retrieving another author's skill package.
+For skills, use [skill mechanics](SKILL-MECHANICS.md) to distinguish activation from supporting-reference reads. Repeat the skill's catalog leading word in the description or body so invocation and execution share one token. Bundle required resources, preserve applicable notices, and ensure local paths resolve in the installed artifact. A copied skill must work without retrieving another author's skill package.
 
 ## Review
 

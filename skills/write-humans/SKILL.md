@@ -14,4 +14,4 @@ Remove filler, repetition, inflated claims, canned transitions, and jargon the a
 
 When editing, preserve meaningful nuance and constraints. Keep one authoritative version of shared documentation; improve its readability without creating a second human-only copy. Check that names, numbers, links, and the requested next action remain accurate.
 
-Return the finished text in the requested format. Explain major editorial choices only when useful or requested. Drafting does not authorize sending, publishing, or changing unrelated files.
+Return the finished text in the requested format. Explain major editorial choices only when useful or requested. This skill drafts prose. A visual human summary is `tldr`. Drafting does not authorize sending, publishing, or changing unrelated files.

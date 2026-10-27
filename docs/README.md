@@ -4,7 +4,7 @@ Conventions for Flow Skills and a default pattern adopters may follow. Create do
 
 | Location | Owns |
 |---|---|
-| [PRODUCT.md](../PRODUCT.md) | Flow identity, ecosystem boundaries, dogfooding; flow-skills catalog and scope |
+| [PRODUCT.md](../PRODUCT.md) | Flow's identity in **this** repository, plus ecosystem boundaries, dogfooding, and the flow-skills catalog. An adopter project's `PRODUCT.md` is that product ([0009](decisions/0009-adopter-product-context.md)) |
 | [GLOSSARY.md](../GLOSSARY.md) | Project-specific meanings and essential distinctions |
 | [principles.md](principles.md) | Optional methodology themes; the seven principles live in PRODUCT.md |
 | [methodology.md](methodology.md) | How principles apply in practice (optional judgment, not enforcement) |
@@ -25,7 +25,7 @@ Default paths when a project has no existing convention:
 - `docs/specs/NNN-short-name.md` — bounded work and intent
 - `docs/decisions/NNN-short-name.md` — significant choices and rationale
 
-Keep current product, design, architecture, and shared language in root `PRODUCT.md`, `DESIGN.md`, `ARCHITECTURE.md`, and `GLOSSARY.md`. Use the [`flow`](../skills/flow/SKILL.md) skill (Flow Lite) or manual edits to align them after meaningful changes. Do not require PRD, PDR, or ADR parallel trees.
+Keep the current product, design, architecture, and shared language in that project's root `PRODUCT.md`, `DESIGN.md`, `ARCHITECTURE.md`, and `GLOSSARY.md`. Use the [`flow`](../skills/flow/SKILL.md) skill (Flow Lite) or manual edits to align them after meaningful changes. Do not copy this repository's Flow identity into an adopter `PRODUCT.md`. Do not require PRD, PDR, or ADR parallel trees. Do not treat `flow` as a project initializer.
 
 ## Maintainer archive
 
