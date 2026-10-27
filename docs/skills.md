@@ -15,15 +15,11 @@ Each skill has one [leading word](../GLOSSARY.md#leading-word): a compact behavi
 Optional skills (every step skippable; no required order):
 
 ```mermaid
-flowchart TB
-  subgraph delivery["Delivery skills (invoke any; no fixed order)"]
-    explore
-    grill
-    toSpec[to-spec]
-    toTickets[to-tickets]
-    implement
-    review
-    retro
+flowchart LR
+  subgraph delivery["Delivery skills — invoke any subset; no fixed order"]
+    direction TB
+    explore ~~~ grill ~~~ toSpec[to-spec]
+    toTickets[to-tickets] ~~~ implement ~~~ review ~~~ retro
   end
 ```
 
