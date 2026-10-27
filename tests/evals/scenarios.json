@@ -267,10 +267,14 @@
       "skillReferences": [
         "skills/start/SKILL.md"
       ],
-      "fixtureReferences": [],
+      "fixtureReferences": [
+        "tests/fixtures/start-bootstrap/flow-next-operator-prompt.ts",
+        "tests/fixtures/start-bootstrap/flow-mono-interop.md",
+        "tests/start-bootstrap.test.mjs"
+      ],
       "evidence": {
         "structural_contract": "passed",
-        "executable_fixture": "not_executed",
+        "executable_fixture": "passed",
         "live_skill_execution": "not_executed",
         "independently_reviewed": "not_executed",
         "verified_second_host": "not_executed"

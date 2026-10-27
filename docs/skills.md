@@ -62,7 +62,7 @@ Product discovery, writing, and misc skills are optional and do not block delive
 
 | Skill | Leading word | When to use |
 | --- | --- | --- |
-| [start](../skills/start/SKILL.md) | New product | Initialize from flow-next or flow-mono with the adopter's product identity. Manual only; not Flow Lite. |
+| [start](../skills/start/SKILL.md) | New product | Initialize from flow-next or flow-mono: rename identity, run setup/QA/build/startup checks, baseline root docs, and one independent initial commit when verification passes. Manual only; not Flow Lite. |
 
 ## Misc
 

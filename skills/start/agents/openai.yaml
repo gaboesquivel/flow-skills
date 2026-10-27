@@ -1,5 +1,5 @@
 interface:
   display_name: "Start"
-  short_description: "Initialize from flow-next or flow-mono"
+  short_description: "Bootstrap flow-next or flow-mono with verification and initial commit"
 policy:
   allow_implicit_invocation: false

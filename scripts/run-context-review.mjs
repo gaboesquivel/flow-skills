@@ -1,4 +1,4 @@
-import { execSync } from 'node:child_process'
+import { execSync, spawnSync } from 'node:child_process'
 import { readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
@@ -101,15 +101,21 @@ function formatComment({ verdict, findings }) {
 function upsertPrComment({ prNumber, body }) {
   const marker = '<!-- flow-context-review -->'
   const fullBody = `${marker}\n${body}`
-  const tmp = join(tmpdir(), `flow-pr-comment-${prNumber}.md`)
-  writeFileSync(tmp, fullBody, 'utf8')
+  const tmpBody = join(tmpdir(), `flow-pr-comment-${prNumber}.md`)
+  const tmpPayload = join(tmpdir(), `flow-pr-comment-${prNumber}.json`)
+  writeFileSync(tmpBody, fullBody, 'utf8')
+  writeFileSync(tmpPayload, JSON.stringify({ body: fullBody }), 'utf8')
   try {
     const list = JSON.parse(execSync(`gh api "repos/{owner}/{repo}/issues/${prNumber}/comments"`, { encoding: 'utf8' }))
     const existing = list.find((c) => c.body?.includes(marker))
-    if (existing) execSync(`gh api "repos/{owner}/{repo}/issues/comments/${existing.id}" -X PATCH -f "body@${tmp}"`, { stdio: 'inherit' })
-    else execSync(`gh pr comment ${prNumber} --body-file "${tmp}"`, { stdio: 'inherit' })
+    if (existing)
+      execSync(`gh api "repos/{owner}/{repo}/issues/comments/${existing.id}" -X PATCH --input "${tmpPayload}"`, {
+        stdio: 'inherit',
+      })
+    else execSync(`gh pr comment ${prNumber} --body-file "${tmpBody}"`, { stdio: 'inherit' })
   } finally {
-    unlinkSync(tmp)
+    unlinkSync(tmpBody)
+    unlinkSync(tmpPayload)
   }
 }
 
@@ -157,7 +163,13 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
         const gate = gateContextReview({ verdict: parsed.verdict, findings: parsed.findings })
         const comment = formatComment({ verdict: gate.verdict, findings: gate.findings })
         console.log(comment)
-        if (prNumber && process.env.GH_TOKEN) upsertPrComment({ prNumber, body: comment })
+        if (prNumber && process.env.GH_TOKEN) {
+          try {
+            upsertPrComment({ prNumber, body: comment })
+          } catch (err) {
+            console.warn(`Could not post context review comment: ${err.message}`)
+          }
+        }
         if (gate.blocking) {
           console.error('Context review failed (blocking findings, verdict fail, or missing verdict).')
           process.exitCode = 1
