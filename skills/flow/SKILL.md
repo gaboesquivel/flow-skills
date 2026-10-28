@@ -35,8 +35,10 @@ Hosts may match this skill when the user asks to update or sync the docs. That i
 
 **Ask.** Read any existing block first. For each of `Process:` and `Delivery:` that is missing or `unset` and that the request does not name, ask once before writing, both questions in one round, each with a suggested answer:
 
-- **Process depth** (decision 0026), how much process the project wants: **Lite** (brief, spec 001 in full with its tasks, decisions inside specs) or **Full** (deeper discovery and a decision record for each choice among alternatives). Suggest Lite unless the request points to Full. `explore` reads it as its default depth; `to-spec` owns the spec–decision boundary.
-- **Delivery mode** (decision 0030): **pull requests** or **local**, with a suggestion as `build`'s Delivery mode section describes; that section owns the rule and what each mode does. If `build` is unavailable, ask without a suggestion.
+- **Discovery depth** (decision 0026; the `Process:` line) controls how much discovery runs and how many decision records get written: **Lite** (brief, spec 001 in full with its tasks, decisions inside specs) or **Full** (deeper discovery and a decision record for each choice among alternatives). Suggest Lite unless the request points to Full. `explore` reads it as its default depth; `to-spec` owns the spec–decision boundary.
+- **Delivery** (decision 0030; the `Delivery:` line) controls where the work lands: **pull requests** or **local**, with a suggestion as `build`'s Delivery mode section describes; that section owns the rule and what each mode does. If `build` is unavailable, ask without a suggestion.
+
+The two are independent: any combination is valid, such as Lite with pull requests or Full with local. Do not derive one answer from the other.
 
 Recorded values stay unless the user names a new one, so a re-run with both lines set asks nothing.
 

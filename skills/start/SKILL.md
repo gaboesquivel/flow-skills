@@ -6,7 +6,7 @@ disable-model-invocation: false
 
 # Start
 
-**New product.** Initialize a **new application** from [flow-next](https://github.com/gaboesquivel/flow-next) or [flow-mono](https://github.com/gaboesquivel/flow-mono) while `explore` shapes the product in the same sitting. It is the `flow` skill's "set up Flow here" plus a template bootstrap (decision 0026): the same Flow block, the same process depth question, and the same goals.
+**New product.** Initialize a **new application** from [flow-next](https://github.com/gaboesquivel/flow-next) or [flow-mono](https://github.com/gaboesquivel/flow-mono) while `explore` shapes the product in the same sitting. It is the `flow` skill's "set up Flow here" plus a template bootstrap (decision 0026): the same Flow block, the same discovery depth and delivery questions, and the same goals.
 
 Deterministic rename, destination safety, baseline docs, and commit-gating rules live in this skill's `lib/` modules. Use them instead of blind global replace or destructive Git commands.
 
@@ -20,8 +20,8 @@ Ask only for what is still missing, in one question round:
 2. **Local destination directory.** Default to the **current working directory** when `assessDestination` accepts it; propose a nested or sibling directory only when the user asks or the current one is refused.
 3. **Template** — only when not inferred. Recommend **flow-next** for a single Next.js app, **flow-mono** for Turborepo (`apps/web`, `packages/ui`).
 4. **Optional GitHub remote** — only when the user wants a new repository created or linked; never assume push access.
-5. **Process depth** — only when not stated: **Lite** (recommended) or **Full**, as the `flow` skill defines them.
-6. **Delivery mode** — only when not stated: **local** or **pull requests**, as `build`'s Delivery mode section defines them. Suggest local when no GitHub repository is created, and pull requests when one is; this basis is start-specific because the repository is being created.
+5. **Discovery depth** — only when not stated: **Lite** (recommended) or **Full**, as the `flow` skill defines them.
+6. **Delivery** — independent of item 5, as `flow` defines it; only when not stated: **local** or **pull requests**, as `build`'s Delivery mode section defines them. Suggest local when no GitHub repository is created, and pull requests when one is; this basis is start-specific because the repository is being created.
 
 If an answer does not arrive, ask again; do not substitute a destination the user did not confirm.
 
@@ -31,14 +31,14 @@ Derive identity with `deriveProjectIdentity` from `lib/identity.mjs`: slug, `pac
 
 ## Confirm before writing
 
-A spoken request can be misheard, so write nothing until the user agrees. State the template, project name (with slug and host), destination, any GitHub repository to create with its visibility, the process depth, the delivery mode, the Flow block it will write, and the hand-off to `explore` at that depth, then wait for an explicit yes. Anything else is not a yes; correct and restate.
+A spoken request can be misheard, so write nothing until the user agrees. State the template, project name (with slug and host), destination, any GitHub repository to create with its visibility, the discovery depth, the delivery, the Flow block it will write, and the hand-off to `explore` at that depth, then wait for an explicit yes. Anything else is not a yes; correct and restate.
 
 ## Run two lanes
 
 After the yes:
 
 - **Bootstrap lane.** A worker runs every section from "Obtain template" through "Initial commit" below, in the order under "Bootstrap order", and reports the completion facts.
-- **Explore lane.** The main session hands the conversation to `explore` as a new-product run at the confirmed process depth, using the user's description as its first input. Explore drafts in conversation and writes nothing until the bootstrap lane reports its initial commit.
+- **Explore lane.** The main session hands the conversation to `explore` as a new-product run at the confirmed discovery depth, using the user's description as its first input. Explore drafts in conversation and writes nothing until the bootstrap lane reports its initial commit.
 
 When the host has no independent workers, run the bootstrap first, then `explore`, and say so. When `explore` is not installed, finish the bootstrap and suggest exploring next.
 
@@ -134,4 +134,4 @@ Do not use `--no-verify`. Do not push or deploy unless explicitly authorized.
 
 ## Completion
 
-Report template and template commit SHA, destination path, preserved and skipped files, renamed slug and Portless host, files created or updated, whether the Flow block was written with its delivery mode and process depth, each verification check, initial commit SHA (if created), and blockers. Report the bootstrap lane when it finishes, without interrupting an open exploration question.
+Report template and template commit SHA, destination path, preserved and skipped files, renamed slug and Portless host, files created or updated, whether the Flow block was written with its delivery and discovery depth, each verification check, initial commit SHA (if created), and blockers. Report the bootstrap lane when it finishes, without interrupting an open exploration question.
