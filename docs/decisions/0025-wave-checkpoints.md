@@ -1,6 +1,6 @@
 # 0025 — Wave checkpoints and visual review
 
-Status: **Accepted** (2026-10-28). Amends [0020](0020-flow-mode.md) (task-set orchestration, review per task, pull request at the end). Related: [0024](0024-gated-hand-offs.md) (plan confirmation and main gate), [0021](0021-autonomous-explore-and-ship.md), [0019](0019-voice-first-invocation.md) (deploy defers to the platform), [0023](0023-agent-first.md). Spec: [014](../specs/014-wave-checkpoints.md).
+Status: **Accepted** (2026-10-28). Amends [0020](0020-flow-mode.md) (task-set orchestration, review per task, pull request at the end). Related: [0024](0024-gated-hand-offs.md) (plan confirmation and main gate), [0021](0021-autonomous-explore-and-ship.md), [0019](0019-voice-first-invocation.md) (deploy defers to the platform), [0023](0023-agent-first.md). Spec: [015](../specs/015-wave-checkpoints.md).
 
 ## Context
 
