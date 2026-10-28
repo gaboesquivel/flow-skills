@@ -28,7 +28,11 @@ How much process a project wants: **Lite** or **Full**, asked once at setup ("se
 
 ## Spec
 
-One bet: a numbered document that tests one assumption and ships as one unit, with tasks as the slices inside it. A bet that depends on how another one does gets its own spec, stubbed as a [candidate](#candidate-spec) until its turn. Its `Status:` line moves `candidate → draft → accepted → implemented`: `to-spec` writes drafts without asking first and sets `accepted` when the user approves the spec ("accept the spec"), moving its linked decision records from **Proposed** to **Accepted**; `ship` lands only accepted specs and sets `implemented`. [`to-spec`](skills/to-spec/SKILL.md) owns the rules; [decision 0028](docs/decisions/0028-build-and-ship.md).
+One bet: a numbered document that tests one assumption and ships as one unit, with tasks as the slices inside it. A bet that depends on how another one does gets its own spec, stubbed as a [candidate](#candidate-spec) until its turn. Its `Status:` line moves `candidate → draft → accepted → implemented`: `to-spec` writes drafts without asking first and sets `accepted` when the user approves the spec ("accept the spec"), moving its linked decision records from **Proposed** to **Accepted**; `ship` lands only accepted specs and sets `implemented`. The file is written on the spec's feature branch and merges with the work in one pull request. In pull-request mode a [spec issue](#spec-issue) carries the same state as a label, and the `accepted` label is the gate. [`to-spec`](skills/to-spec/SKILL.md) owns the rules; decisions [0028](docs/decisions/0028-build-and-ship.md) and [0029](docs/decisions/0029-spec-issues.md).
+
+## Spec issue
+
+In pull-request mode, the GitHub issue for a [spec](#spec): a one-way copy of the spec file, written only by skills, labelled `candidate`, `draft`, or `accepted`. The spec's tasks are its sub-issues, with blocking links; the pull request that delivers the spec closes them all. The file stays the source of truth. [Decision 0029](docs/decisions/0029-spec-issues.md).
 
 ## Decision record
 
@@ -40,19 +44,19 @@ A portable `skills/<name>/SKILL.md` package in the Flow Skills distribution. Use
 
 ## Delivery mode
 
-How `build` delivers work and `ship` lands it in a project: **local** (a branch, merged into `main` by `ship`) or **pull request**. Distinct from [process depth](#process-depth). The rule lives in [`build`](skills/build/SKILL.md#delivery-mode); decisions [0020](docs/decisions/0020-flow-mode.md) and [0028](docs/decisions/0028-build-and-ship.md) record why.
+How `build` delivers work and `ship` lands it in a project: **local** (files only, tasks as the spec's checklist, a branch merged into `main` by `ship`) or **pull request** (a [spec issue](#spec-issue) with tasks as sub-issues, one pull request per spec). Distinct from [process depth](#process-depth). The rule lives in [`build`](skills/build/SKILL.md#delivery-mode); decisions [0020](docs/decisions/0020-flow-mode.md), [0028](docs/decisions/0028-build-and-ship.md), and [0029](docs/decisions/0029-spec-issues.md) record why.
 
-## Wave
+## Frontier
 
-The tasks of a spec's task set that are ready when `build` starts them; a wave ends when each has integrated, failed, or been blocked. Its combined change gets one five-axis review and one [checkpoint](#checkpoint). Decisions [0025](docs/decisions/0025-wave-checkpoints.md) and [0028](docs/decisions/0028-build-and-ship.md).
+The tasks of a spec's task set whose blockers have all integrated. `build` starts every frontier task at once, up to the host's concurrency limit, and starts a task the moment its blockers integrate; there are no waves. Replaces the wave of [decision 0025](docs/decisions/0025-wave-checkpoints.md); [decision 0029](docs/decisions/0029-spec-issues.md).
 
 ## Checkpoint
 
-The report `build` posts after each [wave](#wave): what integrated or failed, the commit, the pull request's checks and the links CI attached (deployments and previews the pull request shows; there is no deploy target), and screenshots when the host has a browser tool. A pull request comment in pull-request mode, a message in local mode. Checkpoints do not wait: the next wave starts unless the user asked to wait at checkpoints. Decisions [0025](docs/decisions/0025-wave-checkpoints.md) and [0028](docs/decisions/0028-build-and-ship.md).
+The report `build` posts after each integration batch: tasks integrated, running, and blocked, the local suite result, the commit, and screenshots when the host has a browser tool. A pull request comment in pull-request mode, a message in local mode. Checkpoints never wait for CI or the user unless the user asked to wait at checkpoints; CI is waited on only for the final pull request. Decisions [0025](docs/decisions/0025-wave-checkpoints.md) and [0029](docs/decisions/0029-spec-issues.md).
 
 ## Candidate spec
 
-A stub spec for a later bet: the problem, the assumption it tests, and status `candidate`. Fleshed out only when its turn comes, after the bet it depends on ships. Decisions [0022](docs/decisions/0022-start-runs-explore.md) and [0026](docs/decisions/0026-process-depth.md).
+A stub for a later bet: the problem and the assumption it tests. In pull-request mode it is an issue labelled `candidate`, with no file; in local mode, a spec file with status `candidate`. Fleshed out only when its turn comes, after the bet it depends on ships; `to-spec` then writes the file and relabels the same issue. Decisions [0022](docs/decisions/0022-start-runs-explore.md), [0026](docs/decisions/0026-process-depth.md), and [0029](docs/decisions/0029-spec-issues.md).
 
 ## Human summary
 
@@ -68,7 +72,7 @@ A numbered document under `docs/decisions/` that preserves the context, decision
 
 ## Specification
 
-A numbered document that captures a bounded increment of work. Default path in Flow's own repository: `docs/specs/NNN-short-name.md`. Adopter projects may use their own conventions.
+A numbered document that captures a bounded increment of work; in Flow, a [spec](#spec). Default path in Flow's own repository: `docs/specs/NNN-short-name.md`. Adopter projects may use their own conventions.
 
 ## Exploration
 
