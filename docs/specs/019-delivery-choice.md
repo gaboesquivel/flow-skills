@@ -203,7 +203,7 @@ Sub-issues of #89. Tasks 01–11 each own different files and share only this sp
 - [ ] 05: `ship`: local without remote, per-axis review, worktree prune (#99)
 - [ ] 06: `review`: per-axis workers and five-axis contract (#95)
 - [ ] 07: `to-tasks` and `to-spec`: areas, parallel publishing, NNNN (#94)
-- [ ] 08: `write-agents`: fan-out rule and mechanics (#96)
+- [x] 08: `write-agents`: fan-out rule and mechanics (#96)
 - [ ] 09: Discovery skills: parallel groups and fallbacks (#98)
 - [ ] 10: `domain-modeling`, `handoff`, `debug`, `retro` fixes (#93)
 - [ ] 11: `validate`: adapter, filename, numbering, check-table checks (#90)
