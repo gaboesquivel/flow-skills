@@ -41,10 +41,12 @@ Pick local when you work alone, use another Git host, or want nothing published.
 
 ## Work without a spec
 
-Specs are for bets worth tracking, not a toll on every change. In either mode you have two ways to skip them:
+Specs are for bets worth tracking, not a toll on every change. In either mode, nothing writes a spec or tasks unless you say "spec it" or "break it down" ([decision 0039](docs/decisions/0039-build-never-requires-a-spec.md)).
 
-- **Just ask your agent.** Flow skills run only when you invoke them. Without `explore`, `to-spec`, or `to-tasks`, your agent edits code the way it would without Flow installed, and you commit or push however you like. Describe the change itself ("rename this prop") rather than a delivery phrase like "build it", which reaches `build`.
-- **Say "build it" for a small fix.** With no spec or task behind it, `build` treats the change as [unspecced work](GLOSSARY.md#unspecced-work): it runs your full check suite and one self-check against your request, with no spec gate and no review workers, then lands it the way your mode does (a merge into local `main`, or a ready pull request). "Ship it" then verifies it. A size guard stops the change and suggests "spec it" when it adds product behavior, changes a data shape or public API, needs a migration, or touches authentication, secrets, dependencies, CI, or execution paths ([decision 0034](docs/decisions/0034-no-ceremony-without-a-spec.md)).
+- **Say "build it".** With no spec behind it, `build` treats the change as [unspecced work](GLOSSARY.md#unspecced-work). It runs your full check suite, then picks the review by size: one self-check for a small fix, or the same independent review spec work gets when the change adds product behavior, changes a data shape or public API, needs a migration, or touches authentication, secrets, dependencies, CI, or execution paths. Then it lands the work the way your mode does: a merge into local `main`, or a ready pull request. "Ship it" verifies it.
+- **Explore, then build.** After "explore this", "build it" builds the confirmed brief directly. The `explore/<slug>` branch becomes the work branch and the brief lands with the code. For a new product, `explore` stops at the brief; spec 001 comes only when you ask.
+- **Build locally in a GitHub repository.** "Build it local" on a repository whose default branch requires pull requests commits the work on a branch and stops: no push, no pull request. "Ship it" opens the pull request when you are ready.
+- **Just ask your agent.** Flow skills run only when you invoke them. A plain request ("rename this prop") gets edited the way your agent would without Flow installed.
 
 `explore` itself skips fixes and clearly small changes: no questions, no writes.
 
@@ -58,7 +60,7 @@ flowchart TB
   spec["Spec: one bet, tasks are its slices"]
   decision["Decision record: why X over Y"]
   ship["ship it"]
-  direct["Small fix: just ask, or 'build it'"]
+  direct["No spec: 'build it'"]
   setup --> delivery --> goals --> spec --> ship
   spec -.-> decision
   delivery -.-> direct -.-> ship

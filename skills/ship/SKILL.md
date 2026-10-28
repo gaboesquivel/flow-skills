@@ -27,7 +27,7 @@ Classify the work. Resolve its spec from (a) the branch name, (b) files under `d
   - **GitHub mode with no `Issue:` line:** the spec is not accepted; suggest "accept the spec" and stop.
   - **A spec with no `Issue:` line** (local mode): its `Status:` must be `accepted`, or `implemented` when the latest status before `implemented` in the spec's history (the spec branch or the default branch) is `accepted`.
   - Either way, no decision record it links may still be **Proposed** after that. Otherwise name each spec or linked decision that is not accepted, with its status or label, suggest "accept the spec", and stop before building, committing, or pushing anything. If the spec cannot be resolved, say so and stop the same way.
-- **Unspecced work:** work with no spec link at all, including a hotfix or work that closes only issues belonging to no spec (decision 0034). `build`'s [size guard](../build/SKILL.md#unspecced-work) applies; when it trips, stop and suggest `to-spec`. Otherwise it ships through the same cycle without a further review (see Review) and keeps Verify.
+- **Unspecced work:** work with no spec link at all, including a hotfix or work that closes only issues belonging to no spec (decision 0034). It never needs a spec (decision 0039); `build`'s [size guard](../build/SKILL.md#unspecced-work) decides its review (see Review). It ships through the same cycle and keeps Verify.
 
 **Local mode:** once `build` has merged, resolve the spec from its merge commit on local `main`, whose message carries `Reviewed: <sha>` and, for spec work, `Spec: <path>`; before that, sources (a)–(c) apply. It also confirms that local `main` holds the merged work (the spec branch or unspecced branch merged by `build`) and that the working tree is clean apart from uncommitted appends that pass `build`'s [Shared files](../build/SKILL.md#shared-files) check. When it does not, run `build` first (see Build); a dirty tree whose changes are not this work stops with a report.
 
@@ -53,7 +53,7 @@ GitHub mode. Run the one independent review of the spec here: run `review` (per-
 
 Record the head SHA the review and checks covered. An `unmet` [requirement verdict](../review/SKILL.md#inspect) is a blocking finding.
 
-**Unspecced work** gets no review here: `build`'s self-check against the request covers it (decision 0034), and its self-checked head (the SHA `build` posted with its self-check on the pull request) stands in for the reviewed head below. Ship still waits for checks and runs Verify. The size guard has one home, `build`'s [Unspecced work](../build/SKILL.md#unspecced-work); ship does not restate it.
+**Unspecced work.** When `build` posted a self-check on the pull request, its self-checked head stands in for the reviewed head below, with no review here (decision 0034). When `build` posted "escalated", or nothing, run the review above against the request instead of a spec, with no requirement verdicts (decision 0039). Ship still waits for checks and runs Verify. The size guard has one home, `build`'s [Unspecced work](../build/SKILL.md#unspecced-work); ship does not restate it.
 
 ## Fix rounds
 
@@ -100,7 +100,7 @@ Only the user's own request drops a spec ("drop the spec", naming it or with it 
 
 ## Failure handling
 
-On failure, preserve the repository state, report the exact failing stage with evidence, and suggest the smallest corrective action. Ship stops on: an unaccepted spec or decision, unspecced work that trips `build`'s size guard, local `main` not holding the work after `build`, blocking findings (including a failed preview Verify) or red checks after the fix rounds, unresolvable conflicts, a refused push, an unexpected local push range or ambiguous remote, a protection rule it cannot meet, and a merge the host or protection refuses (with the ready-to-merge report). Never report the work as shipped when a gate failed. Verify failures follow Verify's Failure paragraph.
+On failure, preserve the repository state, report the exact failing stage with evidence, and suggest the smallest corrective action. Ship stops on: an unaccepted spec or decision, local `main` not holding the work after `build`, blocking findings (including a failed preview Verify) or red checks after the fix rounds, unresolvable conflicts, a refused push, an unexpected local push range or ambiguous remote, a protection rule it cannot meet, and a merge the host or protection refuses (with the ready-to-merge report). Never report the work as shipped when a gate failed. Verify failures follow Verify's Failure paragraph.
 
 ## Output
 
@@ -111,7 +111,7 @@ Shipped, shipped with verification failed, partial, or blocked; the pull request
 Each check and its result, and the links CI attached; pending checks reported as pending.
 
 ### Review
-Where it was posted, whether it used per-axis workers and a verifier or was single-agent, for spec work the count of each requirement verdict with every `unmet` and `unresolved` requirement named, findings and fix rounds. Unspecced work: no review, with `build`'s self-check and size-guard result. Local mode: the review `build` ran before its merge.
+Where it was posted, whether it used per-axis workers and a verifier or was single-agent, for spec work the count of each requirement verdict with every `unmet` and `unresolved` requirement named, findings and fix rounds. Unspecced work: `build`'s size-guard result, and the self-check or the escalated review. Local mode: the review `build` ran before its merge.
 
 ### Merge
 GitHub mode: merge method and commit, the spec status set, issues closed and the spec issue re-synced, branch deleted, local default branch fast-forwarded, and worktrees removed (or kept, with paths); or what blocked the merge, including a ready-to-merge report for a refused merge. Local mode: the push result (pushed, refused, or no remote). For a dropped spec, the issues closed as not planned and the branches and worktrees removed.

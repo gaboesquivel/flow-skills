@@ -45,7 +45,7 @@ These apply to manual work and skill use. They are not a fixed sequence.
 | Activity | Documentation responsibility |
 |---|---|
 | Exploration | Preserve worthwhile possibilities; link evidence when saving artifacts. |
-| Planning | Capture bounded scope in a spec when the work warrants it; accept it before shipping. Small fixes skip the spec in either delivery mode ([work without a spec](../README.md#work-without-a-spec)). In GitHub mode the spec issue copies the file; edit the file. |
+| Planning | Capture bounded scope in a spec when the work warrants it; accept it before shipping. Work without a spec is always allowed, in either delivery mode ([work without a spec](../README.md#work-without-a-spec)). In GitHub mode the spec issue copies the file; edit the file. |
 | Execution | Update root context and specs when behavior or accepted intent changes. |
 | Review | Record findings and update decisions or root docs when conclusions matter. |
 
