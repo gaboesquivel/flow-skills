@@ -427,6 +427,75 @@
         "verified_second_host": "not_executed"
       },
       "claimsLiveRun": false
+    },
+    {
+      "id": "E20",
+      "skills": [
+        "start",
+        "explore"
+      ],
+      "behavior": "Start request with a description confirms, then runs the bootstrap and explore lanes",
+      "taskFile": "tests/evals/tasks/E20-task.md",
+      "rubricFile": "tests/evals/rubrics/E20-rubric.md",
+      "skillReferences": [
+        "skills/start/SKILL.md",
+        "skills/explore/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E21",
+      "skills": [
+        "start",
+        "explore"
+      ],
+      "behavior": "A failed bootstrap keeps the exploration",
+      "taskFile": "tests/evals/tasks/E21-task.md",
+      "rubricFile": "tests/evals/rubrics/E21-rubric.md",
+      "skillReferences": [
+        "skills/start/SKILL.md",
+        "skills/explore/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E22",
+      "skills": [
+        "explore",
+        "to-spec"
+      ],
+      "behavior": "New-product slice 1 tests the riskiest assumption and instruments the main metric",
+      "taskFile": "tests/evals/tasks/E22-task.md",
+      "rubricFile": "tests/evals/rubrics/E22-rubric.md",
+      "skillReferences": [
+        "skills/explore/SKILL.md",
+        "skills/to-spec/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
     }
   ]
 }
