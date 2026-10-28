@@ -10,7 +10,7 @@ const skillsRoot = join(root, 'skills')
 
 const contracts = [
   { skill: 'explore', file: 'SKILL.md', includes: ['do not authorize implementation', 'to-spec'] },
-  { skill: 'grill', file: 'SKILL.md', includes: ['do not require an exhaustive interview', 'does not itself authorize implementation', 'already confirmed', 'riskiest claims', 'pre-mortem', 'six months from now', 'kill criterion', '**clearer**', '**killed**', 'all are valid'] },
+  { skill: 'grill', file: 'SKILL.md', includes: ['do not require an exhaustive interview', 'does not itself authorize implementation', 'already confirmed', 'riskiest claims', 'pre-mortem', 'six months from now', 'kill criterion', '\\*\\*clearer\\*\\*', '\\*\\*killed\\*\\*', 'all are valid'] },
   { skill: 'to-spec', file: 'SKILL.md', includes: ['docs/specs/NNN-short-name.md', 'Do not run a separate interview'] },
   { skill: 'implement', file: 'SKILL.md', includes: ['untracked', 'not a prerequisite', 'PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'do not open new spec or decision', 'product identity', 'flow start', 'decision 0010', 'Ordinary small fixes', 'caller expectations'] },
   { skill: 'review', file: 'SKILL.md', includes: ['untracked', 'single-agent', 'PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'product identity', 'flow start', 'decision 0010', 'Pull request', 'pr-review-contract', 'safety-critical assumption', 'confirmed findings', 'workers are unavailable'] },
