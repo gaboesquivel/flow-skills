@@ -1,6 +1,6 @@
 ---
 name: to-spec
-description: Turn the current conversation into a numbered specification using project conventions; save only when requested. Use when the user says "spec it", "write a spec", or "turn this into a spec".
+description: Turn the current conversation into a numbered specification using project conventions; save only after an explicit yes. Use when the user says "spec it", "write a spec", or "turn this into a spec".
 disable-model-invocation: false
 ---
 
@@ -20,7 +20,7 @@ Specs may cover product, research, marketing, engineering, operations, or cross-
 
 2. Sketch test seams at the highest practical level. Prefer existing seams; propose new ones only when necessary and as high as possible.
 
-3. Write a proportionate spec using the relevant sections below. Save or publish only when requested; `explore` reaching spec-ready with a brief counts as a request.
+3. Write a proportionate spec using the relevant sections below. Show it, then save only after an explicit yes to the shown text; a request to write a spec or reaching spec-ready is not that yes.
 
 <spec-template>
 
