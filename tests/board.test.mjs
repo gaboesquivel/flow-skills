@@ -35,6 +35,14 @@ test('draft without tasks is Specced, without marker', () => {
   assert.equal(cardOf(board, '002').title, 'B')
 })
 
+test('accepted is a known status: Specced without tasks, Ready with tasks, no marker', () => {
+  const board = deriveBoard(snapshot({ '008-h.md': spec('008: H', 'accepted'), '009-i.md': spec('009: I', 'accepted', '\n## Tasks\n\n- [ ] one\n') }))
+  assert.equal(stageOf(board, '008'), 'specced')
+  assert.equal(cardOf(board, '008').marker, null)
+  assert.equal(stageOf(board, '009'), 'ready')
+  assert.equal(cardOf(board, '009').marker, null)
+})
+
 test('candidate status is Candidate, not swallowed by Specced', () => {
   assert.equal(stageOf(deriveBoard(snapshot({ '003-c.md': spec('003: C', 'candidate') })), '003'), 'candidate')
 })

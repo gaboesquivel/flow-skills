@@ -31,13 +31,13 @@ For a brief, show the exact text before writing:
 - **New product:** the full `PRODUCT.md` brief: problem, who (including agent users or "none"), why now, riskiest assumptions with confidence, main metric and kill criterion, core journeys (one line each; steps belong in `DESIGN.md`), alternatives, out of scope.
 - **Feature:** a diff of durable product facts only (a new user, journey, or metric). When the project has no `PRODUCT.md`, propose creating it with those facts. Feature detail flows to `to-spec`, not `PRODUCT.md`.
 
-Label unproven items as hypotheses with a confidence. An explicit yes to the shown text authorizes that write in the same turn; anything else is not a yes. Never write drafts before confirmation.
+Label unproven items as hypotheses with a confidence. An explicit yes to the shown text authorizes that write in the same turn; anything else is not a yes. Never write the brief before confirmation.
 
 **Write after the bootstrap commit.** In a run handed over by `start`, write nothing (brief, research, specs, or tasks) until the bootstrap lane reports its initial commit, even after a yes; the yes to the shown text carries over to that write. The confirmed brief then replaces the product sections of the baseline `PRODUCT.md` and keeps its template facts. If the bootstrap failed, keep everything confirmed in conversation and write it once a repository exists.
 
 At Full depth, or whenever real web research happened, save findings with sources and limits to `docs/research/YYYY-MM-DD-topic.md`. Never save transcripts.
 
-**Decision records at Full depth.** Propose a decision record, as `to-spec` defines the boundary, for each choice among real alternatives made during exploration, starting with the chosen approach and the rejected ones as alternatives. Show each record's text; write it only after an explicit yes to that text, under the same write-after-commit rule. At Lite depth, choices stay in the spec unless they pass `to-spec`'s decision test.
+**Decision records at Full depth.** Propose a decision record, as `to-spec` defines the boundary, for each choice among real alternatives made during exploration, starting with the chosen approach and the rejected ones as alternatives. Write each record as **Proposed** and report its link rather than its text, under the same write-after-commit rule; the user's yes is acceptance, which `to-spec` records when the spec is accepted. At Lite depth, choices stay in the spec unless they pass `to-spec`'s decision test.
 
 ## Spec-ready
 

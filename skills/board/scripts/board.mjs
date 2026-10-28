@@ -622,7 +622,7 @@ function stageFor({ status, tasks, branches, liveRun }) {
   if (tasks.done > 0) return { stage: 'building', reason: 'tasks started', branch: null }
   if (tasks.total > 0) return { stage: 'ready', reason: 'tasks planned', branch: null }
   if (status === 'candidate') return { stage: 'candidate', reason: 'status candidate', branch: null }
-  return { stage: 'specced', reason: status === 'draft' ? 'status draft' : 'status unknown', branch: null }
+  return { stage: 'specced', reason: status === 'draft' || status === 'accepted' ? `status ${status}` : 'status unknown', branch: null }
 }
 
 const sourceOrder = (a, b) => Number(b.onDefault ?? true) - Number(a.onDefault ?? true)
@@ -720,7 +720,7 @@ export function deriveBoard(snapshot) {
     }
     const markers = []
     if (!status) markers.push('no status line')
-    else if (!['candidate', 'draft', 'implemented'].includes(status)) markers.push(`unknown status "${status}"`)
+    else if (!['candidate', 'draft', 'accepted', 'implemented'].includes(status)) markers.push(`unknown status "${status}"`)
     if (!onDefault) markers.push(`on branch ${spec.source}`)
     const open = tasks.total - tasks.done
     if (stage === 'shipped' && status === 'implemented' && open > 0) markers.push(`status implemented, ${open} task${open === 1 ? '' : 's'} open`)
