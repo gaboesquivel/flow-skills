@@ -24,7 +24,7 @@ The [`flow`](skills/flow/SKILL.md) skill: keep the current project's `PRODUCT.md
 
 ## Process depth
 
-How much process a project wants: **Lite** or **Full**, asked once, together with [delivery mode](#delivery-mode), wherever Flow first needs it (setup, `start`, or `explore`) and recorded as a `Process:` line in the project's Flow block. It is `explore`'s default depth for new work; when it is unset, Flow asks and suggests Lite. Lite: brief, spec 001 in full with its tasks, later bets as candidates, choices inside specs. Full: Lite plus deeper discovery and a [decision record](#decision-record) for each choice among alternatives. Neither specifies later bets up front. [Decision 0026](docs/decisions/0026-process-depth.md).
+How much process a project wants: **Lite** or **Full**, asked once, together with [delivery mode](#delivery-mode), wherever Flow first needs it (setup, `start`, or `explore`) and recorded as a `Process:` line in the project's Flow block. It is `explore`'s default depth for new work; when it is unset, Flow asks and suggests Lite unless the request points to Full ([`flow`](skills/flow/SKILL.md)). Lite: brief, spec 001 in full with its tasks, later bets as candidates, choices inside specs. Full: Lite plus deeper discovery and a [decision record](#decision-record) for each choice among alternatives. Neither specifies later bets up front. [Decision 0026](docs/decisions/0026-process-depth.md).
 
 ## Spec
 
@@ -48,7 +48,7 @@ How `build` delivers work and `ship` lands it in a project: **local** (tasks as 
 
 ## Area
 
-A task's `Area:` line: the package or directory it changes, coarse and never a file path. `build` runs tasks whose areas intersect one after another and the rest in parallel, so overlap needs no blocking edge. [`to-tasks`](skills/to-tasks/SKILL.md) assigns it; [decision 0031](docs/decisions/0031-fan-out-by-default.md).
+A task's `Area:` line: the package or directory it changes, coarse and never a file path. [`to-tasks`](skills/to-tasks/SKILL.md) assigns it; [`build`](skills/build/SKILL.md) uses it to schedule tasks. [Decision 0031](docs/decisions/0031-fan-out-by-default.md).
 
 ## Frontier
 
