@@ -20,7 +20,7 @@ Ask only for what is still missing, in one question round:
 2. **Local destination directory.** Default to the **current working directory** when `assessDestination` accepts it; propose a nested or sibling directory only when the user asks or the current one is refused.
 3. **Template** — only when not inferred. Recommend **flow-next** for a single Next.js app, **flow-mono** for Turborepo (`apps/web`, `packages/ui`).
 4. **Optional GitHub remote** — only when the user wants a new repository created or linked; never assume push access.
-5. **Delivery** — only when not stated: **local** or **pull requests**, as `build`'s Delivery mode section defines them. Suggest local when no GitHub repository is created, and pull requests when one is; this basis is start-specific because the repository is being created.
+5. **Delivery** — only when not stated: **local** or **GitHub**, as `build`'s Delivery mode section defines them. Suggest local when no GitHub repository is created, and GitHub when one is; this basis is start-specific because the repository is being created.
 
 If an answer does not arrive, ask again; do not substitute a destination the user did not confirm.
 
@@ -113,7 +113,7 @@ If any **essential** check **failed**, report the blocker and do **not** claim a
 
 ## Flow block
 
-Once every essential check passes, write the project's Flow block with the `flow` skill's `lib/flow-block.mjs`: pass the project's absolute path and the confirmed delivery (`local` or `pull-request`). The `flow` skill's Flow block section and its helper own the instruction-file layout; keep the helper's output for the report, including any refusal. Touch nothing outside the block's markers and the import line. When `flow` is not installed, skip the block and say so.
+Once every essential check passes, write the project's Flow block with the `flow` skill's `lib/flow-block.mjs`: pass the project's absolute path and the confirmed delivery (`local` or `github`). The `flow` skill's Flow block section and its helper own the instruction-file layout; keep the helper's output for the report, including any refusal. Touch nothing outside the block's markers and the import line. When `flow` is not installed, skip the block and say so.
 
 ## Initial commit
 

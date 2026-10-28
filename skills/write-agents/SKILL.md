@@ -37,6 +37,14 @@ This is the shared fan-out rule; other skills link here instead of restating it.
 - The main thread verifies findings and synthesizes results and disagreements. Record actual models when the host exposes them; distinguish model diversity from host diversity.
 - Without workers, run the same steps in order and say so. Never claim independence without separate execution.
 
+## Repository
+
+This is the shared repository rule (decision 0037); delivery-chain skills link here instead of restating it. Thinking skills need no repository: they may read Git when one exists but never require it or ask about delivery.
+
+- Before its first Git operation, a delivery-chain skill checks `git rev-parse --is-inside-work-tree`, alongside its other first Git reads. Outside a repository it writes nothing, says the delivery chain needs Git, and offers to run `git init`. Inside one whose top level (`git rev-parse --show-toplevel`) is above the project folder, name that repository and ask before the first write.
+- `git init` needs its own explicit yes; a request to build, spec, or ship is not one. On a yes, run `git init`, then make an empty initial commit (`git commit --allow-empty -m "chore: initialize repository"`) so branches have a base. Leave existing files untracked and continue. If the commit fails (no identity, a hook, signing), stop and report; never retry with `--no-verify`.
+- On a no, keep confirmed content in the conversation and stop. Never write the skill's files outside a repository instead.
+
 ## Review
 
 Remove duplication, stale rules, needless ceremony, no-ops, and implementation detail that belongs elsewhere. Reject redundant or ineffective skill instructions when evidence shows they do not change behavior. Check every required reference and test representative tasks, including missing optional capabilities and failure paths. Report tests actually performed and limitations; structural validation alone does not establish reliable behavior.

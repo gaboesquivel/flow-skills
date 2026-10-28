@@ -1,5 +1,5 @@
 // Idempotent writer for the project Flow block (decision 0020) and the instruction-file layout (spec 021).
-// Usage: node flow-block.mjs <project-dir> [local|pull-request]
+// Usage: node flow-block.mjs <project-dir> [local|github]
 import { spawnSync } from 'node:child_process'
 import { existsSync, lstatSync, readFileSync, realpathSync, statSync, writeFileSync } from 'node:fs'
 import { join, relative, resolve, sep } from 'node:path'
@@ -7,7 +7,9 @@ import { fileURLToPath } from 'node:url'
 
 export const BEGIN = '<!-- BEGIN FLOW -->'
 export const END = '<!-- END FLOW -->'
-export const DELIVERY_MODES = ['pull-request', 'local']
+export const DELIVERY_MODES = ['github', 'local']
+// Legacy values from before decision 0037 read as github; the next block write records github.
+const LEGACY_GITHUB = ['pull-request', 'pull-requests', 'pullrequest', 'pr']
 
 // The one phrase table; docs link here and tests check each phrase against its skill's description.
 export const PHRASES = [
@@ -19,7 +21,7 @@ export const PHRASES = [
   ['"break it down"', 'to-tasks'],
   ['"build it"', 'build'],
   ['"check it against the spec"', 'review'],
-  ['"ship it" (add "local" or "with a PR" for one run)', 'ship'],
+  ['"ship it" (add "local" or "with GitHub" for one run)', 'ship'],
   ['"update the docs"', 'flow'],
 ]
 
@@ -27,7 +29,7 @@ const eolOf = (text) => (text.includes('\r\n') ? '\r\n' : '\n')
 
 export function normalizeDelivery(value) {
   const mode = String(value ?? '').trim().toLowerCase().replace(/[\s_]+/gu, '-')
-  if (mode === 'pr' || mode === 'pullrequest') return 'pull-request'
+  if (LEGACY_GITHUB.includes(mode)) return 'github'
   return DELIVERY_MODES.includes(mode) ? mode : null
 }
 
