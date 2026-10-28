@@ -20,9 +20,13 @@ An adopter project's own product identity, normally in that project's `PRODUCT.m
 
 ## Context alignment
 
-The [`flow`](skills/flow/SKILL.md) skill: keep the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` aligned with meaningful changes, and set up Flow in a project. Not template initialization, and it does not run other skills. Model-invocable like most Flow skills ("update the docs"); that is not an always-on guarantee. Earlier records call it **Flow Lite**; current documents do not, so Lite means only [process depth](#process-depth) ([decision 0026](docs/decisions/0026-process-depth.md)).
+The [`flow`](skills/flow/SKILL.md) skill: keep the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` aligned with meaningful changes, and set up Flow in a project. Not template initialization, and it does not run other skills. Model-invocable like most Flow skills ("update the docs"); that is not an always-on guarantee. Earlier records call it **Flow Lite**; current documents do not, so Lite means only [discovery depth](#discovery-depth) ([decision 0026](docs/decisions/0026-process-depth.md)).
 
-## Process depth
+<a id="process-depth"></a>
+
+## Discovery depth
+
+Earlier records call it **process depth**.
 
 How much discovery a project wants: **Lite** or **Full**, asked as **Discovery depth** once, together with and independent of [delivery mode](#delivery-mode), wherever Flow first needs it (setup, `start`, or `explore`) and recorded as a `Process:` line in the project's Flow block. It is `explore`'s default depth for new work; when it is unset, Flow asks and suggests Lite unless the request points to Full ([`flow`](skills/flow/SKILL.md)). Lite: brief, spec 001 in full with its tasks, later bets as candidates, choices inside specs. Full: Lite plus deeper discovery and a [decision record](#decision-record) for each choice among alternatives. Neither specifies later bets up front. Depth does not set delivery: Lite with pull requests and Full with local delivery are both valid. Decisions [0026](docs/decisions/0026-process-depth.md) and [0032](docs/decisions/0032-local-build-lands-ship-verifies.md).
 
@@ -44,7 +48,7 @@ A portable `skills/<name>/SKILL.md` package in the Flow Skills distribution. Use
 
 ## Delivery mode
 
-How `build` delivers work and `ship` lands it in a project: **local** (tasks as the spec's checklist; `build` reviews the spec branch and merges it into local `main`, and "ship it" pushes `main` when a remote exists; needs no remote) or **pull request** (a [spec issue](#spec-issue) with tasks as sub-issues, one pull request per spec that `ship` merges). Either way `ship` then runs [verification](#verification). Asked once as **Delivery**, together with and independent of [process depth](#process-depth), wherever Flow first needs it, and recorded as the Flow block's `Delivery:` line; a default branch that requires pull requests is reported, not asked. The rule lives in [`build`](skills/build/SKILL.md#delivery-mode); decisions [0020](docs/decisions/0020-flow-mode.md), [0028](docs/decisions/0028-build-and-ship.md), [0029](docs/decisions/0029-spec-issues.md), [0030](docs/decisions/0030-asked-delivery-and-local-mode.md), and [0032](docs/decisions/0032-local-build-lands-ship-verifies.md) record why.
+How `build` delivers work and `ship` lands it in a project: **local** (tasks as the spec's checklist; `build` reviews the spec branch and merges it into local `main`, and "ship it" pushes `main` when a remote exists; needs no remote) or **pull request** (a [spec issue](#spec-issue) with tasks as sub-issues, one pull request per spec that `ship` merges). Either way `ship` then runs [verification](#verification). Asked once as **Delivery**, together with and independent of [discovery depth](#discovery-depth), wherever Flow first needs it, and recorded as the Flow block's `Delivery:` line; a default branch that requires pull requests is reported, not asked. The rule lives in [`build`](skills/build/SKILL.md#delivery-mode); decisions [0020](docs/decisions/0020-flow-mode.md), [0028](docs/decisions/0028-build-and-ship.md), [0029](docs/decisions/0029-spec-issues.md), [0030](docs/decisions/0030-asked-delivery-and-local-mode.md), and [0032](docs/decisions/0032-local-build-lands-ship-verifies.md) record why.
 
 ## Area
 
