@@ -35,10 +35,10 @@ Product discovery, writing, advisory, prototype, quality, and misc skills are op
 
 | Skill | Say | When to use |
 | --- | --- | --- |
-| [explore](../skills/explore/SKILL.md) | "explore this" | Propose a depth (Skip, Lite, Full), defaulting to the project's recorded process depth; extract intent, then challenge it; end in a confirmed brief, clearer intent, or a killed idea. Every brief asks who the agent users are. A new product gets spec 001 in full and later slices as candidate stubs; Full also proposes a decision record per choice among alternatives. |
+| [explore](../skills/explore/SKILL.md) | "explore this" | Propose a depth (Skip, Lite, Full), defaulting to the project's recorded process depth; extract intent, then challenge it; end in a confirmed brief, clearer intent, or a killed idea. Every brief asks who the agent users are. A new product gets spec 001 in full with its tasks and later bets as candidate stubs; Full also proposes a decision record per choice among alternatives. |
 | [interview](../skills/interview/SKILL.md) | "interview me" | Extract what you actually want, with a guess attached to each question, before any plan or spec exists. |
 | [grill](../skills/grill/SKILL.md) | "grill me" | Stress-test an idea or plan with focused questions and evidence. |
-| [to-spec](../skills/to-spec/SKILL.md) | "spec it" | Turn conversation into a numbered spec with contract-first interfaces; label assumptions; write candidate stubs for later slices; save only when requested. |
+| [to-spec](../skills/to-spec/SKILL.md) | "spec it" | Turn conversation into a numbered spec with contract-first interfaces; label assumptions; write candidate stubs for later bets; save only when requested. |
 | [to-tasks](../skills/to-tasks/SKILL.md) | "break it down" | Vertical-slice tasks with blockers, recorded as GitHub issues (pull-request mode) or in the spec's Tasks section (local mode); reports the ready set and waits for "ship it". |
 | [implement](../skills/implement/SKILL.md) | "build it" | Implement an authorized change; no spec required for small clear work. |
 | [review](../skills/review/SKILL.md) | "check it against the spec" | Review against intent and root context on five axes: correctness, readability, architecture, security, performance. |

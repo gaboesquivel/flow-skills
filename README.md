@@ -37,10 +37,10 @@ flowchart TB
 | | Lite (default) | Full |
 | --- | --- | --- |
 | Discovery | Intent, riskiest assumption, kill criterion, main metric, journeys, alternatives | Lite plus pre-mortem, jobs to be done, competitors, 2–3 approaches, saved research |
-| Specs | Spec 001 in full; later slices as `candidate` stubs | Same |
+| Specs | Spec 001 in full with its tasks; later bets as `candidate` stubs | Same |
 | Decisions | Inside each spec unless they pass the decision test | A decision record for every choice among alternatives, starting with the chosen approach |
 
-Full records more of the *why*; it never specifies later slices up front, because those change once the first one ships. The choice is a `Process:` line in the Flow block; `explore` uses it as its default and you can override it per run.
+Full records more of the *why*; it never specifies later bets up front, because those change once the first one ships. The choice is a `Process:` line in the Flow block; `explore` uses it as its default and you can override it per run.
 
 ### Specs, tasks, and decisions
 
