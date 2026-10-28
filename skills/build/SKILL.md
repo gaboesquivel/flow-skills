@@ -8,7 +8,7 @@ disable-model-invocation: false
 
 Read the relevant request, repository instructions, current context, and code. If the user supplies a task reference, retrieve it with available tools and resolve consequential ambiguity. A tracker, setup step, or formal spec is not a prerequisite for a clear small change.
 
-State the intended observable result and implement the smallest useful increment using existing patterns. Preserve unrelated working-tree changes. Do not add scope just because it is nearby. Ordinary small fixes do not need architecture work or a formal spec. When a new product or substantial feature has unclear intent, suggest an `explore` tier and wait; never start exploration unasked. Clear requests proceed.
+State the intended observable result and implement the smallest useful increment using existing patterns. Preserve unrelated working-tree changes. Do not add scope just because it is nearby. Ordinary small fixes do not need architecture work or a formal spec. When a new product or substantial feature has unclear intent, suggest `explore` and wait; never start exploration unasked. Clear requests proceed.
 
 For consequential domain or API changes, understand module ownership, name the data shapes and caller expectations before committing to a new abstraction, and prefer a small executable test over extended debate when an observable fact is cheap to check.
 

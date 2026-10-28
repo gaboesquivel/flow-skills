@@ -370,7 +370,7 @@
       "skills": [
         "explore"
       ],
-      "behavior": "New product proposes Lite and extracts intent before challenging",
+      "behavior": "New product gets the one default depth with a pre-mortem, no depth question, and extracts intent before challenging",
       "taskFile": "tests/evals/tasks/E17-task.md",
       "rubricFile": "tests/evals/rubrics/E17-rubric.md",
       "skillReferences": [
@@ -662,7 +662,7 @@
         "explore",
         "flow"
       ],
-      "behavior": "A feature request with no Flow block asks depth and delivery once, in one round, and publishes nothing before the answers",
+      "behavior": "A feature request with no Flow block asks delivery once, asks no depth, and publishes nothing before the answer",
       "taskFile": "tests/evals/tasks/E30-task.md",
       "rubricFile": "tests/evals/rubrics/E30-rubric.md",
       "skillReferences": [
@@ -780,6 +780,48 @@
       "skillReferences": [
         "skills/build/SKILL.md",
         "skills/ship/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "not_executed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E36",
+      "skills": [
+        "explore"
+      ],
+      "behavior": "Explore asks no depth, runs a pre-mortem, and commits the confirmed brief on an explore/<slug> branch while the default branch stays clean",
+      "taskFile": "tests/evals/tasks/E36-task.md",
+      "rubricFile": "tests/evals/rubrics/E36-rubric.md",
+      "skillReferences": [
+        "skills/explore/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "not_executed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E37",
+      "skills": [
+        "build"
+      ],
+      "behavior": "Build creates task worktrees from the spec head with git worktree add, checks ancestry before integrating, and ticks tasks with a short SHA; an unspecced one-line fix lands after a self-check, and an unspecced API change stops for to-spec",
+      "taskFile": "tests/evals/tasks/E37-task.md",
+      "rubricFile": "tests/evals/rubrics/E37-rubric.md",
+      "skillReferences": [
+        "skills/build/SKILL.md"
       ],
       "fixtureReferences": [],
       "evidence": {

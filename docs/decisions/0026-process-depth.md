@@ -1,6 +1,6 @@
 # 0026 — Process depth, one setup path, and the spec–decision boundary
 
-Status: **Accepted** (2026-10-28). Amends [0022](0022-start-runs-explore.md) (explore depth from `start`) and [0024](0024-gated-hand-offs.md) (`start` explores at Lite). Renames the label "Flow Lite" from [0006](0006-flow-lite-and-flat-docs.md) in current documents; the `flow` skill and its behavior are unchanged. Spec: [016](../specs/016-process-depth.md). Amended by [0029](0029-spec-issues.md) (candidate specs are issues in pull-request mode). Amended by [0030](0030-asked-delivery-and-local-mode.md) (depth asked with delivery wherever Flow first needs it; unset means Flow asks and suggests Lite).
+Status: **Accepted** (2026-10-28). Amends [0022](0022-start-runs-explore.md) (explore depth from `start`) and [0024](0024-gated-hand-offs.md) (`start` explores at Lite). Renames the label "Flow Lite" from [0006](0006-flow-lite-and-flat-docs.md) in current documents; the `flow` skill and its behavior are unchanged. Spec: [016](../specs/016-process-depth.md). Amended by [0029](0029-spec-issues.md) (candidate specs are issues in pull-request mode). Amended by [0030](0030-asked-delivery-and-local-mode.md) (depth asked with delivery wherever Flow first needs it; unset means Flow asks and suggests Lite). Superseded in part by [0036](0036-one-explore-depth.md) (one `explore` depth, deeper research on request; no recorded process depth or `Process:` line).
 
 ## Context
 
