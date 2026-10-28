@@ -1,5 +1,5 @@
 interface:
   display_name: "Ship"
-  short_description: "Review, merge, and sync accepted work"
+  short_description: "Land accepted work: build, review, merge, and sync"
 policy:
   allow_implicit_invocation: true

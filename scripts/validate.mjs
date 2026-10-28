@@ -2,6 +2,7 @@ import { existsSync, readFileSync, readdirSync, realpathSync } from 'node:fs'
 import { dirname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { collectDocLinkErrors } from './check-doc-links.mjs'
+import { ESSENTIAL_CHECK_IDS } from '../skills/start/lib/commit-gate.mjs'
 
 // Explicit-only skills must be named to run. Empty since decision 0022 made `start` speakable with a
 // pre-write confirmation; keep the set so a future skill with irreversible effects can opt out.
@@ -81,6 +82,7 @@ export function validateSkills(root) {
         if (text.includes(forbidden)) errors.push(`${name}/${file}: retired dependency ${forbidden}`)
       }
       if (/docs\/(?:adr|pdr|decision)\//u.test(text)) errors.push(`${name}/${file}: legacy decision path`)
+      for (const bare of collectBareFilenameErrors(text, root)) errors.push(`${name}/${file}: ${bare}`)
     }
     const adapter = join(folder, 'agents', 'openai.yaml')
     if (!existsSync(adapter)) errors.push(`${name}: missing agents/openai.yaml`)
@@ -88,8 +90,79 @@ export function validateSkills(root) {
       const adapterText = readFileSync(adapter, 'utf8')
       const implicit = explicit ? /allow_implicit_invocation:\s*false/u : /allow_implicit_invocation:\s*true/u
       if (!implicit.test(adapterText)) errors.push(`${name}: adapter implicit-invocation policy mismatch`)
+      for (const issue of collectAdapterErrors(adapterText)) errors.push(`${name}: ${issue}`)
     }
   }
+  return errors
+}
+
+export const SHORT_DESCRIPTION_MAX = 60
+
+// Adapter interface fields shown in host pickers: both present, short, and phrased as a label.
+export function collectAdapterErrors(adapterText) {
+  const errors = []
+  const field = (key) => {
+    const match = new RegExp(`^\\s+${key}:\\s*(.*)$`, 'mu').exec(adapterText)
+    return match ? match[1].trim().replace(/^(["'])(.*)\1$/u, '$2').trim() : ''
+  }
+  if (!field('display_name')) errors.push('adapter missing display_name')
+  const short = field('short_description')
+  if (!short) errors.push('adapter missing short_description')
+  else {
+    if (short.length > SHORT_DESCRIPTION_MAX) errors.push(`adapter short_description is ${short.length} characters (max ${SHORT_DESCRIPTION_MAX})`)
+    if (short.endsWith('.')) errors.push('adapter short_description must not end with a period')
+  }
+  return errors
+}
+
+// Bare backtick filenames (no slash) that look like skill-bundled files must exist in some skill
+// directory. Scope is deliberately narrow to avoid false positives on adopter-project names:
+// script extensions (.sh, .mjs, .cjs, .js, .ts, .py) and lowercase-initial .md names only, so
+// `AGENTS.md`, `PRODUCT.md`, `package.json`, and other project files are never checked.
+export const BARE_FILENAME_PATTERN = /`([a-z0-9][A-Za-z0-9_.-]*\.(?:sh|mjs|cjs|js|ts|py|md))`/gu
+
+export function collectBareFilenameErrors(text, skillsRoot) {
+  const errors = []
+  const known = skillFileNames(skillsRoot)
+  for (const name of new Set([...text.matchAll(BARE_FILENAME_PATTERN)].map((match) => match[1]))) {
+    if (!known.has(name)) errors.push(`bare filename \`${name}\` not found in any skill directory`)
+  }
+  return errors
+}
+
+const skillFileNameCache = new Map()
+function skillFileNames(skillsRoot) {
+  const key = resolve(skillsRoot)
+  if (!skillFileNameCache.has(key)) {
+    const names = new Set()
+    const walk = (dir) => {
+      for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        if (entry.isDirectory()) walk(join(dir, entry.name))
+        else names.add(entry.name)
+      }
+    }
+    walk(key)
+    skillFileNameCache.set(key, names)
+  }
+  return skillFileNameCache.get(key)
+}
+
+// `start` lists its verification checks in a table whose first column is "Check"; the IDs must
+// equal ESSENTIAL_CHECK_IDS in lib/commit-gate.mjs so the gate and the prose cannot drift.
+export function collectCheckTableErrors(skillMarkdown, essentialIds = ESSENTIAL_CHECK_IDS) {
+  const lines = skillMarkdown.split(/\r?\n/u)
+  const header = lines.findIndex((line) => /^\|\s*Check\s*\|/u.test(line))
+  if (header === -1) return ['start/SKILL.md: missing check table (header row starting with "| Check |")']
+  const ids = []
+  for (const line of lines.slice(header + 2)) {
+    if (!line.startsWith('|')) break
+    ids.push(line.split('|')[1].trim().replace(/^`(.*)`$/u, '$1'))
+  }
+  const missing = essentialIds.filter((id) => !ids.includes(id))
+  const extra = ids.filter((id) => !essentialIds.includes(id))
+  const errors = []
+  if (missing.length) errors.push(`start/SKILL.md: check table missing ESSENTIAL_CHECK_IDS ${missing.join(', ')}`)
+  if (extra.length) errors.push(`start/SKILL.md: check table has IDs not in ESSENTIAL_CHECK_IDS ${extra.join(', ')}`)
   return errors
 }
 
@@ -133,6 +206,8 @@ export function validateRepository(repoRoot) {
   const errors = validateSkills(join(repoRoot, 'skills'))
   errors.push(...collectDocLinkErrors(join(repoRoot, 'docs')))
   errors.push(...collectRecordNumberErrors(join(repoRoot, 'docs')))
+  const startSkill = join(repoRoot, 'skills', 'start', 'SKILL.md')
+  if (existsSync(startSkill)) errors.push(...collectCheckTableErrors(readFileSync(startSkill, 'utf8')))
   errors.push(...collectSkillsLinkErrors(repoRoot))
   return errors
 }
@@ -141,5 +216,5 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
   const errors = validateRepository(repoRoot)
   if (errors.length) { console.error(errors.join('\n')); process.exitCode = 1 }
-  else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills, documentation links, and local references.`)
+  else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills, documentation links, local references, adapters, record numbers, and start's check table.`)
 }
