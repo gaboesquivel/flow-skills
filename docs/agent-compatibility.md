@@ -46,6 +46,21 @@ Dual policy ([decision 0006](decisions/0006-flow-lite-and-flat-docs.md)):
 
 Core skill bodies avoid naming a single vendor tool, subagent API, or filesystem layout. Hosts may still expose different tools; skills describe outcomes and fallbacks in generic terms.
 
+## Claude Code
+
+Claude Code ships built-in skills that overlap with parts of the catalog. Flow owns intent and durable artifacts; built-ins own execution and output formats ([decision 0017](decisions/0017-claude-code-skill-coexistence.md)).
+
+| Flow | Built-in | Use Flow when |
+| --- | --- | --- |
+| `simplify` | `/simplify` (same name) | You want a behavior-preserving clarity refactor. Which one `/simplify` resolves to is unverified; name the Flow skill explicitly. |
+| `review` | `/code-review` | Intent and root-context alignment matter, not only correctness bugs. |
+| `security` | `/security-review` | You are hardening untrusted-input handling rather than auditing a diff. |
+| `flow`, `start` | `/init`, memory | Product facts belong in root context files. Keep `CLAUDE.md` and memory as pointers, not copies. |
+| `handoff` | Automatic compaction | A fresh agent needs a standalone document. |
+| `to-tasks` | Session task list | Work needs durable vertical slices or tracker issues. |
+
+Built-ins may be model-invoked; Flow skills other than `flow` are not. Plain requests such as "review this" usually reach the built-in.
+
 ## Verification status
 
 Structural checks (`pnpm validate`, contract tests, `pnpm eval:check`) and Agent Skills CLI listing (`tests/distribution.test.mjs`) run in CI. Recorded live slash-command or skill-picker runs in a second agent product remain open; see [smoke scenario status](../tests/smoke/2026-10-27-scenario-status.md) and [evaluation scenario status](../tests/evals/scenario-status.md).
