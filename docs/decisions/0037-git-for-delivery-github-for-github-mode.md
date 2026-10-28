@@ -1,6 +1,6 @@
 # 0037 — Git for delivery, GitHub for GitHub mode
 
-Status: **Proposed** (2026-10-28). Amends [0030](0030-asked-delivery-and-local-mode.md) (the delivery mode names; when delivery is asked). Spec: [023](../specs/023-git-and-github-requirements.md).
+Status: **Accepted** (2026-10-28). Amends [0030](0030-asked-delivery-and-local-mode.md) (the delivery mode names; when delivery is asked). Spec: [023](../specs/023-git-and-github-requirements.md).
 
 ## Context
 
