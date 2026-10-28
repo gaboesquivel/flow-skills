@@ -10,7 +10,7 @@ disable-model-invocation: false
 
 "Ship it" lands the current authorized work, one change or a spec's task set on one branch, then verifies that it works (decisions 0028, 0029, and 0032). In pull-request mode it builds when no pull request exists, gets an adversarial review posted on the pull request, fixes findings, waits for green checks, verifies the preview deployment, merges, deletes the branch, and syncs the local default branch and the spec issue. In local mode `build` has already reviewed the work and merged it into local `main`; ship pushes `main` when a remote exists. Either way it then runs Verify on the shipped commit. It also drops a spec the user abandons.
 
-Asking to ship authorizes these steps with no confirmation, subject to repository permissions and branch protection. It does not authorize destructive Git operations, force-pushing, rewriting remote branches, security bypasses, approving its own pull request, production promotion or rollback unless explicitly asked, or unrelated changes. The one carve-out is dropping a spec (see Abandoned specs).
+Asking to ship authorizes these steps with no confirmation, subject to repository permissions and branch protection. It does not authorize destructive Git operations, force-pushing, rewriting remote branches, security bypasses, approving its own pull request, production promotion or rollback unless explicitly asked, or unrelated changes. The carve-outs are dropping a spec (see Abandoned specs) and removing Verify's own scratch branches (see Verify).
 
 Before a multi-step run, suggest the host's autonomous permission mode when it has one (for example Claude Code auto mode) so file writes, comments, and pushes do not stop for each permission prompt. The gates below still apply.
 
