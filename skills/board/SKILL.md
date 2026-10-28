@@ -6,7 +6,7 @@ disable-model-invocation: false
 
 # Board
 
-**Show the board.** Render every spec in `docs/specs/` (and, with GitHub links, every open `candidate` issue) as a card in five columns: **Candidate → Specced → Ready → Building → Shipped**. The columns are the same in every delivery mode and explore depth.
+**Show the board.** Render every spec in `docs/specs/` (and, with GitHub links, every open `candidate` issue) as a card in five columns: **Candidate → Specced → Ready → Building → Shipped**. The columns are the same in every delivery mode.
 
 The board is read-only. Git decides each stage: spec status lines and task checkboxes on the default branch, spec branches, and merges. With GitHub links, a merged pull request from the spec's branch into the default branch also counts as that branch's merge. To move work, use the skill that does it (`to-spec`, `to-tasks`, `build`, `ship`); never edit cards or the generated page.
 
