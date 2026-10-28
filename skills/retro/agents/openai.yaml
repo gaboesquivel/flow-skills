@@ -1,5 +1,5 @@
 interface:
   display_name: "Retro"
-  short_description: "Conduct a retrospective on a coding session."
+  short_description: "Retrospective on the agent environment after a session"
 policy:
   allow_implicit_invocation: true

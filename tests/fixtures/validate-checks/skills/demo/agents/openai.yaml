@@ -1,0 +1,5 @@
+interface:
+  display_name: "Demo"
+  short_description: "Fixture skill"
+policy:
+  allow_implicit_invocation: true
