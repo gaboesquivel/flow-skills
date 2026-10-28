@@ -21,7 +21,7 @@ Ask only for what is still missing, in one question round:
 3. **Template** — only when not inferred. Recommend **flow-next** for a single Next.js app, **flow-mono** for Turborepo (`apps/web`, `packages/ui`).
 4. **Optional GitHub remote** — only when the user wants a new repository created or linked; never assume push access.
 5. **Process depth** — only when not stated: **Lite** (recommended) or **Full**, as the `flow` skill defines them.
-6. **Delivery mode** — only when not stated: **local** or **pull requests**, as `build`'s Delivery mode section defines them. Suggest local when no GitHub repository is created, and pull requests when one is.
+6. **Delivery mode** — only when not stated: **local** or **pull requests**, as `build`'s Delivery mode section defines them. Suggest local when no GitHub repository is created, and pull requests when one is; this basis is start-specific because the repository is being created.
 
 If an answer does not arrive, ask again; do not substitute a destination the user did not confirm.
 
@@ -80,12 +80,13 @@ Write `PRODUCT.md`, `DESIGN.md`, `ARCHITECTURE.md`, and `GLOSSARY.md` for **this
 
 ## Bootstrap order
 
-Everything shares one tree, so run independent steps as concurrent processes, not workers, in four stages; each stage waits for the previous one:
+Everything shares one tree, so run independent steps as concurrent processes, not workers, in five stages; each stage waits for the previous one:
 
-1. `pnpm setup` alongside the renames and baseline docs.
-2. qa, eval, identity scan, and build.
-3. The dev server (portless_startup).
-4. The HTTP smoke checks and the Operator fail-closed check.
+1. The identity renames.
+2. `pnpm setup` alongside the baseline docs.
+3. qa, eval, identity scan, and build.
+4. The dev server (portless_startup).
+5. The HTTP smoke checks and the Operator fail-closed check.
 
 Run gitignore_artifacts in any stage after setup. When the host cannot run processes concurrently, run the same steps in this order and say so.
 

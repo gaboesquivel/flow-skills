@@ -12,20 +12,20 @@ Before a multi-step run, suggest the host's autonomous permission mode when it h
 
 ## Read in the background
 
-On arrival, read the supplied brief and conversation in the main thread, then launch read-only background workers as `write-agents` Workers describes, while the main thread asks the first question:
+On arrival, read the supplied brief and conversation in the main thread, then launch read-only background workers while the main thread asks the first question (fan-out rule: `write-agents` Workers):
 
 - repository and root context (product documents and relevant code)
 - glossary terms and decisions the request may conflict with
 - prior art (existing specs, research, and similar features)
 - in a run handed over by `start`, the bootstrap lane's status
 
-Fold their results in as they return; drop a question a result answers, and raise a conflict they find at the next turn. Without workers, run the same reads in order before the first question and say so. Questions and all writes stay in the main thread.
+Fold their results in as they return; drop a question a result answers, and raise a conflict they find at the next turn. Questions and all writes stay in the main thread.
 
 ## Propose a depth
 
-Classify the work (new product, feature, or fix) and propose one tier with a one-line reason. New work defaults to the project's recorded process depth: the `Process:` line in its Flow block (decision 0026). A run handed over by `start` uses the depth and delivery confirmed there. The user confirms or overrides for this run.
+Classify the work (new product, feature, or fix) and propose one tier with a one-line reason. New work defaults to the project's recorded process depth: the `Process:` line in its Flow block (decision 0026). A run handed over by `start` uses the depth and delivery confirmed there. The user confirms or overrides for this run. Prefer the lighter tier when unsure; propose stepping up mid-session only when evidence warrants it. A Skip-tier run asks nothing.
 
-**Question round.** When `Process:` or `Delivery:` is `unset`, or there is no Flow block, ask the missing ones together in one round, each with a suggested answer: **Lite or Full** (suggest Lite unless the request points to Full), and **pull requests or local** (`build`'s Delivery mode owns the rule: state pull-request mode without asking when the default branch requires pull requests; otherwise suggest pull requests with a GitHub remote and local without one). Ask once per run. Offer to record the answers on the Flow block with `flow`; without a block or a yes, they hold for this run. Skip work asks nothing. Prefer the lighter tier when unsure; propose stepping up mid-session only when evidence warrants it.
+**Question round.** When `Process:` or `Delivery:` is `unset`, or there is no Flow block, ask the missing ones together in one round, each with a suggested answer: **Lite or Full** (suggest Lite unless the request points to Full), and **pull requests or local**, with a suggestion as `build`'s Delivery mode section describes (if `build` is unavailable, ask without a suggestion). Ask once per run. Offer to record the answers on the Flow block with `flow`; without a block or a yes, they hold for this run.
 
 - **Skip:** fixes and clear small changes. No questions, no writes; hand back to the requested work.
 - **Lite** (the suggested default): confirmed intent, the riskiest assumption, a kill criterion, one main metric ("unknown, measure first" is acceptable), 1–3 core journeys in one line each, three alternatives including the status quo, and the **agent lens**: who the agent users are, with an agent journey beside the human ones and agent alternatives, or an explicit "no agent users".
@@ -33,7 +33,7 @@ Classify the work (new product, feature, or fix) and propose one tier with a one
 
 ## Extract, then challenge
 
-Follow the `interview` pattern, including its question forms, until you can predict the user's next three answers. Restate intent and get an explicit yes before any challenge. When the user confirms, end the turn as `interview` does, but name the grill as the next step and start it on their reply; that yes confirms intent only and authorizes no write. Then follow `grill` on the riskiest claims only. At Full depth, after the intent yes, run `jtbd`, `competitors`, and the pre-mortem as parallel read-only workers; then grill in the main thread while one worker drafts the solution approaches and the research file's text for the write gate. Without workers, run them in that order and say so. If a supporting skill is missing, apply the same steps directly.
+Follow the `interview` pattern, including its question forms, until you can predict the user's next three answers. Restate intent and get an explicit yes before any challenge. When the user confirms, end the turn as `interview` does, but name the grill as the next step and start it on their reply; that yes confirms intent only and authorizes no write. Then follow `grill` on the riskiest claims only. At Full depth, after the intent yes, run `jtbd`, `competitors`, and the pre-mortem as parallel read-only workers (fan-out rule: `write-agents` Workers); then grill in the main thread while one worker drafts the solution approaches and the research file's text for the write gate. The pre-mortem runs once: `grill` skips its own pre-mortem worker because one already ran. If a supporting skill is missing, apply the same steps directly.
 
 ## Outcome and write gate
 
