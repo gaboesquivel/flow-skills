@@ -35,7 +35,7 @@ The first time a delivery skill needs to know, Flow asks one question: **GitHub 
 | Tasks | A checklist in the spec's Tasks section. | The same checklist, plus sub-issues of the spec issue with blocking links. |
 | "Build it" | Runs the checks and the review, then merges the work's branch into your local `main`. Nothing is pushed. | Runs the checks and opens one pull request for the work with green CI. |
 | "Ship it" | Pushes `main` when a remote exists. | Reviews the pull request, waits for green checks, and merges it. |
-| Verification | Runs the spec's acceptance scenario on the deployment, or locally with "deployment unverified" when there is none. | The same, plus a run on the pull request's preview deployment before merging. |
+| Verification | Checks that the pushed commit is green and its deployment answers, or reports "deployment unverified" when there is none. | The same, on the merge commit. |
 
 Pick local when you work alone, use another Git host, or want nothing published. Pick GitHub when your team reviews in pull requests or your default branch requires them; Flow detects that protection and uses GitHub mode without asking. To use the other mode for one run, say so: "build it local" or "ship it with GitHub". The full rule lives in [`build`](skills/build/SKILL.md#delivery-mode); the glossary defines [delivery mode](GLOSSARY.md#delivery-mode).
 
@@ -67,7 +67,7 @@ flowchart TB
 - **Set up Flow.** Say "set up Flow here" in an existing project, or "start a Next.js project" for a new one. `start` is the same setup plus a verified template bootstrap. Both write the Flow block and ask only the delivery question ([decision 0030](docs/decisions/0030-asked-delivery-and-local-mode.md), [decision 0036](docs/decisions/0036-one-explore-depth.md)).
 - **Define the goals.** `explore` gives every Flow project the same goals at one default depth: the problem, who it serves (agents included), the riskiest assumption, a pre-mortem, one main metric with a kill criterion, core journeys, and alternatives. Ask for `competitors` or `jtbd` when you want deeper research. `explore` commits the brief on an `explore/<slug>` branch, which "spec it" turns into the spec branch. `start` hands off to `explore` automatically; `flow` names it when `PRODUCT.md` has no brief.
 - **Keep context aligned.** "Update the docs" has `flow` align `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` after meaningful changes.
-- **Deliver.** "Spec it" writes a draft spec with one acceptance scenario and publishes nothing; "accept the spec" approves it. "Break it down" makes its tasks. "Build it" runs every unblocked task at once on one branch and delivers the spec as your mode does. "Ship it" lands accepted work with no confirmation, then runs the spec's acceptance scenario on the shipped commit's deployment (decisions [0028](docs/decisions/0028-build-and-ship.md), [0029](docs/decisions/0029-spec-issues.md), and [0032](docs/decisions/0032-local-build-lands-ship-verifies.md)).
+- **Deliver.** "Spec it" writes a draft spec with one acceptance scenario and publishes nothing; "accept the spec" approves it. "Break it down" makes its tasks. "Build it" runs every unblocked task at once on one branch and delivers the spec as your mode does. "Ship it" lands accepted work with no confirmation, then checks that the shipped commit is green and its deployment answers (decisions [0028](docs/decisions/0028-build-and-ship.md), [0029](docs/decisions/0029-spec-issues.md), [0032](docs/decisions/0032-local-build-lands-ship-verifies.md), and [0040](docs/decisions/0040-ship-verifies-liveness.md)).
 - **Other skills.** Say what you want; each skill's leading word reaches it ("grill me", "debug this"). Slash commands work too. There is no mandatory sequence.
 
 Skills may name the next skill and wait for you. The only automatic hand-offs are `start` → `explore`, explore's `interview` and `grill` phases (each behind your yes), and `ship` running `build` and `review` as part of landing ([decision 0024](docs/decisions/0024-gated-hand-offs.md), [decision 0028](docs/decisions/0028-build-and-ship.md)).
@@ -94,7 +94,7 @@ flowchart TB
   checkpoint["Checkpoint<br/>Integrated, local suite, screenshots"]
   ready["Ready PR<br/>One per spec · green checks"]
   land["Ship<br/>One review, merge, sync main"]
-  verify["Verify<br/>Acceptance scenario on the deployment"]
+  verify["Verify<br/>Green checks, deployment live"]
   align["flow aligns context<br/>Root docs current before review"]
   explore --> spec
   explore -.-> decision

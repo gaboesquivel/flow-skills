@@ -753,7 +753,7 @@
       "skills": [
         "ship"
       ],
-      "behavior": "Local ship pushes main, finds the commit's deployment, and runs the acceptance scenario; with none it reports deployment unverified, and a failed step after the push is shipped, verification failed with no rollback",
+      "behavior": "Local ship pushes main, waits for the commit's checks and deployment, and checks its URL answers; with none it reports deployment unverified, and a dead URL after the push is shipped, verification failed with no rollback",
       "taskFile": "tests/evals/tasks/E34-task.md",
       "rubricFile": "tests/evals/rubrics/E34-rubric.md",
       "skillReferences": [

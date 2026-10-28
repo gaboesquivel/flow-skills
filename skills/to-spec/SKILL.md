@@ -80,7 +80,7 @@ When a prototype encodes a decision more precisely than prose (state machine, sc
 
 What good tests mean here, which behavior is in scope, and prior art in the codebase.
 
-**Acceptance scenario** (required; `ship` runs it after landing): one representative end-to-end journey. Name the actor, the starting state with realistic data, and numbered steps with the observable result of each, marking each step that writes data (creates, sends, or changes it) as production-safe or not; on production `ship` runs read-only steps and production-safe writes, and never steps that need a real login, money, outbound messages, or deletion. When the spec names agent users, give the same journey through the agent interface (MCP tool).
+**Acceptance scenario** (required; `review` gives each step a verdict): one representative end-to-end journey. Name the actor, the starting state with realistic data, and numbered steps with the observable result of each. When the spec names agent users, give the same journey through the agent interface (MCP tool).
 
 ## Direction changes
 

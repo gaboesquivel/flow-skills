@@ -7,8 +7,8 @@ import test from 'node:test'
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const read = (path) => readFileSync(join(root, path), 'utf8')
 
-test('review and ship name the three requirement verdicts', () => {
-  for (const path of ['skills/review/SKILL.md', 'skills/ship/SKILL.md']) {
+test('review names the three requirement verdicts', () => {
+  for (const path of ['skills/review/SKILL.md']) {
     const text = read(path)
     for (const verdict of ['satisfied', 'unmet', 'unresolved']) {
       assert.match(text, new RegExp(`\`${verdict}\``, 'u'), `${path} missing ${verdict}`)
