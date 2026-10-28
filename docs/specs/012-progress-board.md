@@ -103,9 +103,9 @@ Specs that exist only on unmerged branches are shown too, marked with their bran
 ### 02: Live page (#46)
 **What to build:** the board runs as a local page that updates within a few seconds of a commit or merge.
 **Blocked by:** 01.
-**Status:** planned
-- [ ] Localhost server, JSON endpoint, polling page; the skill starts, reports, and stops it.
-- [ ] Works in light and dark color schemes and at phone width.
+**Status:** done
+- [x] Localhost server, JSON endpoint, polling page; the skill starts, reports, and stops it.
+- [x] Works in light and dark color schemes and at phone width.
 
 ### 03: Run overlay (#49)
 **What to build:** during a `ship` task-set run, the Building card shows each task's live state.

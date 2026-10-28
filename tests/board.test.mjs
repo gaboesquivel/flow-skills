@@ -1,10 +1,12 @@
 import assert from 'node:assert/strict'
-import { execFileSync, spawnSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { execFileSync, spawn, spawnSync } from 'node:child_process'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, renameSync, rmSync, writeFileSync } from 'node:fs'
+import http from 'node:http'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import test from 'node:test'
-import { countTasks, deriveBoard, parseStatus, readSnapshot, renderHtml } from '../skills/board/scripts/board.mjs'
+import vm from 'node:vm'
+import { countTasks, deriveBoard, escapeHtml, LIVE_SCRIPT, parseStatus, readSnapshot, renderHtml, startServer } from '../skills/board/scripts/board.mjs'
 
 const script = join(import.meta.dirname, '../skills/board/scripts/board.mjs')
 
@@ -368,5 +370,194 @@ test('--repo or --out without a value prints usage and exits 2', () => {
     const run = spawnSync(process.execPath, [script, ...args], { encoding: 'utf8' })
     assert.equal(run.status, 2, args.join(' '))
     assert.match(run.stderr, /Usage/u)
+  }
+})
+
+function statusWithHost(url, host) {
+  return new Promise((done, fail) => {
+    http.get(url, { headers: { host } }, (res) => { res.resume(); res.on('end', () => done(res.statusCode)) }).on('error', fail)
+  })
+}
+
+const getState = async (url) => (await fetch(new URL('state', url))).json()
+
+test('live server: /state JSON, page, memo window, new commits, git failure, host check', async () => {
+  const { dir, write, commit } = makeRepo()
+  write('001-first.md', spec('001: First', 'draft'))
+  commit('first')
+  // Same repo, two memo windows: one never expires during the test, one recomputes on every request.
+  const memoized = await startServer({ repoRoot: dir, port: 0, memoMs: 60_000 })
+  const fresh = await startServer({ repoRoot: dir, port: 0, memoMs: 0 })
+  try {
+    assert.equal(memoized.server.address().address, '127.0.0.1')
+    assert.match(memoized.url, /^http:\/\/127\.0\.0\.1:\d+\/$/u)
+
+    const res = await fetch(new URL('state', memoized.url))
+    assert.equal(res.status, 200)
+    assert.match(res.headers.get('content-type'), /application\/json/u)
+    const board = await res.json()
+    assert.deepEqual(board.columns.map((column) => column.id), ['candidate', 'specced', 'ready', 'building', 'shipped'])
+    assert.equal(board.defaultBranch, 'main')
+    assert.deepEqual(Object.keys(cardOf(board, '001')).sort(), ['branch', 'marker', 'number', 'reason', 'slug', 'source', 'status', 'tasks', 'title'])
+
+    const html = await (await fetch(memoized.url)).text()
+    assert.match(html, /<h2>Specced <span class="count">1<\/span>/u)
+    assert.match(html, /fetch\('state'/u)
+    assert.match(html, /id="banner"/u)
+    assert.match(html, /script-src 'sha256-[A-Za-z0-9+/=]+'/u)
+    assert.doesNotMatch(html, /unsafe-inline'; connect|script-src 'unsafe-inline'/u)
+    assert.doesNotMatch(html, /https?:\/\//u)
+    assert.doesNotMatch(html, /innerHTML/u)
+
+    write('002-second.md', spec('002: Second', 'candidate'))
+    commit('second')
+    assert.equal(cardOf(await getState(memoized.url), '002'), undefined, 'recomputed inside the memo window')
+    assert.equal(stageOf(await getState(fresh.url), '002'), 'candidate')
+
+    // Moving .git aside makes every git call fail: the fixture lives in the OS temp directory, which is
+    // assumed not to sit inside another git repository that git would find instead.
+    renameSync(join(dir, '.git'), join(dir, '.git-off'))
+    try {
+      const failed = await fetch(new URL('state', fresh.url))
+      assert.equal(failed.status, 500)
+      assert.equal(typeof (await failed.json()).error, 'string')
+      assert.match(await (await fetch(fresh.url)).text(), /Second/u, 'page keeps the last good board')
+    } finally {
+      renameSync(join(dir, '.git-off'), join(dir, '.git'))
+    }
+
+    assert.equal(await statusWithHost(fresh.url, 'evil.example'), 403)
+    assert.equal((await fetch(new URL('nope', fresh.url))).status, 404)
+  } finally {
+    await memoized.close()
+    await fresh.close()
+    rmSync(dir, { recursive: true, force: true })
+  }
+  assert.equal(memoized.server.listening, false)
+})
+
+/** Minimal DOM for running LIVE_SCRIPT in node:vm; serializes the way renderHtml writes markup. */
+class StubElement {
+  constructor(tag) { this.tag = tag; this.className = ''; this.dataset = {}; this.children = []; this.hidden = false }
+  set textContent(value) { this.children = [String(value)] }
+  get textContent() { return this.children.map((child) => (typeof child === 'string' ? child : child.textContent)).join('') }
+  append(...nodes) { this.children.push(...nodes) }
+  replaceChildren(...nodes) { this.children = nodes }
+  get innerHTML() { return this.children.map((child) => (typeof child === 'string' ? escapeHtml(child) : child.outerHTML)).join('') }
+  get outerHTML() {
+    const attrs = (this.className ? ` class="${escapeHtml(this.className)}"` : '') + Object.entries(this.dataset).map(([key, value]) => ` data-${key}="${escapeHtml(value)}"`).join('')
+    return `<${this.tag}${attrs}>${this.innerHTML}</${this.tag}>`
+  }
+}
+
+async function runClient(response) {
+  const main = new StubElement('main')
+  const sub = new StubElement('p')
+  const banner = new StubElement('p')
+  let next
+  const document = { querySelector: (selector) => (selector === 'main' ? main : sub), getElementById: () => banner, createElement: (tag) => new StubElement(tag) }
+  vm.runInNewContext(LIVE_SCRIPT, { document, setTimeout: (fn) => { next = fn }, fetch: async () => { if (response instanceof Error) throw response; return response } })
+  await next()
+  return { main, sub, banner }
+}
+
+const jsonResponse = (body, status = 200) => ({ ok: status < 400, status, headers: { get: () => 'application/json; charset=utf-8' }, json: async () => JSON.parse(JSON.stringify(body)) })
+
+test('live client renders the same columns and cards as renderHtml', async () => {
+  // Exercise every optional card part; a field rendered on only one side shows up as a diff.
+  const branches = [{ name: 'feat/building', remote: false, merged: false }]
+  const board = deriveBoard({
+    ...snapshot({
+      '001-building.md': spec('001: Building <&"\'>', 'draft', '\n## Tasks\n\n- [x] a\n- [ ] b\n'),
+      '002-odd.md': spec('002: Odd', 'proposed'),
+      '003-done.md': spec('003: Done', 'implemented'),
+    }, branches),
+    repoName: 'demo',
+    generatedAt: '2026-10-28T00:00:00.000Z',
+  })
+  const { main, sub, banner } = await runClient(jsonResponse(board))
+  assert.equal(main.innerHTML, /<main>([\s\S]*)<\/main>/u.exec(renderHtml(board))[1])
+  assert.equal(sub.textContent, 'from main · generated 2026-10-28T00:00:00.000Z')
+  assert.equal(banner.hidden, true)
+})
+
+test('live client keeps the board and shows distinct banners on errors', async () => {
+  const errored = await runClient(jsonResponse({ error: 'git failed' }, 500))
+  assert.equal(errored.banner.hidden, false)
+  assert.match(errored.banner.textContent, /Not updating: git failed/u)
+  assert.equal(errored.main.children.length, 0)
+  const refused = await runClient({ ok: false, status: 403, headers: { get: () => 'text/plain' }, json: async () => { throw new Error('not json') } })
+  assert.match(refused.banner.textContent, /HTTP 403 without board data/u)
+  const down = await runClient(new Error('connection refused'))
+  assert.match(down.banner.textContent, /not reachable/u)
+})
+
+function startCli(dir, port) {
+  const child = spawn(process.execPath, [script, '--serve', '--port', String(port), '--repo', dir], { stdio: ['ignore', 'pipe', 'pipe'] })
+  const exited = new Promise((done) => child.on('exit', (code, signal) => done({ code, signal })))
+  const url = new Promise((done, fail) => {
+    let out = ''
+    child.stdout.on('data', (chunk) => { out += chunk; const match = /http:\/\/127\.0\.0\.1:\d+\//u.exec(out); if (match) done(match[0]) })
+    child.on('exit', () => fail(new Error(`server exited early: ${out}`)))
+  })
+  return { child, exited, url }
+}
+
+const cli = (...args) => spawnSync(process.execPath, [script, ...args], { encoding: 'utf8' })
+
+async function freePort() {
+  const probe = http.createServer()
+  await new Promise((done) => probe.listen(0, '127.0.0.1', done))
+  const { port } = probe.address()
+  await new Promise((done) => probe.close(done))
+  return port
+}
+
+test('--serve and --stop find this repo\'s board by port probe, never another repo\'s', { timeout: 10_000 }, async () => {
+  const own = makeRepo()
+  const other = makeRepo()
+  for (const repo of [own, other]) {
+    repo.write('001-served.md', spec('001: Served', 'draft'))
+    repo.commit('specs')
+  }
+  const port = await freePort()
+  const board = startCli(own.dir, port)
+  try {
+    const url = await board.url
+    assert.equal(url, `http://127.0.0.1:${port}/`)
+    const state = await getState(url)
+    assert.equal(cardOf(state, '001').title, 'Served')
+    assert.deepEqual(state.server, { repoRoot: realpathSync(own.dir), pid: board.child.pid })
+
+    const again = cli('--serve', '--port', String(port), '--repo', own.dir)
+    assert.equal(again.status, 0, again.stderr)
+    assert.equal(again.stdout.trim(), `Board already running at ${url} (pid ${board.child.pid}).`)
+
+    // Another repository's board on the port is neither reused nor stopped.
+    const foreignServe = cli('--serve', '--port', String(port), '--repo', other.dir)
+    assert.equal(foreignServe.status, 1)
+    assert.match(foreignServe.stderr, new RegExp(`Port ${port} is in use`, 'u'))
+    const foreignStop = cli('--stop', '--port', String(port), '--repo', other.dir)
+    assert.equal(foreignStop.status, 0, foreignStop.stderr)
+    assert.equal(foreignStop.stdout.trim(), `No board for this repo on port ${port}.`)
+    assert.equal(cardOf(await getState(url), '001').title, 'Served')
+
+    const stop = cli('--stop', '--port', String(port), '--repo', own.dir)
+    assert.equal(stop.status, 0, stop.stderr)
+    assert.match(stop.stdout, new RegExp(`Stopped the board at ${url.replaceAll('.', '\\.')} \\(pid ${board.child.pid}\\)`, 'u'))
+    assert.deepEqual(await board.exited, { code: 0, signal: null })
+    assert.equal(cli('--stop', '--port', String(port), '--repo', own.dir).stdout.trim(), `No board for this repo on port ${port}.`)
+
+    for (const repo of [own, other]) assert.equal(existsSync(join(repo.dir, '.git', 'flow')), false, 'nothing written under .git')
+  } finally {
+    if (board.child.exitCode === null && board.child.signalCode === null) board.child.kill('SIGKILL')
+    rmSync(own.dir, { recursive: true, force: true })
+    rmSync(other.dir, { recursive: true, force: true })
+  }
+})
+
+test('--serve rejects bad ports and mixed modes', () => {
+  for (const args of [['--serve', '--port', 'x'], ['--serve', '--port', '70000'], ['--serve', '--once'], ['--stop', '--serve']]) {
+    assert.equal(cli(...args).status, 2, args.join(' '))
   }
 })

@@ -12,13 +12,19 @@ The board is read-only. Git decides each stage: spec status lines and task check
 
 ## Run it
 
-From any directory inside the project:
+From any directory inside the project, start the live board as a background process:
 
 ```bash
-node <this skill's directory>/scripts/board.mjs --once
+node <this skill's directory>/scripts/board.mjs --serve
 ```
 
-It writes a self-contained HTML snapshot to `.git/flow/board.html` (the repository's common git directory, shared by worktrees) and prints the path. Open that file for the user, or give them the path. `--out <file>` writes elsewhere; `--repo <path>` targets another repository; `--json` prints the derived board instead, for answering in chat.
+It prints `Board at http://127.0.0.1:<port>/ (pid N)…` and keeps running. Give the user that URL, or open it for them. If this project's board already answers on that port, `--serve` prints `Board already running at <url>` and exits 0; give the user that URL. The page refreshes itself every few seconds from git and shows a banner when it cannot update. It listens on `127.0.0.1` only, on port 4178 or a free port when that is taken (for example by another project's board); `--port <n>` requires a specific port.
+
+**Stop the board** when the user asks ("stop the board", "close the board"): run the script with `--stop` (add `--port <n>` if it was started with one). It stops this project's board on that port, or says there is none. Do not leave the board running past the session unless the user wants it.
+
+Limit: a board that fell back to a free port can only be stopped by the session that started it (stop its background process) or with `--stop --port <n>`.
+
+If the background start fails or exits immediately, use `--once`. It writes a self-contained HTML snapshot to `.git/flow/board.html` (the repository's common git directory, shared by worktrees) and prints the path; open that file or give the user the path, and run it again for fresh state. `--out <file>` writes elsewhere; `--repo <path>` targets another repository (any mode); `--json` prints the derived board instead, for answering in chat.
 
 When the user wants progress in chat rather than a page, run `--json` and summarize the columns in a few lines.
 
