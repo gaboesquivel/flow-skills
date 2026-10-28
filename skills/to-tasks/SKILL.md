@@ -60,7 +60,7 @@ Do not close or modify any parent issue.
 
 ### 6. Hand off
 
-End by naming where the tasks live and the ready set, then wait for "ship it". Do not start implementation.
+End by naming where the tasks live and the ready set, then wait for "build it". Do not start implementation.
 
 <local-task-template>
 
