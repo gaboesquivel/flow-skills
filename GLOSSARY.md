@@ -24,7 +24,7 @@ The [`flow`](skills/flow/SKILL.md) skill: keep the current project's `PRODUCT.md
 
 ## Process depth
 
-How much process a project wants: **Lite** or **Full**, asked once at setup ("set up Flow here" or `start`) and recorded as a `Process:` line in the project's Flow block. It is `explore`'s default depth for new work; unset means Lite. Lite: brief, the first slice's spec in full, later slices as candidates, choices inside specs. Full: Lite plus deeper discovery and a [decision record](#decision-record) for each choice among alternatives. Neither specifies later slices up front. [Decision 0026](docs/decisions/0026-process-depth.md).
+How much process a project wants: **Lite** or **Full**, asked once at setup ("set up Flow here" or `start`) and recorded as a `Process:` line in the project's Flow block. It is `explore`'s default depth for new work; unset means Lite. Lite: brief, spec 001 in full with its tasks, later bets as candidates, choices inside specs. Full: Lite plus deeper discovery and a [decision record](#decision-record) for each choice among alternatives. Neither specifies later bets up front. [Decision 0026](docs/decisions/0026-process-depth.md).
 
 ## Spec
 
@@ -56,7 +56,7 @@ The report `ship` posts after each [wave](#wave): what integrated or failed, che
 
 ## Candidate spec
 
-A stub spec for a later vertical slice: the problem, the assumption the slice tests, and status `candidate`. Fleshed out only after the first slice ships. [Decision 0022](docs/decisions/0022-start-runs-explore.md).
+A stub spec for a later bet: the problem, the assumption it tests, and status `candidate`. Fleshed out only when its turn comes, after the bet it depends on ships. Decisions [0022](docs/decisions/0022-start-runs-explore.md) and [0026](docs/decisions/0026-process-depth.md).
 
 ## Human summary
 

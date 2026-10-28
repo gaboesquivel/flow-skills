@@ -13,16 +13,16 @@ How much process a project wants is chosen again on every `explore` run, and not
 - **Process depth.** A project's Flow block records `Process: lite`, `full`, or `unset`. It is the default `explore` depth for new work in that project; `unset` means Lite. Fixes and clear small changes still skip exploration.
 - **One setup path.** `start` is "set up Flow here" plus a template bootstrap. Both ask once whether the project uses Lite or Full process and record the answer. Both define the same goals through `explore`: `start` hands off automatically ([0024](0024-gated-hand-offs.md)); `flow` names `explore` and waits when `PRODUCT.md` has no brief.
 - **Spec, tasks, decision.** A spec is one bet: it tests one assumption and ships as one unit. Its tasks are the slices inside it, so a spec may be large. A bet that depends on how another one does gets its own spec and stays a `candidate` stub until its turn, at any depth. A choice gets a decision record only when it chose among real alternatives and reaches beyond one spec or is costly to reverse; otherwise it lives in the spec's Implementation Decisions. `to-spec` owns this rule.
-- **Lite and Full.** Lite: brief, spec 001 in full with its tasks, later slices as candidates; choices stay inside specs unless they pass the decision test. Full: Lite plus deeper discovery (pre-mortem, `jtbd`, `competitors`, 2–3 approaches, saved research), and every choice among alternatives made during exploration, starting with the chosen approach, becomes a proposed decision record. Full records more of the why; it never specifies later slices up front.
+- **Lite and Full.** Lite: brief, spec 001 in full with its tasks, later bets as candidates; choices stay inside specs unless they pass the decision test. Full: Lite plus deeper discovery (pre-mortem, `jtbd`, `competitors`, 2–3 approaches, saved research), and every choice among alternatives made during exploration, starting with the chosen approach, becomes a proposed decision record. Full records more of the why; it never specifies later bets up front.
 - **Naming.** Current documents call the `flow` skill **context alignment** instead of Flow Lite. Lite and Full refer only to process depth. Historical records keep their wording.
 
 ## Rationale
 
-The goals are what make later work evaluable, so every Flow project should have them regardless of how it started. Recording depth once in the block follows `Delivery:` and `Deploy:`: the choice is made once, is visible, and the user can edit it. Specifying later slices goes stale because of uncertainty, not process preference ([0022](0022-start-runs-explore.md)), so Full spends its extra effort on rationale, which does not go stale the same way.
+The goals are what make later work evaluable, so every Flow project should have them regardless of how it started. Recording depth once in the block follows `Delivery:` and `Deploy:`: the choice is made once, is visible, and the user can edit it. Specifying later bets goes stale because of uncertainty, not process preference ([0022](0022-start-runs-explore.md)), so Full spends its extra effort on rationale, which does not go stale the same way.
 
 ## Alternatives
 
-- **Full means a full spec for every slice.** Rejected for the reason 0022 gives: later slices change after slice 1 ships.
+- **Full means a full spec for every bet.** Rejected for the reason 0022 gives: later bets change after spec 001 ships.
 - **Keep choosing depth per run.** Rejected: users repeat the same answer and projects drift between depths.
 - **Rename the `explore` tiers instead of Flow Lite.** Rejected: users already say "lite or full" for depth; the skill label is the less-used name.
 
