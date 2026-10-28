@@ -20,12 +20,12 @@ Inspect the current branch and worktree, Git status and diff, existing staged ch
 
 Classify the work. Resolve its spec from (a) the branch name, (b) files under `docs/specs/` (or the project's spec location) that the change touches, and (c) the issues the work closes (`Closes #N`) and the spec each links.
 
-- **Spec work:** any source points at a spec, or classification is uncertain. The spec's `Status:` must be `accepted`, and every decision record it links must be **Accepted**. Otherwise name the spec or decision and its current status, suggest "accept the spec", and stop before building, committing, or pushing anything. If the spec cannot be resolved, say so and stop the same way.
+- **Spec work:** any source points at a spec, or classification is uncertain. The spec's `Status:` must be `accepted`, and every decision record it links must be **Accepted**. Otherwise name each spec or linked decision that is not accepted, with its status, suggest "accept the spec", and stop before building, committing, or pushing anything. If the spec cannot be resolved, say so and stop the same way.
 - **Hotfix:** work with no spec link at all, including work that closes only issues belonging to no spec. It ships through the same cycle; the review also judges whether it is hotfix-sized (see Review).
 
 ## Build
 
-In pull-request mode, when no pull request exists for the work or the work has uncommitted or unpushed changes, run `build` first; it commits, pushes, opens the pull request, and waits for checks. On a spec's task set, `build` runs it (see its Task set), then ship lands the pull request it marked ready. Related work shares one branch and pull request; split only large, independently shippable work. In local mode, `build` delivers a branch with the local check suite passing.
+Run `build` first, passing this run's delivery mode, when no pull request exists for the work (pull-request mode), the pull request is still a draft, the spec's task set has runnable tasks left, the work has uncommitted or unpushed changes, or (local mode) the work sits on the default branch; it commits, pushes, opens or finishes the pull request, and waits for checks. On a spec's task set, `build` runs it (see its Task set), then ship lands the pull request it marked ready. Related work shares one branch and pull request; split only large, independently shippable work. In local mode, `build` delivers a branch with the local check suite passing.
 
 ## Prepare
 
@@ -51,10 +51,10 @@ On blocking findings or failing checks, fix what this work caused when safely in
 
 **Pull-request mode:**
 
-1. Merge only the reviewed and checked head SHA, with a method the repository allows (for example `gh pr merge --match-head-commit <sha>`). If the head changed after the review, including someone else's push, review and check the new head first. The pull request carries a Conventional Commits title and a `Closes #N` line per task issue.
+1. Keep a `Closes #N` line only for tasks that integrated; list the rest as `Refs #N`. Merge only the reviewed and checked head SHA, with a method the repository allows (for example `gh pr merge --match-head-commit <sha>`). If the head changed after the review, including someone else's push, review and check the new head first. The pull request carries a Conventional Commits title and a `Closes #N` line per task issue.
 2. Delete the head branch on the remote and locally (for example `gh pr merge --delete-branch`), then fast-forward the local default branch from the remote.
 
-**Local mode:** set the spec to `implemented` as in Prepare, then run the final `review` and the full local check suite on the branch. Fast-forward the local default branch from the remote, merge the branch into it with `git merge --no-ff` and a pull-request-style message (summary, tasks, checks), push it, and delete the merged branch locally and, if it was pushed, on the remote. If the push is refused, report partial delivery with the unpushed merge.
+**Local mode:** after Prepare, Review, and Fix rounds, run the full local check suite on the branch. Fast-forward the local default branch from the remote, merge the branch into it with `git merge --no-ff` and a pull-request-style message (summary, tasks, checks), push it, and delete the merged branch locally and, if it was pushed, on the remote. If the push is refused, report partial delivery with the unpushed merge.
 
 Never force-push or rewrite remote branches. Delete a branch only after its work has merged. If the remote cannot be safely determined, stop and report.
 

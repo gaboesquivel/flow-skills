@@ -26,7 +26,7 @@ Then deliver (see Deliver). Report the result, files, checks, limitations, and r
 
 **Pull-request mode** (see Delivery mode):
 
-1. **Branch.** Work on a branch that is not the default branch: the spec branch for a task set, the current branch when it already holds this work or is this spec's branch, otherwise a new branch from the current base.
+1. **Branch.** Work on a branch that is not the default branch: the spec branch for a task set (named with the spec's number and slug, for example `feat/017-build-and-ship`), the current branch when it already holds this work or is this spec's branch, otherwise a new branch from the current base.
 2. **Commit** only this work: review the diff, stage only intended files, and preserve unrelated working-tree changes. Exclude credentials, local logs, and generated secrets. Follow repository commit conventions. Do not amend or rewrite unrelated commits.
 3. **Push** the branch to its remote. If the remote cannot be safely determined or the push is refused, stop and report.
 4. **Open a pull request,** or update the one already open for the branch. Ad-hoc work opens it ready for review, not as a draft, with a Conventional Commits title, a summary, and a `Closes #N` line per task issue. A task set uses the draft opened under Task set.

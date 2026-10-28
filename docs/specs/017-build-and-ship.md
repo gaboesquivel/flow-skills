@@ -1,6 +1,6 @@
 # 017: Build and ship
 
-Status: accepted (2026-10-28). Decision: [0028](../decisions/0028-build-and-ship.md). Builds on [spec 015](015-wave-checkpoints.md) and [spec 012](012-progress-board.md).
+Status: implemented (2026-10-28). Decision: [0028](../decisions/0028-build-and-ship.md). Builds on [spec 015](015-wave-checkpoints.md) and [spec 012](012-progress-board.md).
 
 ## Problem Statement
 
@@ -52,9 +52,9 @@ A developer who says "ship it" is asked to confirm twice after deciding. A devel
 
 Recorded as GitHub issues (pull-request mode):
 
-- [ ] [#72](https://github.com/gaboesquivel/flow-skills/issues/72) Rename `implement` to `build`.
-- [ ] [#74](https://github.com/gaboesquivel/flow-skills/issues/74) `build` delivers a pull request with green checks (blocked by #72).
-- [ ] [#73](https://github.com/gaboesquivel/flow-skills/issues/73) Spec drafts and acceptance.
-- [ ] [#75](https://github.com/gaboesquivel/flow-skills/issues/75) Retire the `Deploy:` line (blocked by #74).
-- [ ] [#76](https://github.com/gaboesquivel/flow-skills/issues/76) `ship` runs the full cycle (blocked by #74, #73).
-- [ ] [#77](https://github.com/gaboesquivel/flow-skills/issues/77) Hand-off and docs alignment (blocked by #73–#76).
+- [x] [#72](https://github.com/gaboesquivel/flow-skills/issues/72) Rename `implement` to `build`.
+- [x] [#74](https://github.com/gaboesquivel/flow-skills/issues/74) `build` delivers a pull request with green checks (blocked by #72).
+- [x] [#73](https://github.com/gaboesquivel/flow-skills/issues/73) Spec drafts and acceptance.
+- [x] [#75](https://github.com/gaboesquivel/flow-skills/issues/75) Retire the `Deploy:` line (blocked by #74).
+- [x] [#76](https://github.com/gaboesquivel/flow-skills/issues/76) `ship` runs the full cycle (blocked by #74, #73).
+- [x] [#77](https://github.com/gaboesquivel/flow-skills/issues/77) Hand-off and docs alignment (blocked by #73–#76).
