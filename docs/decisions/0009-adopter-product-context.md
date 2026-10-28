@@ -1,6 +1,6 @@
 # 0009. Adopter product context is not Flow's identity
 
-Status: accepted (2026-10-27)
+Status: accepted (2026-10-27). Amended by [0020](0020-flow-mode.md): the opt-in Flow block is the one allowed adopter instruction-file edit.
 
 ## Context
 

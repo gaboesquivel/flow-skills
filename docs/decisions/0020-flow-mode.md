@@ -1,6 +1,6 @@
 # 0020 — Flow mode: conversational delivery and in-session task orchestration
 
-Status: **Accepted** (2026-10-28). Builds on [0019](0019-voice-first-invocation.md), which made delivery skills speakable, and [0021](0021-autonomous-explore-and-ship.md), which set GitHub issues, grouped pull requests, and run confirmation. Narrows 0021: pull requests and GitHub issues apply to pull-request mode only. Would amend [0009](0009-adopter-product-context.md) and [0010](0010-optional-start-skill.md) (no adopter instruction-file edits), and the PRODUCT.md line that workflow orchestration is not shipped as skills. Related: [0015](0015-tasks-and-domain-modeling.md), [0017](0017-claude-code-skill-coexistence.md). Spec: [009](../specs/009-flow-mode.md).
+Status: **Accepted** (2026-10-28). Builds on [0019](0019-voice-first-invocation.md), which made delivery skills speakable, and [0021](0021-autonomous-explore-and-ship.md), which set GitHub issues, grouped pull requests, and run confirmation. Narrows 0021: pull requests and GitHub issues apply to pull-request mode only. Amends [0009](0009-adopter-product-context.md) and [0010](0010-optional-start-skill.md) (no adopter instruction-file edits), and the PRODUCT.md line that workflow orchestration is not shipped as skills. Related: [0015](0015-tasks-and-domain-modeling.md), [0017](0017-claude-code-skill-coexistence.md). Spec: [009](../specs/009-flow-mode.md).
 
 ## Context
 

@@ -1,6 +1,6 @@
 ---
 name: to-tasks
-description: Break a plan, spec, or conversation into verifiable vertical-slice tasks with explicit blockers; publish them as GitHub issues. Use when the user says "break it down", "make tasks", or "split this into tasks".
+description: Break a plan, spec, or conversation into verifiable vertical-slice tasks with explicit blockers; record them as GitHub issues or in the spec's Tasks section by delivery mode. Use when the user says "break it down", "make tasks", or "split this into tasks".
 disable-model-invocation: false
 ---
 
@@ -43,9 +43,14 @@ Give each task its **blocking edges**: other tasks that must finish before it ca
 
 Show the proposed tasks, what each delivers, and real dependencies. Resolve only consequential scope or sequencing uncertainty. Reuse existing approval of the work; do not require a second approval for routine decomposition.
 
-### 5. Publish
+### 5. Record
 
-Publish tasks as GitHub issues using the issue template below, with blocking links. Use another tracker only when the project already uses one. Without GitHub access, return a local draft and say so. Do not introduce a `.scratch/` task system or new labels. Use native dependency links when available, or plain references otherwise.
+Record tasks in exactly one place, chosen by the delivery mode: the `Delivery:` line in the project's Flow block, or when unset, the mode `ship` would infer (say which).
+
+- **Pull-request mode:** publish GitHub issues using the issue template below, with blocking links. Use another tracker only when the project already uses one. Use native dependency links when available, or plain references otherwise.
+- **Local mode:** write the tasks into the spec's Tasks section using the local task template; no issues. Without a spec, write one with `to-spec` first, or return the tasks as a local draft and say so.
+
+Never record the same tasks in both places. Without GitHub access in pull-request mode, return a local draft and say so. Do not introduce a `.scratch/` task system or new labels.
 
 Tasks are not pull requests; `ship` owns how tasks group into pull requests.
 
@@ -53,15 +58,19 @@ Tasks that are **ready** have their blockers complete. In a purely linear chain,
 
 Do not close or modify any parent issue.
 
+### 6. Hand off
+
+End by naming where the tasks live and the ready set, then wait for "ship it". Do not start implementation.
+
 <local-task-template>
 
-# <NN>: <Task title>
+### <NN>: <Task title>
 
 **What to build:** the end-to-end behaviour this task makes work, from the user's perspective, not a layer-by-layer implementation list.
 
 **Blocked by:** the numbers or titles of tasks that gate this one, or "None (can start immediately)".
 
-**Status:** planned
+**Status:** planned (`ship` sets `done` as the task integrates)
 
 - [ ] Acceptance criterion 1
 - [ ] Acceptance criterion 2

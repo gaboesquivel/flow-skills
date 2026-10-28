@@ -427,6 +427,76 @@
         "verified_second_host": "not_executed"
       },
       "claimsLiveRun": false
+    },
+    {
+      "id": "E20",
+      "skills": [
+        "ship",
+        "to-tasks"
+      ],
+      "behavior": "Task-set ship orchestrates ready tasks on one spec branch with one confirmation",
+      "taskFile": "tests/evals/tasks/E20-task.md",
+      "rubricFile": "tests/evals/rubrics/E20-rubric.md",
+      "skillReferences": [
+        "skills/ship/SKILL.md",
+        "skills/to-tasks/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E21",
+      "skills": [
+        "ship",
+        "to-tasks"
+      ],
+      "behavior": "Local delivery mode records tasks in the spec and lands a --no-ff merge into main",
+      "taskFile": "tests/evals/tasks/E21-task.md",
+      "rubricFile": "tests/evals/rubrics/E21-rubric.md",
+      "skillReferences": [
+        "skills/ship/SKILL.md",
+        "skills/to-tasks/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E22",
+      "skills": [
+        "flow"
+      ],
+      "behavior": "Set up Flow here writes one idempotent Flow block",
+      "taskFile": "tests/evals/tasks/E22-task.md",
+      "rubricFile": "tests/evals/rubrics/E22-rubric.md",
+      "skillReferences": [
+        "skills/flow/SKILL.md"
+      ],
+      "fixtureReferences": [
+        "tests/flow-block.test.mjs",
+        "skills/flow/lib/flow-block.mjs"
+      ],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "passed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
     }
   ]
 }
