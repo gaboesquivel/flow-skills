@@ -15,7 +15,7 @@ Load only what the task needs. `docs/archive/` is historical evidence, never cur
 
 ## Working practices
 
-Develop Flow through its own practices using conversation and available tools. This repository maintains its own skill source under `skills/`; dogfood those skills when useful. Notice recurring friction, preserve useful proposals and rationale, and update owning documents when adopted. Edit skill source directly; preserve applicable source notices. Run `pnpm validate` and `pnpm test` after distribution changes.
+Develop Flow through its own practices using conversation and available tools. This repository maintains its own skill source under `skills/`; dogfood those skills when useful. Notice recurring friction, preserve useful proposals and rationale, and update owning documents when adopted. Edit skill source directly; preserve applicable source notices. When writing or editing agent-consumed context (`skills/**`, `AGENTS.md`, adapter metadata), apply [`write-agents`](skills/write-agents/SKILL.md) so changes meet the same authoring bar the catalog ships. Run `pnpm validate` and `pnpm test` after distribution changes.
 
 ## Distribution maintenance
 
