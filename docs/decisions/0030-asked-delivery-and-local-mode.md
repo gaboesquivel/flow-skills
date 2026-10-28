@@ -1,6 +1,6 @@
 # 0030 — Asked delivery mode and local mode without a remote
 
-Status: **Accepted** (2026-10-28). Amends [0020](0020-flow-mode.md) (delivery inferred and recorded), [0028](0028-build-and-ship.md) (local `ship` pushes `main`), and [0029](0029-spec-issues.md) (the draft pull request's closing lines). Spec: [019](../specs/019-delivery-choice.md).
+Status: **Accepted** (2026-10-28). Amends [0020](0020-flow-mode.md) (delivery inferred and recorded), [0026](0026-process-depth.md) (depth asked only at setup and `start`; `unset` means Lite), [0028](0028-build-and-ship.md) (local `ship` pushes `main`), and [0029](0029-spec-issues.md) (the draft pull request's closing lines). Spec: [019](../specs/019-delivery-choice.md).
 
 ## Context
 
