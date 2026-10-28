@@ -57,7 +57,7 @@ Otherwise clone the template into a temporary directory, then copy it into the d
 - Add the user's remote only when explicitly provided and authorized.
 - Use `assessDestination` and `assertNoTemplateOrigin` from `lib/git-safety.mjs` before writing files.
 
-**Bootstrapping in place.** A destination that holds only agent setup (the entries in `AGENT_SETUP_ENTRY_NAMES`, `lib/constants.mjs`) counts as empty. Bootstrap at that root, not in a nested folder. Keep those files, adding only the Flow block: when the template ships its own copy of a kept file, report it in `skipped` and leave the adopter's version. For other files (for example a prompt log), `assessDestination` names them; settle whether to keep them during Gather inputs, then pass them as `preserve`.
+**Bootstrapping in place.** A destination that holds only agent setup (the entries in `AGENT_SETUP_ENTRY_NAMES`, `lib/constants.mjs`) counts as empty. Bootstrap at that root, not in a nested folder. Keep those files, adding only the Flow block and the `@AGENTS.md` import: when the template ships its own copy of a kept file, report it in `skipped` and leave the adopter's version. For other files (for example a prompt log), `assessDestination` names them; settle whether to keep them during Gather inputs, then pass them as `preserve`.
 
 **Stop** when the destination has unexpected files without authorization, or when the path already has Git commits. Never `reset`, `clean`, or delete history of an existing project.
 
@@ -113,7 +113,7 @@ If any **essential** check **failed**, report the blocker and do **not** claim a
 
 ## Flow block
 
-Once every essential check passes, write the project's Flow block with the `flow` skill's `lib/flow-block.mjs`: pass the project's absolute path and the confirmed delivery (`local` or `pull-request`). The helper picks the tracked instruction file, adds the `@AGENTS.md` import to `CLAUDE.md` when needed, and prints the layout; keep that output for the report. Touch nothing outside the block's markers and the import line. When `flow` is not installed, skip the block and say so.
+Once every essential check passes, write the project's Flow block with the `flow` skill's `lib/flow-block.mjs`: pass the project's absolute path and the confirmed delivery (`local` or `pull-request`). The `flow` skill's Flow block section and its helper own the instruction-file layout; keep the helper's output for the report, including any refusal. Touch nothing outside the block's markers and the import line. When `flow` is not installed, skip the block and say so.
 
 ## Initial commit
 
