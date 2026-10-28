@@ -97,7 +97,7 @@ flow-skills offers a small catalog: **context alignment** (`flow`) for root cont
 | Project start | [`start`](skills/start/SKILL.md) — Flow setup plus a verified bootstrap from flow-next or flow-mono in one lane while `explore` shapes the product in the other; confirms template, name, destination, and process depth before writing |
 | Misc | `tldr`, `handoff`, `board` |
 
-Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Say a skill's leading word ("interview me", "spec it", "ship it"); slash commands are optional. Every skill is reachable by phrase ([0019](docs/decisions/0019-voice-first-invocation.md)); `start` confirms template, name, and destination before it writes anything ([0022](docs/decisions/0022-start-runs-explore.md)). No skill enforces a sequence (`/implement` does not require `/to-spec`).
+Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Say a skill's leading word ("interview me", "spec it", "ship it"); slash commands are optional. Every skill is reachable by phrase ([0019](docs/decisions/0019-voice-first-invocation.md)); `start` confirms template, name, and destination before it writes anything ([0022](docs/decisions/0022-start-runs-explore.md)). No skill enforces a sequence (`/build` does not require `/to-spec`).
 
 **Default durable docs in adopter projects:** `docs/specs/NNN-short-name.md` and `docs/decisions/NNN-short-name.md`, plus root context files when useful.
 
