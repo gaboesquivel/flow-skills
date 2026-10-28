@@ -1,6 +1,6 @@
 # 0032 — Local build lands on main; ship publishes and verifies
 
-Status: **Accepted** (2026-10-28). Amends [0028](0028-build-and-ship.md) (no deployment verification) and [0030](0030-asked-delivery-and-local-mode.md) (local `ship` merges and pushes only on request). Spec: [020](../specs/020-ship-verifies.md).
+Status: **Accepted** (2026-10-28). Amends [0028](0028-build-and-ship.md) (no deployment verification) [0029](0029-spec-issues.md) (local `build` runs the spec review), and [0030](0030-asked-delivery-and-local-mode.md) (local `ship` merges and pushes only on request). Spec: [020](../specs/020-ship-verifies.md).
 
 ## Context
 

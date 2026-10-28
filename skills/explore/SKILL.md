@@ -23,7 +23,7 @@ Fold their results in as they return; drop a question a result answers, and rais
 
 ## Propose a depth
 
-Classify the work (new product, feature, or fix) and propose one tier with a one-line reason. New work defaults to the project's recorded process depth: the `Process:` line in its Flow block (decision 0026). A run handed over by `start` uses the depth and delivery confirmed there. The user confirms or overrides for this run. Prefer the lighter tier when unsure; propose stepping up mid-session only when evidence warrants it. A Skip-tier run asks nothing.
+Classify the work (new product, feature, or fix) and propose one tier with a one-line reason. New work defaults to the project's recorded discovery depth: the `Process:` line in its Flow block (decision 0026). A run handed over by `start` uses the depth and delivery confirmed there. The user confirms or overrides for this run. Prefer the lighter tier when unsure; propose stepping up mid-session only when evidence warrants it. A Skip-tier run asks nothing.
 
 **Question round.** When `Process:` or `Delivery:` is `unset`, or there is no Flow block, ask the missing ones together in one round, each with a suggested answer: **Discovery depth**, Lite or Full (suggest Lite unless the request points to Full), and **Delivery**, pull requests or local, independent of each other as `flow` defines them, with a suggestion as `build`'s Delivery mode section describes (if `build` is unavailable, ask without a suggestion). Ask once per run. Offer to record the answers on the Flow block with `flow`; without a block or a yes, they hold for this run.
 

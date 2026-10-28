@@ -458,7 +458,7 @@
         "ship",
         "to-tasks"
       ],
-      "behavior": "Local delivery mode records tasks in the spec and lands a --no-ff merge into main",
+      "behavior": "Local delivery mode records tasks in the spec; build reviews and lands a --no-ff merge into main, and ship pushes it and runs Verify",
       "taskFile": "tests/evals/tasks/E21-task.md",
       "rubricFile": "tests/evals/rubrics/E21-rubric.md",
       "skillReferences": [
@@ -683,9 +683,10 @@
     {
       "id": "E31",
       "skills": [
+        "build",
         "ship"
       ],
-      "behavior": "Local-mode ship with no remote merges the spec branch into the local default branch, pushes nothing, and leaves no integrated task worktrees",
+      "behavior": "Local-mode ship with no remote has build review and merge the spec branch into the local default branch, then reports nothing was published, runs Verify, and leaves no integrated task worktrees",
       "taskFile": "tests/evals/tasks/E31-task.md",
       "rubricFile": "tests/evals/rubrics/E31-rubric.md",
       "skillReferences": [
