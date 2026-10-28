@@ -1,12 +1,12 @@
 ---
 name: start
-description: Initialize a new project from flow-next or flow-mono with verified setup, renamed identity, and an independent initial Git commit.
-disable-model-invocation: true
+description: Initialize a new project from flow-next or flow-mono with verified setup, renamed identity, and an independent initial Git commit, while explore shapes the product. Use when the user says "start a Next.js project", "start a new project", or "start a monorepo".
+disable-model-invocation: false
 ---
 
 # Start
 
-**New product.** Initialize a **new application** from [flow-next](https://github.com/gaboesquivel/flow-next) or [flow-mono](https://github.com/gaboesquivel/flow-mono). Manual invocation only. This is not Flow Lite (`flow`) and not a mandatory pipeline. Do not invoke `flow`, `explore`, `implement`, or `review` automatically when this skill finishes.
+**New product.** Initialize a **new application** from [flow-next](https://github.com/gaboesquivel/flow-next) or [flow-mono](https://github.com/gaboesquivel/flow-mono) while `explore` shapes the product in the same sitting. This is not Flow Lite (`flow`).
 
 Deterministic rename, destination safety, baseline docs, and commit-gating rules live in this skill's `lib/` modules. Use them instead of blind global replace or destructive Git commands.
 
@@ -23,9 +23,24 @@ Ask only for what is still missing, in one question round:
 
 If an answer does not arrive, ask again; do not substitute a destination the user did not confirm.
 
-Do not run product discovery, interviews, or specs during initialization.
+Resolve every bootstrap question, including files to preserve, before confirming; the bootstrap lane reports blockers rather than asking.
 
 Derive identity with `deriveProjectIdentity` from `lib/identity.mjs`: slug, `package.json` name, Portless name, and `<slug>.localhost` host. Display title stays the name the user gave.
+
+## Confirm before writing
+
+A spoken request can be misheard, so write nothing until the user agrees. State the template, project name (with slug and host), destination, and any GitHub repository to create with its visibility, then wait for an explicit yes. Anything else is not a yes; correct and restate.
+
+## Run two lanes
+
+After the yes:
+
+- **Bootstrap lane.** A worker runs every section from "Obtain template" through "Initial commit" below, unchanged, and reports the completion facts.
+- **Explore lane.** The main session hands the conversation to `explore` as a new-product run at Full depth (unless the user picks another depth), using the user's description as its first input. Explore drafts in conversation and writes nothing until the bootstrap lane reports its initial commit.
+
+When the host has no independent workers, run the bootstrap first, then `explore`, and say so. When `explore` is not installed, finish the bootstrap and suggest exploring next.
+
+A failed bootstrap does not discard the exploration: report the blocker and keep exploring; the brief waits until a repository exists.
 
 ## Obtain template (independent of upstream history)
 
@@ -41,7 +56,7 @@ Otherwise clone the template into a temporary directory, then copy it into the d
 - Add the user's remote only when explicitly provided and authorized.
 - Use `assessDestination` and `assertNoTemplateOrigin` from `lib/git-safety.mjs` before writing files.
 
-**Bootstrapping in place.** A destination that holds only agent setup — `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, `.claude/`, `.agents/`, `.cursor/`, `skills-lock.json` — counts as empty. Bootstrap at that root, not in a nested folder. Keep those files as they are: when the template ships its own copy of a kept file, report it in `skipped` and leave the adopter's version. For other files (for example a prompt log), `assessDestination` names them; ask once whether to keep them and bootstrap here, then pass them as `preserve`.
+**Bootstrapping in place.** A destination that holds only agent setup — `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, `.claude/`, `.agents/`, `.cursor/`, `skills-lock.json` — counts as empty. Bootstrap at that root, not in a nested folder. Keep those files as they are: when the template ships its own copy of a kept file, report it in `skipped` and leave the adopter's version. For other files (for example a prompt log), `assessDestination` names them; settle whether to keep them during Gather inputs, then pass them as `preserve`.
 
 **Stop** when the destination has unexpected files without authorization, or when the path already has Git commits. Never `reset`, `clean`, or delete history of an existing project.
 
@@ -52,8 +67,6 @@ Use `renameAllowlistForTemplate`, `applyRenamesInTree`, and `scanTreeForStaleIde
 **Preserve** upstream interoperability prose in `docs/INTEROP.md`, `.env.example` template comments, baseline root docs that record the template source, vendored `.agents` skills, package imports (`@repo/ui`, `web`), and legitimate references to the template repositories.
 
 After renames, identity verification **fails** while stale template identifiers remain outside preserved paths. The scan skips `.claude/`, `.cursor/`, and `.agents/`, where installed skills legitimately name the templates.
-
-Do not create or edit adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or equivalent instruction files.
 
 ## Dependencies and setup
 
@@ -85,6 +98,10 @@ Authenticated Operator behavior may be **unavailable** when no secret is configu
 
 If any **essential** check **failed**, report the blocker and do **not** claim a successful bootstrap or create a misleading success commit.
 
+## Flow block
+
+Once every essential check passes, write the project's Flow block into `AGENTS.md` (or `CLAUDE.md` when that is the only instruction file) in the format the `flow` skill defines for "set up Flow here", so the initial commit includes it. Touch nothing outside its markers. When `flow` is not installed, skip the block and say so.
+
 ## Initial commit
 
 Only when `canCreateInitialCommit` from `lib/commit-gate.mjs` returns ok:
@@ -97,13 +114,11 @@ Do not use `--no-verify`. Do not push or deploy unless explicitly authorized.
 
 ## Boundaries
 
-- Do not edit adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or equivalent instruction files.
+- Edit adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or equivalent instruction files only to write the Flow block.
 - Do not install or require flow-skills in the new project; keep an existing installation.
-- Do not automatically invoke `flow`, `explore`, or any delivery pipeline.
+- Do not automatically invoke `flow` or any delivery pipeline; `explore` is the only hand-off.
 - Do not bundle Flow Factory or a workflow router.
 
 ## Completion
 
-Report template and template commit SHA, destination path, preserved and skipped files, renamed slug and Portless host, files created or updated, each verification check, initial commit SHA (if created), and blockers.
-
-Recommended **example** sequence for new projects (not mandatory): install Flow Skills → invoke `start` → invoke `flow` to align product context → invoke `explore` when discovery is needed → use other skills independently.
+Report template and template commit SHA, destination path, preserved and skipped files, renamed slug and Portless host, files created or updated, whether the Flow block was written, each verification check, initial commit SHA (if created), and blockers. Report the bootstrap lane when it finishes, without interrupting an open exploration question.

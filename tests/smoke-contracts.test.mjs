@@ -12,7 +12,7 @@ const contracts = [
   {
     skill: 'explore',
     file: 'SKILL.md',
-    includes: ['auto mode', 'publish its tasks as GitHub issues', 'docs/specs/NNN-short-name.md', "predict the user's next three answers", 'Never write drafts before confirmation', 'Feature detail flows to', 'pre-mortem', 'accepted unchanged', 'authorizes no write', 
+    includes: ['carries over to that write', 'Write only the first vertical slice', 'ship with spec 001', 'auto mode', 'publish its tasks as GitHub issues', 'docs/specs/NNN-short-name.md', "predict the user's next three answers", 'Never write drafts before confirmation', 'Feature detail flows to', 'pre-mortem', 'accepted unchanged', 'authorizes no write', 
       'do not authorize implementation',
       'to-spec',
       '\\*\\*Skip:\\*\\*',
@@ -37,10 +37,22 @@ const contracts = [
       'docs/research/YYYY-MM-DD-topic\\.md',
       'Never save transcripts',
       'spec-ready when intent is confirmed',
+      'handed over by `start` uses Full',
+      'agent lens',
+      'no agent users',
+      'until the bootstrap lane reports its initial commit',
+      'replaces the product sections of the baseline `PRODUCT\\.md`',
+      'keep everything confirmed in conversation',
+      'test the riskiest assumption',
+      'instrumentation for the main metric',
+      'contract-first',
+      'MCP tool when the brief names agent users',
+      '`candidate` stubs',
+      'only after slice 1 ships',
     ],
   },
   { skill: 'grill', file: 'SKILL.md', includes: ['do not require an exhaustive interview', 'does not itself authorize implementation', 'already confirmed', 'riskiest claims', 'pre-mortem', 'six months from now', 'kill criterion', '\\*\\*clearer\\*\\*', '\\*\\*killed\\*\\*', 'all are valid'] },
-  { skill: 'to-spec', file: 'SKILL.md', includes: ['reaching spec-ready with a brief counts as a request', 'docs/specs/NNN-short-name.md', 'Do not run a separate interview'] },
+  { skill: 'to-spec', file: 'SKILL.md', includes: ['reaching spec-ready with a brief counts as a request', 'docs/specs/NNN-short-name.md', 'Do not run a separate interview', 'status `candidate`', 'contract-first', 'MCP tool definitions when the product names agent users', 'errors and permissions an agent can act on', 'MCP App only when a journey needs'] },
   { skill: 'implement', file: 'SKILL.md', includes: ['untracked', 'not a prerequisite', 'PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'do not open new spec or decision', 'product identity', 'flow start', 'decision 0010', 'Ordinary small fixes', 'caller expectations', 'suggest an `explore` tier', 'never start exploration unasked'] },
   { skill: 'review', file: 'SKILL.md', includes: ['untracked', 'single-agent', 'PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'product identity', 'flow start', 'decision 0010', 'Pull request', 'pr-review-contract', 'safety-critical assumption', 'confirmed findings', 'workers are unavailable', '\\*\\*review axes\\*\\*', 'Correctness:', 'Readability and simplicity:', 'Architecture:', 'Security:', 'Performance:', 'code-review-and-quality', 'name its axis'] },
   { skill: 'write-agents', file: 'SKILL.md', includes: ['behavioral failure', 'architecture, types', 'Reject redundant or ineffective', 'Never claim independence'] },
@@ -55,13 +67,21 @@ const contracts = [
   {
     skill: 'start',
     file: 'SKILL.md',
-    includes: [
-      'Do not invoke `flow`',
+    includes: ['Anything else is not a yes', 'GitHub repository to create', 
+      'Do not automatically invoke `flow`',
       'AGENTS.md',
       'canCreateInitialCommit',
       'chore: initialize',
       'Never `reset`',
-      'invoke `explore` when discovery is needed',
+      'wait for an explicit yes',
+      '\\*\\*Bootstrap lane\\.\\*\\*',
+      '\\*\\*Explore lane\\.\\*\\*',
+      'Full depth',
+      'writes nothing until the bootstrap lane reports its initial commit',
+      'no independent workers, run the bootstrap first, then `explore`',
+      'failed bootstrap does not discard the exploration',
+      'Flow block',
+      'only to write the Flow block',
       'pnpm eval',
       'operator_fail_closed',
       'inferTemplateFromRequest',
@@ -102,8 +122,7 @@ test('every shipped skill matches the expected catalog', () => {
   assert.deepEqual(names, EXPECTED_SKILL_NAMES)
   for (const name of names) {
     const adapter = readFileSync(join(skillsRoot, name, 'agents/openai.yaml'), 'utf8')
-    const expectImplicit = name !== 'start'
-    assert.match(adapter, expectImplicit ? /allow_implicit_invocation:\s*true/u : /allow_implicit_invocation:\s*false/u, name)
+    assert.match(adapter, /allow_implicit_invocation:\s*true/u, name)
   }
   assert.equal(names.length, 21)
 })

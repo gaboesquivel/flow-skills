@@ -20,7 +20,7 @@ Flow does not modify adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or simila
 | Slash commands | `/flow`, `/to-spec`, `/implement`, … when the host maps skill names to commands |
 | Skill picker | Explicit selection by skill name |
 
-Every skill except `start` is model-invocable. `start` creates a repository, so it runs only when named. Matching a phrase to a skill is probabilistic: hosts choose from descriptions, and dictation can mishear. `ship` confirms before pushing for that reason.
+Every skill is model-invocable. Matching a phrase to a skill is probabilistic: hosts choose from descriptions, and dictation can mishear. For that reason `start` confirms template, name, and destination before writing ([decision 0022](decisions/0022-start-runs-explore.md)), and `ship` confirms before pushing.
 
 **Root context alignment** is not guaranteed by implicit `flow` invocation alone. Hosts may skip alignment on ordinary implementation work. The portable contract is: `implement` and `review` remind agents to align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` when meaningful changes warrant it; adopters can also say "update the docs".
 
@@ -28,7 +28,7 @@ Every skill except `start` is model-invocable. `start` creates a repository, so 
 
 That alignment updates the **current project's** product context. It does not copy this repository's Flow identity into an adopter `PRODUCT.md`. [Decision 0009](decisions/0009-adopter-product-context.md).
 
-`flow` is not a project-start command. `flow start` and "start project" do not authorize scaffolding or instruction-file edits. The optional [`start`](../skills/start/SKILL.md) skill initializes from flow-next or flow-mono when explicitly invoked: template isolation, renamed Portless identity, verification (`pnpm setup`, `pnpm qa`, `pnpm build`, `pnpm eval`, Portless dev smoke), baseline product docs, and an initial Git commit only after essential checks pass. It does not invoke `flow` or `explore` automatically. It is the one explicit-only skill.
+`flow` is not a project-start command. Only a confirmed `start` run authorizes scaffolding. The optional [`start`](../skills/start/SKILL.md) skill initializes from flow-next or flow-mono after the user confirms template, name, and destination: template isolation, renamed Portless identity, verification (`pnpm setup`, `pnpm qa`, `pnpm build`, `pnpm eval`, Portless dev smoke), baseline product docs, the project Flow block, and an initial Git commit only after essential checks pass. A worker runs the bootstrap while the main session hands the conversation to `explore`; hosts without workers bootstrap first, then explore. It does not invoke `flow` automatically.
 
 Metadata and contract tests show the intended invocation split. They do not show that a host matched a spoken phrase to the right skill. Claude Code is recorded as a second agent product for read-only runs; see [smoke scenario status](../tests/smoke/2026-10-27-scenario-status.md).
 
@@ -42,12 +42,11 @@ Metadata and contract tests show the intended invocation split. They do not show
 
 ## Metadata
 
-Policy ([decision 0019](decisions/0019-voice-first-invocation.md)):
+Policy ([decision 0019](decisions/0019-voice-first-invocation.md), amended by [0022](decisions/0022-start-runs-explore.md)):
 
 | Skill | `disable-model-invocation` | `allow_implicit_invocation` (adapter) |
 | --- | --- | --- |
-| `start` | `true` | `false` |
-| All others | `false` | `true` |
+| All skills | `false` | `true` |
 
 Each model-invocable description ends with `Use when the user says "…"` and two or three trigger phrases; the validator enforces the form.
 

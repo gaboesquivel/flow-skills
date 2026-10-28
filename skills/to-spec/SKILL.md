@@ -12,6 +12,8 @@ Use the project's existing spec location when one exists. When the project has n
 
 Specs may cover product, research, marketing, engineering, operations, or cross-functional work. Use the sections below only when they fit the discipline; omit irrelevant headings. Keep small, understood changes brief.
 
+**Candidate specs.** A later slice that should not be specified yet gets a stub: status `candidate`, the problem, and the assumption the slice tests. Flesh it out into a full spec only when its turn comes; until then it has no tasks.
+
 ## Process
 
 1. Explore the repository when needed. Use the project's domain vocabulary and respect decision records in the area you are touching.
@@ -41,6 +43,8 @@ Cover consequential paths and failure cases without redundant stories.
 ## Implementation Decisions
 
 Decisions that shape execution: modules, interfaces, contracts, schema, or interactions. Prefer stable interfaces and intent over exhaustive file lists.
+
+Write interfaces contract-first, before any UI: the typed API shape the UI uses; MCP tool definitions when the product names agent users; and errors and permissions an agent can act on. Specify an MCP App only when a journey needs the product's UI inside an agent host; otherwise plain MCP tools suffice.
 
 When a prototype encodes a decision more precisely than prose (state machine, schema, type shape), inline the decision-rich excerpt and note that it came from a prototype.
 

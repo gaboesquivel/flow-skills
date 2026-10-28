@@ -21,7 +21,7 @@ Use [Conventional Commits](https://www.conventionalcommits.org) for commit messa
 
 ## Distribution maintenance
 
-Flow ships a portable `skills/` tree for the [Agent Skills](https://agentskills.io) ecosystem. Consumers install with `npx skills add gaboesquivel/flow-skills` and reach skills by talking to their agent; only `start` must be named explicitly. This repository does not ship a bootstrap installer or require changes to adopter instruction files.
+Flow ships a portable `skills/` tree for the [Agent Skills](https://agentskills.io) ecosystem. Consumers install with `npx skills add gaboesquivel/flow-skills` and reach skills by talking to their agent; no skill must be named explicitly. This repository does not ship a bootstrap installer or require changes to adopter instruction files.
 
 | Task | Command |
 | --- | --- |
