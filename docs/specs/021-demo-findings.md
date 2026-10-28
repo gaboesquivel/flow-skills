@@ -1,6 +1,6 @@
 # 021: A clean run from start to ship
 
-Status: accepted (2026-10-28). Issue: [#111](https://github.com/gaboesquivel/flow-skills/issues/111). Decisions: [0033](../decisions/0033-shared-files-and-reviewed-head.md) (Accepted), [0034](../decisions/0034-no-ceremony-without-a-spec.md) (Accepted), [0035](../decisions/0035-spec-issue-on-acceptance.md) (Accepted), [0036](../decisions/0036-one-explore-depth.md) (Accepted). Builds on [spec 020](020-ship-verifies.md), which lands first.
+Status: implemented (2026-10-28). Issue: [#111](https://github.com/gaboesquivel/flow-skills/issues/111). Decisions: [0033](../decisions/0033-shared-files-and-reviewed-head.md) (Accepted), [0034](../decisions/0034-no-ceremony-without-a-spec.md) (Accepted), [0035](../decisions/0035-spec-issue-on-acceptance.md) (Accepted), [0036](../decisions/0036-one-explore-depth.md) (Accepted). Builds on [spec 020](020-ship-verifies.md), which lands first.
 
 ## Problem Statement
 
@@ -156,4 +156,4 @@ Sub-issues of #111. Tasks 01–05 each own different skill areas and share only 
 - [x] 03: `to-spec`: issue at acceptance and spec-issue helper (#115) — 8521c76
 - [x] 04: `build`: own worktrees, shared files, commit links, no ceremony (#116) — fa3be47
 - [x] 05: `ship` and `review`: refused merge, shared files, checkout safety (#114) — 4de8efd
-- [ ] 06: Docs, safety contracts, and evals (#118, blocked by 01–05)
+- [x] 06: Docs, safety contracts, and evals (#118, blocked by 01–05) — 830b56f
