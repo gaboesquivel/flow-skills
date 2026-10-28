@@ -1,6 +1,6 @@
 # 0031 — Fan out by default
 
-Status: **Proposed** (2026-10-28). Amends [0025](0025-wave-checkpoints.md) and [0029](0029-spec-issues.md) (one review worker per spec becomes one worker per axis plus a verifier). Spec: [019](../specs/019-delivery-choice.md).
+Status: **Accepted** (2026-10-28). Amends [0025](0025-wave-checkpoints.md) and [0029](0029-spec-issues.md) (one review worker per spec becomes one worker per axis plus a verifier). Spec: [019](../specs/019-delivery-choice.md).
 
 ## Context
 
