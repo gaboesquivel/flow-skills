@@ -8,11 +8,13 @@ disable-model-invocation: false
 
 ## Purpose
 
-Complete the current authorized development task with evidence: test, fix, commit, push, deploy, verify.
+Complete the current authorized work (one task or a related group; see Preflight) with evidence: test, fix, commit, push, deploy, verify.
 
-Asking to ship authorizes ordinary commits and pushes of the current intended task, subject to repository permissions, existing release safeguards, and the confirmation below. Requests often arrive by voice, so confirm what you heard before anything leaves the machine.
+Asking to ship authorizes ordinary commits and pushes of that work, subject to repository permissions, existing release safeguards, and the confirmation below. Requests often arrive by voice, so confirm what you heard before anything leaves the machine.
 
 It does not authorize destructive Git operations, security bypasses, or unrelated changes.
+
+Before a multi-step run, suggest the host's autonomous permission mode when it has one (for example Claude Code auto mode) so file writes, issues, and pushes do not stop for each permission prompt. Elsewhere, continue with ordinary prompts. The skill's own confirmations still apply.
 
 ## Preflight
 
@@ -21,7 +23,8 @@ Inspect:
 - Current branch and worktree.
 - Git status and diff.
 - Existing staged changes.
-- Task scope.
+- Task scope. Related work shares one branch and pull request: an exploration's research, spec, and root-context changes, or a spec's tasks. Split only large, independently shippable work or work that needs separate review.
+- Task issues. On GitHub, each spec task has an issue; create missing ones with `to-tasks`. Ad-hoc changes need none.
 - Repository verification scripts in package.json, Makefile, or CI config.
 - Available Git remote.
 - Deployment configuration (Vercel, container platform, static host, or documented manual process).
@@ -76,7 +79,7 @@ Do not amend or rewrite unrelated commits.
 
 ## Push
 
-Before pushing, state the branch, remote, commit SHA, and a one-line summary of what will be pushed. Wait for an explicit yes. Silence or an ambiguous reply is not a yes.
+Before the first push, state the branch, remote, commit SHA, a one-line summary, and the pull request and merge plan. Wait for an explicit yes. Silence or an ambiguous reply is not a yes. That yes covers the run's later pushes on the same branch.
 
 Push the authorized current branch to its intended remote.
 
@@ -89,6 +92,8 @@ Never delete or rewrite remote branches.
 Do not promote to production through a separate manual operation unless explicitly authorized.
 
 If the remote cannot be safely determined, stop and report the required decision.
+
+On GitHub, open one pull request with a Conventional Commits title and a `Closes #N` line per task issue. Merge only when checks pass and the user authorized merging; then sync the local base branch.
 
 ## Deploy
 
