@@ -55,7 +55,7 @@ const contracts = [
     ],
   },
   { skill: 'grill', file: 'SKILL.md', includes: ['do not require an exhaustive interview', 'does not itself authorize implementation', 'already confirmed', 'riskiest claims', 'pre-mortem', 'six months from now', 'kill criterion', '\\*\\*clearer\\*\\*', '\\*\\*killed\\*\\*', 'all are valid'] },
-  { skill: 'to-spec', file: 'SKILL.md', includes: ['reaching spec-ready, or a request to write a spec is not acceptance', 'saved with status `draft`', 'Do not show the text inline or ask before writing', 'report links to the files written', 'with status \\*\\*Proposed\\*\\*', '`candidate → draft → accepted → implemented`', '"accept the spec"', 'set its status to `accepted`', 'from \\*\\*Proposed\\*\\* to \\*\\*Accepted\\*\\*', 'docs/specs/NNN-short-name.md', 'Do not run a separate interview', 'status `candidate`', 'contract-first', 'MCP tool definitions when the product names agent users', 'errors and permissions an agent can act on', 'MCP App only when a journey needs', 'A spec is one bet', 'Its tasks are the slices inside it', 'reaches beyond this spec or is costly to reverse', 'Never put feature scope or tasks in a decision record'] },
+  { skill: 'to-spec', file: 'SKILL.md', includes: ['reaching spec-ready, or a request to write a spec is not acceptance', 'saved with status `draft`', 'Do not show the text inline or ask before writing', 'report links to the files written', 'with status \\*\\*Proposed\\*\\*', '`candidate → draft → accepted → implemented`', '"accept the spec"', 'set its status to `accepted`', 'from \\*\\*Proposed\\*\\* to \\*\\*Accepted\\*\\*', 'docs/specs/NNN-short-name.md', 'Do not run a separate interview', 'status `candidate`', 'contract-first', 'MCP tool definitions when the product names agent users', 'errors and permissions an agent can act on', 'MCP App only when a journey needs', 'A spec is one bet', 'Its tasks are the slices inside it', 'reaches beyond this spec or is costly to reverse', 'Never put feature scope or tasks in a decision record', 'Changing an accepted spec\'s scope or a decision it links returns the spec to `draft`', 'in the project\'s decision format'], excludes: ['save only after an explicit yes', 'reaching spec-ready is not that yes'], description: 'accept the spec' },
   { skill: 'build', file: 'SKILL.md', includes: ['untracked', 'not a prerequisite', 'PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'do not open new spec or decision', 'product identity', 'flow start', 'decision 0010', 'Ordinary small fixes', 'caller expectations', 'suggest an `explore` tier', 'never start exploration unasked', 'names test seams', 'failing test at that seam before the change'] },
   { skill: 'review', file: 'SKILL.md', includes: ['untracked', 'single-agent', 'PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'product identity', 'flow start', 'decision 0010', 'Pull request', 'pr-review-contract', 'safety-critical assumption', 'confirmed findings', 'workers are unavailable', '\\*\\*review axes\\*\\*', 'Correctness:', 'Readability and simplicity:', 'Architecture:', 'Security:', 'Performance:', 'code-review-and-quality', 'name its axis', 'wave review covers the wave\'s combined change'] },
   { skill: 'write-agents', file: 'SKILL.md', includes: ['behavioral failure', 'architecture, types', 'Reject redundant or ineffective', 'Never claim independence'] },
@@ -111,9 +111,11 @@ test('glossary keeps Flow identity, product context, and human summary apart', (
 })
 
 test('smoke behavior contracts hold in skill text', () => {
-  for (const { skill, file, includes = [] } of contracts) {
+  for (const { skill, file, includes = [], excludes = [], description } of contracts) {
     const text = readFileSync(join(skillsRoot, skill, file), 'utf8')
+    if (description) assert.match(text.match(/^description: (.*)$/mu)?.[1] ?? '', new RegExp(description, 'iu'), `${skill} description missing ${description}`)
     for (const phrase of includes) assert.match(text, new RegExp(phrase, 'iu'), `${skill}/${file} missing ${phrase}`)
+    for (const phrase of excludes) assert.doesNotMatch(text, new RegExp(phrase, 'iu'), `${skill}/${file} must not contain ${phrase}`)
   }
 })
 

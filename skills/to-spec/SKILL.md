@@ -20,7 +20,7 @@ Specs may cover product, research, marketing, engineering, operations, or cross-
 
 A spec's `Status:` line follows `candidate → draft → accepted → implemented` (decision 0028). `to-spec` writes `candidate` and `draft`, and owns acceptance; `ship` sets `implemented`.
 
-**Accept the spec.** When the user approves a spec for delivery ("accept the spec"), set its status to `accepted` with the date, and set each decision record it links from **Proposed** to **Accepted** in the same step. Writing a draft, reaching spec-ready, or a request to write a spec is not acceptance. A `candidate` must become a full draft before it can be accepted. Report the files changed.
+**Accept the spec.** When the user approves a spec for delivery ("accept the spec"), set its status to `accepted` with the date, and set the status of each decision record it links from **Proposed** to **Accepted** with the date, in the project's decision format, in the same step. Writing a draft, reaching spec-ready, or a request to write a spec is not acceptance. A `candidate` must become a full draft before it can be accepted. Changing an accepted spec's scope or a decision it links returns the spec to `draft`. Report the files changed.
 
 ## Process
 

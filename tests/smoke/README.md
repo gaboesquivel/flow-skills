@@ -5,7 +5,7 @@ Structural contracts live in [smoke-contracts.test.mjs](../smoke-contracts.test.
 | Scenario | Intent |
 | --- | --- |
 | Ordinary small coding request | `/build` on a clear task without prior `/to-spec` |
-| Spec from conversation | `/to-spec` produces `docs/specs/NNN-*.md` when saved |
+| Spec from conversation | `/to-spec` writes `docs/specs/NNN-*.md` as a draft |
 | Review working tree | `/review` reads untracked files |
 | Voice-first activation | Every skill except `start` is model-invocable, and descriptions name spoken trigger phrases |
 | Install without adopter edits | `npx skills add` does not require changing `AGENTS.md` |
