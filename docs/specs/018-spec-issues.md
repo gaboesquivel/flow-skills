@@ -1,6 +1,6 @@
 # 018: Spec issues and fast parallel builds
 
-Status: accepted (2026-10-28). Issue: [#79](https://github.com/gaboesquivel/flow-skills/issues/79). Decision: [0029](../decisions/0029-spec-issues.md). Builds on [spec 017](017-build-and-ship.md), which lands first.
+Status: implemented (2026-10-28). Issue: [#79](https://github.com/gaboesquivel/flow-skills/issues/79). Decision: [0029](../decisions/0029-spec-issues.md). Builds on [spec 017](017-build-and-ship.md), which lands first.
 
 ## Problem Statement
 
@@ -50,7 +50,67 @@ Status: accepted (2026-10-28). Issue: [#79](https://github.com/gaboesquivel/flow
 - **Abandoned specs.** Close the issue and its sub-issues as not planned and delete the branch; nothing reaches the default branch.
 - **Publishing.** Opening the spec issue at draft and sub-issues at "break it down" is part of those requests in pull-request mode and needs no separate yes; on a public repository, the report says the issues are public.
 
-### Tasks
+### Tasks and parallel build
+
+- **Sub-issues.** In pull-request mode `to-tasks` opens each task as a sub-issue of the spec issue (what to build, acceptance criteria) with native `blocked by` links, and writes the spec's Tasks section as a checklist: `- [ ] 01: Title (#N)`. Without sub-issue support, plain `Part of #N` and `Blocked by` lines. Local mode keeps tasks only in the file.
+- **Frontier scheduling.** `build` starts every task whose blockers have integrated, each in its own worktree from the spec branch, up to the host's concurrency limit instead of a fixed 3. Tasks that touch the same files run one after the other. When a task integrates, any task it unblocks starts at once. No wave barrier.
+- **Context pointers.** Workers get pointers to the spec, their sub-issue, and the relevant files, not a notes document written first; the notes step is dropped.
+- **Integration.** The orchestrator merges each finished task into the spec branch, runs the full local suite, ticks the checklist, and pushes. The draft pull request opens after the first integration.
+- **Checkpoints** become a pull request comment per integration batch: what integrated, what is running, what is blocked. They never wait for CI or for the user unless asked.
+
+### Testing and review
+
+- **Workers** run the tests for the files and behavior they changed, and self-check the diff against their task. A failing test is a fix round for that worker (at most 2).
+- **The orchestrator** runs the full local suite after each integration; a failure goes back to the task that caused it.
+- **CI** runs on every push. `build` waits for it only on the final pull request, with fix rounds there. Intermediate pushes never wait.
+- **Review.** One independent, adversarial five-axis review per spec, in `ship`, on the final pull request; blocking findings get up to 2 fix rounds. The per-task review workers, the per-wave review, and `build`'s final review are dropped. Without a separate worker the review is labelled single-agent and still gates.
+- **Automatic merge.** `ship` merges with no confirmation when the spec is accepted, checks are green, the review has no blocking findings, and branch protection is satisfied (spec 017's rules otherwise).
+- **Suite speed.** Waits in `board.test.mjs` (the memo window, the slow-`gh` stub, lock timeouts) become options the tests set to a few milliseconds, so no test sleeps for real. Target: `pnpm test` under 8 seconds on a laptop.
+- **Smoke contracts** keep only safety rules: never push or merge the default branch outside `ship`, no force-push, no self-approval or protection bypass, the acceptance gate, never weaken a check. Contracts that pin other wording are removed; behavior is tested through scripts and evals.
+
+### Board
+
+The board keeps its five columns and stays read-only. GitHub data is read only in pull-request mode, as today; local mode is unchanged.
+
+- **A branch alone is not Building.** Today any open branch matching a spec's slug puts the card in Building, so every draft would show as Building. An open branch counts as Building only when it changes something outside `docs/`, a task is ticked, or a build run is live. Otherwise the card's stage comes from its status and tasks: draft → Specced, accepted with tasks → Ready.
+- **The `Issue:` line links the card** to its spec issue, with the issue's state. The spec issue's number joins the task issue numbers when matching pull requests, so a pull request that says `Closes #N` links to the card even when its branch name lacks the slug. Task checklist items with `(#N)` link their sub-issues, as task headings do today.
+- **Candidate issues become cards.** An open issue labelled `candidate` with no spec file referring to it shows in Candidate, numbered by the issue (`#N`), with no branch or tasks. Once a spec file names that issue on its `Issue:` line, the file's card replaces it.
+- **Labels count as status in pull-request mode.** An `accepted` label on the spec issue reads as `accepted`. When the label and the file's status disagree, the card shows a marker, for example `label accepted, file draft`. This is the board's view of the kill criterion.
+- **Frontier overlay.** The live run shows each task as running, integrated, blocked, or waiting, without wave numbers.
+- **Dropped specs leave the board.** A spec whose issue was closed as not planned is hidden; `--json` keeps it with `dropped: true`.
+- **Shipped** is unchanged: the spec file merges with the code, so the merged branch or pull request already carries implementation work.
+- **GitHub read.** `gh issue list` also returns labels and the reason an issue was closed, within the existing issue limit.
+- **Not checked by the board:** whether an issue body still matches its file; that stays with the skills' sync check.
+
+## Testing Decisions
+
+- Smoke contracts, safety rules only: no push or merge of the default branch outside `ship`; no force-push; no self-approval or protection bypass; `ship` refuses a spec that is not accepted (label in pull-request mode); never weaken a check.
+- `board.test.mjs`, with no real sleeps: a draft spec on an open docs-only branch is Specced, and Building once the branch changes code; the `Issue:` line and a closing pull request link the card; a `candidate` issue is a Candidate card until a file names it; a disagreeing label adds a marker; an issue closed as not planned hides the card; checklist tasks with `(#N)` link sub-issues; the overlay shows frontier states.
+- `pnpm test` wall time is measured before and after; the target is under 8 seconds.
+- Evals: E20 (build) covers frontier scheduling and no CI wait before the final pull request; a new eval covers a hand-edited issue body stopping the sync.
+- Dogfood: this spec ships through its own issue, sub-issues, and one pull request, built on the frontier, with the run's wall time reported.
+
+## Further Notes
+
+Dogfood findings from opening this spec's issue (#79) by hand:
+
+- The issue number is needed in the file and the file in the issue, so opening takes two passes: create the issue, add the `Issue:` line, commit and push, then sync the body.
+- Relative links (`../decisions/…`, `#board`) break in an issue body; the copy rewrites them to the file's ref.
+- The marker must hash the body as written, not the file; a hash of the file cannot tell a hand edit from a stale copy.
+- Labels do not exist in a new repository; `draft` was created on first use.
+- Tasks written as a numbered list show no checkboxes in the issue; the Tasks section is a checklist.
+
+Measured on 2026-10-28: `pnpm test` about 19 s wall time, of which `board.test.mjs` about 19 s (three tests about 12 s, all waiting on real timers); CI 30–60 s per push.
+
+## Out of Scope
+
+- Spec number collisions between branches; naming specs after issue numbers.
+- Migrating existing specs or their task issues.
+- Trackers other than GitHub Issues.
+- A GitHub Action that syncs issues; skills sync for now.
+- Changing the CI alignment check or CI itself.
+
+## Tasks
 
 Sub-issues of #79. Tasks 01–04 each own one skill and share only this spec, so they have no blockers; 05 waits for 06 because both edit the board's files.
 
@@ -58,6 +118,6 @@ Sub-issues of #79. Tasks 01–04 each own one skill and share only this spec, so
 - [x] 02: `to-tasks`: sub-issues with blocking links under the spec issue, the Tasks checklist, local fallback (#81).
 - [x] 03: `build`: frontier scheduling up to the host limit, context pointers instead of notes, integration with the full local suite, checkpoints that never wait, CI waited on only for the final pull request, per-task and per-wave reviews removed, `Closes` lines for the spec and sub-issues (#82).
 - [x] 04: `ship` and `review`: the label gate, one independent review per spec, automatic merge, sync at merge with the default-branch link, abandoned specs (#83).
-- [ ] 05: `board`: an open branch alone is not Building; spec issue and checklist links; candidate issue cards; labels as status with a mismatch marker; frontier overlay; dropped specs hidden; labels and close reason in the GitHub read (#85, blocked by 06).
-- [ ] 06: Test speed: injectable waits in `board.test.mjs`, `pnpm test` under 8 s (#84).
-- [ ] 07: Docs and contracts: glossary (Spec, Candidate spec, Delivery mode, wave), `PRODUCT.md` default durable docs, methodology, `docs/skills.md`, the indexes, status lines of the decisions 0029 amends, smoke contracts reduced to safety rules (#86, blocked by 01–06).
+- [x] 05: `board`: an open branch alone is not Building; spec issue and checklist links; candidate issue cards; labels as status with a mismatch marker; frontier overlay; dropped specs hidden; labels and close reason in the GitHub read (#85, blocked by 06).
+- [x] 06: Test speed: injectable waits in `board.test.mjs`, `pnpm test` under 8 s (#84).
+- [x] 07: Docs and contracts: glossary (Spec, Candidate spec, Delivery mode, wave), `PRODUCT.md` default durable docs, methodology, `docs/skills.md`, the indexes, status lines of the decisions 0029 amends, smoke contracts reduced to safety rules (#86, blocked by 01–06).
