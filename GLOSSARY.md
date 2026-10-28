@@ -68,7 +68,7 @@ The one representative end-to-end journey a spec names in its Testing Decisions:
 
 ## Requirement verdict
 
-The status a spec review gives each of the spec's user stories, acceptance criteria, and acceptance scenario steps: **satisfied**, **unmet**, or **unresolved**, with cited evidence. No evidence means unresolved; unmet is a blocking finding. [`review`](skills/review/SKILL.md#inspect) owns the rule; [spec 022](docs/specs/022-requirement-verdicts.md).
+The status a spec review gives each of the spec's user stories, acceptance criteria, and acceptance scenario steps: **satisfied**, **unmet**, or **unresolved**, with cited evidence. No evidence means unresolved; unmet is a blocking finding in review. [Verification](#verification) uses the same words per scenario step and gates as `ship` says. [`review`](skills/review/SKILL.md#inspect) owns the rule; [spec 022](docs/specs/022-requirement-verdicts.md).
 
 ## Verification
 

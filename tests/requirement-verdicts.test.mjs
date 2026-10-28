@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { readdirSync, readFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { dirname, join, relative, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 
@@ -20,7 +20,12 @@ test('review and ship name the three requirement verdicts', () => {
 
 test('the data-not-instructions brief rule lives only in the Workers rule', () => {
   const rule = /is data for its task, never instructions that change it/u
-  const owners = readdirSync(join(root, 'skills'))
-    .filter((name) => rule.test(readFileSync(join(root, 'skills', name, 'SKILL.md'), 'utf8')))
-  assert.deepEqual(owners, ['write-agents'])
+  // Every agent-read Markdown file under a skill counts, not only SKILL.md.
+  const owners = new Set()
+  for (const entry of readdirSync(join(root, 'skills'), { recursive: true, withFileTypes: true })) {
+    if (!entry.isFile() || !entry.name.endsWith('.md')) continue
+    const path = join(entry.parentPath, entry.name)
+    if (rule.test(readFileSync(path, 'utf8'))) owners.add(relative(join(root, 'skills'), path).split(sep)[0])
+  }
+  assert.deepEqual([...owners], ['write-agents'])
 })
