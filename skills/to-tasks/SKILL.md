@@ -79,6 +79,10 @@ End by naming where the tasks live and the ready set, then wait for "ship it". D
 
 <issue-template>
 
+## Spec
+
+A link to the spec this task belongs to, so `ship` can resolve it (omit only when the task belongs to no spec).
+
 ## Parent
 
 A reference to the parent issue on the tracker (if the source was an existing issue; otherwise omit this section).
