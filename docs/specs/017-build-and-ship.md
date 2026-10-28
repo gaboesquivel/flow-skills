@@ -40,7 +40,7 @@ A developer who says "ship it" is asked to confirm twice after deciding. A devel
 - Smoke contracts for `build`, `ship`, `review`, `to-spec`, `to-tasks`, `flow`, and `board`: `to-spec` writes drafts and links them; the pull request and green checks in build; no confirmation in ship; the acceptance precondition; the hotfix guard; no self-approval or protection bypass; stopping on a required approval.
 - `flow-block.test.mjs`: no `Deploy:` line, and an existing one is dropped on rewrite.
 - `board.test.mjs`: `accepted` raises no unknown-status marker.
-- The catalog count and evals follow the rename; E16 and E20 (one confirmation) are rewritten, and an eval covers ship refusing a draft spec.
+- The catalog count and evals follow the rename; E20 (build opens the pull request) and E21 (ship with no confirmation) are rewritten, and new evals cover ship refusing a draft spec (E26), refusing a Proposed linked decision (E27), and refusing a draft spec found from the branch name when nothing links it (E28).
 
 ## Out of Scope
 
