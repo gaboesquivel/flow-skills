@@ -1,6 +1,6 @@
 # Flow Skills
 
-**From intent to verified software.** Portable [agent skills](https://agentskills.io) for [Flow](PRODUCT.md), a lightweight, human-led product engineering methodology. Talk to your agent, typed or dictated: "interview me", "spec it", "ship it". Flow Lite keeps product context aligned; the remaining skills are optional and independent, including `start` for new projects. No mandatory workflow, agent router, or required changes to adopter instruction files.
+**From intent to verified software.** Portable [agent skills](https://agentskills.io) for [Flow](PRODUCT.md), a lightweight, human-led product engineering methodology. Talk to your agent, typed or dictated: "interview me", "spec it", "ship it". Flow Lite keeps product context aligned; the remaining skills are optional and independent, including `start` for new projects. No mandatory workflow or required changes to adopter instruction files. Skills may name the next skill and wait; the only automatic hand-offs are `start` → `explore` and explore's `interview` and `grill` phases, each behind the user's yes ([decision 0024](docs/decisions/0024-gated-hand-offs.md)).
 
 [Flow identity and catalog scope](PRODUCT.md) · **[Skill catalog](docs/skills.md)** · [Methodology](docs/methodology.md) · [Documentation guide](docs/README.md)
 

@@ -20,7 +20,7 @@ An adopter project's own product identity, normally in that project's `PRODUCT.m
 
 ## Flow Lite
 
-The [`flow`](skills/flow/SKILL.md) skill: keep the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` aligned with meaningful changes. Not a workflow router and not project initialization. Model-invocable like most Flow skills ("update the docs"); that is not an always-on guarantee.
+The [`flow`](skills/flow/SKILL.md) skill: keep the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` aligned with meaningful changes. Not project initialization, and it does not run other skills. Model-invocable like most Flow skills ("update the docs"); that is not an always-on guarantee.
 
 ## Flow skill
 
@@ -28,7 +28,7 @@ A portable `skills/<name>/SKILL.md` package in the Flow Skills distribution. Use
 
 ## Delivery mode
 
-How `ship` lands a spec's work in a project: **local** (a reviewed spec branch merged into local `main` with `--no-ff` and pushed, tasks as checkboxes in the spec) or **pull request** (one GitHub pull request closing the task issues). Recorded as a `Delivery:` line in the project's Flow block. Distinct from Flow Lite and from explore's depth tiers. [Decision 0020](docs/decisions/0020-flow-mode.md).
+How `ship` lands a spec's work in a project: **local** or **pull request**. Distinct from Flow Lite and from explore's depth tiers. The rule lives in [`ship`](skills/ship/SKILL.md#delivery-mode); [decision 0020](docs/decisions/0020-flow-mode.md) records why.
 
 ## Candidate spec
 
