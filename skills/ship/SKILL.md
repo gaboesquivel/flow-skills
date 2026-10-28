@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Verify, commit, push, and check the configured deployment with evidence, confirming before pushing; lands a spec's task set on one branch. Use when the user says "ship it", "commit and push", or "send it".
+description: Land accepted work with no confirmation, building if needed, then independent review on the pull request, green checks, merge, and sync. Use when the user says "ship it", "land it", or "send it".
 disable-model-invocation: false
 ---
 
@@ -8,157 +8,71 @@ disable-model-invocation: false
 
 ## Purpose
 
-Complete the current authorized work (one task or a related group; see Preflight) with evidence: test, fix, commit, push, deploy, verify. Given a spec's task set, `build` runs it (see its Task set), then ship lands the pull request or spec branch it delivered.
+"Ship it" lands the current authorized work: one change, or a spec's task set on one branch. It builds when no pull request exists, gets an adversarial review posted on the pull request, fixes findings, waits for green checks, merges, deletes the branch, and syncs the local default branch (decision 0028).
 
-Asking to ship authorizes ordinary commits and pushes of that work, subject to repository permissions, existing release safeguards, and the gates under Push. Requests often arrive by voice, so confirm what you heard before anything leaves the machine.
+Asking to ship authorizes these steps with no confirmation, subject to repository permissions and branch protection. It does not authorize destructive Git operations, force-pushing, rewriting remote branches, security bypasses, approving its own pull request, production promotion or rollback unless explicitly asked, or unrelated changes.
 
-It does not authorize destructive Git operations, security bypasses, or unrelated changes.
-
-Before a multi-step run, suggest the host's autonomous permission mode when it has one (for example Claude Code auto mode) so file writes, issues, and pushes do not stop for each permission prompt. Skill gates still apply.
+Before a multi-step run, suggest the host's autonomous permission mode when it has one (for example Claude Code auto mode) so file writes, comments, and pushes do not stop for each permission prompt. The gates below still apply.
 
 ## Preflight
 
-Inspect:
+Inspect the current branch and worktree, Git status and diff, existing staged changes, the available remote, and the delivery mode as `build` describes under Delivery mode. If the working tree contains changes with unclear ownership, preserve them and avoid staging them blindly. A one-run override ("ship it local", "ship it with a PR") changes only the finish, never where tasks live.
 
-- Current branch and worktree.
-- Git status and diff.
-- Existing staged changes.
-- Task scope. Related work shares one branch and pull request: an exploration's research, spec, and root-context changes, or a spec's tasks. Split only large, independently shippable work or work that needs separate review.
-- Delivery mode, inferred and recorded as `build` describes.
-- Task records. In pull-request mode each spec task has an issue; in local mode, a checkbox in the spec's Tasks section. Create missing ones with `to-tasks` where the set is already recorded; a one-run override ("ship it local", "ship it with a PR") changes only the finish, never where tasks live. Ad-hoc changes need none.
-- Repository verification scripts in package.json, Makefile, or CI config.
-- Available Git remote.
-- Deploy target (see Deploy).
+Classify the work:
 
-Do not assume every push creates a deployment.
+- **Spec work** (a spec, its tasks, or a pull request that closes them): the spec's `Status:` must be `accepted`, and every decision record it links must be **Accepted**. Otherwise name the spec or decision and its current status, suggest "accept the spec", and stop before building, committing, or pushing anything.
+- **Hotfix:** work with no spec and no task. It ships through the same cycle; the review also judges whether it is hotfix-sized (see Review).
 
-If the working tree contains changes with unclear ownership, preserve them and avoid staging them blindly.
+## Build
 
-## Task set
+In pull-request mode, when no pull request exists for the work, run `build` first; it commits, pushes, opens the pull request, and waits for checks. On a spec's task set, `build` runs it (see its Task set), then ship lands the pull request it marked ready. Related work shares one branch and pull request; split only large, independently shippable work. In local mode, `build` delivers a branch with the local check suite passing.
 
-"Ship it" on a spec's task set: if `build` has not delivered it yet, run `build` on the set first (its Task set owns plans, waves, notes, worker limits, checkpoints, and board states), then land the result as Push describes.
+## Review
 
-## Test
+Run an adversarial five-axis `review` of the pull request with a separate worker; ship's request authorizes that worker and posting the result. Post the review on the pull request as a comment or a COMMENT-type review, never an approval. Without a separate worker, run it directly, label it single-agent on the pull request, and let it gate the same way. In local mode, report the review in the conversation.
 
-Run relevant checks.
+**Hotfix guard.** For a hotfix, the review also judges size: new product behavior, a data-shape or public API change, or a migration is a blocking finding. Ship stops there and suggests `to-spec`.
 
-Prefer the repository's established QA commands.
+## Fix rounds
 
-For substantial application changes, run the applicable:
+On blocking findings or failing checks, fix what this work caused when safely in scope, commit, push, and review and wait again: at most 2 fix rounds. Wait for checks with bounded monitoring; a pending check is pending, never passing. Never hide, skip, disable, or weaken a failing check. If the gate still fails, stop and report.
 
-- Type checking.
-- Linting and formatting validation.
-- Unit or integration tests.
-- Build checks.
-- Browser or smoke verification where genuinely relevant.
+## Merge
 
-Do not run expensive or unrelated checks without reason.
+**Gate.** Merge only when checks are green, no findings are blocking, and branch protection is satisfied. Never approve the agent's own pull request and never bypass protection (for example `gh pr merge --admin`). When protection requires a human approval, stop after the review and report that an approval is needed.
 
-## Fix
+**Pull-request mode:**
 
-Fix failures caused by the task when safely within scope.
+1. For spec work, when every task of the spec has integrated, set the spec's `Status:` line to `implemented` on the branch before merging, so the spec reads as done after the branch is deleted.
+2. Update the branch from the default branch only when the pull request is behind or conflicts; stop on conflicts that cannot be resolved within scope.
+3. Merge with a method the repository allows. The pull request carries a Conventional Commits title and a `Closes #N` line per task issue.
+4. Delete the head branch on the remote and locally (for example `gh pr merge --delete-branch`), then fast-forward the local default branch from the remote.
 
-Retest after fixes.
+**Local mode:** run the final `review` and the full local check suite on the branch, set the spec to `implemented` as above, merge into the local default branch with `git merge --no-ff` and a pull-request-style message (summary, tasks, checks), push it, and delete the merged branch locally and, if it was pushed, on the remote.
 
-Use bounded retries.
-
-If verification cannot pass, stop and report the blocker.
-
-Never hide failed tests or skip them silently to obtain a green result.
-
-## Commit
-
-Review the final diff.
-
-Stage only intended files.
-
-Exclude credentials, local logs, generated secrets, and unrelated changes.
-
-Use a meaningful commit message following repository conventions.
-
-Verify the resulting commit SHA.
-
-Do not amend or rewrite unrelated commits.
-
-## Push
-
-**Plan confirmation.** Before the first push, state the branch, remote, the work commit's SHA when one exists, a one-line summary, the delivery mode, the pull request and merge plan (in local mode, the merge into and push of `main`), and side effects: titles of task records to create, and the `Deploy:` line when it is recorded. Wait for an explicit yes. Silence or an ambiguous reply is not a yes. One explicit yes covers the run's pushes on that branch, except `main` (see Main gate).
-
-**Main gate.** Before merging into or pushing `main`, show the diff summary, checks, and commit SHA, then wait for another explicit yes. A plan yes never authorizes a merge into `main`.
-
-Push the authorized current branch to its intended remote.
-
-Respect branch protection.
-
-Never force-push or rewrite remote branches. Delete a branch only after its work has merged into `main` (below).
-
-Do not promote to production or roll back through a separate manual operation unless explicitly authorized.
-
-If the remote cannot be safely determined, stop and report the required decision.
-
-In pull-request mode, the work lands through one pull request with a Conventional Commits title and a `Closes #N` line per task issue; for a task set it is the pull request `build` opened and marked ready. When every task of a spec has integrated, set the spec's `Status:` line to `implemented` on the spec branch before merging, so the spec reads as done after the branch is deleted. Merge only when checks pass and the main gate is passed; delete the pull request's head branch on the remote and locally (for example `gh pr merge --delete-branch`), then fast-forward local `main` from the remote (no further yes). Update the branch from `main` only when the pull request is behind or conflicts. In local mode, run a final `review` and the full local check suite on the spec branch, merge it into local `main` with `git merge --no-ff` and a pull-request-style message (summary, tasks, checks), then push `main` and delete the merged spec branch locally and, if it was pushed, on the remote.
-
-## Deploy
-
-Read the `Deploy:` line in the Flow block, beside `Delivery:`. When it is missing or `unset`, infer from repository configuration (for example `vercel.json` or a `.vercel` directory means `vercel`); without a recognizable configuration, propose `none`. State the pick with the delivery mode and, once confirmed, record it on that line without touching anything outside the block's markers. Without a Flow block, use the pick for this run only. `Deploy: none` means no deployment: checkpoints carry no preview. In local mode, report a preview only if the target builds one without a pull request.
-
-For the recorded target, defer to the platform's own deploy skill, CLI, or integration (for example `deploy-to-vercel`, GitHub Actions, or documented release scripts) rather than restating platform steps here.
-
-Deploy a preview, not production, unless the user explicitly asks for production.
-
-Identify the deployment associated with the actual commit SHA.
-
-Perform bounded status checks until success, failure, or a reasonable monitoring limit is reached.
-
-If deployment remains pending, report it as pending rather than successful.
-
-## Verify
-
-After deployment (or when deployment is not configured), verify changed behavior against acceptance criteria.
-
-Use real endpoints, CLI commands, or UI interactions as appropriate.
-
-If the deployed application is protected or inaccessible, report the exact verification limitation.
-
-A successful build alone is not complete application verification.
+Never force-push or rewrite remote branches. Delete a branch only after its work has merged. If the remote cannot be safely determined, stop and report.
 
 ## Failure handling
 
-On failure:
-
-- Preserve the current repository state.
-- Do not force deployment.
-- Report the exact failing stage and evidence.
-- Suggest the smallest corrective action.
-
-If no deployment is expected for this product, report deployment as not applicable and assess completion against the requested delivery. If deployment was requested but is unconfigured or blocked, report partial delivery.
+On failure, preserve the repository state, report the exact failing stage with evidence, and suggest the smallest corrective action. Ship stops on: an unaccepted spec or decision, a hotfix that is not hotfix-sized, blocking findings or red checks after the fix rounds, unresolvable conflicts, and a protection rule it cannot meet. Never report the work as shipped when a gate failed.
 
 ## Output
 
 ### Delivery
-Completed, partial, or blocked.
+Shipped, partial, or blocked; the pull request (or local merge) and its commit SHA.
 
 ### Checks
-Commands executed and observed results.
+Each check and its result, and the links CI attached; pending checks reported as pending.
 
-### Commit
-Actual SHA, subject, and branch; for a task set, the pull request or local merge SHA.
+### Review
+Where it was posted, whether it used a separate worker or was single-agent, findings and fix rounds, and the hotfix judgment when it applies.
 
-### Tasks
-For a task set: what `build` reported (waves and checkpoints posted, tasks integrated, tasks blocked and why).
-
-### Push
-Remote and branch confirmation.
-
-### Deployment
-URL, platform, and status when available; otherwise state that none is configured.
-
-### Verification
-What was tested and the outcome.
+### Merge
+Merge method and commit, the spec status set, branch deleted, and local default branch fast-forwarded; or what blocked the merge.
 
 ### Next
-Only if something remains unresolved.
+Only if something remains unresolved (for example "accept the spec", `to-spec`, or a required approval).
 
 ## Restrictions
 
-No destructive reset, secret exposure, or unnecessary documentation ceremony. Never report Ship as complete when required verification failed.
+No destructive reset, force-push, secret exposure, or unnecessary documentation ceremony.

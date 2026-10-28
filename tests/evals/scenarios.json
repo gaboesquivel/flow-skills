@@ -568,6 +568,28 @@
         "verified_second_host": "not_executed"
       },
       "claimsLiveRun": false
+    },
+    {
+      "id": "E26",
+      "skills": [
+        "ship"
+      ],
+      "behavior": "Ship it on a draft spec names what is not accepted and stops before building",
+      "taskFile": "tests/evals/tasks/E26-task.md",
+      "rubricFile": "tests/evals/rubrics/E26-rubric.md",
+      "skillReferences": [
+        "skills/ship/SKILL.md",
+        "skills/to-spec/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
     }
   ]
 }
