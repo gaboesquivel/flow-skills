@@ -923,14 +923,14 @@ const firstLines = (message) => String(message).split('\n').slice(0, 2).join(' '
  * carries `server: { repoRoot, pid }` so `--serve` and `--stop` can recognize this repository's board.
  * `github` (a githubSource, or null) adds GitHub links. It refreshes in the background on its own longer
  * cache, so a request never waits on `gh` and polling stays off the GitHub API; links fill in once it resolves.
- * Throws when the first derivation fails; rejects when the port cannot be bound.
+ * Throws when the first derivation fails; rejects when the port cannot be bound. `now` is the memo clock (tests).
  */
-export async function startServer({ repoRoot, port = 0, memoMs = 1000, github = null }) {
+export async function startServer({ repoRoot, port = 0, memoMs = 1000, github = null, now = Date.now }) {
   const identity = { repoRoot: realRoot(repoRoot), pid: process.pid }
   let lastGood = deriveBoard(readSnapshot(repoRoot, { github }))
-  let memo = { at: Date.now(), value: { status: 200, body: { ...lastGood, server: identity } } }
+  let memo = { at: now(), value: { status: 200, body: { ...lastGood, server: identity } } }
   const state = () => {
-    if (Date.now() - memo.at < memoMs) return memo.value
+    if (now() - memo.at < memoMs) return memo.value
     let value
     try {
       lastGood = deriveBoard(readSnapshot(repoRoot, { github }))
@@ -938,7 +938,7 @@ export async function startServer({ repoRoot, port = 0, memoMs = 1000, github = 
     } catch (error) {
       value = { status: 500, body: { error: firstLines(error.message), server: identity } }
     }
-    memo = { at: Date.now(), value }
+    memo = { at: now(), value }
     return value
   }
   let allowedHosts = []
@@ -1041,6 +1041,12 @@ async function stopServer(repoRoot, port) {
   return 0
 }
 
+// Test-only override of the record lock wait; unset in normal use, so LOCK_WAIT_MS applies.
+const lockOptionsFromEnv = (env) => {
+  const waitMs = Number(env.FLOW_BOARD_TEST_LOCK_WAIT_MS)
+  return env.FLOW_BOARD_TEST_LOCK_WAIT_MS && Number.isFinite(waitMs) && waitMs >= 0 ? { waitMs } : undefined
+}
+
 /** Resolves to the exit code; with `--serve`, once the server stops on SIGINT or SIGTERM. */
 export async function main(argv = process.argv.slice(2)) {
   const usage = 'Usage: board.mjs --serve [--port <n>] [--repo <path>] [--no-github] | --stop [--port <n>] [--repo <path>] | --once [--out <file>] [--repo <path>] [--no-github] | --json [--repo <path>] [--no-github]'
@@ -1053,7 +1059,7 @@ export async function main(argv = process.argv.slice(2)) {
   if (args.record !== null) {
     const { tasks, ...fields } = args.fields
     try {
-      console.log(record(repoRoot, args.record, { ...fields, ...(tasks === undefined ? {} : { tasks: tasks.split(',').map((t) => t.trim()).filter(Boolean) }) }))
+      console.log(record(repoRoot, args.record, { ...fields, ...(tasks === undefined ? {} : { tasks: tasks.split(',').map((t) => t.trim()).filter(Boolean) }) }, lockOptionsFromEnv(process.env)))
       return 0
     } catch (error) { console.error(error.message); return 1 }
   }

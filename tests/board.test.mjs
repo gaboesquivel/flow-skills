@@ -822,22 +822,27 @@ test('--no-github never runs gh', () => withRepo(({ dir, git, write, commit }) =
   assert.equal(existsSync(marker), true, 'fake gh is on PATH')
 }))
 
-test('live server never waits on a slow gh; links appear after the refresh resolves', async () => {
+test('live server never waits on a slow gh; links appear after the refresh resolves', { timeout: 10_000 }, async () => {
   const { dir, git, write, commit } = makeRepo()
   write('020-widget.md', spec('020: Widget', 'draft', '\n## Tasks\n\n### 01: One (#45)\n- [ ] a\n'))
   commit('spec')
   git('remote', 'add', 'origin', 'https://github.com/o/r.git')
+  // gh stays pending until released: a server that waited on it would never answer before the release.
+  let release
+  const gate = new Promise((done) => { release = done })
+  let pendingCalls = 0
   const run = async (args) => {
-    await new Promise((done) => setTimeout(done, 1500))
+    pendingCalls++
+    await gate
     return args[0] === 'issue' ? '[{"number":45,"state":"OPEN","url":"https://github.com/o/r/issues/45"}]' : '[]'
   }
   const source = githubSource({ run, ttlMs: 60_000 })
-  const started = Date.now()
   const live = await startServer({ repoRoot: dir, port: 0, memoMs: 0, github: source })
   try {
     const before = await getState(live.url)
-    assert.ok(Date.now() - started < 1000, `state answered in ${Date.now() - started} ms`)
+    assert.ok(pendingCalls > 0, 'gh refresh started and is still pending')
     assert.deepEqual(cardOf(before, '020').issues, [])
+    release()
     await source.refresh(dir)
     assert.deepEqual(cardOf(await getState(live.url), '020').issues.map((issue) => issue.number), [45])
   } finally {
@@ -1027,7 +1032,7 @@ test('recorder: parallel records all land; a held lock times out; a stale lock i
 
     writeFileSync(`${path}.lock`, '')
     assert.throws(() => record(dir, 'task', { task: '01', state: 'failed' }, { waitMs: 100 }), /locked by another record/u)
-    const timedOut = spawnSync(process.execPath, [script, '--record', 'task', '--task', '01', '--state', 'failed', '--repo', dir], { encoding: 'utf8' })
+    const timedOut = spawnSync(process.execPath, [script, '--record', 'task', '--task', '01', '--state', 'failed', '--repo', dir], { encoding: 'utf8', env: { ...process.env, FLOW_BOARD_TEST_LOCK_WAIT_MS: '50' } })
     assert.equal(timedOut.status, 1, 'CLI timeout exits 1')
     assert.match(timedOut.stderr, /locked by another record/u)
     assert.equal(JSON.parse(readFileSync(path, 'utf8')).tasks['01'].state, 'working', 'nothing written on timeout')
@@ -1044,19 +1049,20 @@ test('live server shows an overlay change on the next /state after the memo wind
   const { dir, write, commit } = makeRepo()
   write('012-progress-board.md', runSpec)
   commit('spec')
-  // A 3 s memo leaves ample margin for the CLI records between reads inside one window.
-  const live = await startServer({ repoRoot: dir, port: 0, memoMs: 3000 })
+  // A fake clock holds the 3 s memo window open across the CLI records and steps past it without sleeping.
+  let clock = Date.now()
+  const live = await startServer({ repoRoot: dir, port: 0, memoMs: 3000, now: () => clock })
   try {
     assert.equal(cardOf(await getState(live.url), '012').run, null)
     const rec = (...args) => { const run = cli('--record', ...args, '--repo', dir); assert.equal(run.status, 0, run.stderr) }
     rec('run-start', '--spec', '012', '--branch', 'feat/run-branch', '--mode', 'local', '--tasks', '02,03')
     rec('task', '--task', '03', '--state', 'working')
-    await new Promise((done) => setTimeout(done, 3100))
+    clock += 3100
     const state = await getState(live.url)
     assert.deepEqual(cardOf(state, '012').run.tasks.map((t) => [t.id, t.state]), [['02', 'queued'], ['03', 'working']])
     rec('task', '--task', '03', '--state', 'blocked', '--note', 'needs a decision')
     assert.equal(cardOf(await getState(live.url), '012').run.tasks[1].state, 'working', 'inside the memo window')
-    await new Promise((done) => setTimeout(done, 3100))
+    clock += 3100
     assert.deepEqual(cardOf(await getState(live.url), '012').run.tasks[1], { id: '03', title: 'Run overlay', state: 'blocked', round: 1, note: 'needs a decision' })
   } finally {
     await live.close()
