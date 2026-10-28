@@ -30,7 +30,8 @@ flowchart TB
 ```
 
 - **`flow` (Flow Lite)** — align the current project's root context after meaningful changes. Hosts may surface it when supported; it is not a pipeline and not initialization.
-- **Other skills** — say what you want; each skill's leading word reaches it ("grill me", "break it down", "build it"). Slash commands work too. Only `start` must be named. Each is independent; no mandatory sequence.
+- **Flow mode (opt-in)** — say "set up Flow here" to add one removable Flow block to the project's `AGENTS.md`. Then "break it down" and "ship it" land a spec's tasks on one branch, through one pull request or a reviewed merge into local `main` ([decision 0020](docs/decisions/0020-flow-mode.md)).
+- **Other skills** — say what you want; each skill's leading word reaches it ("grill me", "break it down", "build it"). Slash commands work too. `start` confirms template, name, and destination before writing. Each is independent; no mandatory sequence.
 
 Details and links to every `SKILL.md`: **[docs/skills.md](docs/skills.md)**.
 

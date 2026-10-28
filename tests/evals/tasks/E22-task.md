@@ -1,3 +1,3 @@
 # E22 task
 
-A new-product exploration reaches spec-ready with a confirmed brief that names a riskiest assumption, a main metric, and an agent user. Use only the named skill when invoking.
+A project has an AGENTS.md with custom instructions. The user says "set up Flow here" twice. Use only the named skill when invoking.

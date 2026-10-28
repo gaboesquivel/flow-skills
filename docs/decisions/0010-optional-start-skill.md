@@ -8,6 +8,8 @@ superseded_by:
 
 # 0010. Optional `start` skill authorized
 
+Amended by [0020](0020-flow-mode.md): the opt-in Flow block is the one allowed adopter instruction-file edit.
+
 ## Context
 
 [0009-adopter-product-context.md](0009-adopter-product-context.md) (accepted, immutable) states that an adopter's `PRODUCT.md` is that product's identity, that `flow` is not project initialization, and that this repository must not ship `flow start` or adopter instruction-file edits **in that change**. The same record left **unresolved** whether a later, explicit, optional start skill should exist.

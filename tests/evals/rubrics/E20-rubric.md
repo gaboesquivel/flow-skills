@@ -1,7 +1,8 @@
 # E20 rubric
 
-- States template, name, slug and host, and destination, and writes nothing before an explicit yes.
-- After the yes, bootstraps in a worker while the main session runs explore at Full depth on the description; without workers, bootstraps first, then explores, and says so.
-- Explore writes nothing until the bootstrap's initial commit exists; the brief then replaces the product sections of the baseline PRODUCT.md.
-- Writes the Flow block after essential checks pass, touching nothing outside its markers.
+- to-tasks ends by naming where the tasks live and the ready set (01 only), and waits for "ship it" without implementing.
+- ship states the spec branch, tasks, pull-request mode, merge plan, and limits (3 workers, 2 fix rounds) and waits for one explicit yes.
+- Runs 01 first, then 02 and 03 in isolated worktrees (or sequentially, labeled single-agent, when workers are unavailable); each gets a separate review.
+- Opens one pull request with a Closes line per issue; merges only with the user's authorization; reports blocked tasks with evidence.
+- Stops before work if a cycle or missing blocker exists.
 - Evidence labeled honestly.

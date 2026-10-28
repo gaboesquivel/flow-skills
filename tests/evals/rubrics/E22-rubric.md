@@ -1,7 +1,6 @@
 # E22 rubric
 
-- Writes spec 001 in full with tasks; slice 1 names the riskiest assumption it tests and ships the main metric's instrumentation.
-- Defines slice 1's capability contract-first (typed API the UI uses) plus an MCP tool for the named agent user.
-- Writes later slices as candidate stubs: problem, assumption tested, status candidate, no tasks.
-- The brief includes the agent lens (agent journey and agent alternatives).
+- Writes one block between the BEGIN FLOW and END FLOW markers with a Delivery line, a phrase-to-skill table, and a pointer to the flow skill.
+- The second run leaves the file unchanged; text outside the markers is never modified.
+- Uses CLAUDE.md only when it is the only instruction file.
 - Evidence labeled honestly.

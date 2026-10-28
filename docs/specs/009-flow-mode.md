@@ -1,6 +1,6 @@
 # 009: Flow mode
 
-Status: draft (2026-10-28). Decision: [0020](../decisions/0020-flow-mode.md). Builds on [0019](../decisions/0019-voice-first-invocation.md) and [0021](../decisions/0021-autonomous-explore-and-ship.md).
+Status: implemented (2026-10-28). Decision: [0020](../decisions/0020-flow-mode.md). Builds on [0019](../decisions/0019-voice-first-invocation.md) and [0021](../decisions/0021-autonomous-explore-and-ship.md).
 
 ## Problem
 
@@ -40,43 +40,43 @@ Slash commands keep working unchanged. `/ship` without a task set ships the curr
 
 ### 01: Dogfood link
 **Status:** done in spec 010's pull request (#23): `.claude/skills` links to `skills/`, and `pnpm validate` guards it.
-- [ ] `docs/agent-compatibility.md` notes the link.
+- [x] `docs/agent-compatibility.md` notes the link.
 
 ### 02: Flow block in projects
 **What to build:** "set up Flow here" writes or updates the Flow block; `start` writes it after a successful bootstrap.
 **Blocked by:** None (can start immediately).
-- [ ] Idempotent write with markers, covered by a test.
-- [ ] `flow` and `start` boundaries updated; 0009/0010 references point to 0020.
+- [x] Idempotent write with markers, covered by a test.
+- [x] `flow` and `start` boundaries updated; 0009/0010 references point to 0020. (`start` writing the block moved to spec 011.)
 
 ### 03: to-tasks hands off to ship
 **What to build:** after a breakdown, `to-tasks` reports the ready set and waits for "ship it".
 **Blocked by:** None (speakable skills landed in 0019).
-- [ ] Completion section names the ready set and the phrase.
+- [x] Completion section names the ready set and the phrase.
 
 ### 04: ship task-set orchestration
 **What to build:** "ship it" on a task set runs the orchestration in Experience step 4.
 **Blocked by:** None (speakable skills landed in 0019).
-- [ ] Ready-set computation, cycle check, concurrency limit, bounded fix rounds, sequential fallback.
-- [ ] Gates, merge authority, and push confirmation as decided in 0021.
+- [x] Ready-set computation, cycle check, concurrency limit, bounded fix rounds, sequential fallback.
+- [x] Gates, merge authority, and push confirmation as decided in 0021.
 - [ ] Dogfood run on a three-task set with one blocking edge in this repository.
 
 ### 07: Local delivery mode
 **What to build:** "ship it" in local mode lands a spec's tasks through a reviewed spec branch merged into local `main` and pushed, with tasks ticked in the spec.
 **Blocked by:** 04.
-- [ ] `ship` reads, infers, records, and overrides the delivery mode.
-- [ ] `to-tasks` writes tasks to the spec in local mode and to GitHub issues in pull-request mode.
-- [ ] Final review, local checks, `--no-ff` merge message, push; protected `main` forces pull-request mode.
+- [x] `ship` reads, infers, records, and overrides the delivery mode.
+- [x] `to-tasks` writes tasks to the spec in local mode and to GitHub issues in pull-request mode.
+- [x] Final review, local checks, `--no-ff` merge message, push; protected `main` forces pull-request mode.
 
 ### 05: Review rubric
 **What to build:** `review` applies the adopted Osmani-inspired axes as the independent PR review.
 **Blocked by:** None; the axes are recorded in [research](../research/2026-10-28-explore-discovery-entry-points.md).
-- [ ] Rubric axes in `review`, without a large checklist.
+- [x] Rubric axes in `review`, without a large checklist.
 
 ### 06: Align product context
 **What to build:** PRODUCT.md, catalog, README, and compatibility docs describe Flow mode.
 **Blocked by:** 02, 04.
-- [ ] PRODUCT.md "not shipped" list and Flow Factory row updated; 0020 accepted.
-- [ ] `pnpm validate` and `pnpm test` pass.
+- [x] PRODUCT.md "not shipped" list and Flow Factory row updated; 0020 accepted.
+- [x] `pnpm validate` and `pnpm test` pass.
 
 ## Out of scope
 

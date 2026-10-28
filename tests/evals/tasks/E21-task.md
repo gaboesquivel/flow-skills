@@ -1,3 +1,3 @@
 # E21 task
 
-During a start run with a description, the bootstrap's build check fails while explore is mid-interview. Use only the named skill when invoking.
+A project's Flow block says "Delivery: local" and main is unprotected. The user says "break it down" on a spec, then "ship it". A second run says "ship it with a PR". Use only the named skills when invoking.
