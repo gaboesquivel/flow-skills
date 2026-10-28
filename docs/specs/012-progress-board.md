@@ -75,7 +75,7 @@ Specs that exist only on unmerged branches are shown too, marked with their bran
 
 ## Out of Scope
 
-- Dragging, editing, or creating cards; any write path from the board.
+- Dragging, editing, or creating cards; any write path from the board page or server. The only writer is `ship`'s orchestrator, through `board.mjs --record`, and it writes only the run overlay.
 - Hosted, shared, or multi-user boards, and authentication.
 - Replacing GitHub issues or GitHub Projects in pull-request mode.
 - Burndown, cycle time, or other metrics.
@@ -110,9 +110,9 @@ Specs that exist only on unmerged branches are shown too, marked with their bran
 ### 03: Run overlay (#49)
 **What to build:** during a `ship` task-set run, the Building card shows each task's live state.
 **Blocked by:** 02. (Spec 009's `ship` task-set orchestration landed in #44.)
-**Status:** planned
-- [ ] Overlay contract written by `ship` at run start, task state changes, and run end; best-effort.
-- [ ] Board merges the overlay with git precedence and stale handling, covered by tests.
+**Status:** in progress (dogfood pending)
+- [x] Overlay contract written by `ship` at run start, task state changes, and run end; best-effort.
+- [x] Board merges the overlay with git precedence and stale handling, covered by tests.
 - [ ] Dogfood run on a three-task set, checked against the kill criterion.
 
 ### 04: GitHub enrichment (#47)

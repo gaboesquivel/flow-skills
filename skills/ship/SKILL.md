@@ -57,6 +57,14 @@ Read the `Delivery:` line in the project's Flow block (`AGENTS.md` or `CLAUDE.md
 
 Gates: checks green, no blocking review findings, branch protection respected. Without independent workers, run the ready tasks sequentially in the same order on the spec branch, write the notes as the orchestrator, label reviews single-agent, and say so.
 
+**Board states.** Record live task states with `node <board>/scripts/board.mjs`, where `<board>` is the `board` directory next to this skill's directory; if that script is missing, skip recording. Only the orchestrator records; workers never do. Run records one at a time.
+
+- After the plan yes: `--record run-start --spec <NNN> --branch <spec branch> --mode <local|pull-request> --tasks <01,02,…>`.
+- As each wave's tasks start, change state, and integrate, and again at each checkpoint for every unfinished task (a heartbeat): `--record task --task <NN[,NN…]> --state <state> [--round <n>] [--note "<one line>"]`.
+- When the set finishes or stops: `--record run-end`.
+
+Recording is best-effort: a failed record never stops or delays the run.
+
 ## Test
 
 Run relevant checks.

@@ -3,7 +3,7 @@
 // Zero dependencies, Node >= 22. Stages: Candidate, Specced, Ready, Building, Shipped.
 import { execFile, execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { mkdirSync, realpathSync, writeFileSync } from 'node:fs'
+import { closeSync, mkdirSync, openSync, readFileSync, realpathSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs'
 import { createServer } from 'node:http'
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -162,7 +162,9 @@ export function readSnapshot(repoRoot, { github = null } = {}) {
 
   // Only merged branches that some spec could claim need the (costlier) implementation check.
   const slugs = specs.map((spec) => SPEC_FILE.exec(spec.file)[2])
-  const claimed = (name) => slugs.some((slug) => matchBranches(slug, [{ name }]).length)
+  const { overlay, overlayError } = readOverlay(overlayPath(repoRoot))
+  const runBranch = typeof overlay?.run?.branch === 'string' ? overlay.run.branch : null
+  const claimed = (name) => slugs.some((slug) => matchBranches(slug, [{ name }]).length) || (runBranch !== null && branchNamed(name, runBranch))
   for (const branch of branches) {
     if (branch.merged && claimed(branch.name)) branch.implementation = hasImplementationWork(repoRoot, branch, context)
   }
@@ -183,7 +185,160 @@ export function readSnapshot(repoRoot, { github = null } = {}) {
     const added = specAddedDates(repoRoot, defaultRef)
     for (const spec of specs) if (spec.onDefault && added.has(spec.file)) spec.addedAt = added.get(spec.file)
   }
-  return { repoName: basename(repoRoot), defaultBranch: defaultBranch.name, delivery, branches, specs, github: githubData, generatedAt: new Date().toISOString() }
+  return { repoName: basename(repoRoot), defaultBranch: defaultBranch.name, delivery, branches, specs, github: githubData, overlay, overlayError, generatedAt: new Date().toISOString() }
+}
+
+/** Whether a branch name (local, or remote with its remote prefix) is the branch `wanted`. */
+const branchNamed = (name, wanted) => name === wanted || name.split('/').slice(1).join('/') === wanted
+
+export const TASK_STATES = ['queued', 'working', 'reviewing', 'fixing', 'integrated', 'failed', 'blocked']
+export const OVERLAY_STALE_MS = 30 * 60_000
+export const OVERLAY_FUTURE_MS = 5 * 60_000
+
+/** `<git common dir>/flow/board.json`: shared by every worktree, never committed. */
+export function overlayPath(repoRoot) {
+  const common = git(repoRoot, ['rev-parse', '--path-format=absolute', '--git-common-dir']).trim()
+  return join(common, 'flow', 'board.json')
+}
+
+/** Overlay shape check: version 1, a run naming a spec, and a tasks object. */
+function overlayShapeError(data) {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return 'not a JSON object'
+  if (data.version !== 1) return `unsupported version ${JSON.stringify(data.version ?? null)}`
+  if (!data.run || typeof data.run !== 'object' || data.run.spec === undefined || data.run.spec === null) return 'missing run.spec'
+  if (!data.tasks || typeof data.tasks !== 'object' || Array.isArray(data.tasks)) return 'missing tasks'
+  return null
+}
+
+/**
+ * Reads the run overlay. Never throws: a missing file gives `{ overlay: null, overlayError: null }`;
+ * an unreadable, invalid, or unsupported file gives `overlay: null` and a short `overlayError`.
+ */
+export function readOverlay(path) {
+  let text
+  try { text = readFileSync(path, 'utf8') } catch (error) {
+    return { overlay: null, overlayError: error?.code === 'ENOENT' ? null : 'unreadable' }
+  }
+  let data
+  try { data = JSON.parse(text) } catch { return { overlay: null, overlayError: 'not valid JSON' } }
+  const shape = overlayShapeError(data)
+  return shape ? { overlay: null, overlayError: shape } : { overlay: data, overlayError: null }
+}
+
+const pad = (value, width) => {
+  const text = String(value ?? '').trim()
+  return /^\d+$/u.test(text) ? text.padStart(width, '0') : text
+}
+
+/** Pure: a new overlay for a run whose tasks are all queued. Replaces any previous run. */
+export function recordRunStart({ spec, branch, mode, tasks = [], now = new Date().toISOString() }) {
+  if (!/^\d{1,3}$/u.test(String(spec ?? ''))) throw new Error('--spec must be a spec number, for example 012')
+  if (!branch) throw new Error('--branch is required for run-start')
+  if (mode !== 'local' && mode !== 'pull-request') throw new Error('--mode must be local or pull-request')
+  const ids = tasks.map((id) => pad(id, 2))
+  if (!ids.length || ids.some((id) => !/^\d+$/u.test(id))) throw new Error('--tasks must list task numbers, for example 01,02,03')
+  return {
+    version: 1,
+    run: { spec: pad(spec, 3), branch, mode, startedAt: now, endedAt: null },
+    tasks: Object.fromEntries(ids.map((id) => [id, { state: 'queued', round: 0, note: '', updatedAt: now }])),
+  }
+}
+
+/**
+ * Pure: the overlay with the state of one task, or of each task in a list (`task: ['01', '02']` or
+ * `'01,02'`), set; a task not listed at run start is added. `round` defaults to the previous round, at least 1
+ * once the task leaves queued. Without `note`, re-recording the same state (a heartbeat) keeps the note and a
+ * new state clears it, so a note never outlives the state it explained.
+ */
+export function recordTask(overlay, { task, state, round, note, now = new Date().toISOString() }) {
+  if (!overlay?.run) throw new Error('No run recorded: record run-start first')
+  const ids = (Array.isArray(task) ? task : String(task ?? '').split(',')).map((id) => pad(id, 2)).filter(Boolean)
+  if (!ids.length || ids.some((id) => !/^\d+$/u.test(id))) throw new Error('--task must list task numbers, for example 02 or 01,02')
+  if (!TASK_STATES.includes(state)) throw new Error(`--state must be one of ${TASK_STATES.join(', ')}`)
+  let givenRound = null
+  if (round !== undefined && round !== null) {
+    givenRound = Number(round)
+    if (!Number.isInteger(givenRound) || givenRound < 0) throw new Error('--round must be a whole number')
+  }
+  const tasks = { ...overlay.tasks }
+  for (const id of ids) {
+    const previous = tasks[id]
+    const nextRound = givenRound ?? Math.max(Number(previous?.round) || 0, state === 'queued' ? 0 : 1)
+    const nextNote = note ?? (previous?.state === state && typeof previous.note === 'string' ? previous.note : '')
+    tasks[id] = { state, round: nextRound, note: String(nextNote), updatedAt: now }
+  }
+  return { ...overlay, tasks }
+}
+
+/** Pure: the overlay with its run marked ended. */
+export function recordRunEnd(overlay, { now = new Date().toISOString() } = {}) {
+  if (!overlay?.run) throw new Error('No run recorded: record run-start first')
+  return { ...overlay, run: { ...overlay.run, endedAt: now } }
+}
+
+/** Writes the overlay atomically: a temporary file in the same directory, then a rename over the target. */
+export function writeOverlay(path, overlay) {
+  mkdirSync(dirname(path), { recursive: true })
+  const temp = `${path}.${process.pid}.${Date.now()}.tmp`
+  try {
+    writeFileSync(temp, `${JSON.stringify(overlay, null, 2)}\n`)
+    renameSync(temp, path)
+  } catch (error) {
+    rmSync(temp, { force: true })
+    throw error
+  }
+}
+
+export const LOCK_WAIT_MS = 2000
+export const LOCK_STALE_MS = 10_000
+
+const sleepSync = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms)
+
+/**
+ * Runs `fn` while holding `<path>.lock` (created exclusively), so concurrent records never lose an update.
+ * Waits up to `waitMs`; a lock older than `staleMs` is taken over (its holder crashed). Throws on timeout.
+ */
+export function withLock(path, fn, { waitMs = LOCK_WAIT_MS, staleMs = LOCK_STALE_MS } = {}) {
+  const lock = `${path}.lock`
+  mkdirSync(dirname(path), { recursive: true })
+  const deadline = Date.now() + waitMs
+  let fd
+  for (;;) {
+    try { fd = openSync(lock, 'wx'); break } catch (error) {
+      if (error?.code !== 'EEXIST') throw error
+    }
+    let age = 0
+    try { age = Date.now() - statSync(lock).mtimeMs } catch { continue } // released meanwhile: retry now
+    if (age > staleMs) { rmSync(lock, { force: true }); continue }
+    if (Date.now() >= deadline) throw new Error(`Run overlay is locked by another record (${lock}); try again`)
+    sleepSync(20 + Math.floor(Math.random() * 30))
+  }
+  try {
+    closeSync(fd)
+    return fn()
+  } finally {
+    rmSync(lock, { force: true })
+  }
+}
+
+/** Applies one `--record` to the repository's overlay file, under its lock, and returns a one-line summary. Throws on bad input. */
+export function record(repoRoot, kind, options, lockOptions) {
+  if (!['run-start', 'task', 'run-end'].includes(kind)) throw new Error('--record must be run-start, task, or run-end')
+  const path = overlayPath(repoRoot)
+  return withLock(path, () => {
+    if (kind === 'run-start') {
+      writeOverlay(path, recordRunStart(options))
+      return `Recorded run start for spec ${pad(options.spec, 3)} in ${path}`
+    }
+    const { overlay, overlayError } = readOverlay(path)
+    if (!overlay) throw new Error(overlayError ? `Run overlay ${path} is ${overlayError}: record run-start first` : 'No run recorded: record run-start first')
+    if (kind === 'task') {
+      writeOverlay(path, recordTask(overlay, options))
+      return `Recorded task ${String(options.task)} ${options.state}`
+    }
+    writeOverlay(path, recordRunEnd(overlay, options))
+    return 'Recorded run end'
+  }, lockOptions)
 }
 
 /** Committer date of the latest commit on `ref` that added each spec file, from one `git log`. */
@@ -373,19 +528,25 @@ export function parseTitle(content, fallback) {
 export function countTasks(content) {
   const section = /^## Tasks[^\n]*\n([\s\S]*?)(?=^## |(?![\s\S]))/mu.exec(content)
   if (!section) return { done: 0, total: 0 }
-  const body = section[1]
-  const headings = [...body.matchAll(/^### +\d+[^\n]*\n([\s\S]*?)(?=^### |(?![\s\S]))/gmu)]
-  if (headings.length) {
-    let done = 0
-    for (const [, block] of headings) {
-      const status = /^\*\*Status:?\*\*:?\s*(\S+)/imu.exec(block)?.[1]?.toLowerCase() ?? ''
-      const boxes = [...block.matchAll(/^\s*[-*] \[([ xX])\]/gmu)]
-      if (status.startsWith('done') || (boxes.length && boxes.every((box) => box[1] !== ' '))) done++
-    }
-    return { done, total: headings.length }
-  }
-  const boxes = [...body.matchAll(/^\s*[-*] \[([ xX])\]/gmu)]
+  const headed = parseTasks(content)
+  if (headed.length) return { done: headed.filter((task) => task.done).length, total: headed.length }
+  const boxes = [...section[1].matchAll(/^\s*[-*] \[([ xX])\]/gmu)]
   return { done: boxes.filter((box) => box[1] !== ' ').length, total: boxes.length }
+}
+
+/**
+ * `### NN: Title (#45)` task headings in the `## Tasks` section: `{ id, title, done }`, with issue refs
+ * stripped from the title. Done: `**Status:**` starts with "done", or it has checkboxes and all are checked.
+ */
+export function parseTasks(content) {
+  const section = /^## Tasks[^\n]*\n([\s\S]*?)(?=^## |(?![\s\S]))/mu.exec(content)
+  if (!section) return []
+  return [...section[1].matchAll(/^### +(\d+)([^\n]*)\n([\s\S]*?)(?=^### |(?![\s\S]))/gmu)].map(([, id, rest, block]) => {
+    const status = /^\*\*Status:?\*\*:?\s*(\S+)/imu.exec(block)?.[1]?.toLowerCase() ?? ''
+    const boxes = [...block.matchAll(/^\s*[-*] \[([ xX])\]/gmu)]
+    const title = rest.replace(/^\s*[:.)-]?\s*/u, '').replace(/\s*\((?:#\d+[\s,]*)+\)\s*$/u, '').trim()
+    return { id, title: title || null, done: status.startsWith('done') || (boxes.length > 0 && boxes.every((box) => box[1] !== ' ')) }
+  })
 }
 
 /** Issue numbers referenced as `#N` on `### NN:` task headings in the `## Tasks` section, in order, unique. */
@@ -449,13 +610,14 @@ export function matchBranches(slug, branches) {
     .sort((a, b) => Number(a.merged) - Number(b.merged) || Number(a.remote) - Number(b.remote) || a.name.localeCompare(b.name))
 }
 
-function stageFor({ status, tasks, branches }) {
+function stageFor({ status, tasks, branches, liveRun }) {
   const tasksComplete = tasks.total === 0 || tasks.done === tasks.total
   if (status === 'implemented') return { stage: 'shipped', reason: 'status implemented', branch: null }
   // A merge ships only implementation work (`implementation`: changes outside docs/), never a candidate.
   const merged = branches.find((b) => b.merged && b.implementation)
   if (merged && tasksComplete && status !== 'candidate') return { stage: 'shipped', reason: merged.pr ? `pull request #${merged.pr} merged` : `branch ${merged.name} merged`, branch: merged }
   const open = branches.find((b) => !b.merged)
+  if (liveRun) return { stage: 'building', reason: 'ship run', branch: liveRun.branch ? { name: liveRun.branch } : open ?? null }
   if (open) return { stage: 'building', reason: `branch ${open.name}`, branch: open }
   if (tasks.done > 0) return { stage: 'building', reason: 'tasks started', branch: null }
   if (tasks.total > 0) return { stage: 'ready', reason: 'tasks planned', branch: null }
@@ -468,12 +630,63 @@ const sourceOrder = (a, b) => Number(b.onDefault ?? true) - Number(a.onDefault ?
   || String(a.source ?? '').localeCompare(String(b.source ?? ''))
   || a.file.localeCompare(b.file)
 
+const time = (value) => (typeof value === 'string' ? Date.parse(value) : Number.NaN)
+
+/**
+ * Pure: the overlay's run as `{ spec, branch, mode, stale, staleReason, tasks }`, or null without one.
+ * Stale: `endedAt` set, or no valid run start or task update within OVERLAY_STALE_MS of `now`.
+ */
+function overlayRun(overlay, now) {
+  if (!overlay?.run) return null
+  const { run } = overlay
+  const tasks = Object.entries(overlay.tasks ?? {}).filter(([, task]) => task && typeof task === 'object')
+  // Timestamps more than OVERLAY_FUTURE_MS ahead of `now` are invalid: a skewed clock must not keep a run fresh.
+  const valid = (t) => !Number.isNaN(t) && (now === null || t <= now + OVERLAY_FUTURE_MS)
+  const latest = Math.max(...[run.startedAt, ...tasks.map(([, task]) => task.updatedAt)].map(time).filter(valid))
+  // An ended run is stale without a marker; an unended run that stopped updating (a crash) gets one.
+  const ended = Boolean(run.endedAt)
+  const abandoned = !ended && (!Number.isFinite(latest) || (now !== null && now - latest > OVERLAY_STALE_MS))
+  return {
+    spec: pad(run.spec, 3),
+    branch: typeof run.branch === 'string' && run.branch ? run.branch : null,
+    mode: typeof run.mode === 'string' ? run.mode : null,
+    stale: ended || abandoned,
+    staleReason: abandoned ? `ship run stopped updating ${OVERLAY_STALE_MS / 60_000}+ min ago; its task states are ignored` : null,
+    tasks,
+  }
+}
+
+/**
+ * Pure: the run's task list for a card. Each overlay task, by number, with its title from the spec's task
+ * heading. Git wins: a task the spec shows as done is integrated whatever the overlay says.
+ */
+function runTasks(run, specTasks) {
+  const byId = new Map(specTasks.map((task) => [Number(task.id), task]))
+  return run.tasks
+    .map(([id, task]) => {
+      const fromSpec = /^\d+$/u.test(id) ? byId.get(Number(id)) : undefined
+      const claimed = TASK_STATES.includes(task.state) ? task.state : 'unknown'
+      const state = fromSpec?.done ? 'integrated' : claimed
+      const round = Number.isInteger(task.round) && task.round > 0 ? task.round : null
+      const note = state === claimed && typeof task.note === 'string' ? task.note.slice(0, 300) : ''
+      return { id, title: fromSpec?.title ?? null, state, round, note }
+    })
+    .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }))
+}
+
 /**
  * Pure: snapshot -> { columns: [{ id, title, cards }] }. First matching stage rule wins.
  * One card per spec number: the default branch wins, then local before remote branches, then by name;
  * losing files are named in the winner's marker. Branch-only specs are capped at Building.
+ * A fresh run overlay moves its spec to Building (unless git ships it) and adds `run.tasks` to the card;
+ * a stale one (ended, or no update for 30 min) is ignored; only an unended one marks a card that is not Shipped.
+ * Staleness by age is judged against `snapshot.generatedAt`; without it, only `endedAt` makes a run stale.
  */
 export function deriveBoard(snapshot) {
+  // No wall clock here: without `generatedAt`, age never makes a run stale.
+  const now = Number.isNaN(time(snapshot.generatedAt)) ? null : time(snapshot.generatedAt)
+  const run = overlayRun(snapshot.overlay, now)
+  let runMatched = false
   const columns = COLUMNS.map((column) => ({ ...column, cards: [] }))
   const byId = new Map(columns.map((column) => [column.id, column]))
   const byNumber = new Map()
@@ -489,10 +702,17 @@ export function deriveBoard(snapshot) {
     const status = parseStatus(spec.content)
     const tasks = countTasks(spec.content)
     const links = githubLinks(slug, taskIssueRefs(spec.content), snapshot.github, spec.addedAt)
+    const ownRun = run?.spec === number ? run : null
+    if (ownRun) runMatched = true
+    const liveRun = ownRun && !ownRun.stale ? ownRun : null
     // Merged git branches come first; a merged pull request adds what git cannot see (a squash merge later edited).
+    // A live run's branch counts as this spec's branch even when its name does not carry the slug.
     const matched = matchBranches(slug, snapshot.branches ?? [])
+    if (liveRun?.branch) {
+      for (const b of snapshot.branches ?? []) if (branchNamed(b.name, liveRun.branch) && !matched.includes(b)) matched.push(b)
+    }
     const branches = [...matched.filter((b) => b.merged), ...links.mergedPrs, ...matched.filter((b) => !b.merged)]
-    let { stage, reason, branch } = stageFor({ status, tasks, branches })
+    let { stage, reason, branch } = stageFor({ status, tasks, branches, liveRun })
     if (!onDefault && stage === 'shipped') {
       stage = 'building'
       reason = `on branch ${spec.source}`
@@ -505,6 +725,7 @@ export function deriveBoard(snapshot) {
     const open = tasks.total - tasks.done
     if (stage === 'shipped' && status === 'implemented' && open > 0) markers.push(`status implemented, ${open} task${open === 1 ? '' : 's'} open`)
     for (const other of collisions) markers.push(`number ${number} also used by ${other.file}${other.onDefault === false ? ` on ${other.source}` : ''}`)
+    if (ownRun?.staleReason && stage !== 'shipped') markers.push(ownRun.staleReason)
     byId.get(stage).cards.push({
       number,
       slug,
@@ -517,8 +738,12 @@ export function deriveBoard(snapshot) {
       marker: markers.length ? markers.join('; ') : null,
       issues: links.issues,
       pr: links.pr,
+      run: liveRun ? { branch: liveRun.branch, mode: liveRun.mode, tasks: runTasks(liveRun, parseTasks(spec.content)) } : null,
     })
   }
+  let overlayNote = null
+  if (snapshot.overlayError) overlayNote = `Run overlay ignored: ${snapshot.overlayError}`
+  else if (run && !runMatched) overlayNote = `Run overlay ignored: spec ${run.spec} is not on the board`
   const github = snapshot.github ?? null
   const notes = []
   if (github && !github.available) notes.push(`GitHub links unavailable: ${github.reason ?? 'unknown reason'}`)
@@ -526,7 +751,7 @@ export function deriveBoard(snapshot) {
   if (github?.available && github.truncated?.prs) notes.push(`GitHub links may be incomplete: read only the latest ${PR_LIMIT} pull requests`)
   if (github?.available && github.truncated?.issues) notes.push(`GitHub links may be incomplete: read only the latest ${ISSUE_LIMIT} issues`)
   const githubNote = notes.length ? notes.join('; ') : null
-  return { repoName: snapshot.repoName ?? null, defaultBranch: snapshot.defaultBranch ?? null, generatedAt: snapshot.generatedAt ?? null, githubNote, columns }
+  return { repoName: snapshot.repoName ?? null, defaultBranch: snapshot.defaultBranch ?? null, generatedAt: snapshot.generatedAt ?? null, githubNote, overlayNote, columns }
 }
 
 export function escapeHtml(value) {
@@ -546,10 +771,12 @@ function renderCard(card) {
     const href = safeGithubUrl(url)
     return href ? `<a class="gh" href="${escapeHtml(href)}" target="_blank" rel="noreferrer">${label}</a>` : `<span class="gh">${label}</span>`
   })
-  return `<li class="card" data-spec="${escapeHtml(card.number)}"><p class="num">${escapeHtml(card.number)}</p><h3>${escapeHtml(card.title)}</h3>${meta.length ? `<p class="meta">${meta.join('')}</p>` : ''}${links.length ? `<p class="links">${links.join('')}</p>` : ''}${marker}</li>`
+  const run = card.run ? `<ol class="run">${card.run.tasks.map((task) => `<li class="task" data-state="${escapeHtml(task.state)}"><span class="tid">${escapeHtml(task.id)}</span>${task.title ? `<span class="ttitle">${escapeHtml(task.title)}</span>` : ''}<span class="state">${escapeHtml(task.state)}</span>${task.round ? `<span class="round">round ${escapeHtml(task.round)}</span>` : ''}${task.note ? `<span class="tnote">${escapeHtml(task.note)}</span>` : ''}</li>`).join('')}</ol>` : ''
+  return `<li class="card" data-spec="${escapeHtml(card.number)}"><p class="num">${escapeHtml(card.number)}</p><h3>${escapeHtml(card.title)}</h3>${meta.length ? `<p class="meta">${meta.join('')}</p>` : ''}${links.length ? `<p class="links">${links.join('')}</p>` : ''}${run}${marker}</li>`
 }
 
 const subline = (board) => [board.defaultBranch && `from ${board.defaultBranch}`, board.generatedAt && `generated ${board.generatedAt}`].filter(Boolean).join(' · ')
+const headerNote = (board) => [board.githubNote, board.overlayNote].filter(Boolean).join('; ')
 
 /**
  * Live page client: polls ./state and rebuilds the columns with the same markup as renderCard, through
@@ -577,6 +804,19 @@ const card = (c) => {
     }
     li.append(p)
   }
+  if (c.run) {
+    const ol = el('ol', 'run')
+    for (const t of c.run.tasks) {
+      const row = el('li', 'task'); row.dataset.state = t.state
+      row.append(el('span', 'tid', t.id))
+      if (t.title) row.append(el('span', 'ttitle', t.title))
+      row.append(el('span', 'state', t.state))
+      if (t.round) row.append(el('span', 'round', 'round ' + t.round))
+      if (t.note) row.append(el('span', 'tnote', t.note))
+      ol.append(row)
+    }
+    li.append(ol)
+  }
   if (c.marker) li.append(el('p', 'marker', c.marker))
   return li
 }
@@ -600,7 +840,8 @@ async function poll() {
         const key = JSON.stringify(data.columns)
         if (key !== last) { last = key; main.replaceChildren(...data.columns.map(column)) }
         sub.textContent = [data.defaultBranch && 'from ' + data.defaultBranch, data.generatedAt && 'generated ' + data.generatedAt].filter(Boolean).join(' · ')
-        note.textContent = data.githubNote || ''; note.hidden = !data.githubNote
+        const n = [data.githubNote, data.overlayNote].filter(Boolean).join('; ')
+        note.textContent = n; note.hidden = !n
       }
     }
   } catch { show('Board server not reachable. Showing the last good board.') }
@@ -621,7 +862,8 @@ export function renderHtml(board, { live = false } = {}) {
   const sub = subline(board)
   // The live page always has a subtitle element for the client to update.
   const subHtml = sub || live ? `<p class="sub">${escapeHtml(sub)}</p>` : ''
-  const noteHtml = board.githubNote || live ? `<p class="note"${board.githubNote ? '' : ' hidden'}>${escapeHtml(board.githubNote ?? '')}</p>` : ''
+  const note = headerNote(board)
+  const noteHtml = note || live ? `<p class="note"${note ? '' : ' hidden'}>${escapeHtml(note)}</p>` : ''
   const csp = live ? `default-src 'none'; style-src 'unsafe-inline'; script-src 'sha256-${LIVE_SCRIPT_HASH}'; connect-src 'self'` : "default-src 'none'; style-src 'unsafe-inline'"
   const liveCss = live ? '\n.banner{margin:0 16px 12px;padding:8px 10px;border-radius:6px;background:var(--warn-bg);color:var(--warn);font-size:12px;overflow-wrap:anywhere}' : ''
   return `<!doctype html>
@@ -641,6 +883,9 @@ main{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding
 .meta{margin:6px 0 0;display:flex;flex-wrap:wrap;gap:6px;font-size:12px}.progress{font-weight:600;color:var(--accent)}
 .branch{color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.marker{margin:6px 0 0;font-size:12px;color:var(--warn)}
 .links{margin:6px 0 0;display:flex;flex-wrap:wrap;gap:6px;font-size:12px}.gh{color:var(--muted)}a.gh{color:var(--accent)}header .note{color:var(--warn)}
+.run{list-style:none;margin:6px 0 0;padding:6px 0 0;border-top:1px solid var(--line);display:grid;gap:4px;font-size:12px}.task{display:flex;flex-wrap:wrap;gap:0 6px}
+.tid{color:var(--muted);font-variant-numeric:tabular-nums}.ttitle{flex:1 1 8em;min-width:0}.state{font-weight:600}.round{color:var(--muted)}.tnote{flex-basis:100%;color:var(--muted)}
+.task[data-state=integrated] .state{color:var(--accent)}.task[data-state=failed] .state,.task[data-state=blocked] .state,.task[data-state=unknown] .state{color:var(--warn)}
 @media (max-width:760px){main{grid-template-columns:1fr}}
 </style></head>
 <body><header><h1>${escapeHtml(title)}</h1>${subHtml}${noteHtml}</header>${live ? '<p id="banner" class="banner" role="status" hidden></p>' : ''}<main>${columns}</main>${live ? `<script>${LIVE_SCRIPT}</script>` : ''}</body></html>
@@ -732,10 +977,17 @@ export const DEFAULT_PORT = 4178
 const GITHUB_TTL_MS = 60_000
 
 function parseArgs(argv) {
-  const args = { once: false, json: false, serve: false, stop: false, github: true, port: null, out: null, repo: process.cwd() }
+  const args = { once: false, json: false, serve: false, stop: false, github: true, port: null, out: null, repo: process.cwd(), record: null, fields: {} }
+  const recordFlags = ['--spec', '--branch', '--mode', '--tasks', '--task', '--state', '--round', '--note']
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]
-    if (arg === '--once') args.once = true
+    if (arg === '--record' || recordFlags.includes(arg)) {
+      const value = argv[++i]
+      // Only a note may be empty or start with dashes.
+      if (value === undefined || (arg !== '--note' && (!value || value.startsWith('--')))) throw new Error(`${arg} needs a value`)
+      if (arg === '--record') args.record = value
+      else args.fields[arg.slice(2)] = value
+    } else if (arg === '--once') args.once = true
     else if (arg === '--json') args.json = true
     else if (arg === '--serve') args.serve = true
     else if (arg === '--stop') args.stop = true
@@ -751,7 +1003,8 @@ function parseArgs(argv) {
     if (!Number.isInteger(port) || port < 0 || port > 65535) throw new Error(`--port must be 0-65535: ${args.port}`)
     args.port = port
   }
-  if (Number(args.serve) + Number(args.stop) + Number(args.once || args.json) > 1) throw new Error('--serve, --stop, and --once/--json are separate modes')
+  if (Number(args.serve) + Number(args.stop) + Number(args.once || args.json) + Number(args.record !== null) > 1) throw new Error('--serve, --stop, --record, and --once/--json are separate modes')
+  if (args.record === null && Object.keys(args.fields).length) throw new Error(`--${Object.keys(args.fields)[0]} only goes with --record`)
   return args
 }
 
@@ -791,11 +1044,19 @@ async function stopServer(repoRoot, port) {
 /** Resolves to the exit code; with `--serve`, once the server stops on SIGINT or SIGTERM. */
 export async function main(argv = process.argv.slice(2)) {
   const usage = 'Usage: board.mjs --serve [--port <n>] [--repo <path>] [--no-github] | --stop [--port <n>] [--repo <path>] | --once [--out <file>] [--repo <path>] [--no-github] | --json [--repo <path>] [--no-github]'
+    + ' | --record run-start --spec <NNN> --branch <name> --mode local|pull-request --tasks <01,02> | --record task --task <NN[,NN…]> --state <state> [--round <n>] [--note <text>] | --record run-end'
   let args
   try { args = parseArgs(argv) } catch (error) { console.error(`${error.message}\n${usage}`); return 2 }
-  if (!args.once && !args.json && !args.serve && !args.stop) { console.error(usage); return 2 }
+  if (!args.once && !args.json && !args.serve && !args.stop && args.record === null) { console.error(usage); return 2 }
   const repoRoot = tryGit(resolve(args.repo), ['rev-parse', '--show-toplevel'])
   if (!repoRoot) { console.error(`Not inside a git repository: ${args.repo}`); return 1 }
+  if (args.record !== null) {
+    const { tasks, ...fields } = args.fields
+    try {
+      console.log(record(repoRoot, args.record, { ...fields, ...(tasks === undefined ? {} : { tasks: tasks.split(',').map((t) => t.trim()).filter(Boolean) }) }))
+      return 0
+    } catch (error) { console.error(error.message); return 1 }
+  }
   if (args.serve) return serve(repoRoot, args.port, args.github ? githubSource({ ttlMs: GITHUB_TTL_MS }) : null)
   if (args.stop) return stopServer(repoRoot, args.port)
   let board
