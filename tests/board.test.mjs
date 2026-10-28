@@ -696,10 +696,26 @@ function startCli(dir, port) {
   const exited = new Promise((done) => child.on('exit', (code, signal) => done({ code, signal })))
   const url = new Promise((done, fail) => {
     let out = ''
+    let err = ''
     child.stdout.on('data', (chunk) => { out += chunk; const match = /http:\/\/127\.0\.0\.1:\d+\//u.exec(out); if (match) done(match[0]) })
-    child.on('exit', () => fail(new Error(`server exited early: ${out}`)))
+    child.stderr.on('data', (chunk) => { err += chunk })
+    child.on('close', () => fail(new Error(`server exited early: ${out}${err}`)))
   })
   return { child, exited, url }
+}
+
+// Concurrent tests may take a probed port before the server binds it; retry on that race.
+async function startOnFreePort(dir) {
+  for (let attempt = 1; ; attempt++) {
+    const port = await freePort()
+    const board = startCli(dir, port)
+    try {
+      await board.url
+      return { board, port }
+    } catch (error) {
+      if (attempt >= 3 || !/in use|EADDRINUSE/u.test(String(error))) throw error
+    }
+  }
 }
 
 async function freePort() {
@@ -717,8 +733,7 @@ test('--serve and --stop find this repo\'s board by port probe, never another re
     repo.write('001-served.md', spec('001: Served', 'draft'))
     await repo.commit('specs')
   }
-  const port = await freePort()
-  const board = startCli(own.dir, port)
+  const { board, port } = await startOnFreePort(own.dir)
   try {
     const url = await board.url
     assert.equal(url, `http://127.0.0.1:${port}/`)

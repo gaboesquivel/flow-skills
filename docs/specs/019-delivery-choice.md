@@ -185,6 +185,8 @@ These are the open findings from the audit:
 
 Sources: a `write-agents` audit and a read-only workflow review on 2026-10-28. The audit ran four parallel readers, and was rechecked after #87 and #88 at `29243cb`. The audit findings already fixed by spec 018 are left out: the three-worker cap, `ship`'s closing rule, wave ordering, and waiting on checkpoint CI. Spec 018 also left a new conflict: the draft pull request opens with `Closes` for every sub-issue. Its fix is under Pull-request fixes.
 
+Findings left non-blocking by the final review of #102 were closed in a follow-up: the label gate under a one-run local override, the local `implemented` history check, ordered drop-spec cleanup with `-D` scoped to that request, who sets `implemented`, and a raced port in the board server test.
+
 ### Open assumptions
 
 - "Push optional" means push only on request.
