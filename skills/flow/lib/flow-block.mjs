@@ -1,5 +1,5 @@
 // Idempotent writer for the project Flow block (decision 0020).
-// Usage: node flow-block.mjs <project-dir> [local|pull-request] [--deploy <target>]
+// Usage: node flow-block.mjs <project-dir> [local|pull-request] [--deploy <target>] [--process <lite|full>]
 import { existsSync, readFileSync, realpathSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 export const BEGIN = '<!-- BEGIN FLOW -->'
 export const END = '<!-- END FLOW -->'
 export const DELIVERY_MODES = ['pull-request', 'local']
+export const PROCESS_DEPTHS = ['lite', 'full']
 
 // The one phrase table; docs link here and tests check each phrase against its skill's description.
 export const PHRASES = [
@@ -35,7 +36,13 @@ export function normalizeDeploy(value) {
   return target !== 'unset' && /^[a-z0-9][a-z0-9.-]*$/u.test(target) ? target : null
 }
 
-export function buildFlowBlock({ delivery, deploy, eol = '\n' } = {}) {
+// Process depth (decision 0026): lite or full; unset and anything else is null.
+export function normalizeProcess(value) {
+  const depth = String(value ?? '').trim().toLowerCase()
+  return PROCESS_DEPTHS.includes(depth) ? depth : null
+}
+
+export function buildFlowBlock({ delivery, deploy, process: depth, eol = '\n' } = {}) {
   return [
     BEGIN,
     '## Flow',
@@ -44,6 +51,7 @@ export function buildFlowBlock({ delivery, deploy, eol = '\n' } = {}) {
     '',
     `Delivery: ${normalizeDelivery(delivery) ?? 'unset'}`,
     `Deploy: ${normalizeDeploy(deploy) ?? 'unset'}`,
+    `Process: ${normalizeProcess(depth) ?? 'unset'}`,
     '',
     '| Say | Skill |',
     '| --- | --- |',
@@ -88,13 +96,15 @@ function readLine(text, name) {
 // Return the recorded value, or null when the block is missing or unset.
 export const readDelivery = (text) => normalizeDelivery(readLine(text, 'Delivery'))
 export const readDeploy = (text) => normalizeDeploy(readLine(text, 'Deploy'))
+export const readProcess = (text) => normalizeProcess(readLine(text, 'Process'))
 
 // Replaces the block in place or appends it; text outside the markers is preserved byte for byte.
-export function upsertFlowBlock(text, { delivery, deploy } = {}) {
+export function upsertFlowBlock(text, { delivery, deploy, process: depth } = {}) {
   const eol = eolOf(text)
   const block = buildFlowBlock({
     delivery: normalizeDelivery(delivery) ?? readDelivery(text),
     deploy: normalizeDeploy(deploy) ?? readDeploy(text),
+    process: normalizeProcess(depth) ?? readProcess(text),
     eol,
   })
   const at = locate(text)
@@ -110,10 +120,10 @@ export function instructionFile(projectDir) {
   return !existsSync(agents) && existsSync(claude) ? claude : agents
 }
 
-export function writeFlowBlock(projectDir, { delivery, deploy } = {}) {
+export function writeFlowBlock(projectDir, { delivery, deploy, process: depth } = {}) {
   const file = instructionFile(projectDir)
   const before = existsSync(file) ? readFileSync(file, 'utf8') : ''
-  const after = upsertFlowBlock(before, { delivery, deploy })
+  const after = upsertFlowBlock(before, { delivery, deploy, process: depth })
   if (after !== before) writeFileSync(file, after)
   const claude = join(projectDir, 'CLAUDE.md')
   const warning = file !== claude && existsSync(claude) && !/^\s*@AGENTS\.md\b/mu.test(readFileSync(claude, 'utf8'))
@@ -134,6 +144,8 @@ if (isMain()) {
   const args = process.argv.slice(2)
   const flag = args.indexOf('--deploy')
   const deploy = flag === -1 ? undefined : args.splice(flag, 2)[1]
+  const processFlag = args.indexOf('--process')
+  const depth = processFlag === -1 ? undefined : args.splice(processFlag, 2)[1]
   const [dir = '.', delivery] = args
   if (delivery && !normalizeDelivery(delivery)) {
     console.error(`Delivery must be one of: ${DELIVERY_MODES.join(', ')}`)
@@ -143,7 +155,11 @@ if (isMain()) {
     console.error('Deploy must be a platform name (vercel, netlify, fly, …) or none')
     process.exit(1)
   }
-  const { file, changed, warning } = writeFlowBlock(resolve(dir), { delivery, deploy })
+  if (processFlag !== -1 && !normalizeProcess(depth)) {
+    console.error(`Process must be one of: ${PROCESS_DEPTHS.join(', ')}`)
+    process.exit(1)
+  }
+  const { file, changed, warning } = writeFlowBlock(resolve(dir), { delivery, deploy, process: depth })
   console.log(`${changed ? 'Wrote' : 'Unchanged'}: ${file}`)
   if (warning) console.warn(`warning: ${warning}`)
 }

@@ -1,5 +1,5 @@
 interface:
-  display_name: "Flow Lite"
-  short_description: "Align root context docs; set up the project Flow block"
+  display_name: "Flow"
+  short_description: "Align root context docs; set up Flow with Lite or Full process"
 policy:
   allow_implicit_invocation: true

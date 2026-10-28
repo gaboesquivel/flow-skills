@@ -5,14 +5,14 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
-import { BEGIN, END, buildFlowBlock, normalizeDeploy, readDelivery, readDeploy, upsertFlowBlock, writeFlowBlock } from '../skills/flow/lib/flow-block.mjs'
+import { BEGIN, END, buildFlowBlock, normalizeDeploy, normalizeProcess, readDelivery, readDeploy, readProcess, upsertFlowBlock, writeFlowBlock } from '../skills/flow/lib/flow-block.mjs'
 
 const skillsRoot = join(dirname(fileURLToPath(import.meta.url)), '..', 'skills')
 
 test('block has markers, a Delivery line, the flow pointer, and stays short', () => {
   const block = buildFlowBlock()
   assert.ok(block.startsWith(BEGIN) && block.endsWith(END))
-  assert.match(block, /^Delivery: unset\nDeploy: unset$/mu)
+  assert.match(block, /^Delivery: unset\nDeploy: unset\nProcess: unset$/mu)
   assert.match(block, /`flow` skill/u)
   assert.match(block, /"ship it".*`ship`/u)
   assert.ok(block.split('\n').length <= 25)
@@ -51,6 +51,17 @@ test('invalid deploy targets are ignored', () => {
   assert.equal(normalizeDeploy(' Fly '), 'fly')
   const vercel = upsertFlowBlock('', { deploy: 'vercel' })
   assert.equal(readDeploy(upsertFlowBlock(vercel, { deploy: 'my host' })), 'vercel')
+})
+
+test('re-running keeps a recorded process depth unless overridden', () => {
+  const full = upsertFlowBlock('', { process: 'Full' })
+  assert.match(full, /^Process: full$/mu)
+  assert.equal(readProcess(upsertFlowBlock(full, { delivery: 'local', deploy: 'vercel' })), 'full')
+  assert.equal(readProcess(upsertFlowBlock(full, { process: 'lite' })), 'lite')
+  assert.equal(readProcess(upsertFlowBlock(full, { process: 'heavy' })), 'full')
+  assert.equal(readProcess(upsertFlowBlock('')), null)
+  assert.equal(readProcess('no block here'), null)
+  for (const bad of ['', 'unset', 'heavy', 'lite full']) assert.equal(normalizeProcess(bad), null)
 })
 
 test('malformed markers are refused', () => {
@@ -132,4 +143,19 @@ test('CLI records --deploy and rejects an invalid target', (t) => {
   assert.equal(bad.status, 1)
   assert.match(bad.stderr, /Deploy must be/u)
   assert.equal(spawnSync(process.execPath, [cli, dir, '--deploy'], { encoding: 'utf8' }).status, 1)
+})
+
+test('CLI records --process and rejects an invalid depth', (t) => {
+  const dir = mkdtempSync(join(tmpdir(), 'flow-block-cli-'))
+  t.after(() => rmSync(dir, { recursive: true, force: true }))
+  const cli = join(skillsRoot, 'flow', 'lib', 'flow-block.mjs')
+  const run = spawnSync(process.execPath, [cli, dir, '--process', 'full', '--deploy', 'none', 'pull-request'], { encoding: 'utf8' })
+  assert.equal(run.status, 0, run.stderr)
+  const text = readFileSync(join(dir, 'AGENTS.md'), 'utf8')
+  assert.equal(readProcess(text), 'full')
+  assert.equal(readDeploy(text), 'none')
+  assert.equal(readDelivery(text), 'pull-request')
+  const bad = spawnSync(process.execPath, [cli, dir, '--process', 'heavy'], { encoding: 'utf8' })
+  assert.equal(bad.status, 1)
+  assert.match(bad.stderr, /Process must be/u)
 })
