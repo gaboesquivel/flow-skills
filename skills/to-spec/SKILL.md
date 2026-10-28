@@ -1,6 +1,6 @@
 ---
 name: to-spec
-description: Turn the current conversation into a numbered draft specification using project conventions, and accept it when approved. Use when the user says "spec it", "write a spec", "turn this into a spec", or "accept the spec".
+description: Turn the current conversation into a numbered draft specification using project conventions, and accept it when approved. Use when the user says "spec it", "write a spec", "turn this into a spec", "share the draft", or "accept the spec".
 disable-model-invocation: false
 ---
 
@@ -8,28 +8,30 @@ disable-model-invocation: false
 
 Turn conversation context and repository understanding into a proportionate specification. Do not run a separate interview; synthesize what is already known and label unresolved assumptions rather than inventing decisions. Keep consequential assumptions visible.
 
-Use the project's existing spec location when one exists. In both delivery modes, write the spec on a feature branch named for it, never the default branch; it merges with the work. In local mode a `candidate` stub has no work to merge with and is committed on the default branch. When the project has no convention, default new work to `docs/specs/NNN-short-name.md` (three-digit sequence, kebab-case slug) and follow the same pattern for updates. Preserve existing numbering, labels, and trackers when the repository already uses them.
+Use the project's existing spec location when one exists. In both delivery modes, write the spec on a feature branch named for it, never the default branch; it merges with the work. On an `explore/` branch with no spec yet, rename it to the spec's branch (`git branch -m`) before writing, so the exploration's commits ship with the spec. In local mode a `candidate` stub has no work to merge with and is committed on the default branch. When the project has no convention, default new work to `docs/specs/NNN-short-name.md` (three-digit sequence, kebab-case slug) and follow the same pattern for updates. Preserve existing numbering, labels, and trackers when the repository already uses them.
 
 **Spec, tasks, decision** (decision 0026). A spec is one bet: it tests one assumption and ships as one unit. Its tasks are the slices inside it, so a spec may be large. Work that only makes sense after seeing how another bet did gets its own spec. A choice gets a decision record in `docs/decisions/NNNN-short-name.md` (four-digit sequence) only when it chose among real alternatives **and** reaches beyond this spec or is costly to reverse; otherwise it belongs in the spec's Implementation Decisions. Never put feature scope or tasks in a decision record. When a spec makes a choice that passes the test, write the record beside the spec with status **Proposed** and link it from the spec. Also link any **Proposed** records written during exploration that the spec depends on.
 
 Specs may cover product, research, marketing, engineering, operations, or cross-functional work. Use the sections below only when they fit the discipline; omit irrelevant headings. Keep small, understood changes brief.
 
-**Candidate specs.** A later bet that should not be specified yet gets a stub: the problem and the assumption it tests. In pull-request mode it is an issue labelled `candidate`, with no file; in local mode, a file with status `candidate`. Flesh it out into a full spec only when its turn comes; until then it has no tasks.
+**Candidate specs.** A later bet that should not be specified yet gets a stub: the problem and the assumption it tests. In local mode it is a file with status `candidate`. In pull-request mode it is an issue labelled `candidate`, with no file, opened only when the user asks for one; otherwise name it in the report. Flesh it out into a full spec only when its turn comes; until then it has no tasks.
 
 ## Status and acceptance
 
-A spec's `Status:` line follows `candidate → draft → accepted → implemented` (decision 0028). `to-spec` writes `candidate` and `draft`, and owns acceptance; `build` sets `implemented` on an accepted spec once its last task integrates, and `ship` sets it if still missing. In pull-request mode the spec issue's label (`candidate`, `draft`, `accepted`) carries the same state (decision 0029).
+A spec's `Status:` line follows `candidate → draft → accepted → implemented` (decision 0028). `to-spec` writes `candidate` and `draft`, and owns acceptance; `build` sets `implemented` on an accepted spec once its last task integrates, and `ship` sets it if still missing. In pull-request mode the spec issue's label (`candidate`, `draft`, `accepted`) carries the same state once the issue exists (decisions 0029, 0035).
 
-**Accept the spec.** When the user approves a spec for delivery ("accept the spec"), set its status to `accepted` with the date, and set the status of each decision record it links from **Proposed** to **Accepted** with the date, in the project's decision format, in the same step; in pull-request mode, also swap the issue's `draft` label for `accepted` and sync the body. Writing a draft, reaching spec-ready, or a request to write a spec is not acceptance. An `accepted` label a maintainer added is acceptance: when `to-spec` touches a spec whose label is ahead of its file, write the file status (and linked decisions) to match. A `candidate` must become a full draft before it can be accepted. A spec without an acceptance scenario (see Testing Decisions) is not accepted: name what is missing and leave it in `draft`. Changing an accepted spec's scope or a decision it links returns the spec to `draft`, and the label with it. Report the files changed.
+**Accept the spec.** When the user approves a spec for delivery ("accept the spec"), set its status to `accepted` with the date, and set the status of each decision record it links from **Proposed** to **Accepted** with the date, in the project's decision format, in the same step, and commit; in pull-request mode, also open the spec issue labelled `accepted`, or relabel a shared draft's issue, as Spec issue describes. Writing a draft, reaching spec-ready, or a request to write a spec is not acceptance. An `accepted` label a maintainer added is acceptance: when `to-spec` touches a spec whose label is ahead of its file, write the file status (and linked decisions) to match. A `candidate` must become a full draft before it can be accepted. A spec without an acceptance scenario (see Testing Decisions) or an **Exposure** line (see Implementation Decisions) is not accepted: name what is missing and leave it in `draft`. Changing an accepted spec's scope or a decision it links returns the spec to `draft`, and the label with it. Report the files changed.
 
 ## Spec issue
 
 Pull-request mode only (the `Delivery:` line in the project's Flow block); local mode keeps files only. When the mode is unset or there is no block, ask before opening any issue, as `build`'s Delivery mode section describes; a request that names a mode answers it.
 
-- **Open.** Push the branch, then open the spec issue labelled `draft`, or reuse the `candidate` or feature-request issue the spec fleshes out and relabel it. Write `Issue: #N`, linked to the issue, beside `Status:`, commit and push, then sync the body. This is part of "spec it" and needs no separate yes; on a public repository, say the issue is public.
+- **"Spec it" publishes nothing** (decision 0035). It writes and commits the draft on the spec branch; it does not push or open an issue.
+- **Open at acceptance.** "Accept the spec" pushes the branch, then opens the spec issue labelled `accepted`, or reuses the `candidate`, shared-draft, or feature-request issue the spec fleshes out and relabels it. Write `Issue: #N`, linked to the issue, beside `Status:`, commit and push, then sync the body. Acceptance is the yes; on a public repository, say that the branch (with the brief and any research) and the issue become public.
+- **Share the draft.** Only when the user asks ("share the draft"), push the branch and open the issue early, labelled `draft`, the same way, with the same public-repository notice; acceptance relabels it `accepted`.
 - **Labels.** Create `candidate`, `draft`, and `accepted` on first use. A spec carries exactly one.
-- **Body.** A one-way copy of the file: first line `Copied from <path>; edit the file, this body is overwritten.` with `<path>` linked to the file on the branch, then the file content with relative links rewritten to that ref, then `<!-- flow-spec sha256:<hex> -->`, the SHA-256 of everything above it. Normalize before every hash: LF line endings, trailing whitespace trimmed from each line, and trailing blank lines removed, so a web-editor round trip is not a hand edit.
-- **Sync** after every change to the file. First hash the issue's current body above its marker; if that differs from the marker's hash (or a body this run did not just open has no marker), the body was edited by hand: stop, show the difference from the file's copy, and ask before overwriting. Carry wanted edits into the file instead.
+- **Body.** A one-way copy of the file with a hash marker, built by [`lib/spec-issue.mjs`](lib/spec-issue.mjs): from the repository root, `node <skill-dir>/lib/spec-issue.mjs body <spec-path> <owner/repo> <branch>` prints it. Never hand-build or hand-hash a body.
+- **Sync** after every change to the file. First save the issue's current body and run `node <skill-dir>/lib/spec-issue.mjs check <body-file>`; exit 1 means the body was edited by hand (a body with no marker counts as hand-edited unless this run just opened it): stop, show the difference from the file's copy, and ask before overwriting. Carry wanted edits into the file instead. On exit 0, replace the body with fresh `body` output.
 - Without GitHub access, write the file, say the issue was not opened, and stop there.
 
 ## Process
@@ -38,7 +40,7 @@ Pull-request mode only (the `Delivery:` line in the project's Flow block); local
 
 2. Sketch test seams at the highest practical level. Prefer existing seams; propose new ones only when necessary and as high as possible.
 
-3. Write a proportionate spec using the relevant sections below, saved with status `draft` and the date, and any decision record it needs as **Proposed**. One writer owns the spec; decision records may be written in parallel, one worker per file. In pull-request mode, open or reuse its spec issue (see Spec issue). Do not show the text inline or ask before writing; report links to the files written and the issue, open assumptions, and that "accept the spec" is the next step.
+3. Write a proportionate spec using the relevant sections below, saved with status `draft` and the date, and any decision record it needs as **Proposed**. One writer owns the spec; decision records may be written in parallel, one worker per file. Commit them on the spec branch; push nothing and open no issue (see Spec issue). Do not show the text inline or ask before writing; report links to the files written, open assumptions, and that "accept the spec" is the next step (or "share the draft" for comments first in pull-request mode).
 
 <spec-template>
 
@@ -61,6 +63,8 @@ Cover consequential paths and failure cases without redundant stories.
 ## Implementation Decisions
 
 Decisions that shape execution: modules, interfaces, contracts, schema, or interactions. Prefer stable interfaces and intent over exhaustive file lists.
+
+**Exposure:** where the slice runs, who can reach it, and how writes behave when deployed without authentication. When authentication is out of scope and the slice can be deployed, write paths fail closed on deployment.
 
 Write interfaces contract-first, before any UI: the typed API shape the UI uses; MCP tool definitions when the product names agent users; and errors and permissions an agent can act on. Specify an MCP App only when a journey needs the product's UI inside an agent host; otherwise plain MCP tools suffice.
 

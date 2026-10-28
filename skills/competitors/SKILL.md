@@ -14,7 +14,7 @@ Prefer primary sources and the user's knowledge; label web summaries as secondar
 
 Summarize differentiation honestly: where the proposed direction wins, where it is weaker, and what would falsify the positioning. Do not treat feature parity lists as strategy.
 
-When real web research happened, or `explore` runs at Full depth, save findings with sources and limits to `docs/research/YYYY-MM-DD-topic.md`. Never save transcripts.
+When real web research happened, save findings with sources and limits to `docs/research/YYYY-MM-DD-topic.md`. Never save transcripts.
 
 Return the landscape, implications, open questions, and recommended next activity. Analysis does not authorize implementation. `jtbd` can deepen customer evidence.
 

@@ -20,15 +20,13 @@ An adopter project's own product identity, normally in that project's `PRODUCT.m
 
 ## Context alignment
 
-The [`flow`](skills/flow/SKILL.md) skill: keep the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` aligned with meaningful changes, and set up Flow in a project. Not template initialization, and it does not run other skills. Model-invocable like most Flow skills ("update the docs"); that is not an always-on guarantee. Earlier records call it **Flow Lite**; current documents do not, so Lite means only [discovery depth](#discovery-depth) ([decision 0026](docs/decisions/0026-process-depth.md)).
+The [`flow`](skills/flow/SKILL.md) skill: keep the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` aligned with meaningful changes, and set up Flow in a project. Not template initialization, and it does not run other skills. Model-invocable like most Flow skills ("update the docs"); that is not an always-on guarantee. Earlier records call it **Flow Lite**; current documents do not ([decision 0026](docs/decisions/0026-process-depth.md)).
 
 <a id="process-depth"></a>
 
 ## Discovery depth
 
-Earlier records call it **process depth**.
-
-How much discovery a project wants: **Lite** or **Full**, asked as **Discovery depth** once, together with and independent of [delivery mode](#delivery-mode), wherever Flow first needs it (setup, `start`, or `explore`) and recorded as a `Process:` line in the project's Flow block. It is `explore`'s default depth for new work; when it is unset, Flow asks and suggests Lite unless the request points to Full ([`flow`](skills/flow/SKILL.md)). Lite: brief, spec 001 in full with its tasks, later bets as candidates, choices inside specs. Full: Lite plus deeper discovery and a [decision record](#decision-record) for each choice among alternatives. Neither specifies later bets up front. Depth does not set delivery: Lite with pull requests and Full with local delivery are both valid. Decisions [0026](docs/decisions/0026-process-depth.md) and [0032](docs/decisions/0032-local-build-lands-ship-verifies.md).
+Retired. Earlier records call it **process depth**: a Lite or Full setting recorded per project as the Flow block's `Process:` line. `explore` now has one default depth, deeper research runs only on request, and setup asks only for [delivery](#delivery-mode); a leftover `Process:` line is ignored and dropped on the next block write. [Decision 0036](docs/decisions/0036-one-explore-depth.md).
 
 ## Spec
 
@@ -36,7 +34,11 @@ One bet: a numbered document that tests one assumption and ships as one unit, wi
 
 ## Spec issue
 
-In pull-request mode, the GitHub issue for a [spec](#spec): a one-way copy of the spec file, written only by skills, labelled `candidate`, `draft`, or `accepted`. The spec's tasks are its sub-issues, with blocking links; the pull request that delivers the spec closes them all. The file stays the source of truth. [Decision 0029](docs/decisions/0029-spec-issues.md).
+In pull-request mode, the GitHub issue for a [spec](#spec): a one-way copy of the spec file, written only by skills, labelled `candidate`, `draft`, or `accepted`. It opens at acceptance: "spec it" publishes nothing, "accept the spec" opens it labelled `accepted`, and "share the draft" opens it early as `draft`. The spec's tasks are its sub-issues, with blocking links; the pull request that delivers the spec closes them all. The file stays the source of truth. [`to-spec`](skills/to-spec/SKILL.md#spec-issue) owns the rules; decisions [0029](docs/decisions/0029-spec-issues.md) and [0035](docs/decisions/0035-spec-issue-on-acceptance.md).
+
+## Exposure
+
+A spec's line under Implementation Decisions saying where the slice runs, who can reach it, and how writes behave when it is deployed without authentication; with authentication out of scope and a deployable slice, write paths fail closed on deployment. [`to-spec`](skills/to-spec/SKILL.md) owns the template; [spec 021](docs/specs/021-demo-findings.md).
 
 ## Decision record
 
@@ -48,7 +50,19 @@ A portable `skills/<name>/SKILL.md` package in the Flow Skills distribution. Use
 
 ## Delivery mode
 
-How `build` delivers work and `ship` lands it in a project: **local** (tasks as the spec's checklist; `build` reviews the spec branch and merges it into local `main`, and "ship it" pushes `main` when a remote exists; needs no remote) or **pull request** (a [spec issue](#spec-issue) with tasks as sub-issues, one pull request per spec that `ship` merges). Either way `ship` then runs [verification](#verification). Asked once as **Delivery**, together with and independent of [discovery depth](#discovery-depth), wherever Flow first needs it, and recorded as the Flow block's `Delivery:` line; a default branch that requires pull requests is reported, not asked. The rule lives in [`build`](skills/build/SKILL.md#delivery-mode); decisions [0020](docs/decisions/0020-flow-mode.md), [0028](docs/decisions/0028-build-and-ship.md), [0029](docs/decisions/0029-spec-issues.md), [0030](docs/decisions/0030-asked-delivery-and-local-mode.md), and [0032](docs/decisions/0032-local-build-lands-ship-verifies.md) record why.
+How `build` delivers work and `ship` lands it in a project: **local** (tasks as the spec's checklist; `build` reviews the spec branch and merges it into local `main`, and "ship it" pushes `main` when a remote exists; needs no remote) or **pull request** (a [spec issue](#spec-issue) with tasks as sub-issues, one pull request per spec that `ship` merges). Either way `ship` then runs [verification](#verification). Asked once as **Delivery** wherever Flow first needs it, the only setup question, and recorded as the [Flow block](#flow-block)'s `Delivery:` line; a default branch that requires pull requests is reported, not asked. The rule lives in [`build`](skills/build/SKILL.md#delivery-mode); decisions [0020](docs/decisions/0020-flow-mode.md), [0028](docs/decisions/0028-build-and-ship.md), [0029](docs/decisions/0029-spec-issues.md), [0030](docs/decisions/0030-asked-delivery-and-local-mode.md), [0032](docs/decisions/0032-local-build-lands-ship-verifies.md), and [0036](docs/decisions/0036-one-explore-depth.md) record why.
+
+## Flow block
+
+The removable section between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->` that opts a project into Flow mode. It holds only the `Delivery:` line, the phrase table, and a pointer to `flow`, and lives in the instruction file Git tracks: `AGENTS.md` when tracked, otherwise `CLAUDE.md`, which then imports `@AGENTS.md`. Adopter text outside the block and that import is never changed. [`flow`](skills/flow/SKILL.md#flow-block) owns the rules; decisions [0020](docs/decisions/0020-flow-mode.md) and [0036](docs/decisions/0036-one-explore-depth.md).
+
+## Unspecced work
+
+Work that resolves to no spec or task, such as a hotfix or a one-line change. "Build it" gives it the full local check suite and one self-check against the request, with no spec gate and no review workers, then lands it as the [delivery mode](#delivery-mode) does. A size guard stops it and suggests `to-spec` when it adds product behavior, changes a data shape or public API, or needs a migration. [`build`](skills/build/SKILL.md#unspecced-work) owns the guard; [decision 0034](docs/decisions/0034-no-ceremony-without-a-spec.md).
+
+## Shared file
+
+A file the project's instructions tell every session to append to, such as a prompt log. Only the orchestrator writes it, on the work's branch; commits that change only shared files after the review do not move the reviewed head. [`build`](skills/build/SKILL.md#shared-files) owns the rule; [decision 0033](docs/decisions/0033-shared-files-and-reviewed-head.md).
 
 ## Area
 

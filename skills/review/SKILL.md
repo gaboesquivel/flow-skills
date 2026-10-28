@@ -14,7 +14,7 @@ Read repository instructions and inspect Git status before choosing the review s
 - **Working tree:** inspect staged and unstaged diffs plus relevant untracked files. Use `git diff --cached`, `git diff`, and `git ls-files --others --exclude-standard`; read untracked content explicitly.
 - **Committed comparison:** resolve the requested reference and use its merge-base with HEAD when appropriate. State the actual comparison. Include working-tree changes only when requested or relevant to the stated scope.
 - **Pull request:** treat the PR as a committed comparison from `merge-base(base, head)` through `head`. Product, design, spec, and marketing edits get the same bar as code. Repositories that enforce the **pr-review-contract** (documented in the project's docs tree) in CI expect the same checks without a separate manual invocation.
-- **Spec:** a spec gets one independent review, which `ship` runs on its final pull request (pull-request mode) or `build` runs on the spec branch before merging into local `main` (local mode), covering every task's change together: the per-axis workers and verifier below. `build` workers only self-check against their task; there are no per-task or per-wave reviews.
+- **Spec:** a spec gets one independent review, which `ship` runs on its final pull request (pull-request mode) or `build` runs on the spec branch before merging into local `main` (local mode), covering every task's change together: the per-axis workers and verifier below. `build` workers only self-check against their task; there are no per-task or per-wave reviews. Unspecced work gets no independent review: `build`'s self-check against the request covers it (decision 0034).
 
 Default an unspecified review to the current working tree. If it has no changes, inspect the repository area implied by the request and state that scope. Ask only when scope ambiguity materially changes the work. An empty committed diff does not establish that there is nothing to review.
 
@@ -29,6 +29,8 @@ Then assess the change on five **review axes** (adapted from Addy Osmani's code-
 - **Architecture:** documented conventions, boundaries, duplication, unnecessary abstraction, and one responsibility scattered across unrelated modules. Treat design smells as hypotheses, not automatic violations.
 - **Security:** trust boundaries, input handling, secrets, permissions, and authorization.
 - **Performance:** work that grows with input, repeated I/O, and blocking paths users or CI wait on.
+
+Workers read the reviewed commit with `git show <sha>:<path>`, `git diff`, and `git log`, or in a detached worktree they create at that SHA outside the primary checkout (`git worktree add --detach <path> <sha>`) and remove when done. Never `checkout` or `switch` in a checkout they did not create; the user's and the orchestrator's checkouts keep their branch and files.
 
 Each worker follows important paths through callers and dependencies. A passing test is evidence only for behavior it actually covers. Distinguish **confirmed findings**, **plausible risks**, and **preferences**.
 

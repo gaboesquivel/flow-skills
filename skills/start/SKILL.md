@@ -6,7 +6,7 @@ disable-model-invocation: false
 
 # Start
 
-**New product.** Initialize a **new application** from [flow-next](https://github.com/gaboesquivel/flow-next) or [flow-mono](https://github.com/gaboesquivel/flow-mono) while `explore` shapes the product in the same sitting. It is the `flow` skill's "set up Flow here" plus a template bootstrap (decision 0026): the same Flow block, the same discovery depth and delivery questions, and the same goals.
+**New product.** Initialize a **new application** from [flow-next](https://github.com/gaboesquivel/flow-next) or [flow-mono](https://github.com/gaboesquivel/flow-mono) while `explore` shapes the product in the same sitting. It is the `flow` skill's "set up Flow here" plus a template bootstrap (decision 0026): the same Flow block and instruction-file layout, the same delivery question, and the same goals.
 
 Deterministic rename, destination safety, baseline docs, and commit-gating rules live in this skill's `lib/` modules. Use them instead of blind global replace or destructive Git commands.
 
@@ -20,8 +20,7 @@ Ask only for what is still missing, in one question round:
 2. **Local destination directory.** Default to the **current working directory** when `assessDestination` accepts it; propose a nested or sibling directory only when the user asks or the current one is refused.
 3. **Template** — only when not inferred. Recommend **flow-next** for a single Next.js app, **flow-mono** for Turborepo (`apps/web`, `packages/ui`).
 4. **Optional GitHub remote** — only when the user wants a new repository created or linked; never assume push access.
-5. **Discovery depth** — only when not stated: **Lite** (recommended) or **Full**, as the `flow` skill defines them.
-6. **Delivery** — independent of item 5, as `flow` defines it; only when not stated: **local** or **pull requests**, as `build`'s Delivery mode section defines them. Suggest local when no GitHub repository is created, and pull requests when one is; this basis is start-specific because the repository is being created.
+5. **Delivery** — only when not stated: **local** or **pull requests**, as `build`'s Delivery mode section defines them. Suggest local when no GitHub repository is created, and pull requests when one is; this basis is start-specific because the repository is being created.
 
 If an answer does not arrive, ask again; do not substitute a destination the user did not confirm.
 
@@ -31,14 +30,14 @@ Derive identity with `deriveProjectIdentity` from `lib/identity.mjs`: slug, `pac
 
 ## Confirm before writing
 
-A spoken request can be misheard, so write nothing until the user agrees. State the template, project name (with slug and host), destination, any GitHub repository to create with its visibility, the discovery depth, the delivery, the Flow block it will write, and the hand-off to `explore` at that depth, then wait for an explicit yes. Anything else is not a yes; correct and restate.
+A spoken request can be misheard, so write nothing until the user agrees. State the template, project name (with slug and host), destination, any GitHub repository to create with its visibility, the delivery, the Flow block it will write, and the hand-off to `explore`, then wait for an explicit yes. Anything else is not a yes; correct and restate.
 
 ## Run two lanes
 
 After the yes:
 
 - **Bootstrap lane.** A worker runs every section from "Obtain template" through "Initial commit" below, in the order under "Bootstrap order", and reports the completion facts.
-- **Explore lane.** The main session hands the conversation to `explore` as a new-product run at the confirmed discovery depth, using the user's description as its first input. Explore drafts in conversation and writes nothing until the bootstrap lane reports its initial commit.
+- **Explore lane.** The main session hands the conversation to `explore` as a new-product run, using the user's description as its first input. Explore drafts in conversation and writes nothing until the bootstrap lane reports its initial commit.
 
 When the host has no independent workers, run the bootstrap first, then `explore`, and say so. When `explore` is not installed, finish the bootstrap and suggest exploring next.
 
@@ -58,7 +57,7 @@ Otherwise clone the template into a temporary directory, then copy it into the d
 - Add the user's remote only when explicitly provided and authorized.
 - Use `assessDestination` and `assertNoTemplateOrigin` from `lib/git-safety.mjs` before writing files.
 
-**Bootstrapping in place.** A destination that holds only agent setup (the entries in `AGENT_SETUP_ENTRY_NAMES`, `lib/constants.mjs`) counts as empty. Bootstrap at that root, not in a nested folder. Keep those files, adding only the Flow block: when the template ships its own copy of a kept file, report it in `skipped` and leave the adopter's version. For other files (for example a prompt log), `assessDestination` names them; settle whether to keep them during Gather inputs, then pass them as `preserve`.
+**Bootstrapping in place.** A destination that holds only agent setup (the entries in `AGENT_SETUP_ENTRY_NAMES`, `lib/constants.mjs`) counts as empty. Bootstrap at that root, not in a nested folder. Keep those files, adding only the Flow block and the `@AGENTS.md` import: when the template ships its own copy of a kept file, report it in `skipped` and leave the adopter's version. For other files (for example a prompt log), `assessDestination` names them; settle whether to keep them during Gather inputs, then pass them as `preserve`.
 
 **Stop** when the destination has unexpected files without authorization, or when the path already has Git commits. Never `reset`, `clean`, or delete history of an existing project.
 
@@ -114,24 +113,24 @@ If any **essential** check **failed**, report the blocker and do **not** claim a
 
 ## Flow block
 
-Once every essential check passes, write the project's Flow block with the `flow` skill's `lib/flow-block.mjs`: pass the project's absolute path, the confirmed delivery (`local` or `pull-request`), and `--process <lite|full>`, so both lines are filled and the initial commit includes the block. Touch nothing outside its markers. When `flow` is not installed, skip the block and say so.
+Once every essential check passes, write the project's Flow block with the `flow` skill's `lib/flow-block.mjs`: pass the project's absolute path and the confirmed delivery (`local` or `pull-request`). The `flow` skill's Flow block section and its helper own the instruction-file layout; keep the helper's output for the report, including any refusal. Touch nothing outside the block's markers and the import line. When `flow` is not installed, skip the block and say so.
 
 ## Initial commit
 
-Only when `canCreateInitialCommit` from `lib/commit-gate.mjs` returns ok:
+Only when `canCreateInitialCommit` from `lib/commit-gate.mjs` returns ok and, when a block was written, the helper's layout reports its file tracked (an ignored file would leave the block out of the commit):
 
 1. Review staged files for secrets and build artifacts.
 2. Commit with `chore: initialize <slug>` (see `formatInitialCommitMessage`).
-3. Confirm `git status` is clean, no remote points at a template repo, and report the commit SHA.
+3. Confirm `git status` is clean, the commit holds the block and any import, no remote points at a template repo, and report the commit SHA.
 
 Do not use `--no-verify`. Do not push or deploy unless explicitly authorized.
 
 ## Boundaries
 
-- Edit adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or equivalent instruction files only to write the Flow block.
+- Edit adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or equivalent instruction files only to write the Flow block and the `@AGENTS.md` import.
 - Do not automatically invoke `flow` or any delivery pipeline; `explore` is the only hand-off.
 - Do not bundle Flow Factory or a workflow router.
 
 ## Completion
 
-Report template and template commit SHA, destination path, preserved and skipped files, renamed slug and Portless host, files created or updated, whether the Flow block was written with its delivery and discovery depth, each verification check, initial commit SHA (if created), and blockers. Report the bootstrap lane when it finishes, without interrupting an open exploration question.
+Report template and template commit SHA, destination path, preserved and skipped files, renamed slug and Portless host, files created or updated, whether the Flow block was written with its delivery, the instruction-file layout (block file, tracked, imports), each verification check, initial commit SHA (if created), and blockers. Report the bootstrap lane when it finishes, without interrupting an open exploration question.
