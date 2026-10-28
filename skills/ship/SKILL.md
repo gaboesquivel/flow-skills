@@ -10,7 +10,7 @@ disable-model-invocation: false
 
 "Ship it" lands the current authorized work: one change, or a spec's task set on one branch. It builds when no pull request exists, gets an adversarial review posted on the pull request, fixes findings, waits for green checks, merges, deletes the branch, and syncs the local default branch and the spec issue (decisions 0028 and 0029). It also drops a spec the user abandons.
 
-Asking to ship authorizes these steps with no confirmation, subject to repository permissions and branch protection. It does not authorize destructive Git operations, force-pushing, rewriting remote branches, security bypasses, approving its own pull request, production promotion or rollback unless explicitly asked, or unrelated changes.
+Asking to ship authorizes these steps with no confirmation, subject to repository permissions and branch protection. It does not authorize destructive Git operations, force-pushing, rewriting remote branches, security bypasses, approving its own pull request, production promotion or rollback unless explicitly asked, or unrelated changes. The one carve-out is dropping a spec (see Abandoned specs).
 
 Before a multi-step run, suggest the host's autonomous permission mode when it has one (for example Claude Code auto mode) so file writes, comments, and pushes do not stop for each permission prompt. The gates below still apply.
 
@@ -21,9 +21,9 @@ Inspect the current branch and worktree, Git status and diff, existing staged ch
 Classify the work. Resolve its spec from (a) the branch name, (b) files under `docs/specs/` (or the project's spec location) that the change touches, and (c) the issues the work closes (`Closes #N`) and the spec each links.
 
 - **Spec work:** any source points at a spec, or classification is uncertain. Read the spec from the branch head, after updating from the default branch when it is not accepted there.
-  - **Pull-request mode with a spec issue** (the spec's `Issue:` line): the gate is the `accepted` label on that issue, or `implemented` on this unmerged branch from an earlier ship run. The file status follows the label: when the label is set and the file still says draft, write `accepted` on its `Status:` line in a commit on the branch. A file that says `accepted` without the label does not pass.
+  - **Pull-request mode with a spec issue** (the spec's `Issue:` line): the gate is the `accepted` label on that issue, or `implemented` on this unmerged branch from an earlier ship run. Only a maintainer sets the label; ship never sets the `accepted` label itself. The file follows the label: when the label is set and the file still says draft, write `accepted` on its `Status:` line and promote each linked **Proposed** decision to **Accepted**, with the date, in one commit on the branch, as `to-spec` does for "accept the spec". A file that says `accepted` without the label does not pass. When GitHub cannot be reached, say so and stop; never fall back to the file status.
   - **Local mode, or a spec with no `Issue:` line:** its `Status:` must be `accepted`, or `implemented` on this unmerged branch from an earlier ship run.
-  - Either way, no decision record it links may still be **Proposed**. Otherwise name each spec or linked decision that is not accepted, with its status or label, suggest "accept the spec", and stop before building, committing, or pushing anything. If the spec cannot be resolved, say so and stop the same way.
+  - Either way, no decision record it links may still be **Proposed** after that. Otherwise name each spec or linked decision that is not accepted, with its status or label, suggest "accept the spec", and stop before building, committing, or pushing anything. If the spec cannot be resolved, say so and stop the same way.
 - **Hotfix:** work with no spec link at all, including work that closes only issues belonging to no spec. It ships through the same cycle; the review also judges whether it is hotfix-sized (see Review).
 
 ## Build
@@ -60,11 +60,11 @@ On blocking findings or failing checks, fix what this work caused when safely in
 
 **Local mode:** after Prepare, Review, and Fix rounds, run the full local check suite on the branch. Fast-forward the local default branch from the remote, merge the branch into it with `git merge --no-ff` and a pull-request-style message (summary, tasks, checks), push it, and delete the merged branch locally and, if it was pushed, on the remote. If the push is refused, report partial delivery with the unpushed merge.
 
-Never force-push or rewrite remote branches. Delete a branch only after its work has merged, or when the user drops its spec. If the remote cannot be safely determined, stop and report.
+Never force-push or rewrite remote branches. Delete a branch only after its work has merged, or when the user's request drops its spec. If the remote cannot be safely determined, stop and report.
 
 ## Abandoned specs
 
-When the user drops a spec ("drop the spec"), close its spec issue and open sub-issues as not planned (for example `gh issue close --reason "not planned"`), close its pull request without merging, and delete its branch on the remote and locally; nothing reaches the default branch, and the issue keeps the spec's text. In local mode, delete the branch only. Only the user's request drops a spec; a failed gate never does.
+Only the user's own request naming the spec drops it ("drop the spec"); a failed gate or another skill never does. That request authorizes closing its spec issue, sub-issues, and pull request as not planned and deleting its unmerged branch, nothing else. On it, close its spec issue and open sub-issues as not planned (for example `gh issue close --reason "not planned"`), close its pull request without merging, and delete its branch on the remote and locally; nothing reaches the default branch, and the issue keeps the spec's text. In local mode, delete the branch only.
 
 ## Failure handling
 

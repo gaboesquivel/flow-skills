@@ -8,7 +8,7 @@ disable-model-invocation: false
 
 Turn conversation context and repository understanding into a proportionate specification. Do not run a separate interview; synthesize what is already known and label unresolved assumptions rather than inventing decisions. Keep consequential assumptions visible.
 
-Use the project's existing spec location when one exists. When the project has no convention, default new work to `docs/specs/NNN-short-name.md` (three-digit sequence, kebab-case slug) and follow the same pattern for updates. Preserve existing numbering, labels, and trackers when the repository already uses them.
+Use the project's existing spec location when one exists. In both delivery modes, write the spec on a feature branch named for it, never the default branch; it merges with the work. When the project has no convention, default new work to `docs/specs/NNN-short-name.md` (three-digit sequence, kebab-case slug) and follow the same pattern for updates. Preserve existing numbering, labels, and trackers when the repository already uses them.
 
 **Spec, tasks, decision** (decision 0026). A spec is one bet: it tests one assumption and ships as one unit. Its tasks are the slices inside it, so a spec may be large. Work that only makes sense after seeing how another bet did gets its own spec. A choice gets a decision record in `docs/decisions/NNN-short-name.md` only when it chose among real alternatives **and** reaches beyond this spec or is costly to reverse; otherwise it belongs in the spec's Implementation Decisions. Never put feature scope or tasks in a decision record. When a spec makes a choice that passes the test, write the record beside the spec with status **Proposed** and link it from the spec. Also link any **Proposed** records written during exploration that the spec depends on.
 
@@ -24,11 +24,11 @@ A spec's `Status:` line follows `candidate → draft → accepted → implemente
 
 ## Spec issue
 
-Pull-request mode only (the `Delivery:` line in the project's Flow block, or the mode `build` would infer); local mode keeps files only. The spec is written on a feature branch named for it, never the default branch, and merges with the work.
+Pull-request mode only (the `Delivery:` line in the project's Flow block, or the mode `build` would infer); local mode keeps files only.
 
 - **Open.** Push the branch, then open the spec issue labelled `draft`, or reuse the `candidate` or feature-request issue the spec fleshes out and relabel it. Write `Issue: #N`, linked to the issue, beside `Status:`, commit and push, then sync the body. This is part of "spec it" and needs no separate yes; on a public repository, say the issue is public.
 - **Labels.** Create `candidate`, `draft`, and `accepted` on first use. A spec carries exactly one.
-- **Body.** A one-way copy of the file: first line `Copied from <path>; edit the file, this body is overwritten.` with `<path>` linked to the file on the branch, then the file content with relative links rewritten to that ref, then `<!-- flow-spec sha256:<hex> -->`, the SHA-256 of everything above it.
+- **Body.** A one-way copy of the file: first line `Copied from <path>; edit the file, this body is overwritten.` with `<path>` linked to the file on the branch, then the file content with relative links rewritten to that ref, then `<!-- flow-spec sha256:<hex> -->`, the SHA-256 of everything above it. Normalize before every hash: LF line endings and trailing whitespace trimmed from each line, so a web-editor round trip is not a hand edit.
 - **Sync** after every change to the file. First hash the issue's current body above its marker; if that differs from the marker's hash (or a body this run did not just open has no marker), the body was edited by hand: stop, show the difference from the file's copy, and ask before overwriting. Carry wanted edits into the file instead.
 - Without GitHub access, write the file, say the issue was not opened, and stop there.
 
