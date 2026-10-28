@@ -832,6 +832,49 @@
         "verified_second_host": "not_executed"
       },
       "claimsLiveRun": false
+    },
+    {
+      "id": "E38",
+      "skills": [
+        "build"
+      ],
+      "behavior": "Build runs the full local check suite on the spec head before the first frontier; a failing test stops it with a baseline failure report naming the test, with no workers started, no worktree created, and the spec branch unchanged",
+      "taskFile": "tests/evals/tasks/E38-task.md",
+      "rubricFile": "tests/evals/rubrics/E38-rubric.md",
+      "skillReferences": [
+        "skills/build/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "not_executed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E39",
+      "skills": [
+        "start"
+      ],
+      "behavior": "Start formats every written and renamed file after the Flow block, so the initial commit passes the project's lint and format check, and re-running the Flow block helper after formatting reports Unchanged",
+      "taskFile": "tests/evals/tasks/E39-task.md",
+      "rubricFile": "tests/evals/rubrics/E39-rubric.md",
+      "skillReferences": [
+        "skills/start/SKILL.md",
+        "skills/flow/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "not_executed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
     }
   ]
 }

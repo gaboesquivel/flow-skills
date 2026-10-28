@@ -66,7 +66,11 @@ A file the project's instructions tell every session to append to, such as a pro
 
 ## Area
 
-A task's `Area:` line: the package or directory it changes, coarse and never a file path. [`to-tasks`](skills/to-tasks/SKILL.md) assigns it; [`build`](skills/build/SKILL.md) uses it to schedule tasks. [Decision 0031](docs/decisions/0031-fan-out-by-default.md).
+A task's `Area:` line: every package or directory it changes, comma-separated when there are several (such as `lib/feedback/connect, app/opportunities`), coarse and never a file path. [`to-tasks`](skills/to-tasks/SKILL.md) assigns it; [`build`](skills/build/SKILL.md#task-set) schedules by it. [Decision 0031](docs/decisions/0031-fan-out-by-default.md); [spec 026](docs/specs/026-clean-baseline-and-worktrees.md).
+
+## Baseline failure
+
+A check that already fails on a spec's head before any task runs, or a later batch failure that bisect traces to no task. [`build`](skills/build/SKILL.md#task-set) stops on it before starting workers. [Spec 026](docs/specs/026-clean-baseline-and-worktrees.md).
 
 ## Frontier
 
@@ -102,7 +106,7 @@ The short phrase a user says, typed or dictated, to reach a Flow skill, such as 
 
 ## Decision record
 
-A numbered document under `docs/decisions/` that preserves the context, decision, and rationale for a significant choice. Accepted records are historical evidence; superseding creates a new record. Current product, design, and architecture documents reflect the accepted position today.
+A numbered document under `docs/decisions/` that preserves the context, decision, and rationale for a significant choice. Accepted records are historical evidence; superseding or amending creates a new record and, once accepted, adds only a back-pointer to the old record's Status line and index row. Current product, design, and architecture documents reflect the accepted position today.
 
 ## Specification
 

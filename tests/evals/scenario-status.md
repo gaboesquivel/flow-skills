@@ -39,5 +39,7 @@
 | E35 | build | not_executed | not_executed | not_executed | not_executed |
 | E36 | explore | not_executed | not_executed | not_executed | not_executed |
 | E37 | build | not_executed | not_executed | not_executed | not_executed |
+| E38 | build | not_executed | not_executed | not_executed | not_executed |
+| E39 | start | not_executed | not_executed | not_executed | not_executed |
 
 Live column: [2026-10-27-cursor-live.md](records/2026-10-27-cursor-live.md) (E03, E07, E08). Structural and fixture columns reflect `pnpm test` and `pnpm eval:check`. Second host still open.

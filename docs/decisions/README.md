@@ -41,13 +41,14 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0035-spec-issue-on-acceptance.md](0035-spec-issue-on-acceptance.md) | Accepted | "Spec it" publishes nothing; the spec issue opens at "accept the spec", or early on "share the draft" |
 | [0036-one-explore-depth.md](0036-one-explore-depth.md) | Accepted | One `explore` depth with a pre-mortem; `competitors` and `jtbd` on request; setup asks only for delivery |
 | [0037-git-for-delivery-github-for-github-mode.md](0037-git-for-delivery-github-for-github-mode.md) | Accepted | Thinking skills need nothing, the delivery chain needs Git, GitHub mode needs GitHub; no repository offers `git init`; `Delivery: github` or `local` |
+| [0038-direction-changes-are-confirmed-and-recorded.md](0038-direction-changes-are-confirmed-and-recorded.md) | Accepted | A goal that contradicts an accepted decision, spec, or `PRODUCT.md` fact stops for a yes; new record on the yes, back-pointers on Status lines at acceptance |
 | [0039-build-never-requires-a-spec.md](0039-build-never-requires-a-spec.md) | Accepted | The size guard escalates review instead of stopping; specs only on request; "build it" after `explore` builds the brief; "build it local" on a protected repository stops at a branch commit |
 | [0040-ship-verifies-liveness.md](0040-ship-verifies-liveness.md) | Accepted | `ship` verifies only that the shipped commit's checks are green and its deployment answers; no scenario, browser, or preview run |
 
 ## Rules
 
-- **Accepted** records are immutable historical evidence.
-- Superseding a decision creates a new record linked to the previous one (`supersedes` / `superseded_by`).
+- **Accepted** records are historical evidence: the body never changes. Only the Status line and index row gain `Superseded by`, `Superseded in part by`, or `Amended by` pointers, added when the superseding spec is accepted ([0038](0038-direction-changes-are-confirmed-and-recorded.md)).
+- Superseding or amending a decision creates a new record linked to the previous one (`supersedes` / `superseded_by`, or `Supersedes` / `Amends` on its Status line).
 - `PRODUCT.md`, `DESIGN.md`, and `ARCHITECTURE.md` reflect the **current** accepted position.
 - Legacy `docs/adr/` or `docs/pdr/` folders, if present, are historical unless the project migrates them explicitly.
 
