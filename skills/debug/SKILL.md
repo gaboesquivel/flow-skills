@@ -8,7 +8,7 @@ disable-model-invocation: false
 
 Establish the observed failure, expected behavior, reproduction, and relevant recent changes. Inspect errors and evidence before changing code. For a simple failure, keep the investigation small; for a multi-component system, trace the boundary where behavior diverges.
 
-Once the failure reproduces, form about three falsifiable hypotheses and test them in parallel, one worker each, following the fan-out rule in `write-agents`. Each worker runs the smallest useful check and returns its evidence; give a worker its own worktree when its check changes files. Without workers, test the hypotheses in order and say so. If evidence is unavailable, state the uncertainty and collect it rather than presenting a guess as root cause.
+Once the failure reproduces, form about three falsifiable hypotheses and test them in parallel, one worker each (fan-out rule: `write-agents` Workers). Each worker runs the smallest useful check and returns its evidence; give a worker its own worktree when its check changes files. If evidence is unavailable, state the uncertainty and collect it rather than presenting a guess as root cause.
 
 Fixes stay sequential: apply one cause at a time so each result is interpretable.
 

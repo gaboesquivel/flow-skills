@@ -29,9 +29,10 @@ Communicate, as relevant: purpose, activation, leading word, executable procedur
 
 This is the shared fan-out rule; other skills link here instead of restating it.
 
-- Run independent steps as parallel workers, launched in one batch up to the host's limit.
+- Run independent steps as parallel workers, launched in one batch up to the host's limit. A step of a few reads or commands uses parallel tool calls instead; spawn workers only for multi-step or context-heavy steps.
 - Keep a step sequential only when it needs another step's output, asks the user, or writes a shared file.
 - Each worker has one bounded goal and sufficient context, and is read-only or writes files no other worker touches.
+- Workers never ask the user; the main thread asks every question.
 - The main thread verifies findings and synthesizes results and disagreements. Record actual models when the host exposes them; distinguish model diversity from host diversity.
 - Without workers, run the same steps in order and say so. Never claim independence without separate execution.
 

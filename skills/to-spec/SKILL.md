@@ -34,7 +34,7 @@ Pull-request mode only (the `Delivery:` line in the project's Flow block); local
 
 ## Process
 
-1. Explore the repository when needed. Gather evidence with parallel read-only workers, as `write-agents` Workers describes: existing specs and decisions, code seams and tests, and the glossary. Without workers, read them in order and say so. Use the project's domain vocabulary and respect decision records in the area you are touching.
+1. Explore the repository when needed. Gather evidence with parallel read-only workers (fan-out rule: `write-agents` Workers): existing specs and decisions, code seams and tests, and the glossary. Use the project's domain vocabulary and respect decision records in the area you are touching.
 
 2. Sketch test seams at the highest practical level. Prefer existing seams; propose new ones only when necessary and as high as possible.
 

@@ -18,7 +18,7 @@ Work from the conversation. If the user passes a spec path, issue number, or URL
 
 ### 2. Explore the codebase (optional)
 
-When you have not already explored the codebase, do so to see the current state: one read-only explorer per area the work touches, launched together as `write-agents` Workers describes. Without workers, read the areas in order and say so. Task titles and descriptions should use the project glossary and respect decision records in the area you touch.
+When you have not already explored the codebase, do so to see the current state: one read-only explorer per area the work touches, launched together (fan-out rule: `write-agents` Workers). Task titles and descriptions should use the project glossary and respect decision records in the area you touch.
 
 Look for prefactors that make the implementation easier: make the change easy, then make the easy change.
 
@@ -35,7 +35,7 @@ Break the work into vertical-slice tasks.
 
 </vertical-slice-rules>
 
-Give each task an **area**: the package or directory it changes, coarse and never a file path. `build` runs tasks whose areas intersect one after another, so areas need no blocking edge.
+Give each task an **area**: the package or directory it changes, coarse and never a file path. Overlapping areas need no blocking edge; `build` schedules by area.
 
 Give each task its **blocking edges**: other tasks that must finish before it can start. An edge needs a real data or file dependency: one task uses what the other builds, or both must change the same file in order. Topic order is not a reason; prefer a wide frontier, where tasks that share only the spec have no blockers. A task with no blockers can start immediately.
 
