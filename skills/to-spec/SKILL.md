@@ -10,7 +10,7 @@ Turn conversation context and repository understanding into a proportionate spec
 
 Use the project's existing spec location when one exists. In both delivery modes, write the spec on a feature branch named for it, never the default branch; it merges with the work. In local mode a `candidate` stub has no work to merge with and is committed on the default branch. When the project has no convention, default new work to `docs/specs/NNN-short-name.md` (three-digit sequence, kebab-case slug) and follow the same pattern for updates. Preserve existing numbering, labels, and trackers when the repository already uses them.
 
-**Spec, tasks, decision** (decision 0026). A spec is one bet: it tests one assumption and ships as one unit. Its tasks are the slices inside it, so a spec may be large. Work that only makes sense after seeing how another bet did gets its own spec. A choice gets a decision record in `docs/decisions/NNN-short-name.md` only when it chose among real alternatives **and** reaches beyond this spec or is costly to reverse; otherwise it belongs in the spec's Implementation Decisions. Never put feature scope or tasks in a decision record. When a spec makes a choice that passes the test, write the record beside the spec with status **Proposed** and link it from the spec. Also link any **Proposed** records written during exploration that the spec depends on.
+**Spec, tasks, decision** (decision 0026). A spec is one bet: it tests one assumption and ships as one unit. Its tasks are the slices inside it, so a spec may be large. Work that only makes sense after seeing how another bet did gets its own spec. A choice gets a decision record in `docs/decisions/NNNN-short-name.md` (four-digit sequence) only when it chose among real alternatives **and** reaches beyond this spec or is costly to reverse; otherwise it belongs in the spec's Implementation Decisions. Never put feature scope or tasks in a decision record. When a spec makes a choice that passes the test, write the record beside the spec with status **Proposed** and link it from the spec. Also link any **Proposed** records written during exploration that the spec depends on.
 
 Specs may cover product, research, marketing, engineering, operations, or cross-functional work. Use the sections below only when they fit the discipline; omit irrelevant headings. Keep small, understood changes brief.
 
@@ -24,7 +24,7 @@ A spec's `Status:` line follows `candidate → draft → accepted → implemente
 
 ## Spec issue
 
-Pull-request mode only (the `Delivery:` line in the project's Flow block, or the mode `build` would infer); local mode keeps files only.
+Pull-request mode only (the `Delivery:` line in the project's Flow block); local mode keeps files only. When the mode is unset or there is no block, ask before opening any issue, as `build`'s Delivery mode section describes; a request that names a mode answers it.
 
 - **Open.** Push the branch, then open the spec issue labelled `draft`, or reuse the `candidate` or feature-request issue the spec fleshes out and relabel it. Write `Issue: #N`, linked to the issue, beside `Status:`, commit and push, then sync the body. This is part of "spec it" and needs no separate yes; on a public repository, say the issue is public.
 - **Labels.** Create `candidate`, `draft`, and `accepted` on first use. A spec carries exactly one.
@@ -34,11 +34,11 @@ Pull-request mode only (the `Delivery:` line in the project's Flow block, or the
 
 ## Process
 
-1. Explore the repository when needed. Use the project's domain vocabulary and respect decision records in the area you are touching.
+1. Explore the repository when needed. Gather evidence with parallel read-only workers, as `write-agents` Workers describes: existing specs and decisions, code seams and tests, and the glossary. Without workers, read them in order and say so. Use the project's domain vocabulary and respect decision records in the area you are touching.
 
 2. Sketch test seams at the highest practical level. Prefer existing seams; propose new ones only when necessary and as high as possible.
 
-3. Write a proportionate spec using the relevant sections below, saved with status `draft` and the date, and any decision record it needs as **Proposed**. In pull-request mode, open or reuse its spec issue (see Spec issue). Do not show the text inline or ask before writing; report links to the files written and the issue, open assumptions, and that "accept the spec" is the next step.
+3. Write a proportionate spec using the relevant sections below, saved with status `draft` and the date, and any decision record it needs as **Proposed**. One writer owns the spec; decision records may be written in parallel, one worker per file. In pull-request mode, open or reuse its spec issue (see Spec issue). Do not show the text inline or ask before writing; report links to the files written and the issue, open assumptions, and that "accept the spec" is the next step.
 
 <spec-template>
 
