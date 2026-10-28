@@ -33,18 +33,42 @@ export function normalizeDelivery(value) {
   return DELIVERY_MODES.includes(mode) ? mode : null
 }
 
+// A Markdown table with padded cells and a dash separator as wide as each column, the shape oxfmt and Prettier write.
+// rows[0] is the header; returns one string per line.
+export function alignTable(rows) {
+  const widths = rows[0].map((_, col) => Math.max(3, ...rows.map((row) => row[col].length)))
+  const line = (cells) => `| ${cells.join(' | ')} |`
+  const pad = (row) => line(row.map((cell, col) => cell.padEnd(widths[col])))
+  return [pad(rows[0]), line(widths.map((width) => '-'.repeat(width))), ...rows.slice(1).map(pad)]
+}
+
+// A block's comparable form: table cells trimmed, separator cells reduced to `---`, trailing spaces and blank lines dropped,
+// so a formatter's re-spacing reads as no change while any changed word does not.
+export function canonicalBlock(block) {
+  return block
+    .split(/\r?\n/u)
+    .map((line) => line.trimEnd())
+    .filter(Boolean)
+    .map((line) => {
+      if (!line.trimStart().startsWith('|')) return line
+      const cells = line.trim().replace(/^\||\|$/gu, '').split('|').map((cell) => cell.trim().replace(/ {2,}/gu, ' '))
+      return `|${cells.map((cell) => (/^:?-+:?$/u.test(cell) ? '---' : cell)).join('|')}|`
+    })
+    .join('\n')
+}
+
 export function buildFlowBlock({ delivery, eol = '\n' } = {}) {
   return [
     BEGIN,
+    '',
     '## Flow',
     '',
     'This project uses Flow skills. Say a phrase to load its skill; the installed `flow` skill describes this block. Delete the block to opt out.',
     '',
     `Delivery: ${normalizeDelivery(delivery) ?? 'unset'}`,
     '',
-    '| Say | Skill |',
-    '| --- | --- |',
-    ...PHRASES.map(([say, skill]) => `| ${say} | \`${skill}\` |`),
+    ...alignTable([['Say', 'Skill'], ...PHRASES.map(([say, skill]) => [say, `\`${skill}\``])]),
+    '',
     END,
   ].join(eol)
 }
@@ -85,13 +109,14 @@ function readLine(text, name) {
 // Return the recorded value, or null when the block is missing or unset.
 export const readDelivery = (text) => normalizeDelivery(readLine(text, 'Delivery'))
 
-// Replaces the block in place or appends it; text outside the markers is preserved byte for byte.
+// Replaces the block in place (unless only its spacing differs) or appends it; text outside the markers is preserved byte for byte.
 // Retired lines (`Deploy:`, decision 0028; `Process:`, decision 0036) are dropped because the block is rebuilt from its known lines.
 export function upsertFlowBlock(text, { delivery } = {}) {
   const eol = eolOf(text)
   const block = buildFlowBlock({ delivery: normalizeDelivery(delivery) ?? readDelivery(text), eol })
   const at = locate(text)
-  if (at) return text.slice(0, at.start) + block + text.slice(at.end)
+  // A block that differs only in spacing (for example after the project's formatter ran) is left as it is.
+  if (at) return canonicalBlock(text.slice(at.start, at.end)) === canonicalBlock(block) ? text : text.slice(0, at.start) + block + text.slice(at.end)
   if (!text) return `${block}${eol}`
   return `${text}${text.endsWith('\n') ? '' : eol}${eol}${block}${eol}`
 }

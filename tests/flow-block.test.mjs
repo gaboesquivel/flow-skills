@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
-import { BEGIN, END, buildFlowBlock, describeLayout, ensureImport, instructionFile, readDelivery, upsertFlowBlock, removeFlowBlock, writeFlowBlock } from '../skills/flow/lib/flow-block.mjs'
+import { BEGIN, END, alignTable, buildFlowBlock, describeLayout, ensureImport, instructionFile, readDelivery, upsertFlowBlock, removeFlowBlock, writeFlowBlock } from '../skills/flow/lib/flow-block.mjs'
 
 const skillsRoot = join(dirname(fileURLToPath(import.meta.url)), '..', 'skills')
 
@@ -17,6 +17,48 @@ test('block has markers, a Delivery line, the flow pointer, and stays short', ()
   assert.match(block, /`flow` skill/u)
   assert.match(block, /"ship it".*`ship`/u)
   assert.ok(block.split('\n').length <= 25)
+})
+
+test('the phrase table is aligned the way Markdown formatters write it', () => {
+  assert.deepEqual(alignTable([['A', 'Long header'], ['wider cell', 'x']]), ['| A          | Long header |', '| ---------- | ----------- |', '| wider cell | x           |'])
+  const rows = buildFlowBlock({ delivery: 'local' }).split('\n').filter((line) => line.startsWith('|'))
+  assert.equal(rows.length, 12)
+  const pipes = (line) => [...line].flatMap((char, at) => (char === '|' ? [at] : []))
+  for (const row of rows) assert.deepEqual(pipes(row), pipes(rows[0]))
+  assert.match(rows[1], /^\| -+ \| -+ \|$/u)
+  assert.match(buildFlowBlock(), new RegExp(`^${BEGIN}\n\n## Flow\n[^]*\n\n${END}$`, 'u'))
+})
+
+// The block as an older helper or a different formatter wrote it: unaligned cells, short separators, no padding blank lines.
+const respaced = (text) =>
+  text
+    .replace(/^\|.*\|$/gmu, (row) => row.split('|').map((cell) => (/^ *-+ *$/u.test(cell) ? ' :--- ' : cell.trim() ? `  ${cell.trim()} ` : cell)).join('|'))
+    .replace(`${BEGIN}\n\n`, `${BEGIN}\n`)
+    .replace(`\n\n${END}`, `\n${END}`)
+
+test('a block that differs only in table spacing reads as Unchanged', (t) => {
+  const once = upsertFlowBlock('# Project\n', { delivery: 'local' })
+  const other = respaced(once)
+  assert.notEqual(other, once)
+  assert.equal(upsertFlowBlock(other), other)
+  assert.equal(upsertFlowBlock(other, { delivery: 'local' }), other)
+  const dir = mkdtempSync(join(tmpdir(), 'flow-block-'))
+  t.after(() => rmSync(dir, { recursive: true, force: true }))
+  writeFileSync(join(dir, 'CLAUDE.md'), other)
+  assert.equal(writeFlowBlock(dir, { delivery: 'local' }).changed, false)
+  assert.equal(readFileSync(join(dir, 'CLAUDE.md'), 'utf8'), other)
+})
+
+test('a changed Delivery or phrase still rewrites a re-spaced block', (t) => {
+  const once = upsertFlowBlock('# Project\n', { delivery: 'local' })
+  const other = respaced(once)
+  assert.equal(upsertFlowBlock(other, { delivery: 'github' }), upsertFlowBlock('# Project\n', { delivery: 'github' }))
+  assert.equal(upsertFlowBlock(other.replace('"build it"', '"build this"')), once)
+  const dir = mkdtempSync(join(tmpdir(), 'flow-block-'))
+  t.after(() => rmSync(dir, { recursive: true, force: true }))
+  writeFileSync(join(dir, 'CLAUDE.md'), other)
+  assert.equal(writeFlowBlock(dir, { delivery: 'github' }).changed, true)
+  assert.equal(readDelivery(readFileSync(join(dir, 'CLAUDE.md'), 'utf8')), 'github')
 })
 
 test('upsert appends once, then updates in place without touching outside text', () => {
