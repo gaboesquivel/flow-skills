@@ -20,8 +20,8 @@ Ask only for what is still missing, in one question round:
 2. **Local destination directory.** Default to the **current working directory** when `assessDestination` accepts it; propose a nested or sibling directory only when the user asks or the current one is refused.
 3. **Template** — only when not inferred. Recommend **flow-next** for a single Next.js app, **flow-mono** for Turborepo (`apps/web`, `packages/ui`).
 4. **Optional GitHub remote** — only when the user wants a new repository created or linked; never assume push access.
-5. **Process depth** — only when not stated: **Lite** (recommended) or **Full**, as the `flow` skill defines them.
-6. **Delivery mode** — only when not stated: **local** or **pull requests**, as `build`'s Delivery mode section defines them. Suggest local when no GitHub repository is created, and pull requests when one is; this basis is start-specific because the repository is being created.
+5. **Discovery depth** — only when not stated: **Lite** (recommended) or **Full**, as the `flow` skill defines them.
+6. **Delivery** — independent of item 5, as `flow` defines it; only when not stated: **local** or **pull requests**, as `build`'s Delivery mode section defines them. Suggest local when no GitHub repository is created, and pull requests when one is; this basis is start-specific because the repository is being created.
 
 If an answer does not arrive, ask again; do not substitute a destination the user did not confirm.
 
