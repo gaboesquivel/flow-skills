@@ -86,7 +86,7 @@ flow-skills offers a small catalog: **context alignment** (`flow`) for root cont
 
 | Layer | Skills |
 | --- | --- |
-| Context alignment | [`flow`](skills/flow/SKILL.md) — align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md` where hosts support discovery, and set up Flow: the opt-in Flow block with a Lite or Full [process depth](GLOSSARY.md#process-depth). Not always-on, and not template initialization. |
+| Context alignment | [`flow`](skills/flow/SKILL.md) — align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md` where hosts support discovery, and set up Flow: the opt-in Flow block with a Lite or Full [discovery depth](GLOSSARY.md#discovery-depth). Not always-on, and not template initialization. |
 | Delivery | `explore`, `interview`, `grill`, `to-spec`, `to-tasks`, `build`, `review`, `ship`, `retro` |
 | Advisory | `council` |
 | Prototype | `prototype` |

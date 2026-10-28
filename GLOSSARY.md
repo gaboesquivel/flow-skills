@@ -64,11 +64,11 @@ The report `build` posts after each integration batch: tasks integrated, running
 
 ## Acceptance scenario
 
-The one representative end-to-end journey a spec names in its Testing Decisions: the actor, the starting state with realistic data, and numbered steps with the observable result of each, plus the same journey through the agent interface when the spec names agent users. A spec without one is not accepted. [`to-spec`](skills/to-spec/SKILL.md) owns the rule; [decision 0032](docs/decisions/0032-local-build-lands-ship-verifies.md).
+The one representative end-to-end journey a spec names in its Testing Decisions: the actor, the starting state with realistic data, and numbered steps with the observable result of each (write steps marked production-safe or not), plus the same journey through the agent interface when the spec names agent users. A spec without one is not accepted. [`to-spec`](skills/to-spec/SKILL.md) owns the rule; [decision 0032](docs/decisions/0032-local-build-lands-ship-verifies.md).
 
 ## Verification
 
-What `ship` does after landing: find the GitHub deployment for the shipped commit and run the spec's [acceptance scenario](#acceptance-scenario) on it in a real browser, recording each step's observed result with screenshots. In pull-request mode it also runs on the preview deployment before the merge, where a failure blocks. With no deployment it runs on the local app and reports **deployment unverified**; a failure after the merge or push is **shipped, verification failed**, and nothing is rolled back unless asked. Distinct from green checks. [`ship`](skills/ship/SKILL.md#verify) owns the rule; [decision 0032](docs/decisions/0032-local-build-lands-ship-verifies.md).
+What `ship` does after landing: find the GitHub deployment for the shipped commit and run the spec's [acceptance scenario](#acceptance-scenario) on it in a real browser, recording each step's observed result with screenshots. In pull-request mode it also runs on the preview deployment before the merge, where a failure blocks. With no deployment, the preview run is skipped; after the merge or push it runs on the local app and reports **deployment unverified**; a failure after the merge or push is **shipped, verification failed**, and nothing is rolled back unless asked. Distinct from green checks. [`ship`](skills/ship/SKILL.md#verify) owns the rule; [decision 0032](docs/decisions/0032-local-build-lands-ship-verifies.md).
 
 ## Candidate spec
 

@@ -1,6 +1,6 @@
 # 0032 — Local build lands on main; ship publishes and verifies
 
-Status: **Accepted** (2026-10-28). Amends [0028](0028-build-and-ship.md) (no deployment verification) [0029](0029-spec-issues.md) (local `build` runs the spec review), and [0030](0030-asked-delivery-and-local-mode.md) (local `ship` merges and pushes only on request). Spec: [020](../specs/020-ship-verifies.md).
+Status: **Accepted** (2026-10-28). Amends [0028](0028-build-and-ship.md) (no deployment verification), [0029](0029-spec-issues.md) (local `build` runs the spec review), and [0030](0030-asked-delivery-and-local-mode.md) (local `ship` merges and pushes only on request). Spec: [020](../specs/020-ship-verifies.md).
 
 ## Context
 
@@ -10,7 +10,7 @@ Flow's last step checks CI and a code review, then stops. Decision 0028 retired 
 
 1. **Local `build` lands on local `main`.** Tasks still integrate on a spec branch. After the last integration, a passing suite, the acceptance gate, and the one independent review, `build` merges the spec branch into local `main` with `--no-ff`. It never pushes.
 2. **`ship` publishes and verifies.** Local mode: "ship it" is the push request; `ship` pushes `main` when a remote exists. Pull-request mode: merge as before. Then `ship` verifies the shipped commit.
-3. **Verification reads GitHub, then runs the journey.** `ship` reads GitHub deployment statuses for the commit and runs the spec's acceptance scenario against the deployed URL in a real browser, and through the MCP tool when agent users are named. No deployment means the scenario runs locally and the deployment is reported unverified. A failure after publishing is reported with evidence; nothing is rolled back unless asked.
+3. **Verification reads GitHub, then runs the journey.** `ship` reads GitHub deployment statuses for the commit and runs the spec's acceptance scenario against the deployed URL in a real browser, and through the MCP tool when agent users are named. With no deployment after publishing, the scenario runs locally and the deployment is reported unverified; before a merge the preview run is skipped. On production only read-only and production-safe steps run, and the URL must be one the project recognizes. A failure after publishing is reported with evidence; nothing is rolled back unless asked.
 4. **Specs name the scenario.** `to-spec` requires one representative acceptance scenario with realistic data.
 5. **Discovery depth and delivery stay independent** and are asked as two labelled questions.
 
