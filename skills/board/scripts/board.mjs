@@ -3,6 +3,7 @@
 // Zero dependencies, Node >= 22. Stages: Candidate, Specced, Ready, Building, Shipped.
 import { execFileSync } from 'node:child_process'
 import { mkdirSync, writeFileSync } from 'node:fs'
+import { createServer } from 'node:http'
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -69,6 +70,7 @@ function readBlobs(repoRoot, objects) {
 const mergeCache = new Map()
 
 function cached(key, compute) {
+  if (mergeCache.size > 10000) mergeCache.clear() // a long-running server sees many default tips
   if (!mergeCache.has(key)) mergeCache.set(key, compute())
   return mergeCache.get(key)
 }
@@ -290,19 +292,66 @@ function renderCard(card) {
   return `<li class="card" data-spec="${escapeHtml(card.number)}"><p class="num">${escapeHtml(card.number)}</p><h3>${escapeHtml(card.title)}</h3>${meta.length ? `<p class="meta">${meta.join('')}</p>` : ''}${marker}</li>`
 }
 
-/** Self-contained page: inline CSS, no external requests. */
-export function renderHtml(board) {
+const subline = (board) => [board.defaultBranch && `from ${board.defaultBranch}`, board.generatedAt && `generated ${board.generatedAt}`].filter(Boolean).join(' · ')
+
+// Live page client: polls ./state and rebuilds the columns with the same markup as renderCard, through
+// textContent only. No board data is inlined into the script.
+const LIVE_SCRIPT = `(() => {
+const main = document.querySelector('main'), sub = document.querySelector('header .sub'), banner = document.getElementById('banner')
+const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n }
+const card = (c) => {
+  const li = el('li', 'card'); li.dataset.spec = c.number
+  li.append(el('p', 'num', c.number), el('h3', null, c.title))
+  const meta = []
+  if (c.tasks.total) meta.push(el('span', 'progress', c.tasks.done + '/' + c.tasks.total))
+  if (c.branch) meta.push(el('span', 'branch', c.branch))
+  if (meta.length) { const p = el('p', 'meta'); p.append(...meta); li.append(p) }
+  if (c.marker) li.append(el('p', 'marker', c.marker))
+  return li
+}
+const column = (col) => {
+  const s = el('section', 'col'); s.dataset.stage = col.id
+  const h = el('h2', null, col.title + ' '); h.append(el('span', 'count', String(col.cards.length)))
+  const ul = el('ul'); ul.append(...col.cards.map(card)); s.append(h, ul)
+  return s
+}
+const show = (msg) => { banner.textContent = msg; banner.hidden = !msg }
+let last = null
+async function poll() {
+  try {
+    const res = await fetch('state', { cache: 'no-store' })
+    const data = await res.json()
+    if (!res.ok || data.error) show('Not updating: ' + (data.error || 'HTTP ' + res.status) + '. Showing the last good board.')
+    else {
+      show('')
+      const key = JSON.stringify(data.columns)
+      if (key !== last) { last = key; main.replaceChildren(...data.columns.map(column)) }
+      sub.textContent = [data.defaultBranch && 'from ' + data.defaultBranch, data.generatedAt && 'generated ' + data.generatedAt].filter(Boolean).join(' · ')
+    }
+  } catch { show('Board server not reachable. Showing the last good board.') }
+  setTimeout(poll, 2000)
+}
+setTimeout(poll, 2000)
+})()`
+
+/**
+ * Self-contained page: inline CSS, no external requests. With `live`, adds an error banner and a script
+ * that polls `state` (same origin) every 2 s; without it the page has no script.
+ */
+export function renderHtml(board, { live = false } = {}) {
   const title = board.repoName ? `${board.repoName} board` : 'Board'
   const columns = board.columns.map((column) => `<section class="col" data-stage="${escapeHtml(column.id)}"><h2>${escapeHtml(column.title)} <span class="count">${column.cards.length}</span></h2><ul>${column.cards.map(renderCard).join('')}</ul></section>`).join('')
-  const sub = [board.defaultBranch && `from ${board.defaultBranch}`, board.generatedAt && `generated ${board.generatedAt}`].filter(Boolean).join(' · ')
+  const csp = live ? "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self'" : "default-src 'none'; style-src 'unsafe-inline'"
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="${csp}">
 <title>${escapeHtml(title)}</title>
 <style>
-:root{--bg:#f6f6f4;--col:#ecebe7;--card:#fff;--text:#1d1d1b;--muted:#6b6a65;--line:#d9d8d2;--accent:#2f5d8a;--warn:#9a5b00;color-scheme:light dark}
-@media (prefers-color-scheme:dark){:root{--bg:#161615;--col:#1f1f1d;--card:#2a2a27;--text:#ecebe7;--muted:#a19f97;--line:#3a3a36;--accent:#8db4dc;--warn:#e0a84a}}
+:root{--bg:#f6f6f4;--col:#ecebe7;--card:#fff;--text:#1d1d1b;--muted:#6b6a65;--line:#d9d8d2;--accent:#2f5d8a;--warn:#9a5b00;--warn-bg:#fbf0dc;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#161615;--col:#1f1f1d;--card:#2a2a27;--text:#ecebe7;--muted:#a19f97;--line:#3a3a36;--accent:#8db4dc;--warn:#e0a84a;--warn-bg:#33281a}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
 header{padding:16px}header h1{margin:0;font-size:18px}header p{margin:4px 0 0;color:var(--muted);font-size:12px}
+.banner{margin:0 16px 12px;padding:8px 10px;border-radius:6px;background:var(--warn-bg);color:var(--warn);font-size:12px;overflow-wrap:anywhere}
 main{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding:0 16px 16px}
 .col{background:var(--col);border-radius:8px;padding:10px;min-width:0}.col h2{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
 .count{color:var(--muted);font-weight:400}ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
@@ -312,7 +361,7 @@ main{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding
 .branch{color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.marker{margin:6px 0 0;font-size:12px;color:var(--warn)}
 @media (max-width:760px){main{grid-template-columns:1fr}}
 </style></head>
-<body><header><h1>${escapeHtml(title)}</h1>${sub ? `<p>${escapeHtml(sub)}</p>` : ''}</header><main>${columns}</main></body></html>
+<body><header><h1>${escapeHtml(title)}</h1><p class="sub">${escapeHtml(subline(board))}</p></header>${live ? '<p id="banner" class="banner" role="status" hidden></p>' : ''}<main>${columns}</main>${live ? `<script>${LIVE_SCRIPT}</script>` : ''}</body></html>
 `
 }
 
@@ -321,28 +370,113 @@ export function defaultOutPath(repoRoot) {
   return join(common, 'flow', 'board.html')
 }
 
+const firstLines = (message) => String(message).split('\n').slice(0, 2).join(' ').slice(0, 300)
+
+/**
+ * Serves the live board on 127.0.0.1: `/` is the page, `/state` the derived board as JSON. The board is
+ * recomputed at most once per `memoMs`, however many tabs poll. A git failure after start makes `/state`
+ * answer 500 `{ error }`; the page keeps its last good board and shows a banner. Throws when the first
+ * derivation fails; rejects when the port cannot be bound.
+ */
+export async function startServer({ repoRoot, port = 0, memoMs = 1000 }) {
+  let lastGood = deriveBoard(readSnapshot(repoRoot))
+  let memo = { at: Date.now(), value: { status: 200, body: lastGood } }
+  const state = () => {
+    if (Date.now() - memo.at < memoMs) return memo.value
+    let value
+    try {
+      lastGood = deriveBoard(readSnapshot(repoRoot))
+      value = { status: 200, body: lastGood }
+    } catch (error) {
+      value = { status: 500, body: { error: firstLines(error.message) } }
+    }
+    memo = { at: Date.now(), value }
+    return value
+  }
+  const server = createServer((req, res) => {
+    const send = (status, type, body) => {
+      res.writeHead(status, { 'content-type': type, 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' })
+      res.end(req.method === 'HEAD' ? undefined : body)
+    }
+    // Same-machine hostnames only: blocks DNS-rebinding reads from other sites.
+    const bound = server.address().port
+    if (![`127.0.0.1:${bound}`, `localhost:${bound}`].includes(req.headers.host)) return send(403, 'text/plain', 'Forbidden\n')
+    if (req.method !== 'GET' && req.method !== 'HEAD') return send(405, 'text/plain', 'Method not allowed\n')
+    const path = new URL(req.url, 'http://127.0.0.1').pathname
+    if (path === '/state') {
+      const { status, body } = state()
+      return send(status, 'application/json; charset=utf-8', JSON.stringify(body))
+    }
+    if (path === '/') {
+      state()
+      return send(200, 'text/html; charset=utf-8', renderHtml(lastGood, { live: true }))
+    }
+    return send(404, 'text/plain', 'Not found\n')
+  })
+  await new Promise((resolveListen, reject) => {
+    server.once('error', reject)
+    server.listen(port, '127.0.0.1', () => { server.off('error', reject); resolveListen() })
+  })
+  const url = `http://127.0.0.1:${server.address().port}/`
+  const close = () => new Promise((resolveClose) => { server.close(() => resolveClose()); server.closeAllConnections() })
+  return { server, url, close }
+}
+
+export const DEFAULT_PORT = 4178
+
 function parseArgs(argv) {
-  const args = { once: false, json: false, out: null, repo: process.cwd() }
+  const args = { once: false, json: false, serve: false, port: null, out: null, repo: process.cwd() }
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]
     if (arg === '--once') args.once = true
     else if (arg === '--json') args.json = true
-    else if (arg === '--out' || arg === '--repo') {
+    else if (arg === '--serve') args.serve = true
+    else if (arg === '--out' || arg === '--repo' || arg === '--port') {
       const value = argv[++i]
       if (!value || value.startsWith('--')) throw new Error(`${arg} needs a value`)
       args[arg.slice(2)] = value
     } else throw new Error(`Unknown argument: ${arg}`)
   }
+  if (args.port !== null) {
+    const port = Number(args.port)
+    if (!Number.isInteger(port) || port < 0 || port > 65535) throw new Error(`--port must be 0-65535: ${args.port}`)
+    args.port = port
+  }
+  if (args.serve && (args.once || args.json)) throw new Error('--serve cannot be combined with --once or --json')
   return args
 }
 
-export function main(argv = process.argv.slice(2)) {
-  const usage = 'Usage: board.mjs --once [--out <file>] [--repo <path>] | --json [--repo <path>]'
+async function serve(repoRoot, port) {
+  let live
+  try {
+    try {
+      live = await startServer({ repoRoot, port: port ?? DEFAULT_PORT })
+    } catch (error) {
+      // The fixed default keeps the URL stable across restarts; fall back to any free port when it is taken.
+      if (error.code !== 'EADDRINUSE' || port !== null) throw error
+      live = await startServer({ repoRoot, port: 0 })
+    }
+  } catch (error) {
+    console.error(error.code === 'EADDRINUSE' ? `Port ${port} is in use.` : error.message)
+    return 1
+  }
+  console.log(`Board at ${live.url} (pid ${process.pid}). Stop with Ctrl-C or kill ${process.pid}.`)
+  return new Promise((resolveExit) => {
+    const stop = () => { live.close().then(() => resolveExit(0)) }
+    process.once('SIGINT', stop)
+    process.once('SIGTERM', stop)
+  })
+}
+
+/** Resolves to the exit code; with `--serve`, once the server stops on SIGINT or SIGTERM. */
+export async function main(argv = process.argv.slice(2)) {
+  const usage = 'Usage: board.mjs --serve [--port <n>] [--repo <path>] | --once [--out <file>] [--repo <path>] | --json [--repo <path>]'
   let args
   try { args = parseArgs(argv) } catch (error) { console.error(`${error.message}\n${usage}`); return 2 }
-  if (!args.once && !args.json) { console.error(usage); return 2 }
+  if (!args.once && !args.json && !args.serve) { console.error(usage); return 2 }
   const repoRoot = tryGit(resolve(args.repo), ['rev-parse', '--show-toplevel'])
   if (!repoRoot) { console.error(`Not inside a git repository: ${args.repo}`); return 1 }
+  if (args.serve) return serve(repoRoot, args.port)
   let board
   try { board = deriveBoard(readSnapshot(repoRoot)) } catch (error) { console.error(error.message); return 1 }
   if (args.json) console.log(JSON.stringify(board, null, 2))
@@ -355,4 +489,4 @@ export function main(argv = process.argv.slice(2)) {
   return 0
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) process.exitCode = main()
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) process.exitCode = await main()

@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict'
-import { execFileSync, spawnSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { execFileSync, spawn, spawnSync } from 'node:child_process'
+import { mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs'
+import http from 'node:http'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import test from 'node:test'
-import { countTasks, deriveBoard, parseStatus, readSnapshot, renderHtml } from '../skills/board/scripts/board.mjs'
+import { countTasks, deriveBoard, parseStatus, readSnapshot, renderHtml, startServer } from '../skills/board/scripts/board.mjs'
 
 const script = join(import.meta.dirname, '../skills/board/scripts/board.mjs')
 
@@ -368,5 +369,92 @@ test('--repo or --out without a value prints usage and exits 2', () => {
     const run = spawnSync(process.execPath, [script, ...args], { encoding: 'utf8' })
     assert.equal(run.status, 2, args.join(' '))
     assert.match(run.stderr, /Usage/u)
+  }
+})
+
+const sleep = (ms) => new Promise((done) => setTimeout(done, ms))
+const MEMO_WINDOW = 1100
+
+function statusWithHost(url, host) {
+  return new Promise((done, fail) => {
+    http.get(url, { headers: { host } }, (res) => { res.resume(); res.on('end', () => done(res.statusCode)) }).on('error', fail)
+  })
+}
+
+test('live server: /state JSON, page, memo window, new commits, git failure, host check', async () => {
+  const { dir, write, commit } = makeRepo()
+  write('001-first.md', spec('001: First', 'draft'))
+  commit('first')
+  const live = await startServer({ repoRoot: dir, port: 0 })
+  try {
+    assert.equal(live.server.address().address, '127.0.0.1')
+    assert.match(live.url, /^http:\/\/127\.0\.0\.1:\d+\/$/u)
+
+    const res = await fetch(new URL('state', live.url))
+    assert.equal(res.status, 200)
+    assert.match(res.headers.get('content-type'), /application\/json/u)
+    const board = await res.json()
+    assert.deepEqual(board.columns.map((column) => column.id), ['candidate', 'specced', 'ready', 'building', 'shipped'])
+    assert.equal(board.defaultBranch, 'main')
+    assert.deepEqual(Object.keys(cardOf(board, '001')).sort(), ['branch', 'marker', 'number', 'reason', 'slug', 'source', 'status', 'tasks', 'title'])
+
+    const html = await (await fetch(live.url)).text()
+    assert.match(html, /<h2>Specced <span class="count">1<\/span>/u)
+    assert.match(html, /fetch\('state'/u)
+    assert.match(html, /id="banner"/u)
+    assert.doesNotMatch(html, /https?:\/\//u)
+    assert.doesNotMatch(html, /innerHTML/u)
+
+    write('002-second.md', spec('002: Second', 'candidate'))
+    commit('second')
+    const memoized = await (await fetch(new URL('state', live.url))).json()
+    assert.equal(memoized.generatedAt, board.generatedAt, 'recomputed inside the memo window')
+    await sleep(MEMO_WINDOW)
+    const fresh = await (await fetch(new URL('state', live.url))).json()
+    assert.equal(stageOf(fresh, '002'), 'candidate')
+
+    renameSync(join(dir, '.git'), join(dir, '.git-off'))
+    await sleep(MEMO_WINDOW)
+    const failed = await fetch(new URL('state', live.url))
+    assert.equal(failed.status, 500)
+    assert.equal(typeof (await failed.json()).error, 'string')
+    assert.match(await (await fetch(live.url)).text(), /Second/u, 'page keeps the last good board')
+    renameSync(join(dir, '.git-off'), join(dir, '.git'))
+
+    assert.equal(await statusWithHost(live.url, 'evil.example'), 403)
+    assert.equal((await fetch(new URL('nope', live.url))).status, 404)
+  } finally {
+    await live.close()
+    rmSync(dir, { recursive: true, force: true })
+  }
+  assert.equal(live.server.listening, false)
+})
+
+test('--serve prints the URL and exits 0 on SIGTERM', async () => {
+  const { dir, write, commit } = makeRepo()
+  write('001-served.md', spec('001: Served', 'draft'))
+  commit('specs')
+  const child = spawn(process.execPath, [script, '--serve', '--port', '0', '--repo', dir], { stdio: ['ignore', 'pipe', 'pipe'] })
+  const exited = new Promise((done) => child.on('exit', (code, signal) => done({ code, signal })))
+  try {
+    let out = ''
+    const url = await new Promise((done, fail) => {
+      child.stdout.on('data', (chunk) => { out += chunk; const match = /http:\/\/127\.0\.0\.1:\d+\//u.exec(out); if (match) done(match[0]) })
+      child.on('exit', () => fail(new Error(`server exited early: ${out}`)))
+    })
+    const board = await (await fetch(new URL('state', url))).json()
+    assert.equal(cardOf(board, '001').title, 'Served')
+    child.kill('SIGTERM')
+    assert.deepEqual(await exited, { code: 0, signal: null })
+  } finally {
+    if (child.exitCode === null && child.signalCode === null) child.kill('SIGKILL')
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('--serve rejects bad ports and mixed modes', () => {
+  for (const args of [['--serve', '--port', 'x'], ['--serve', '--port', '70000'], ['--serve', '--once']]) {
+    const run = spawnSync(process.execPath, [script, ...args], { encoding: 'utf8' })
+    assert.equal(run.status, 2, args.join(' '))
   }
 })
