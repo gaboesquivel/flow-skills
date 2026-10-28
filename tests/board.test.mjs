@@ -7,7 +7,7 @@ import { join } from 'node:path'
 import test, { describe } from 'node:test'
 import vm from 'node:vm'
 import { readDelivery as flowReadDelivery } from '../skills/flow/lib/flow-block.mjs'
-import { countTasks, deriveBoard, escapeHtml, fetchGithub, githubReader, githubSource, LIVE_SCRIPT, overlayPath, parseGithubRemote, parseTasks, readDelivery, parseStatus, readSnapshot, record, recordRunEnd, recordRunStart, recordTask, renderHtml, startServer } from '../skills/board/scripts/board.mjs'
+import { countTasks, deriveBoard, main, escapeHtml, fetchGithub, githubReader, githubSource, LIVE_SCRIPT, overlayPath, parseGithubRemote, parseTasks, readDelivery, parseStatus, readSnapshot, record, recordRunEnd, recordRunStart, recordTask, renderHtml, startServer } from '../skills/board/scripts/board.mjs'
 
 const script = join(import.meta.dirname, '../skills/board/scripts/board.mjs')
 
@@ -83,9 +83,9 @@ test('task counting: checkboxes, or ### headings with Status done or all boxes c
   assert.deepEqual(countTasks('# X\n\nno tasks\n'), { done: 0, total: 0 })
 })
 
-test('unmerged branch whose last segment contains the slug is Building', () => {
+test('local mode: unmerged branch whose last segment contains the slug is Building', () => {
   const branches = [{ name: 'feat/progress-board', remote: false, merged: false }, { name: 'feat/other', remote: false, merged: false }]
-  const board = deriveBoard(snapshot({ '012-progress-board.md': spec('012: Progress board', 'draft') }, branches))
+  const board = deriveBoard({ ...snapshot({ '012-progress-board.md': spec('012: Progress board', 'draft') }, branches), delivery: 'local' })
   assert.equal(stageOf(board, '012'), 'building')
   assert.equal(cardOf(board, '012').branch, 'feat/progress-board')
 })
@@ -207,7 +207,8 @@ test('empty branch cut from an older default commit is not merged', () => withRe
   commit('main moves on')
   const snap = readSnapshot(dir)
   assert.equal(snap.branches.find((b) => b.name === 'feat/old-branch').merged, false)
-  assert.equal(stageOf(deriveBoard(snap), '001'), 'building')
+  assert.equal(stageOf(deriveBoard({ ...snap, delivery: 'local' }), '001'), 'building', 'local mode counts the open branch')
+  assert.equal(stageOf(deriveBoard(snap), '001'), 'specced', 'unset delivery is pull-request mode: no implementation work')
 }))
 
 test('merged branch ships only when tasks are done; card branch is the one the rule used', () => withRepo(({ dir, git, write, commit }) => {
@@ -1035,9 +1036,7 @@ test('recorder: parallel records all land; a held lock times out; a stale lock i
 
     writeFileSync(`${path}.lock`, '')
     assert.throws(() => record(dir, 'task', { task: '01', state: 'failed' }, { waitMs: 100 }), /locked by another record/u)
-    const timedOut = spawnSync(process.execPath, [script, '--record', 'task', '--task', '01', '--state', 'failed', '--repo', dir], { encoding: 'utf8', env: { ...process.env, FLOW_BOARD_TEST_LOCK_WAIT_MS: '50' } })
-    assert.equal(timedOut.status, 1, 'CLI timeout exits 1')
-    assert.match(timedOut.stderr, /locked by another record/u)
+    assert.equal(await main(['--record', 'task', '--task', '01', '--state', 'failed', '--repo', dir], { lockWaitMs: 50 }), 1, 'CLI timeout exits 1')
     assert.equal(JSON.parse(readFileSync(path, 'utf8')).tasks['01'].state, 'working', 'nothing written on timeout')
     const old = new Date(Date.now() - 60_000)
     utimesSync(`${path}.lock`, old, old)
@@ -1096,9 +1095,12 @@ test('pull-request mode: an open branch alone is not Building; code, a ticked ta
   assert.deepEqual(['020', '021', '022', '023', '012'].map((n) => stageOf(board, n)), ['specced', 'ready', 'building', 'building', 'building'])
   assert.equal(cardOf(board, '020').branch, null, 'an uncounted branch is not the card branch')
   assert.equal(cardOf(board, '022').branch, 'feat/022-coded')
-  const gitOnly = deriveBoard(snapshot(specs, branches))
-  assert.equal(stageOf(gitOnly, '020'), 'building', 'without GitHub (local mode, --no-github) any open branch still counts')
-  assert.equal(stageOf(deriveBoard({ ...snapshot(specs, branches), delivery: 'local', github: github() }), '020'), 'building', 'local mode is unchanged')
+  const stages = (extra) => ['020', '021', '022', '023', '012'].map((n) => stageOf(deriveBoard({ ...snapshot(specs, branches), generatedAt: NOW, overlay, ...extra }), n))
+  for (const extra of [{}, { github: null }, { github: { available: false, reason: 'gh not authenticated' } }, { delivery: 'pull-request', github: null }]) {
+    assert.deepEqual(stages(extra), ['specced', 'ready', 'building', 'building', 'building'], `delivery decides, not GitHub data: ${JSON.stringify(extra)}`)
+  }
+  assert.equal(stageOf(deriveBoard({ ...snapshot(specs, branches), delivery: 'local' }), '020'), 'building', 'local mode: any open branch counts')
+  assert.equal(stageOf(deriveBoard({ ...snapshot(specs, branches), delivery: 'local', github: github() }), '020'), 'building', 'local mode is unchanged with GitHub data')
 })
 
 test('readSnapshot: in pull-request mode open spec branches carry implementation from git', () => withRepo(({ dir, git, write, commit }) => {
@@ -1117,9 +1119,21 @@ test('readSnapshot: in pull-request mode open spec branches carry implementation
   const board = deriveBoard(withGh)
   assert.equal(stageOf(board, '020'), 'specced')
   assert.equal(stageOf(board, '021'), 'building')
-  const gitOnly = readSnapshot(dir)
-  assert.equal(gitOnly.branches[0].implementation, undefined, 'git-only reads skip the check')
-  assert.equal(stageOf(deriveBoard(gitOnly), '020'), 'building')
+  // No GitHub source (warm-up, --no-github): unset delivery still applies the rule, also to a pushed branch.
+  git('update-ref', 'refs/remotes/origin/feat/020-widget', 'feat/020-widget')
+  git('branch', '--quiet', '-D', 'feat/020-widget')
+  const noGh = readSnapshot(dir)
+  assert.deepEqual(noGh.branches.map((b) => [b.name, b.implementation]), [['feat/021-gadget', true], ['origin/feat/020-widget', false]])
+  assert.equal(stageOf(deriveBoard(noGh), '020'), 'specced', 'a docs-only pushed branch stays Specced without GitHub')
+  assert.equal(stageOf(deriveBoard(readSnapshot(dir, { github: () => null })), '020'), 'specced', 'a null GitHub source changes nothing')
+  writeFileSync(join(dir, 'AGENTS.md'), '<!-- BEGIN FLOW -->\nDelivery: pull-request\n<!-- END FLOW -->\n')
+  commit('pull-request delivery')
+  assert.equal(stageOf(deriveBoard(readSnapshot(dir)), '020'), 'specced', 'Delivery: pull-request without GitHub')
+  writeFileSync(join(dir, 'AGENTS.md'), '<!-- BEGIN FLOW -->\nDelivery: local\n<!-- END FLOW -->\n')
+  commit('local delivery')
+  const local = readSnapshot(dir)
+  assert.equal(local.branches.find((b) => b.name === 'origin/feat/020-widget').implementation, undefined, 'local reads skip the check')
+  assert.equal(stageOf(deriveBoard(local), '020'), 'building', 'local mode: any open branch counts')
 }))
 
 test('spec issue line and task checklist link issues, count progress, and match pull requests', () => {

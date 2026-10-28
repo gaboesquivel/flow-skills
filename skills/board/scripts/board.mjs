@@ -172,9 +172,11 @@ export function readSnapshot(repoRoot, { github = null } = {}) {
     // Without a GitHub remote, enrichment is only worth a note when the project says it uses pull requests.
     if (githubData?.reason === 'no GitHub remote' && delivery !== 'pull-request') githubData = null
   }
-  // In pull-request mode (GitHub read attempted) an open branch counts as Building only with implementation work.
+  // Pull-request mode comes from delivery (unset counts as pull-request, like build), never from GitHub
+  // availability: there an open branch counts as Building only with implementation work.
+  const prMode = delivery !== 'local'
   for (const branch of branches) {
-    if ((branch.merged || githubData) && claimed(branch.name)) branch.implementation = hasImplementationWork(repoRoot, branch, context)
+    if ((branch.merged || prMode) && claimed(branch.name)) branch.implementation = hasImplementationWork(repoRoot, branch, context)
   }
   if (githubData?.available) {
     githubData = {
@@ -740,8 +742,9 @@ export function deriveBoard(snapshot) {
     if (!byNumber.has(number)) byNumber.set(number, { spec, collisions: [] })
     else byNumber.get(number).collisions.push(spec)
   }
-  // Pull-request mode: GitHub was read (or attempted), which never happens in local mode or with --no-github.
-  const prMode = Boolean(snapshot.github) && snapshot.delivery !== 'local'
+  // Pull-request mode follows delivery alone (unset counts as pull-request); GitHub data only adds links,
+  // labels, and candidate issues, so warm-up, unauthenticated gh, and --no-github stage the same way.
+  const prMode = snapshot.delivery !== 'local'
   const dropped = []
   for (const [number, { spec, collisions }] of [...byNumber].sort(([a], [b]) => a.localeCompare(b))) {
     const slug = SPEC_FILE.exec(spec.file)[2]
@@ -1122,14 +1125,11 @@ async function stopServer(repoRoot, port) {
   return 0
 }
 
-// Test-only override of the record lock wait; unset in normal use, so LOCK_WAIT_MS applies.
-const lockOptionsFromEnv = (env) => {
-  const waitMs = Number(env.FLOW_BOARD_TEST_LOCK_WAIT_MS)
-  return env.FLOW_BOARD_TEST_LOCK_WAIT_MS && Number.isFinite(waitMs) && waitMs >= 0 ? { waitMs } : undefined
-}
-
-/** Resolves to the exit code; with `--serve`, once the server stops on SIGINT or SIGTERM. */
-export async function main(argv = process.argv.slice(2)) {
+/**
+ * Resolves to the exit code; with `--serve`, once the server stops on SIGINT or SIGTERM.
+ * `lockWaitMs` overrides the record lock wait (tests); the CLI always uses LOCK_WAIT_MS.
+ */
+export async function main(argv = process.argv.slice(2), { lockWaitMs } = {}) {
   const usage = 'Usage: board.mjs --serve [--port <n>] [--repo <path>] [--no-github] | --stop [--port <n>] [--repo <path>] | --once [--out <file>] [--repo <path>] [--no-github] | --json [--repo <path>] [--no-github]'
     + ' | --record run-start --spec <NNN> --branch <name> --mode local|pull-request --tasks <01,02> | --record task --task <NN[,NN…]> --state <state> [--round <n>] [--note <text>] | --record run-end'
   let args
@@ -1140,7 +1140,7 @@ export async function main(argv = process.argv.slice(2)) {
   if (args.record !== null) {
     const { tasks, ...fields } = args.fields
     try {
-      console.log(record(repoRoot, args.record, { ...fields, ...(tasks === undefined ? {} : { tasks: tasks.split(',').map((t) => t.trim()).filter(Boolean) }) }, lockOptionsFromEnv(process.env)))
+      console.log(record(repoRoot, args.record, { ...fields, ...(tasks === undefined ? {} : { tasks: tasks.split(',').map((t) => t.trim()).filter(Boolean) }) }, lockWaitMs === undefined ? undefined : { waitMs: lockWaitMs }))
       return 0
     } catch (error) { console.error(error.message); return 1 }
   }
