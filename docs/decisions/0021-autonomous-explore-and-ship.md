@@ -1,6 +1,6 @@
 # 0021 — Autonomous explore and ship: GitHub issues, grouped pull requests
 
-Status: **Accepted** (2026-10-28). Amends [0019](0019-voice-first-invocation.md) (push confirmation). Amended by [0024](0024-gated-hand-offs.md) (a final gate before merging into or pushing `main`). Related: [0004](0004-portable-skill-catalog.md), [0015](0015-tasks-and-domain-modeling.md). Spec: [010](../specs/010-explore-redesign.md).
+Status: **Accepted** (2026-10-28). Amends [0019](0019-voice-first-invocation.md) (push confirmation). Amended by [0024](0024-gated-hand-offs.md) (a final gate before merging into or pushing `main`). Amended by [0028](0028-build-and-ship.md) (no push confirmation; ship merges after review and green checks). Related: [0004](0004-portable-skill-catalog.md), [0015](0015-tasks-and-domain-modeling.md). Spec: [010](../specs/010-explore-redesign.md).
 
 ## Context
 

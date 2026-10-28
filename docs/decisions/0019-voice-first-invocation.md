@@ -1,6 +1,6 @@
 # 0019 — Voice-first invocation
 
-Status: **Accepted** (2026-10-28). Partially supersedes [0004](0004-portable-skill-catalog.md), [0006](0006-flow-lite-and-flat-docs.md), [0008](0008-leading-words-and-visual-summaries.md), [0013](0013-restore-engineering-skills.md), and [0017](0017-claude-code-skill-coexistence.md). Amended by [0024](0024-gated-hand-offs.md) (named, gated hand-offs).
+Status: **Accepted** (2026-10-28). Partially supersedes [0004](0004-portable-skill-catalog.md), [0006](0006-flow-lite-and-flat-docs.md), [0008](0008-leading-words-and-visual-summaries.md), [0013](0013-restore-engineering-skills.md), and [0017](0017-claude-code-skill-coexistence.md). Amended by [0024](0024-gated-hand-offs.md) (named, gated hand-offs). Amended by [0028](0028-build-and-ship.md) (ship lands with no confirmation).
 
 ## Context
 
