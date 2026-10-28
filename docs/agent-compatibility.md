@@ -20,7 +20,7 @@ Flow does not modify adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or simila
 | Slash commands | `/flow`, `/to-spec`, `/implement`, … when the host maps skill names to commands |
 | Skill picker | Explicit selection by skill name |
 
-Every skill is model-invocable. Matching a phrase to a skill is probabilistic: hosts choose from descriptions, and dictation can mishear. For that reason `start` confirms template, name, and destination before writing ([decision 0022](decisions/0022-start-runs-explore.md)), and `ship` confirms before pushing.
+Every skill is model-invocable. Matching a phrase to a skill is probabilistic: hosts choose from descriptions, and dictation can mishear. For that reason `start` confirms template, name, and destination before writing ([decision 0022](decisions/0022-start-runs-explore.md)), and [`ship`](../skills/ship/SKILL.md) gates merging into or pushing `main`. Skills may name the next skill and wait; the only automatic hand-offs are `start` → `explore` and explore's `interview` and `grill` phases, each behind the user's yes ([decision 0024](decisions/0024-gated-hand-offs.md)).
 
 **Root context alignment** is not guaranteed by implicit `flow` invocation alone. Hosts may skip alignment on ordinary implementation work. The portable contract is: `implement` and `review` remind agents to align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` when meaningful changes warrant it; adopters can also say "update the docs".
 
@@ -36,7 +36,7 @@ Metadata and contract tests show the intended invocation split. They do not show
 
 "Set up Flow here" writes one Flow block between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->` in `AGENTS.md`, or in `CLAUDE.md` when that is the only instruction file ([decision 0020](decisions/0020-flow-mode.md)). Every host that reads the file sees the phrases; this is the portable stand-in for a session-start hook. Re-running updates the block in place; deleting it opts out.
 
-"Ship it" on a spec's task set needs isolated workers (for example subagents in separate Git worktrees) for parallel tasks and independent per-task review. Hosts without them run the tasks sequentially on the spec branch and label reviews single-agent. The **delivery mode** on the block's `Delivery:` line picks the finish: pull-request mode needs GitHub access, and local mode needs only Git and a push remote. When the line is unset, the [`ship`](../skills/ship/SKILL.md) skill infers the mode.
+"Ship it" on a spec's task set needs isolated workers (for example subagents in separate Git worktrees) for parallel tasks and independent per-task review. Hosts without them run the tasks sequentially on the spec branch and label reviews single-agent. The block's `Delivery:` line picks the finish: pull-request mode needs GitHub access, and local mode needs only Git and a push remote. The rule lives in [`ship`](../skills/ship/SKILL.md#delivery-mode).
 
 **Dogfooding in this repository.** `.claude/skills` is a symlink to `skills/`, so Claude Code sessions here load the working-tree skills; `pnpm validate` fails if the link breaks. Other hosts read the source tree directly or install it with the skills CLI.
 
@@ -68,21 +68,7 @@ Claude Code ships built-in skills that overlap with parts of the catalog. Flow o
 
 Flow retired `simplify`, `security`, and `performance` in favor of `/simplify`, `/security-review`, and host tooling ([decision 0019](decisions/0019-voice-first-invocation.md)). Flow avoids generic verbs: "review the code" reaches `/code-review`; "check it against the spec" reaches Flow `review`.
 
-Hosts offer no portable skill priority. To make your phrases reliable, you may paste a table like this into your own user-level instructions (for example `~/.claude/CLAUDE.md`). Flow never writes it, and it maps phrases to skills without chaining them:
-
-```markdown
-When I say these phrases, use the named Flow skill:
-- "interview me" → interview
-- "grill me" → grill
-- "spec it" → to-spec
-- "break it down" → to-tasks
-- "build it" → implement
-- "check it against the spec" → review
-- "ship it" → ship
-- "update the docs" → flow
-- "tldr" → tldr
-- "hand off" → handoff
-```
+Hosts offer no portable skill priority. To make your phrases reliable, you may copy the phrase table from [`flow-block.mjs`](../skills/flow/lib/flow-block.mjs) (`PHRASES`, the single source) into your own user-level instructions (for example `~/.claude/CLAUDE.md`), or opt the project into Flow mode so the block carries it. Flow never writes user-level files. The table maps phrases to skills; it does not chain them.
 
 ## Verification status
 

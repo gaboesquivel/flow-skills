@@ -8,7 +8,8 @@ export const BEGIN = '<!-- BEGIN FLOW -->'
 export const END = '<!-- END FLOW -->'
 export const DELIVERY_MODES = ['pull-request', 'local']
 
-const PHRASES = [
+// The one phrase table; docs link here and tests check each phrase against its skill's description.
+export const PHRASES = [
   ['"explore this"', 'explore'],
   ['"interview me"', 'interview'],
   ['"grill this"', 'grill'],

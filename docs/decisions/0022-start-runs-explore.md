@@ -1,6 +1,6 @@
 # 0022 — Start runs explore alongside the bootstrap
 
-Status: **Accepted** (2026-10-28). Amends [0010](0010-optional-start-skill.md) (no discovery during initialization) and [0019](0019-voice-first-invocation.md) (`start` explicit-only). Related: [0020](0020-flow-mode.md), [0023](0023-agent-first.md). Spec: [011](../specs/011-start-with-explore.md).
+Status: **Accepted** (2026-10-28). Amends [0010](0010-optional-start-skill.md) (no discovery during initialization) and [0019](0019-voice-first-invocation.md) (`start` explicit-only). Related: [0020](0020-flow-mode.md), [0023](0023-agent-first.md). Spec: [011](../specs/011-start-with-explore.md). Amended by [0024](0024-gated-hand-offs.md) (`start` explores at Lite depth).
 
 ## Context
 

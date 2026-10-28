@@ -1,6 +1,6 @@
 # 010: Explore redesign
 
-Status: implemented (2026-10-28). Research: [explore discovery entry points](../research/2026-10-28-explore-discovery-entry-points.md). Number 009 is reserved by the Flow mode draft on another branch.
+Status: implemented (2026-10-28). Research: [explore discovery entry points](../research/2026-10-28-explore-discovery-entry-points.md).
 
 ## Problem Statement
 

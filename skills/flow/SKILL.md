@@ -8,7 +8,7 @@ disable-model-invocation: false
 
 **Preserve intent** for the project you are in. Align its root context when work changes what that product is, how it behaves, how it is built, or how the team names important concepts.
 
-This skill is **not** a workflow router: it does not run explore → spec → build sequences or authorize implementation by itself. It is **not** project initialization.
+This skill runs no other skill and authorizes no implementation. Skills may name the next skill and wait; the only automatic hand-offs are `start` → `explore` and explore's `interview` and `grill` phases, each behind the user's yes (decision 0024). It is **not** project initialization.
 
 ## Whose product
 
@@ -34,9 +34,9 @@ Hosts may match this skill when the user asks to update or sync the docs. That i
 "Set up Flow here" opts the project into Flow mode (decision 0020). This section is the one definition of the block; `start` writes the same block after a bootstrap. Run this skill's `lib/flow-block.mjs` with Node, passing the project's absolute path and optionally `local` or `pull-request`, or apply the same rules by hand:
 
 - Target `AGENTS.md`, or `CLAUDE.md` when that is the only instruction file.
-- One block between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->`: a `Delivery:` line (`pull-request`, `local`, or `unset`), a short phrase-to-skill table, and a pointer to this skill. Under about 25 lines.
+- One block between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->`: a `Delivery:` line (`pull-request`, `local`, or `unset`), a short phrase-to-skill table (`PHRASES` in the helper is its one source), and a pointer to this skill. Under about 25 lines.
 - Re-running replaces the block in place and keeps the recorded `Delivery:` unless the user names a mode. Never touch text outside the markers; stop and report when markers are unmatched or repeated.
-- Leave `Delivery:` unset unless the user names a mode; `ship` infers and records it. Deleting the block opts out.
+- Leave `Delivery:` unset unless the user names a mode; `ship` owns the delivery-mode rule and records the mode. Deleting the block opts out.
 
 Report which file was written and show the block. When both `AGENTS.md` and `CLAUDE.md` exist and `CLAUDE.md` does not import `AGENTS.md`, say the block may be invisible to Claude Code and suggest adding an `@AGENTS.md` line to `CLAUDE.md`.
 
@@ -46,7 +46,7 @@ Report which file was written and show the block. When both `AGENTS.md` and `CLA
 - Do not require installation, initialization, or a prior skill invocation.
 - Do not treat alignment edits as permission to implement unrelated code. For authorized implementation and tests, invoke the `implement` skill when installed.
 - Do not create `docs/specs/` or `docs/decisions/` records here; use `to-spec` or explicit decision work when durable bounded artifacts are justified.
-- Suggest other skills (`to-spec`, `domain-modeling`, `review`, …) only when the user asks; no mandatory chain.
+- Name another skill (`to-spec`, `domain-modeling`, `review`, …) only when the user asks, then wait.
 
 ## Completion
 
