@@ -18,6 +18,8 @@ Before a multi-step run, suggest the host's autonomous permission mode when it h
 
 Outside a Git repository, follow `write-agents` [Repository](../write-agents/SKILL.md#repository) first. Inspect the current branch and worktrees, Git status and diff, existing staged changes, the available remote, and the delivery mode as `build` describes under Delivery mode; these reads are independent, so issue them as parallel tool calls, not workers. Settle the mode before the spec gate: when it is unset, ask as `build` describes; a request that names a mode answers it. If the working tree contains changes with unclear ownership, preserve them and avoid staging them blindly. A one-run override ("ship it local", "ship it with GitHub" or "with a PR") changes only the finish, never where tasks live.
 
+**Target.** "Ship it" means ship: never ask whether to. The target is the pull request or work the user names, else the current branch's work, else the one open pull request in the repository; ask only when several are open and nothing picks one. Who started the work (another session, agent, or person) is no reason to stop or ask. When another agent is still pushing to the target branch or has uncommitted changes in its checkout, never edit that checkout or race it: work in your own worktree, wait for its pushes to stop, then ship the pushed head.
+
 Classify the work. Resolve its spec from (a) the branch name, (b) files under `docs/specs/` (or the project's spec location) that the change touches, and (c) the issues the work closes (`Closes #N`) and the spec each links.
 
 - **Spec work:** any source points at a spec, or classification is uncertain. Read the spec from the branch head, after updating from the default branch when it is not accepted there.
