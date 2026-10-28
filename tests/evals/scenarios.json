@@ -434,7 +434,7 @@
         "build",
         "to-tasks"
       ],
-      "behavior": "Task-set build orchestrates ready tasks on one spec branch and ends at a ready pull request, with no confirmation",
+      "behavior": "Task-set build runs the task frontier on one spec branch, waits on CI only for the final pull request, and ends at a ready pull request, with no confirmation",
       "taskFile": "tests/evals/tasks/E20-task.md",
       "rubricFile": "tests/evals/rubrics/E20-rubric.md",
       "skillReferences": [
