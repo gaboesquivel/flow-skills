@@ -124,8 +124,6 @@ Deploy a preview, not production, unless the user explicitly asks for production
 
 Identify the deployment associated with the actual commit SHA.
 
-Do not confuse a previous successful deployment with the new commit.
-
 Perform bounded status checks until success, failure, or a reasonable monitoring limit is reached.
 
 If deployment remains pending, report it as pending rather than successful.
@@ -146,7 +144,6 @@ On failure:
 
 - Preserve the current repository state.
 - Do not force deployment.
-- Do not perform destructive rollback operations without authorization.
 - Report the exact failing stage and evidence.
 - Suggest the smallest corrective action.
 
