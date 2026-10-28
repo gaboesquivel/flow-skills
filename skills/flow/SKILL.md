@@ -33,26 +33,19 @@ Hosts may match this skill when the user asks to update or sync the docs. That i
 
 "Set up Flow here" opts the project into Flow mode (decision 0020). This section is the one definition of the block; `start` writes the same block after a bootstrap. Deleting the block opts out.
 
-**Ask.** Read any existing block first. For each of `Process:` and `Delivery:` that is missing or `unset` and that the request does not name, ask once before writing, both questions in one round, each with a suggested answer:
+**Ask.** Read any existing block first. When `Delivery:` is missing or `unset` and the request does not name it, ask once before writing: **pull requests** or **local** (decision 0030), with a suggestion as `build`'s Delivery mode section describes; that section owns the rule and what each mode does. If `build` is unavailable, ask without a suggestion. A recorded value stays unless the user names a new one, so a re-run with it set asks nothing. Setup asks for no discovery depth (decision 0036); a leftover `Process:` line is dropped on the next write.
 
-- **Discovery depth** (decision 0026; the `Process:` line) controls how much discovery runs and how many decision records get written: **Lite** (brief, spec 001 in full with its tasks, decisions inside specs) or **Full** (deeper discovery and a decision record for each choice among alternatives). Suggest Lite unless the request points to Full. `explore` reads it as its default depth; `to-spec` owns the spec–decision boundary.
-- **Delivery** (decision 0030; the `Delivery:` line) controls where the work lands: **pull requests** or **local**, with a suggestion as `build`'s Delivery mode section describes; that section owns the rule and what each mode does. If `build` is unavailable, ask without a suggestion.
+**Write** with this skill's `lib/flow-block.mjs`: `node <skill-dir>/lib/flow-block.mjs <absolute-project-path> [local|pull-request]`. The helper owns the layout and block rules: the block goes in `AGENTS.md` when it exists and Git does not ignore it, otherwise in `CLAUDE.md` (created if needed); `CLAUDE.md` gets `@AGENTS.md` as its first line when `AGENTS.md` exists or is ignored; it also owns markers, the phrase table (`PHRASES`), in-place replacement that keeps the recorded value, and refusal of malformed markers. Never touch text outside the markers and that import line.
 
-The two are independent: any combination is valid, such as Lite with pull requests or Full with local. Do not derive one answer from the other.
+**Fallback without Node:** apply the same layout rules by hand (`git check-ignore -q AGENTS.md` tells whether it is ignored). Write one block between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->` holding a `Delivery:` line, the helper's phrase table, and a pointer to this skill. Replace an existing block in place, dropping any other line (such as a retired `Deploy:` or `Process:`). Stop and report when markers are unmatched or repeated.
 
-Recorded values stay unless the user names a new one, so a re-run with both lines set asks nothing.
+**Goals.** Setup defines the same goals as `start`. After writing the block, when `PRODUCT.md` is missing or has no brief (problem, who, riskiest assumption, main metric and kill criterion, core journeys), name `explore` as the next step and wait.
 
-**Write** with this skill's `lib/flow-block.mjs`: `node <skill-dir>/lib/flow-block.mjs <absolute-project-path> [local|pull-request] [--process <lite|full>]`. The helper owns the block's rules: target file, markers, phrase table (`PHRASES`), in-place replacement that keeps recorded values, and refusal of malformed markers. Never touch text outside the markers.
-
-**Fallback without Node:** in `AGENTS.md`, or `CLAUDE.md` when that is the only instruction file, write one block between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->` holding a `Delivery:` line, a `Process:` line, the helper's phrase table, and a pointer to this skill. Replace an existing block in place, dropping any other line (such as a retired `Deploy:`). Stop and report when markers are unmatched or repeated.
-
-**Goals.** Setup defines the same goals as `start`. After writing the block, when `PRODUCT.md` is missing or has no brief (problem, who, riskiest assumption, main metric and kill criterion, core journeys), name `explore` at the recorded depth as the next step and wait.
-
-Report the file the helper names (`Wrote` or `Unchanged`), show the block, and relay any warning. When writing by hand and both `AGENTS.md` and `CLAUDE.md` exist without an `@AGENTS.md` import in `CLAUDE.md`, say the block may be invisible to Claude Code and suggest adding that line.
+Report the helper's output: the block's file (`Wrote` or `Unchanged`), any import added, and the layout (which file holds the block, whether Git tracks it, which imports exist). Show the block and relay any warning.
 
 ## Boundaries
 
-- Do not edit adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or similar instruction files outside the Flow block, and write the block only when the user asks or `start` finishes a confirmed bootstrap (decision 0020).
+- Do not edit adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or similar instruction files outside the Flow block and the `@AGENTS.md` import, and write the block only when the user asks or `start` finishes a confirmed bootstrap (decision 0020).
 - Do not require installation, initialization, or a prior skill invocation.
 - Do not treat alignment edits as permission to implement unrelated code. For authorized implementation and tests, invoke the `build` skill when installed.
 - Do not create `docs/specs/` or `docs/decisions/` records here; use `to-spec` or explicit decision work when durable bounded artifacts are justified.
