@@ -1,5 +1,5 @@
 // Idempotent writer for the project Flow block (decision 0020).
-// Usage: node flow-block.mjs <project-dir> [local|pull-request]
+// Usage: node flow-block.mjs <project-dir> [local|pull-request] [--deploy <target>]
 import { existsSync, readFileSync, realpathSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -28,7 +28,13 @@ export function normalizeDelivery(value) {
   return DELIVERY_MODES.includes(mode) ? mode : null
 }
 
-export function buildFlowBlock({ delivery, eol = '\n' } = {}) {
+// A lowercase platform token (vercel, netlify, fly, …) or none; unset and anything else is null.
+export function normalizeDeploy(value) {
+  const target = String(value ?? '').trim().toLowerCase()
+  return target !== 'unset' && /^[a-z0-9][a-z0-9.-]*$/u.test(target) ? target : null
+}
+
+export function buildFlowBlock({ delivery, deploy, eol = '\n' } = {}) {
   return [
     BEGIN,
     '## Flow',
@@ -36,6 +42,7 @@ export function buildFlowBlock({ delivery, eol = '\n' } = {}) {
     'This project uses Flow skills. Say a phrase to load its skill; the installed `flow` skill describes this block. Delete the block to opt out.',
     '',
     `Delivery: ${normalizeDelivery(delivery) ?? 'unset'}`,
+    `Deploy: ${normalizeDeploy(deploy) ?? 'unset'}`,
     '',
     '| Say | Skill |',
     '| --- | --- |',
@@ -71,18 +78,24 @@ function locate(text) {
   return { start: begins[0], end: ends[0] + END.length }
 }
 
-// Returns the recorded mode, or null when the block is missing or unset.
-export function readDelivery(text) {
+function readLine(text, name) {
   const at = locate(text)
   if (!at) return null
-  const match = /^Delivery:[ \t]*(.*)$/imu.exec(text.slice(at.start, at.end))
-  return match ? normalizeDelivery(match[1]) : null
+  return new RegExp(`^${name}:[ \\t]*(.*)$`, 'imu').exec(text.slice(at.start, at.end))?.[1] ?? null
 }
 
+// Return the recorded value, or null when the block is missing or unset.
+export const readDelivery = (text) => normalizeDelivery(readLine(text, 'Delivery'))
+export const readDeploy = (text) => normalizeDeploy(readLine(text, 'Deploy'))
+
 // Replaces the block in place or appends it; text outside the markers is preserved byte for byte.
-export function upsertFlowBlock(text, { delivery } = {}) {
+export function upsertFlowBlock(text, { delivery, deploy } = {}) {
   const eol = eolOf(text)
-  const block = buildFlowBlock({ delivery: normalizeDelivery(delivery) ?? readDelivery(text), eol })
+  const block = buildFlowBlock({
+    delivery: normalizeDelivery(delivery) ?? readDelivery(text),
+    deploy: normalizeDeploy(deploy) ?? readDeploy(text),
+    eol,
+  })
   const at = locate(text)
   if (at) return text.slice(0, at.start) + block + text.slice(at.end)
   if (!text) return `${block}${eol}`
@@ -96,10 +109,10 @@ export function instructionFile(projectDir) {
   return !existsSync(agents) && existsSync(claude) ? claude : agents
 }
 
-export function writeFlowBlock(projectDir, { delivery } = {}) {
+export function writeFlowBlock(projectDir, { delivery, deploy } = {}) {
   const file = instructionFile(projectDir)
   const before = existsSync(file) ? readFileSync(file, 'utf8') : ''
-  const after = upsertFlowBlock(before, { delivery })
+  const after = upsertFlowBlock(before, { delivery, deploy })
   if (after !== before) writeFileSync(file, after)
   const claude = join(projectDir, 'CLAUDE.md')
   const warning = file !== claude && existsSync(claude) && !/^\s*@AGENTS\.md\b/mu.test(readFileSync(claude, 'utf8'))
@@ -117,12 +130,19 @@ const isMain = () => {
 }
 
 if (isMain()) {
-  const [dir = '.', delivery] = process.argv.slice(2)
+  const args = process.argv.slice(2)
+  const flag = args.indexOf('--deploy')
+  const deploy = flag === -1 ? undefined : args.splice(flag, 2)[1]
+  const [dir = '.', delivery] = args
   if (delivery && !normalizeDelivery(delivery)) {
     console.error(`Delivery must be one of: ${DELIVERY_MODES.join(', ')}`)
     process.exit(1)
   }
-  const { file, changed, warning } = writeFlowBlock(resolve(dir), { delivery })
+  if (flag !== -1 && !normalizeDeploy(deploy)) {
+    console.error('Deploy must be a platform name (vercel, netlify, fly, …) or none')
+    process.exit(1)
+  }
+  const { file, changed, warning } = writeFlowBlock(resolve(dir), { delivery, deploy })
   console.log(`${changed ? 'Wrote' : 'Unchanged'}: ${file}`)
   if (warning) console.warn(`warning: ${warning}`)
 }
