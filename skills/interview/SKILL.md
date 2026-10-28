@@ -1,6 +1,6 @@
 ---
 name: interview
-description: Interview the user one question at a time to extract what they actually want before any plan, spec, or code exists. Use when the user says "interview me", "ask me questions", or "figure out what I want".
+description: Interview the user, with a guess attached to each question, to extract what they actually want before any plan, spec, or code exists. Use when the user says "interview me", "ask me questions", or "figure out what I want".
 disable-model-invocation: false
 ---
 
@@ -12,9 +12,9 @@ Read the conversation, root context, and relevant code first. Recover facts with
 
 Open with a one-sentence hypothesis of what the user wants and an honest confidence percentage. Below about 70%, name what is still missing.
 
-Ask open questions one question per message in plain text, each with your guess and the reasoning behind it. Batch closed questions: up to three independent multiple-choice questions per form, using the host's structured question UI, with each option showing your guess and its tradeoff. Without a form UI, use numbered options in text. Wait for the answers before asking more, and update the hypothesis and confidence as you go. Be visibly willing to be wrong, and sometimes guess in a direction you expect pushback on, so agreement is not mere politeness.
+Ask open questions one question per message in plain text, each with your guess and the reasoning behind it. Batch closed questions: up to three independent multiple-choice questions per form, using the host's structured question UI, marking your guess among the options and giving each option's tradeoff. Without a form UI, use numbered options in text. Wait for the answers before asking more, and update the hypothesis and confidence as you go. Be visibly willing to be wrong, and sometimes guess in a direction you expect pushback on, so agreement is not mere politeness.
 
-Forms make accepting the marked guess easy. Occasionally present a question without a marked guess, and track how many guesses were accepted unchanged.
+Forms make accepting the marked guess easy. Occasionally present a closed question without a marked guess.
 
 Watch for answers that describe what a good answer sounds like rather than what the user wants: buzzwords as goals ("scalable", "clean", "modern"), deference to convention, or "I should probably". Then ask what they would want if they did not have to justify it to anyone. Treat "whatever you think" as delegation, not a decision; re-ask as a choice between two concrete options.
 
