@@ -1,13 +1,13 @@
-// Idempotent writer for the project Flow block (decision 0020).
-// Usage: node flow-block.mjs <project-dir> [local|pull-request] [--process <lite|full>]
+// Idempotent writer for the project Flow block (decision 0020) and the instruction-file layout (spec 021).
+// Usage: node flow-block.mjs <project-dir> [local|pull-request]
+import { spawnSync } from 'node:child_process'
 import { existsSync, readFileSync, realpathSync, writeFileSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 export const BEGIN = '<!-- BEGIN FLOW -->'
 export const END = '<!-- END FLOW -->'
 export const DELIVERY_MODES = ['pull-request', 'local']
-export const PROCESS_DEPTHS = ['lite', 'full']
 
 // The one phrase table; docs link here and tests check each phrase against its skill's description.
 export const PHRASES = [
@@ -30,13 +30,7 @@ export function normalizeDelivery(value) {
   return DELIVERY_MODES.includes(mode) ? mode : null
 }
 
-// Process depth (decision 0026): lite or full; unset and anything else is null.
-export function normalizeProcess(value) {
-  const depth = String(value ?? '').trim().toLowerCase()
-  return PROCESS_DEPTHS.includes(depth) ? depth : null
-}
-
-export function buildFlowBlock({ delivery, process: depth, eol = '\n' } = {}) {
+export function buildFlowBlock({ delivery, eol = '\n' } = {}) {
   return [
     BEGIN,
     '## Flow',
@@ -44,7 +38,6 @@ export function buildFlowBlock({ delivery, process: depth, eol = '\n' } = {}) {
     'This project uses Flow skills. Say a phrase to load its skill; the installed `flow` skill describes this block. Delete the block to opt out.',
     '',
     `Delivery: ${normalizeDelivery(delivery) ?? 'unset'}`,
-    `Process: ${normalizeProcess(depth) ?? 'unset'}`,
     '',
     '| Say | Skill |',
     '| --- | --- |',
@@ -88,40 +81,56 @@ function readLine(text, name) {
 
 // Return the recorded value, or null when the block is missing or unset.
 export const readDelivery = (text) => normalizeDelivery(readLine(text, 'Delivery'))
-export const readProcess = (text) => normalizeProcess(readLine(text, 'Process'))
 
 // Replaces the block in place or appends it; text outside the markers is preserved byte for byte.
-// A retired `Deploy:` line (decision 0028) is dropped because the block is rebuilt from its known lines.
-export function upsertFlowBlock(text, { delivery, process: depth } = {}) {
+// Retired lines (`Deploy:`, decision 0028; `Process:`, decision 0036) are dropped because the block is rebuilt from its known lines.
+export function upsertFlowBlock(text, { delivery } = {}) {
   const eol = eolOf(text)
-  const block = buildFlowBlock({
-    delivery: normalizeDelivery(delivery) ?? readDelivery(text),
-    process: normalizeProcess(depth) ?? readProcess(text),
-    eol,
-  })
+  const block = buildFlowBlock({ delivery: normalizeDelivery(delivery) ?? readDelivery(text), eol })
   const at = locate(text)
   if (at) return text.slice(0, at.start) + block + text.slice(at.end)
   if (!text) return `${block}${eol}`
   return `${text}${text.endsWith('\n') ? '' : eol}${eol}${block}${eol}`
 }
 
-// AGENTS.md, or CLAUDE.md when that is the only instruction file.
+// Exit status of `git <args>` in the project; 128 when it is not a Git work tree.
+const git = (projectDir, ...args) => spawnSync('git', args, { cwd: projectDir, stdio: 'ignore' }).status
+const isIgnored = (projectDir, name) => git(projectDir, 'check-ignore', '-q', name) === 0
+const IMPORT = '@AGENTS.md'
+
+// AGENTS.md when it exists and Git does not ignore it (a template may regenerate an ignored one); otherwise CLAUDE.md.
 export function instructionFile(projectDir) {
   const agents = join(projectDir, 'AGENTS.md')
-  const claude = join(projectDir, 'CLAUDE.md')
-  return !existsSync(agents) && existsSync(claude) ? claude : agents
+  return existsSync(agents) && !isIgnored(projectDir, 'AGENTS.md') ? agents : join(projectDir, 'CLAUDE.md')
 }
 
-export function writeFlowBlock(projectDir, { delivery, process: depth } = {}) {
+export function writeFlowBlock(projectDir, { delivery } = {}) {
   const file = instructionFile(projectDir)
   const before = existsSync(file) ? readFileSync(file, 'utf8') : ''
-  const after = upsertFlowBlock(before, { delivery, process: depth })
+  const after = upsertFlowBlock(before, { delivery })
   if (after !== before) writeFileSync(file, after)
+  return { file, changed: after !== before }
+}
+
+// Adds `@AGENTS.md` as the first line of an existing CLAUDE.md when AGENTS.md exists or is ignored (generated);
+// the rest of the file is untouched.
+export function ensureImport(projectDir) {
+  const file = join(projectDir, 'CLAUDE.md')
+  const agentsWanted = existsSync(join(projectDir, 'AGENTS.md')) || isIgnored(projectDir, 'AGENTS.md')
+  if (!existsSync(file) || !agentsWanted) return { file, changed: false }
+  const text = readFileSync(file, 'utf8')
+  if (/^[ \t]*@AGENTS\.md\b/mu.test(text)) return { file, changed: false }
+  writeFileSync(file, `${IMPORT}${eolOf(text)}${text}`)
+  return { file, changed: true }
+}
+
+// For the setup report: the block's file, whether Git will track it (in a work tree, not ignored), and CLAUDE.md's imports.
+export function describeLayout(projectDir) {
+  const blockFile = relative(projectDir, instructionFile(projectDir))
+  const tracked = git(projectDir, 'rev-parse', '--is-inside-work-tree') === 0 && !isIgnored(projectDir, blockFile)
   const claude = join(projectDir, 'CLAUDE.md')
-  const warning = file !== claude && existsSync(claude) && !/^\s*@AGENTS\.md\b/mu.test(readFileSync(claude, 'utf8'))
-    ? 'CLAUDE.md does not import AGENTS.md, so Claude Code may not see the Flow block; add a line "@AGENTS.md" to CLAUDE.md.'
-    : null
-  return { file, changed: after !== before, warning }
+  const imports = existsSync(claude) ? readFileSync(claude, 'utf8').match(/^@\S+/gmu) ?? [] : []
+  return { blockFile, tracked, imports }
 }
 
 const isMain = () => {
@@ -133,19 +142,16 @@ const isMain = () => {
 }
 
 if (isMain()) {
-  const args = process.argv.slice(2)
-  const processFlag = args.indexOf('--process')
-  const depth = processFlag === -1 ? undefined : args.splice(processFlag, 2)[1]
-  const [dir = '.', delivery] = args
+  const [dir = '.', delivery] = process.argv.slice(2)
   if (delivery && !normalizeDelivery(delivery)) {
     console.error(`Delivery must be one of: ${DELIVERY_MODES.join(', ')}`)
     process.exit(1)
   }
-  if (processFlag !== -1 && !normalizeProcess(depth)) {
-    console.error(`Process must be one of: ${PROCESS_DEPTHS.join(', ')}`)
-    process.exit(1)
-  }
-  const { file, changed, warning } = writeFlowBlock(resolve(dir), { delivery, process: depth })
+  const project = resolve(dir)
+  const { file, changed } = writeFlowBlock(project, { delivery })
   console.log(`${changed ? 'Wrote' : 'Unchanged'}: ${file}`)
-  if (warning) console.warn(`warning: ${warning}`)
+  if (ensureImport(project).changed) console.log(`Imported: ${IMPORT} in ${join(project, 'CLAUDE.md')}`)
+  const layout = describeLayout(project)
+  console.log(`Layout: ${JSON.stringify(layout)}`)
+  if (!layout.tracked) console.warn(`warning: Git will not commit ${layout.blockFile}, so the Flow block stays out of the repository.`)
 }
