@@ -4,7 +4,7 @@ Skills live in [`skills/`](../skills/); `scripts/validate.mjs` holds the authori
 
 [Agent compatibility](agent-compatibility.md) · [Decision 0006](decisions/0006-flow-lite-and-flat-docs.md) · [Decision 0009](decisions/0009-adopter-product-context.md) · [Decision 0015](decisions/0015-tasks-and-domain-modeling.md) · [Decision 0018](decisions/0018-interview-extracts-intent.md) · [Decision 0019](decisions/0019-voice-first-invocation.md) · [Spec 002](specs/002-flow-lite-and-flat-docs.md) · [Spec 008](specs/008-tasks-and-domain-modeling.md)
 
-Talk to your agent, by typing or dictation. Each skill has a [leading word](../GLOSSARY.md#leading-word): the phrase you say to reach it. The first phrase is listed below; each skill's description carries two or three variants. Slash commands (`/interview`, `/ship`, …) remain optional shortcuts. Only `start` must be named explicitly.
+Talk to your agent, by typing or dictation. Each skill has a [leading word](../GLOSSARY.md#leading-word): the phrase you say to reach it. The first phrase is listed below; each skill's description carries two or three variants. Slash commands (`/interview`, `/ship`, …) remain optional shortcuts. No skill must be named explicitly.
 
 ## Process
 
@@ -35,10 +35,10 @@ Product discovery, writing, advisory, prototype, quality, and misc skills are op
 
 | Skill | Say | When to use |
 | --- | --- | --- |
-| [explore](../skills/explore/SKILL.md) | "explore this" | Propose a depth (Skip, Lite, Full); extract intent, then challenge it; end in a confirmed brief, clearer intent, or a killed idea. |
+| [explore](../skills/explore/SKILL.md) | "explore this" | Propose a depth (Skip, Lite, Full); extract intent, then challenge it; end in a confirmed brief, clearer intent, or a killed idea. Every brief asks who the agent users are. A new product gets spec 001 in full and later slices as candidate stubs. |
 | [interview](../skills/interview/SKILL.md) | "interview me" | Extract what you actually want, with a guess attached to each question, before any plan or spec exists. |
 | [grill](../skills/grill/SKILL.md) | "grill me" | Stress-test an idea or plan with focused questions and evidence. |
-| [to-spec](../skills/to-spec/SKILL.md) | "spec it" | Turn conversation into a numbered spec; label assumptions; save only when requested. |
+| [to-spec](../skills/to-spec/SKILL.md) | "spec it" | Turn conversation into a numbered spec with contract-first interfaces; label assumptions; write candidate stubs for later slices; save only when requested. |
 | [to-tasks](../skills/to-tasks/SKILL.md) | "break it down" | Vertical-slice tasks with blockers, published as GitHub issues (local draft without GitHub access). |
 | [implement](../skills/implement/SKILL.md) | "build it" | Implement an authorized change; no spec required for small clear work. |
 | [review](../skills/review/SKILL.md) | "check it against the spec" | Review against intent and root context as well as correctness. |
@@ -89,7 +89,7 @@ Code simplification, security audits, and performance work belong to host tools 
 
 | Skill | Say | When to use |
 | --- | --- | --- |
-| [start](../skills/start/SKILL.md) | `/start` (explicit only) | Initialize from flow-next or flow-mono: rename identity, run setup/QA/build/startup checks, baseline root docs, and one independent initial commit when verification passes. Not Flow Lite. |
+| [start](../skills/start/SKILL.md) | "start a Next.js project" | Confirm template, name, and destination, then initialize from flow-next or flow-mono (rename identity, setup/QA/build/startup checks, baseline root docs, Flow block, one independent initial commit when verification passes) while `explore` shapes the product. Not Flow Lite. |
 
 ## Misc
 

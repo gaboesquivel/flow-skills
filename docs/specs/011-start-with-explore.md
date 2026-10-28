@@ -1,6 +1,6 @@
 # 011: Start with explore
 
-Status: draft (2026-10-28). Decision: [0022](../decisions/0022-start-runs-explore.md). Related: [spec 010](010-explore-redesign.md), [decision 0023](../decisions/0023-agent-first.md).
+Status: implemented (2026-10-28). Decision: [0022](../decisions/0022-start-runs-explore.md). Related: [spec 010](010-explore-redesign.md), [decision 0023](../decisions/0023-agent-first.md).
 
 ## Problem Statement
 
@@ -47,4 +47,7 @@ A founder who says "let's start a Next.js project" and describes the idea gets a
 
 ## Tasks
 
-Recorded per the project's delivery mode when implementation starts.
+- [x] `start`: speakable, confirm before writing, run explore beside the bootstrap ([#39](https://github.com/gaboesquivel/flow-skills/issues/39)).
+- [x] `explore`: new-product run writes after bootstrap, spec 001 full, candidate stubs, agent lens ([#40](https://github.com/gaboesquivel/flow-skills/issues/40)).
+- [x] `to-spec`: candidate status and contract-first interfaces ([#41](https://github.com/gaboesquivel/flow-skills/issues/41)).
+- [x] Docs: catalog and compatibility aligned ([#42](https://github.com/gaboesquivel/flow-skills/issues/42)).
