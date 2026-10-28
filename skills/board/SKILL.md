@@ -36,6 +36,10 @@ A card shows the spec number, title, task progress (`done/total`), and the branc
 - `on branch <name>`: the spec is not on the default branch yet, so it never shows past Building.
 - `number NNN also used by …`: two spec files share a number.
 
+- `ship run ended…` or `ship run overlay stale…`: the last `ship` run ended or has not updated for 30 minutes, so its task states are ignored.
+
+During a `ship` task-set run, the run's card moves to Building and lists each task with its live state (queued, working, reviewing, fixing, integrated, failed, blocked), fix round, and note, from `<git common dir>/flow/board.json`, which `ship` writes with `--record`. Git wins: a task the spec marks done shows integrated, and a spec git shows as shipped stays Shipped. An unreadable overlay is ignored with a header note.
+
 Report markers rather than fixing specs unasked.
 
 Limits: a merged branch ships a spec only when it changed something outside `docs/` and the spec's tasks are done. With GitHub links, a merged pull request counts the same way when its merge commit is in the local clone; a rebase merge is judged by its last commit only. Without them, fast-forward merges, and squash merges later edited on the default branch, may show as Building until the branch is deleted.
