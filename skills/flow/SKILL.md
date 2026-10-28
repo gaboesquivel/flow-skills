@@ -21,7 +21,7 @@ Do not replace a project's product identity with Flow's tagline, mission, princi
 
 ## Invocation
 
-Hosts may match this skill when the user asks to update or sync the docs. That is not an always-on hook, and it is not evidenced on every host. Confirmed portable behavior is narrower: the user asks for it or invokes `/flow`, or `implement` and `review` apply the same alignment rules when those skills are in use. Do not claim alignment ran only because metadata allows a host to suggest this skill.
+Hosts may match this skill when the user asks to update or sync the docs. That is not an always-on hook, and it is not evidenced on every host. Confirmed portable behavior is narrower: the user asks for it or invokes `/flow`, or `build` and `review` apply the same alignment rules when those skills are in use. Do not claim alignment ran only because metadata allows a host to suggest this skill.
 
 ## Process
 
@@ -47,7 +47,7 @@ Report which file was written and show the block. When both `AGENTS.md` and `CLA
 
 - Do not edit adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or similar instruction files outside the Flow block, and write the block only when the user asks or `start` finishes a confirmed bootstrap (decision 0020).
 - Do not require installation, initialization, or a prior skill invocation.
-- Do not treat alignment edits as permission to implement unrelated code. For authorized implementation and tests, invoke the `implement` skill when installed.
+- Do not treat alignment edits as permission to implement unrelated code. For authorized implementation and tests, invoke the `build` skill when installed.
 - Do not create `docs/specs/` or `docs/decisions/` records here; use `to-spec` or explicit decision work when durable bounded artifacts are justified.
 - Name another skill (`to-spec`, `domain-modeling`, `review`, …) only when the user asks or setup finds no goals (see Flow block), then wait.
 

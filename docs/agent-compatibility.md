@@ -17,12 +17,12 @@ Flow does not modify adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or simila
 | Host style | How users run Flow |
 | --- | --- |
 | Talking or dictation | Say a skill's [leading word](../GLOSSARY.md#leading-word) ("interview me", "spec it", "ship it"); hosts that honor descriptions match the skill. This is the primary interface ([decision 0019](decisions/0019-voice-first-invocation.md)). |
-| Slash commands | `/flow`, `/to-spec`, `/implement`, … when the host maps skill names to commands |
+| Slash commands | `/flow`, `/to-spec`, `/build`, … when the host maps skill names to commands |
 | Skill picker | Explicit selection by skill name |
 
 Every skill is model-invocable. Matching a phrase to a skill is probabilistic: hosts choose from descriptions, and dictation can mishear. For that reason `start` confirms template, name, and destination before writing ([decision 0022](decisions/0022-start-runs-explore.md)), and [`ship`](../skills/ship/SKILL.md) confirms before pushing and again before merging into or pushing `main`. Skills may name the next skill and wait; the only automatic hand-offs are `start` → `explore` and explore's `interview` and `grill` phases, each behind the user's yes ([decision 0024](decisions/0024-gated-hand-offs.md)).
 
-**Root context alignment** is not guaranteed by implicit `flow` invocation alone. Hosts may skip alignment on ordinary implementation work. The portable contract is: `implement` and `review` remind agents to align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` when meaningful changes warrant it; adopters can also say "update the docs".
+**Root context alignment** is not guaranteed by implicit `flow` invocation alone. Hosts may skip alignment on ordinary implementation work. The portable contract is: `build` and `review` remind agents to align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` when meaningful changes warrant it; adopters can also say "update the docs".
 
 **Pull request automation** (optional, per repository): [pr-review-contract.md](pr-review-contract.md) is agent-agnostic — any IDE or model can follow it before opening a PR. This repository adds a deterministic checker (`scripts/check-pr-alignment.mjs`) and an OpenAI-compatible CI job on `pull_request`. `main` requires a pull request plus passing `alignment`, `validate`, and `context-review` checks when the review API key is configured; see [spec 004](specs/004-pr-alignment-review.md). Flow skills do not install workflows or edit adopter instruction files beyond the opt-in Flow block; copy the contract and scripts when adopting the pattern.
 
