@@ -1,16 +1,22 @@
 import assert from 'node:assert/strict'
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs'
+import { existsSync, mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { execSync } from 'node:child_process'
 import test from 'node:test'
-import { deriveProjectIdentity, isForbiddenInstructionPath } from '../skills/start/lib/identity.mjs'
-import { assessDestination, isTemplateRemoteUrl, assertNoTemplateOrigin } from '../skills/start/lib/git-safety.mjs'
+import { deriveProjectIdentity, inferTemplateFromRequest, isForbiddenInstructionPath } from '../skills/start/lib/identity.mjs'
+import {
+  assessDestination,
+  assertNoTemplateOrigin,
+  copyTemplateInto,
+  isTemplateRemoteUrl,
+} from '../skills/start/lib/git-safety.mjs'
 import {
   applyRenameToFile,
   applyTemplateRenamesToText,
   findStaleTemplateReferencesInText,
   renameAllowlistForTemplate,
+  scanTreeForStaleIdentifiers,
 } from '../skills/start/lib/rename.mjs'
 import { buildBaselineDocs, baselineDocsRejectFlowIdentity, baselineDocsIncludeProjectName } from '../skills/start/lib/baseline-docs.mjs'
 import { canCreateInitialCommit, formatInitialCommitMessage, ESSENTIAL_CHECK_IDS } from '../skills/start/lib/commit-gate.mjs'
@@ -157,4 +163,60 @@ test('commit gate allows unavailable operator auth when fail-closed passed', () 
 test('rename allowlists cover template entrypoints', () => {
   assert.ok(renameAllowlistForTemplate('flow-next').includes('lib/mcp/tool-catalog.ts'))
   assert.ok(renameAllowlistForTemplate('flow-mono').includes('apps/web/lib/mcp/tool-catalog.ts'))
+})
+
+test('inferTemplateFromRequest reads the template from the invocation', () => {
+  assert.equal(inferTemplateFromRequest('flow nextjs app'), 'flow-next')
+  assert.equal(inferTemplateFromRequest('use template https://github.com/gaboesquivel/flow-next'), 'flow-next')
+  assert.equal(inferTemplateFromRequest('Next.js monorepo'), 'flow-mono')
+  assert.equal(inferTemplateFromRequest('turborepo with shared ui'), 'flow-mono')
+  assert.equal(inferTemplateFromRequest('new project'), undefined)
+})
+
+test('agent setup at the root counts as an empty destination', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'start-root-'))
+  writeFileSync(join(dir, 'AGENTS.md'), '# Rules')
+  writeFileSync(join(dir, 'CLAUDE.md'), '@AGENTS.md')
+  writeFileSync(join(dir, 'skills-lock.json'), '{}')
+  mkdirSync(join(dir, '.claude/skills/start'), { recursive: true })
+  execSync('git init', { cwd: dir, stdio: 'ignore' })
+
+  const ok = assessDestination({ destinationPath: dir })
+  assert.equal(ok.ok, true)
+  assert.deepEqual(ok.preserved.sort(), ['.claude', 'AGENTS.md', 'CLAUDE.md', 'skills-lock.json'])
+
+  writeFileSync(join(dir, 'prompts.txt'), 'log')
+  const refused = assessDestination({ destinationPath: dir })
+  assert.equal(refused.ok, false)
+  assert.deepEqual(refused.unexpected, ['prompts.txt'])
+  assert.equal(assessDestination({ destinationPath: dir, preserve: ['prompts.txt'] }).ok, true)
+  rmSync(dir, { recursive: true })
+})
+
+test('copyTemplateInto keeps adopter files and skips the template git dir', () => {
+  const template = mkdtempSync(join(tmpdir(), 'start-tpl-'))
+  const dest = mkdtempSync(join(tmpdir(), 'start-dest-'))
+  mkdirSync(join(template, '.git'))
+  writeFileSync(join(template, '.git/HEAD'), 'ref')
+  writeFileSync(join(template, 'AGENTS.md'), 'template rules')
+  mkdirSync(join(template, 'app'))
+  writeFileSync(join(template, 'app/page.tsx'), 'export default 1')
+  writeFileSync(join(dest, 'AGENTS.md'), 'adopter rules')
+
+  const { copied, skipped } = copyTemplateInto({ templateDir: template, destinationPath: dest })
+  assert.deepEqual(copied, ['app/page.tsx'])
+  assert.deepEqual(skipped, ['AGENTS.md'])
+  assert.equal(readFileSync(join(dest, 'AGENTS.md'), 'utf8'), 'adopter rules')
+  assert.equal(existsSync(join(dest, '.git')), false)
+  rmSync(template, { recursive: true })
+  rmSync(dest, { recursive: true })
+})
+
+test('stale scan ignores installed skills under .claude', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'start-scan-'))
+  mkdirSync(join(dir, '.claude/skills/start'), { recursive: true })
+  writeFileSync(join(dir, '.claude/skills/start/SKILL.md'), 'Initialize from flow-next')
+  writeFileSync(join(dir, 'README.md'), 'Acme Radar')
+  assert.deepEqual(scanTreeForStaleIdentifiers({ root: dir, template: 'flow-next' }), [])
+  rmSync(dir, { recursive: true })
 })
