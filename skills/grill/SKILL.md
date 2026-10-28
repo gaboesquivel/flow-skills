@@ -14,4 +14,4 @@ Map the important uncertainty and ask a small round of independent questions, ea
 
 Stop when the intended outcome, constraints, and next useful action are clear enough for the requested work. Reuse existing authorization; do not require an exhaustive interview or a second approval of settled decisions. Keep unrelated possibilities outside the current scope.
 
-Return one outcome: a resolved direction, **clearer** (intent sharpened, nothing to write), or **killed** (the idea does not survive); all are valid. Include remaining assumptions, the kill criterion when named, and a sensible next action (for example `to-spec`, `domain-modeling`, or `to-tasks` when the user wants those). Discussion does not itself authorize implementation.
+Return one outcome: a resolved direction, **clearer** (intent sharpened, nothing to write), or **killed** (the idea does not survive); all are valid. Include remaining assumptions, the kill criterion when named, and a sensible next action, or none when killed (for example `to-spec`, `domain-modeling`, or `to-tasks` when the user wants those). Discussion does not itself authorize implementation.
