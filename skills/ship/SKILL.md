@@ -35,7 +35,7 @@ Classify the work. Resolve its spec from (a) the branch name, (b) files under `d
 
 Run `build` first, passing this run's delivery mode, when the spec's task set has runnable tasks left or the work has uncommitted changes, and also:
 - **GitHub mode:** when no pull request exists for the work, the pull request is still a draft, or the work has unpushed changes. `build` commits, pushes, opens or finishes the pull request, and waits for checks; ship then lands the pull request it marked ready.
-- **Local mode:** when local `main` does not yet hold the merged work. `build` runs the gate, the one independent review, and the `--no-ff` merge into local `main`, and never pushes.
+- **Local mode:** when local `main` does not yet hold the merged work. `build` runs the gate (spec work), the review its work needs (the one independent review, or for unspecced work the self-check or review its size guard picks), and the `--no-ff` merge into local `main`, and never pushes.
 
 On a spec's task set, `build` runs it (see its Task set). Related work shares one branch and pull request; split only large, independently shippable work.
 
@@ -53,7 +53,7 @@ GitHub mode. Run the one independent review of the spec here: run `review` (per-
 
 Record the head SHA the review and checks covered. An `unmet` [requirement verdict](../review/SKILL.md#inspect) is a blocking finding.
 
-**Unspecced work.** When `build` posted a self-check on the pull request, its self-checked head stands in for the reviewed head below, with no review here (decision 0034). When `build` posted "escalated", or nothing, run the review above against the request instead of a spec, with no requirement verdicts (decision 0039). Ship still waits for checks and runs Verify. The size guard has one home, `build`'s [Unspecced work](../build/SKILL.md#unspecced-work); ship does not restate it.
+**Unspecced work.** Apply `build`'s size guard yourself to the pull request's diff from merge base to head. When it escalates, or the size is uncertain, run the review above against the request instead of a spec (decision 0039), whatever is posted. Otherwise a self-check stands in for the reviewed head below, with no review here (decision 0034), only when the account ship runs as posted it and its SHA is the head being merged; with no such self-check, run the review. Ship still waits for checks and runs Verify. The size guard has one home, `build`'s [Unspecced work](../build/SKILL.md#unspecced-work); ship does not restate it.
 
 ## Fix rounds
 
@@ -74,7 +74,7 @@ On blocking findings or failing checks, run fix rounds as `build` describes unde
 
 **Local mode:** the merge happened in `build`; ship publishes it.
 
-1. With a remote, push the default branch to its upstream (usually `origin`); when the upstream is unset or ambiguous, stop and report. "ship it" is the push request decision 0030 requires. Before pushing, list `<remote>/<default>..<default>`: push only when those commits are exactly the reviewed `build` merge(s) (merge commits with a `Reviewed: <sha>` trailer equal to their second parent, or an ancestor of it when the commits from that SHA to the second parent pass `build`'s [Shared files](../build/SKILL.md#shared-files) check, plus `Spec: <path>` for spec work) and their branch ancestors; otherwise stop and report the unexpected commits. If the push is refused (for example the remote moved ahead), report partial delivery with the unpushed commits; never force-push or rebase to get it through.
+1. With a remote, push the default branch to its upstream (usually `origin`); when the upstream is unset or ambiguous, stop and report. "ship it" is the push request decision 0030 requires. Before pushing, list `<remote>/<default>..<default>`: push only when those commits are exactly the reviewed `build` merge(s) (merge commits with a `Reviewed: <sha>` trailer equal to their second parent, or an ancestor of it when the commits from that SHA to the second parent pass `build`'s [Shared files](../build/SKILL.md#shared-files) check, plus `Spec: <path>` for spec work) and their branch ancestors, and no unspecced merge says `Review: self-check` while `build`'s size guard escalates its diff; otherwise stop and report the unexpected commits. If the push is refused (for example the remote moved ahead), report partial delivery with the unpushed commits; never force-push or rebase to get it through.
 2. With no remote, skip the push and say that nothing was published.
 3. Run Verify on the local `main` head.
 

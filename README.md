@@ -33,7 +33,7 @@ The first time a delivery skill needs to know, Flow asks one question: **GitHub 
 | Needs | Git only. Works with GitLab, Bitbucket, or no remote at all. | Git plus a GitHub repository and access to it. |
 | Spec | A file on its feature branch. | The same file, plus a [spec issue](GLOSSARY.md#spec-issue) that copies it, opened when you accept the spec. |
 | Tasks | A checklist in the spec's Tasks section. | The same checklist, plus sub-issues of the spec issue with blocking links. |
-| "Build it" | Runs the checks and the review, then merges the spec branch into your local `main`. Nothing is pushed. | Runs the checks and opens one pull request per spec with green CI. |
+| "Build it" | Runs the checks and the review, then merges the work's branch into your local `main`. Nothing is pushed. | Runs the checks and opens one pull request for the work with green CI. |
 | "Ship it" | Pushes `main` when a remote exists. | Reviews the pull request, waits for green checks, and merges it. |
 | Verification | Runs the spec's acceptance scenario on the deployment, or locally with "deployment unverified" when there is none. | The same, plus a run on the pull request's preview deployment before merging. |
 
@@ -43,12 +43,10 @@ Pick local when you work alone, use another Git host, or want nothing published.
 
 Specs are for bets worth tracking, not a toll on every change. In either mode, nothing writes a spec or tasks unless you say "spec it" or "break it down" ([decision 0039](docs/decisions/0039-build-never-requires-a-spec.md)).
 
-- **Say "build it".** With no spec behind it, `build` treats the change as [unspecced work](GLOSSARY.md#unspecced-work). It runs your full check suite, then picks the review by size: one self-check for a small fix, or the same independent review spec work gets when the change adds product behavior, changes a data shape or public API, needs a migration, or touches authentication, secrets, dependencies, CI, or execution paths. Then it lands the work the way your mode does: a merge into local `main`, or a ready pull request. "Ship it" verifies it.
-- **Explore, then build.** After "explore this", "build it" builds the confirmed brief directly. The `explore/<slug>` branch becomes the work branch and the brief lands with the code. For a new product, `explore` stops at the brief; spec 001 comes only when you ask.
-- **Build locally in a GitHub repository.** "Build it local" on a repository whose default branch requires pull requests commits the work on a branch and stops: no push, no pull request. "Ship it" opens the pull request when you are ready.
-- **Just ask your agent.** Flow skills run only when you invoke them. A plain request ("rename this prop") gets edited the way your agent would without Flow installed.
-
-`explore` itself skips fixes and clearly small changes: no questions, no writes.
+- **Say "build it".** With no spec behind it, `build` treats the change as [unspecced work](GLOSSARY.md#unspecced-work). It runs your full check suite, then picks the review: one self-check for a small fix, or the full independent review when its [size guard](skills/build/SKILL.md#unspecced-work) flags a larger or riskier change. Then it lands the work the way your mode does: a merge into local `main`, or a ready pull request. "Ship it" verifies it.
+- **Explore, then build.** After "explore this", "build it" builds the confirmed brief directly. The `explore/<slug>` branch becomes the work branch and the brief lands with the code. For a new product, `explore` stops at the brief; spec 001 comes only when you ask. `explore` skips fixes and clearly small changes entirely: no questions, no writes.
+- **Build locally where pull requests are required.** "Build it local" on a repository whose default branch requires pull requests commits the work on a branch and stops: no push, no pull request. "Ship it" opens the pull request when you are ready.
+- **Just ask your agent.** Flow skills run when your request matches their phrases. A plain request ("rename this prop") is handled as your agent would without Flow.
 
 ## How it fits together
 
