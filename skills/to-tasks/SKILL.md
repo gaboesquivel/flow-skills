@@ -1,7 +1,7 @@
 ---
 name: to-tasks
-description: Break a plan, spec, or the current conversation into verifiable vertical-slice tasks with explicit blockers, using existing project conventions and publishing only when requested.
-disable-model-invocation: true
+description: Break a plan, spec, or conversation into verifiable vertical-slice tasks with explicit blockers; publish to a tracker only when requested. Use when the user says "break it down", "make tasks", or "split this into tasks".
+disable-model-invocation: false
 ---
 
 # To Tasks

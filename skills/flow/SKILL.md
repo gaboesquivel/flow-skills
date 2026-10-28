@@ -1,6 +1,6 @@
 ---
 name: flow
-description: Align the current project's PRODUCT.md, DESIGN.md, GLOSSARY.md, and ARCHITECTURE.md after meaningful product, design, architecture, or terminology changes.
+description: Align the current project's PRODUCT.md, DESIGN.md, GLOSSARY.md, and ARCHITECTURE.md after meaningful changes. Use when the user says "update the docs", "sync the context", or "keep the docs aligned".
 disable-model-invocation: false
 ---
 
@@ -21,7 +21,7 @@ Do not replace a project's product identity with Flow's tagline, mission, princi
 
 ## Invocation
 
-Hosts may surface this skill when they honor discoverable metadata. That is optional and not an always-on hook, and it is not evidenced on every host. Confirmed portable behavior is narrower: the user invokes `/flow`, or `implement` and `review` apply the same alignment rules when those skills are in use. Do not claim alignment ran only because metadata allows a host to suggest this skill.
+Hosts may match this skill when the user asks to update or sync the docs. That is not an always-on hook, and it is not evidenced on every host. Confirmed portable behavior is narrower: the user asks for it or invokes `/flow`, or `implement` and `review` apply the same alignment rules when those skills are in use. Do not claim alignment ran only because metadata allows a host to suggest this skill.
 
 ## Process
 

@@ -3,7 +3,8 @@ import { dirname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { collectDocLinkErrors } from './check-doc-links.mjs'
 
-export const DISCOVERABLE_SKILL_NAMES = new Set(['flow'])
+// Skills with irreversible setup effects stay explicit-only (decision 0019); all others are model-invocable.
+export const EXPLICIT_SKILL_NAMES = new Set(['start'])
 
 export const EXPECTED_SKILL_NAMES = [
   'competitors',
@@ -17,13 +18,10 @@ export const EXPECTED_SKILL_NAMES = [
   'implement',
   'interview',
   'jtbd',
-  'performance',
   'prototype',
   'retro',
   'review',
-  'security',
   'ship',
-  'simplify',
   'start',
   'to-spec',
   'to-tasks',
@@ -57,10 +55,11 @@ export function validateSkills(root) {
     }
     if (fields.name !== name) errors.push(`${name}: name mismatch`)
     if (!fields.description) errors.push(`${name}: missing description`)
-    const discoverable = DISCOVERABLE_SKILL_NAMES.has(name)
+    const explicit = EXPLICIT_SKILL_NAMES.has(name)
     const invocation = fields['disable-model-invocation']
-    if (discoverable && invocation !== 'false') errors.push(`${name}: discoverable skill must set disable-model-invocation: false`)
-    if (!discoverable && invocation !== 'true') errors.push(`${name}: explicit activation metadata required`)
+    if (explicit && invocation !== 'true') errors.push(`${name}: explicit-only skill must set disable-model-invocation: true`)
+    if (!explicit && invocation !== 'false') errors.push(`${name}: model-invocable skill must set disable-model-invocation: false`)
+    if (!explicit && !/Use when the user says "/u.test(fields.description ?? '')) errors.push(`${name}: description must name spoken trigger phrases`)
     for (const key of Object.keys(fields)) if (!['name', 'description', 'disable-model-invocation'].includes(key)) errors.push(`${name}: unsupported frontmatter field ${key}`)
     const files = listMarkdownAndSupportFiles(folder)
     if (files.includes('ATTRIBUTION.md') && !files.includes('LICENSE')) errors.push(`${name}: attribution requires bundled license`)
@@ -85,7 +84,7 @@ export function validateSkills(root) {
     if (!existsSync(adapter)) errors.push(`${name}: missing agents/openai.yaml`)
     else {
       const adapterText = readFileSync(adapter, 'utf8')
-      const implicit = discoverable ? /allow_implicit_invocation:\s*true/u : /allow_implicit_invocation:\s*false/u
+      const implicit = explicit ? /allow_implicit_invocation:\s*false/u : /allow_implicit_invocation:\s*true/u
       if (!implicit.test(adapterText)) errors.push(`${name}: adapter implicit-invocation policy mismatch`)
     }
   }

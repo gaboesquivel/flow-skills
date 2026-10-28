@@ -1,7 +1,7 @@
 ---
 name: review
-description: Review a repository, working tree, or committed comparison for correctness, intent, and maintainability.
-disable-model-invocation: true
+description: Review work against intent, specs, and root context, plus correctness and maintainability. Use when the user says "check it against the spec", "does this match the intent", or "alignment review".
+disable-model-invocation: false
 ---
 
 # Review

@@ -1,7 +1,7 @@
 ---
 name: interview
-description: Interview the user one question at a time to extract what they actually want before any plan, spec, or code exists.
-disable-model-invocation: true
+description: Interview the user one question at a time to extract what they actually want before any plan, spec, or code exists. Use when the user says "interview me", "ask me questions", or "figure out what I want".
+disable-model-invocation: false
 ---
 
 # Interview

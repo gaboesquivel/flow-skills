@@ -16,31 +16,32 @@ Flow does not modify adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or simila
 
 | Host style | How users run Flow |
 | --- | --- |
+| Talking or dictation | Say a skill's [leading word](../GLOSSARY.md#leading-word) ("interview me", "spec it", "ship it"); hosts that honor descriptions match the skill. This is the primary interface ([decision 0019](decisions/0019-voice-first-invocation.md)). |
 | Slash commands | `/flow`, `/to-spec`, `/implement`, … when the host maps skill names to commands |
 | Skill picker | Explicit selection by skill name |
-| Host suggestion | **`flow` only** — some hosts may surface Flow Lite after context work; not guaranteed |
-| Chat instruction | User names the skill in plain language where slash commands are unavailable |
 
-All skills except `flow` require explicit user invocation in Flow's design.
+Every skill except `start` is model-invocable. `start` creates a repository, so it runs only when named. Matching a phrase to a skill is probabilistic: hosts choose from descriptions, and dictation can mishear. `ship` confirms before pushing for that reason.
 
-**Root context alignment** is not guaranteed by implicit `flow` invocation alone. Hosts that only task-match skills may skip alignment on ordinary implementation work. The portable contract is: `implement` and `review` remind agents to align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` when meaningful changes warrant it; adopters can also invoke `/flow` or rely on host surfacing when supported.
+**Root context alignment** is not guaranteed by implicit `flow` invocation alone. Hosts may skip alignment on ordinary implementation work. The portable contract is: `implement` and `review` remind agents to align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` when meaningful changes warrant it; adopters can also say "update the docs".
 
 **Pull request automation** (optional, per repository): [pr-review-contract.md](pr-review-contract.md) is agent-agnostic — any IDE or model can follow it before opening a PR. This repository adds a deterministic checker (`scripts/check-pr-alignment.mjs`) and an OpenAI-compatible CI job on `pull_request`. `main` requires a pull request plus passing `alignment`, `validate`, and `context-review` checks when the review API key is configured; see [spec 004](specs/004-pr-alignment-review.md). Flow skills do not install workflows or edit adopter instruction files; copy the contract and scripts when adopting the pattern.
 
 That alignment updates the **current project's** product context. It does not copy this repository's Flow identity into an adopter `PRODUCT.md`. [Decision 0009](decisions/0009-adopter-product-context.md).
 
-`flow` is not a project-start command. `flow start` and "start project" do not authorize scaffolding or instruction-file edits. The optional [`start`](../skills/start/SKILL.md) skill initializes from flow-next or flow-mono when explicitly invoked: template isolation, renamed Portless identity, verification (`pnpm setup`, `pnpm qa`, `pnpm build`, `pnpm eval`, Portless dev smoke), baseline product docs, and an initial Git commit only after essential checks pass. It does not invoke `flow` or `explore` automatically. It is not discoverable like Flow Lite.
+`flow` is not a project-start command. `flow start` and "start project" do not authorize scaffolding or instruction-file edits. The optional [`start`](../skills/start/SKILL.md) skill initializes from flow-next or flow-mono when explicitly invoked: template isolation, renamed Portless identity, verification (`pnpm setup`, `pnpm qa`, `pnpm build`, `pnpm eval`, Portless dev smoke), baseline product docs, and an initial Git commit only after essential checks pass. It does not invoke `flow` or `explore` automatically. It is the one explicit-only skill.
 
-Metadata and contract tests show the intended invocation split. They do not show that a host surfaced `flow` during ordinary edits. Claude Code is recorded as a second agent product for read-only runs; see [smoke scenario status](../tests/smoke/2026-10-27-scenario-status.md).
+Metadata and contract tests show the intended invocation split. They do not show that a host matched a spoken phrase to the right skill. Claude Code is recorded as a second agent product for read-only runs; see [smoke scenario status](../tests/smoke/2026-10-27-scenario-status.md).
 
 ## Metadata
 
-Dual policy ([decision 0006](decisions/0006-flow-lite-and-flat-docs.md)):
+Policy ([decision 0019](decisions/0019-voice-first-invocation.md)):
 
 | Skill | `disable-model-invocation` | `allow_implicit_invocation` (adapter) |
 | --- | --- | --- |
-| `flow` | `false` | `true` |
-| All others | `true` | `false` |
+| `start` | `true` | `false` |
+| All others | `false` | `true` |
+
+Each model-invocable description ends with `Use when the user says "…"` and two or three trigger phrases; the validator enforces the form.
 
 **Observed support varies.** Confirm behavior in your host's skill documentation. Hosts that ignore adapter files rely on frontmatter and user invocation only.
 
@@ -52,14 +53,29 @@ Claude Code ships built-in skills that overlap with parts of the catalog. Flow o
 
 | Flow | Built-in | Use Flow when |
 | --- | --- | --- |
-| `simplify` | `/simplify` (same name) | You want a behavior-preserving clarity refactor. An installed Flow `simplify` shadows the built-in ([live run](../tests/smoke/2026-10-27-claude-code-live.md)); remove it to get the built-in back. |
 | `review` | `/code-review` | Intent and root-context alignment matter, not only correctness bugs. |
-| `security` | `/security-review` | You are hardening untrusted-input handling rather than auditing a diff. |
+| — | Plan mode | Flow does not claim "plan". Say "spec it" or "break it down" when the plan should last. |
 | `flow`, `start` | `/init`, memory | Product facts belong in root context files. Keep `CLAUDE.md` and memory as pointers, not copies. |
 | `handoff` | Automatic compaction | A fresh agent needs a standalone document. |
 | `to-tasks` | Session task list | Work needs durable vertical slices or tracker issues. |
 
-Built-ins may be model-invoked; Flow skills other than `flow` are not. Plain requests such as "review this" usually reach the built-in.
+Flow retired `simplify`, `security`, and `performance` in favor of `/simplify`, `/security-review`, and host tooling ([decision 0019](decisions/0019-voice-first-invocation.md)). Flow avoids generic verbs: "review the code" reaches `/code-review`; "check it against the spec" reaches Flow `review`.
+
+Hosts offer no portable skill priority. To make your phrases reliable, you may paste a table like this into your own user-level instructions (for example `~/.claude/CLAUDE.md`). Flow never writes it, and it maps phrases to skills without chaining them:
+
+```markdown
+When I say these phrases, use the named Flow skill:
+- "interview me" → interview
+- "grill me" → grill
+- "spec it" → to-spec
+- "break it down" → to-tasks
+- "build it" → implement
+- "check it against the spec" → review
+- "ship it" → ship
+- "update the docs" → flow
+- "tldr" → tldr
+- "hand off" → handoff
+```
 
 ## Verification status
 

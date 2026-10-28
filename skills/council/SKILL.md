@@ -1,7 +1,7 @@
 ---
 name: council
-description: Obtain independent expert perspectives and evidence-based synthesis for consequential decisions.
-disable-model-invocation: true
+description: Get independent expert perspectives and an evidence-based synthesis for a consequential decision; advisory only. Use when the user says "ask the council", "get a second opinion", or "what would experts say".
+disable-model-invocation: false
 ---
 
 # Council

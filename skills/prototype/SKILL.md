@@ -1,7 +1,7 @@
 ---
 name: prototype
-description: Build a disposable experiment to answer a design, interaction, API, or logic question.
-disable-model-invocation: true
+description: Build a disposable experiment to answer a design, interaction, API, or logic question. Use when the user says "prototype this", "spike it", or "try a quick throwaway".
+disable-model-invocation: false
 ---
 
 # Prototype

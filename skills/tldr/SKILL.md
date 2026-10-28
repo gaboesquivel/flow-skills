@@ -1,7 +1,7 @@
 ---
 name: tldr
-description: Visual human summary and session alignment check. Use when the user asks for a tldr, recap, human summary, show me, or whether you are still aligned.
-disable-model-invocation: true
+description: Visual human summary and session alignment check. Use when the user says "tldr", "show me", "recap", or "are we still aligned".
+disable-model-invocation: false
 ---
 
 # TL;DR
