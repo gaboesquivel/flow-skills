@@ -191,3 +191,20 @@ Sources: a `write-agents` audit and a read-only workflow review on 2026-10-28. T
 - A missing check suite stops local `ship`.
 - Running the suite per integration batch, rather than per task, trades faster runs for bisection when a batch fails.
 - This spec is large. It is one bet: Flow runs a feature end to end with the choices asked once, at maximum parallelism, with little test friction. `to-tasks` should split it by skill, so most tasks have no blockers.
+
+## Tasks
+
+Sub-issues of #89. Tasks 01–11 each own different files and share only this spec, so they have no blockers. 12 waits for 03–06 because the docs, evals, and contracts describe their behavior. Pinned safety phrases in smoke contracts stay intact; only the orchestrator and task 12 edit the contracts file.
+
+- [ ] 01: `flow`: ask depth and delivery together (#100)
+- [ ] 02: `start`: delivery input and concurrent bootstrap (#92)
+- [ ] 03: `explore`: question round and background readers (#97)
+- [ ] 04: `build`: asked delivery, local suite, worktree cleanup, areas (#91)
+- [ ] 05: `ship`: local without remote, per-axis review, worktree prune (#99)
+- [ ] 06: `review`: per-axis workers and five-axis contract (#95)
+- [ ] 07: `to-tasks` and `to-spec`: areas, parallel publishing, NNNN (#94)
+- [ ] 08: `write-agents`: fan-out rule and mechanics (#96)
+- [ ] 09: Discovery skills: parallel groups and fallbacks (#98)
+- [ ] 10: `domain-modeling`, `handoff`, `debug`, `retro` fixes (#93)
+- [ ] 11: `validate`: adapter, filename, numbering, check-table checks (#90)
+- [ ] 12: Docs, evals, and safety contracts (#101, blocked by 03–06)
