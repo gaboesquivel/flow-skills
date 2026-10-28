@@ -67,4 +67,7 @@ No agent interface beyond the files themselves: the agent journey is step 3.
 
 ## Further Notes
 
+Integration with [decision 0039](../decisions/0039-build-never-requires-a-spec.md), which landed after acceptance: when an explore brief is built with no spec, the build request is the acceptance, so `build` accepts the branch's Proposed direction-change record and writes its back-pointers in its first commit. The acceptance rule is unchanged; 0039 added a path to it.
+
+
 Origin: an `explore` run on 2026-10-28 (intent confirmed, grilled; outcome clearer, nothing written before this spec). Riskiest assumption (medium confidence): agents tell a real contradiction from a loose overlap. Main metric: `explore` runs that revive a superseded position (unknown, measure first); supporting: gates fired on non-conflicts. Kill criterion: across this repository's next ~5 `explore` runs, if the gate fires on a non-conflict in more than one in three, or the branch scan misses a pending change, drop the scan and keep only the gate.
