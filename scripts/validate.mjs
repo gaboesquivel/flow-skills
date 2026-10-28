@@ -8,6 +8,7 @@ import { collectDocLinkErrors } from './check-doc-links.mjs'
 export const EXPLICIT_SKILL_NAMES = new Set([])
 
 export const EXPECTED_SKILL_NAMES = [
+  'board',
   'competitors',
   'council',
   'debug',

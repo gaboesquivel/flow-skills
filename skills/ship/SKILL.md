@@ -53,9 +53,17 @@ Read the `Delivery:` line in the project's Flow block (`AGENTS.md` or `CLAUDE.md
 4. **Review.** A separate worker reviews each task's change for correctness and security against the task. The full five-axis `review` runs on each wave's combined change at the checkpoint, before pushing, and once on the final change (the pull request, or the spec branch in local mode); the push that opens the draft comes before the first wave review. Task findings go back to the implementing worker as fix rounds until the gates pass or the round limit is reached; a wave finding goes to the worker of the task that owns the affected files, or to the orchestrator when it spans tasks.
 5. **Integrate.** Merge each passing task into the spec branch. In pull-request mode, push the spec branch and open a draft pull request after the first task integrates. When tasks live in the spec (local mode), tick the task's checkboxes and set its **Status:** to `done` on the spec branch as it integrates. A conflict goes back to the later task's worker as a fix round. A failed or stuck task stops its dependents, which wait for the user's decision and are not runnable until then: report it with evidence and keep the rest of the wave moving.
 6. **Checkpoint** after each wave. Run the wave `review` and its fix rounds, then push the spec branch, get the preview for that exact commit from the deploy target (see Deploy), and post: wave number; tasks integrated, failed, or blocked with one-line reasons, noting dependents that wait for the user's decision; checks and review results; commit SHA; preview URL; screenshots of changed screens when a browser tool is available, otherwise say there are none. Report a pending or failed preview as such. Pull-request mode posts the checkpoint as a pull request comment; local mode reports it in the conversation. The next wave is the ready set after the checkpoint; it waits for the user's go unless the run confirmation said not to wait.
-7. **Finish** by delivery mode once no runnable task remains, reporting dependents still waiting for the user's decision. In pull-request mode, after the final `review`, mark the draft ready for review, then pass the main gate (see Push) before merging.
+7. **Finish** by delivery mode once no runnable task remains, reporting dependents still waiting for the user's decision. When every task has integrated, set the spec's `Status:` line to `implemented` on the spec branch, so the spec reads as done after the branch is deleted. In pull-request mode, after the final `review`, mark the draft ready for review, then pass the main gate (see Push) before merging.
 
 Gates: checks green, no blocking review findings, branch protection respected. Without independent workers, run the ready tasks sequentially in the same order on the spec branch, write the notes as the orchestrator, label reviews single-agent, and say so.
+
+**Board states.** Record live task states with `node <board>/scripts/board.mjs`, where `<board>` is the `board` directory next to this skill's directory; if that script is missing, skip recording. Only the orchestrator records; workers never do. Run records one at a time.
+
+- After the plan yes: `--record run-start --spec <NNN> --branch <spec branch> --mode <local|pull-request> --tasks <01,02,…>`.
+- As each wave's tasks start, change state, and integrate, and again for every unfinished task at each checkpoint and at least every 10 minutes while workers run (a heartbeat): `--record task --task <NN[,NN…]> --state <state> [--round <n>] [--note "<one line>"]`.
+- When the set finishes or stops: `--record run-end`.
+
+Recording is best-effort: a failed record never stops or delays the run.
 
 ## Test
 

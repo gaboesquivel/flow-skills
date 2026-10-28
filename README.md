@@ -89,7 +89,7 @@ flowchart TB
 | Product discovery | `jtbd`, `competitors` |
 | Writing | `write-agents`, `write-humans` |
 | Project start | `start` |
-| Misc | `tldr`, `handoff` |
+| Misc | `tldr`, `handoff`, `board` |
 
 Default durable docs in adopter projects: `docs/specs/NNN-short-name.md`, `docs/decisions/NNN-short-name.md` (or existing conventions).
 

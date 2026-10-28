@@ -89,3 +89,7 @@ What we want to learn or achieve. Intent gives work its purpose; a spec or conve
 ## Validation board
 
 A shared representation of hypotheses, risky assumptions, experiments, evidence, and decisions across iterations. Flow does not ship a validation-board product; the term describes a possible practice, not a required folder structure.
+
+## Progress board
+
+The read-only kanban of a project's specs by stage that the [`board`](skills/board/SKILL.md) skill derives from git. It shows where work stands, not hypotheses or evidence; distinct from a [validation board](#validation-board). [Decision 0027](docs/decisions/0027-progress-board-skill.md).
