@@ -1,12 +1,15 @@
 #!/usr/bin/env node
 // Flow progress board: read-only kanban of a repository's specs, derived from git.
 // Zero dependencies, Node >= 22. Stages: Candidate, Specced, Ready, Building, Shipped.
-import { execFileSync } from 'node:child_process'
+import { execFile, execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { mkdirSync, realpathSync, writeFileSync } from 'node:fs'
 import { createServer } from 'node:http'
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { promisify } from 'node:util'
+
+const execFileAsync = promisify(execFile)
 
 export const COLUMNS = [
   { id: 'candidate', title: 'Candidate' },
@@ -113,7 +116,7 @@ function hasImplementationWork(repoRoot, { sha }, { defaultRef, defaultSha, firs
  * branches are included once each (local before remote, then by name) with `onDefault: false`.
  * Merged branches that match a spec slug carry `implementation`: whether they changed anything outside `docs/`.
  */
-export function readSnapshot(repoRoot) {
+export function readSnapshot(repoRoot, { github = null } = {}) {
   const defaultBranch = resolveDefaultBranch(repoRoot)
   if (!defaultBranch) {
     const hasCommits = tryGit(repoRoot, ['rev-parse', '--verify', '--quiet', 'HEAD^{commit}']) || tryGit(repoRoot, ['for-each-ref', '--count=1', 'refs/heads', 'refs/remotes'])
@@ -159,10 +162,195 @@ export function readSnapshot(repoRoot) {
 
   // Only merged branches that some spec could claim need the (costlier) implementation check.
   const slugs = specs.map((spec) => SPEC_FILE.exec(spec.file)[2])
+  const claimed = (name) => slugs.some((slug) => matchBranches(slug, [{ name }]).length)
   for (const branch of branches) {
-    if (branch.merged && slugs.some((slug) => matchBranches(slug, [branch]).length)) branch.implementation = hasImplementationWork(repoRoot, branch, context)
+    if (branch.merged && claimed(branch.name)) branch.implementation = hasImplementationWork(repoRoot, branch, context)
   }
-  return { repoName: basename(repoRoot), defaultBranch: defaultBranch.name, branches, specs, generatedAt: new Date().toISOString() }
+  const delivery = readDelivery(readBlobs(repoRoot, ['AGENTS.md', 'CLAUDE.md'].map((file) => `${defaultRef}:${file}`)))
+  let githubData = null
+  if (github && delivery !== 'local') {
+    githubData = github(repoRoot) ?? null
+    // Without a GitHub remote, enrichment is only worth a note when the project says it uses pull requests.
+    if (githubData?.reason === 'no GitHub remote' && delivery !== 'pull-request') githubData = null
+  }
+  if (githubData?.available) {
+    githubData = {
+      ...githubData,
+      prs: githubData.prs.map((pr) => (pr.state === 'MERGED' && pr.baseRefName === defaultShort && claimed(pr.headRefName ?? '')
+        ? { ...pr, implementation: prHasImplementationWork(repoRoot, pr.mergeCommit?.oid) }
+        : pr)),
+    }
+    const added = specAddedDates(repoRoot, defaultRef)
+    for (const spec of specs) if (spec.onDefault && added.has(spec.file)) spec.addedAt = added.get(spec.file)
+  }
+  return { repoName: basename(repoRoot), defaultBranch: defaultBranch.name, delivery, branches, specs, github: githubData, generatedAt: new Date().toISOString() }
+}
+
+/** Committer date of the latest commit on `ref` that added each spec file, from one `git log`. */
+function specAddedDates(repoRoot, ref) {
+  const out = tryGit(repoRoot, ['-c', 'core.quotePath=false', 'log', '--diff-filter=A', '--format=@@%cI', '--name-only', ref, '--', SPEC_DIR]) ?? ''
+  const added = new Map()
+  let date = null
+  for (const line of out.split('\n')) {
+    if (line.startsWith('@@')) date = line.slice(2)
+    else if (line && date) {
+      const file = line.slice(SPEC_DIR.length + 1)
+      if (!added.has(file)) added.set(file, date)
+    }
+  }
+  return added
+}
+
+/**
+ * `Delivery:` from the first Flow block (between the BEGIN/END FLOW markers) in the given texts; null when unset.
+ * Mirrors readDelivery in skills/flow/lib/flow-block.mjs (copied: each skill installs on its own).
+ */
+export function readDelivery(texts) {
+  for (const text of texts) {
+    const block = /<!-- BEGIN FLOW -->([\s\S]*?)<!-- END FLOW -->/u.exec(text)?.[1]
+    const value = block && /^Delivery:[ \t]*(.*)$/imu.exec(block)?.[1].trim().toLowerCase().replace(/[\s_]+/gu, '-')
+    if (!value) continue
+    if (value === 'pr' || value === 'pullrequest' || value === 'pull-request') return 'pull-request'
+    return value === 'local' ? 'local' : null
+  }
+  return null
+}
+
+/**
+ * Whether a merged pull request changed a path outside `docs/`, measured from its merge commit's first parent
+ * (squash and merge commits; a rebase merge shows only its last commit). False when the merge commit is not
+ * available locally: without it, git cannot confirm implementation work.
+ */
+function prHasImplementationWork(repoRoot, oid) {
+  if (!oid || !/^[0-9a-f]{40}$/u.test(oid)) return false
+  return cached(`pr ${repoRoot} ${oid}`, () => {
+    if (!tryGit(repoRoot, ['rev-parse', '--verify', '--quiet', `${oid}^{commit}`])) return false
+    const out = tryGit(repoRoot, ['diff', '-z', '--name-only', `${oid}^1`, oid]) ?? ''
+    return out.split('\0').filter(Boolean).some((path) => !path.startsWith('docs/'))
+  })
+}
+
+export const PR_LIMIT = 200
+export const ISSUE_LIMIT = 500
+
+/** Runs `gh` with an argument array and a timeout; returns stdout. Throws like execFileSync. For `--once`/`--json`. */
+export function runGh(args, { cwd, timeout = 5000 } = {}) {
+  return execFileSync('gh', args, { cwd, encoding: 'utf8', timeout, stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024 })
+}
+
+/** Async `gh`: resolves to stdout, rejects like execFile. Keeps the live server's request path free. */
+export async function runGhAsync(args, { cwd, timeout = 5000 } = {}) {
+  const { stdout } = await execFileAsync('gh', args, { cwd, encoding: 'utf8', timeout, maxBuffer: 64 * 1024 * 1024 })
+  return stdout
+}
+
+/** `owner/name` when a remote URL points at github.com (https, ssh, scp-like); null otherwise. */
+export function parseGithubRemote(url) {
+  const match = /^(?:[a-z][\w+.-]*:\/\/)?(?:[^@/\s]+@)?github\.com(?::\d+)?[:/]([\w.-]+)\/([\w.-]+?)(?:\.git)?\/?$/iu.exec(String(url).trim())
+  return match ? `${match[1]}/${match[2]}` : null
+}
+
+function ghFailure(error) {
+  if (error?.code === 'ENOENT') return 'gh not installed'
+  if (error?.code === 'ETIMEDOUT' || error?.killed || error?.signal === 'SIGTERM') return 'GitHub request timed out'
+  const stderr = String(error?.stderr ?? '')
+  if (/auth login|not logged in|authenticat/iu.test(stderr)) return 'gh not authenticated'
+  return 'gh request failed'
+}
+
+/**
+ * The fetch as a sequence of `gh` calls: yields argument arrays, receives stdout (or a thrown error), returns
+ * `{ available: true, prs, issues, truncated }` or `{ available: false, reason }`. One sequence, two drivers:
+ * synchronous for `--once`/`--json`, asynchronous for the live server.
+ */
+function* githubSteps(repoRoot) {
+  const remotes = (tryGit(repoRoot, ['remote']) ?? '').split('\n').filter(Boolean).sort((a, b) => Number(b === 'origin') - Number(a === 'origin'))
+  if (!remotes.length) return { available: false, reason: 'no GitHub remote' }
+  let repo = null
+  for (const remote of remotes) repo ??= parseGithubRemote(tryGit(repoRoot, ['remote', 'get-url', remote]) ?? '')
+  if (!repo) {
+    // Host aliases (`github.com-work`) or other hosts: let gh resolve the remote.
+    let view
+    try { view = JSON.parse(yield ['repo', 'view', '--json', 'nameWithOwner,url']) } catch { return { available: false, reason: 'no GitHub remote' } }
+    const host = /^https?:\/\/([^/]+)\//u.exec(String(view?.url ?? ''))?.[1]?.toLowerCase()
+    if (!view?.nameWithOwner || !host) return { available: false, reason: 'no GitHub remote' }
+    if (host !== 'github.com') return { available: false, reason: `remote is on ${host}, links support github.com only` }
+    repo = view.nameWithOwner
+  }
+  try {
+    const prs = JSON.parse(yield ['pr', 'list', '--repo', repo, '--state', 'all', '--limit', String(PR_LIMIT), '--json', 'number,title,state,headRefName,baseRefName,url,mergedAt,mergeCommit,body'])
+    const issues = JSON.parse(yield ['issue', 'list', '--repo', repo, '--state', 'all', '--limit', String(ISSUE_LIMIT), '--json', 'number,title,state,url'])
+    if (!Array.isArray(prs) || !Array.isArray(issues)) return { available: false, reason: 'unexpected gh output' }
+    return { available: true, prs, issues, truncated: { prs: prs.length >= PR_LIMIT, issues: issues.length >= ISSUE_LIMIT } }
+  } catch (error) {
+    return { available: false, reason: error instanceof SyntaxError ? 'unexpected gh output' : ghFailure(error) }
+  }
+}
+
+/** Fetches with synchronous `gh` calls; never throws. `run(args, { cwd })` is injectable for tests. */
+export function fetchGithub(repoRoot, { run = runGh } = {}) {
+  const steps = githubSteps(repoRoot)
+  let step = steps.next()
+  while (!step.done) {
+    let out
+    try { out = run(step.value, { cwd: repoRoot }) } catch (error) { step = steps.throw(error); continue }
+    step = steps.next(out)
+  }
+  return step.value
+}
+
+/** Same as fetchGithub with an async `run`; never rejects. */
+export async function fetchGithubAsync(repoRoot, { run = runGhAsync } = {}) {
+  const steps = githubSteps(repoRoot)
+  let step = steps.next()
+  while (!step.done) {
+    let out
+    try { out = await run(step.value, { cwd: repoRoot }) } catch (error) { step = steps.throw(error); continue }
+    step = steps.next(out)
+  }
+  return step.value
+}
+
+/** A failed refresh keeps the last good data, marked stale, so stages do not flip on a flaky network. */
+function keepLastGood(previous, next) {
+  if (next.available || !previous?.available) return next
+  return { ...previous, stale: next.reason }
+}
+
+/** Wraps fetchGithub with a cache: at most one synchronous fetch per `ttlMs` per repository. */
+export function githubReader({ run = runGh, ttlMs = 0 } = {}) {
+  const cache = new Map()
+  return (repoRoot) => {
+    const hit = cache.get(repoRoot)
+    if (hit && Date.now() - hit.at < ttlMs) return hit.value
+    const value = keepLastGood(hit?.value, fetchGithub(repoRoot, { run }))
+    cache.set(repoRoot, { at: Date.now(), value })
+    return value
+  }
+}
+
+/**
+ * Stale-while-revalidate source for the live server: returns the cached data at once (null before the first
+ * fetch finishes) and starts a background refresh when it is older than `ttlMs`. Never waits on `gh`.
+ * `source.refresh(repoRoot)` returns the in-flight refresh.
+ */
+export function githubSource({ run = runGhAsync, ttlMs = 60_000 } = {}) {
+  const entries = new Map()
+  const refresh = (repoRoot) => {
+    let entry = entries.get(repoRoot)
+    if (!entry) entries.set(repoRoot, (entry = { at: 0, value: null, pending: null }))
+    entry.pending ??= fetchGithubAsync(repoRoot, { run })
+      .catch((error) => ({ available: false, reason: ghFailure(error) }))
+      .then((value) => { entry.value = keepLastGood(entry.value, value); entry.at = Date.now(); entry.pending = null })
+    return entry.pending
+  }
+  const source = (repoRoot) => {
+    const entry = entries.get(repoRoot)
+    if (!entry || (!entry.pending && Date.now() - entry.at >= ttlMs)) refresh(repoRoot)
+    return entries.get(repoRoot).value
+  }
+  source.refresh = refresh
+  return source
 }
 /** Status word from the spec header (`Status: draft` or `**Status:** draft`), lowercased; null when absent. */
 export function parseStatus(content) {
@@ -200,6 +388,54 @@ export function countTasks(content) {
   return { done: boxes.filter((box) => box[1] !== ' ').length, total: boxes.length }
 }
 
+/** Issue numbers referenced as `#N` on `### NN:` task headings in the `## Tasks` section, in order, unique. */
+export function taskIssueRefs(content) {
+  const section = /^## Tasks[^\n]*\n([\s\S]*?)(?=^## |(?![\s\S]))/mu.exec(content)
+  if (!section) return []
+  const refs = new Set()
+  for (const [heading] of section[1].matchAll(/^### +\d+[^\n]*/gmu)) {
+    for (const [, number] of heading.matchAll(/(?<![\w&])#(\d+)\b/gu)) refs.add(Number(number))
+  }
+  return [...refs]
+}
+
+/** Only http(s) github.com URLs become links; anything else is dropped. */
+export const safeGithubUrl = (url) => (typeof url === 'string' && /^https?:\/\/github\.com\//u.test(url) ? url : null)
+
+const CLOSES = /\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s*:?\s+#(\d+)\b/giu
+
+/**
+ * Pure: the card's issues (from task headings) and its pull request (open before merged, then newest) among
+ * open or merged pull requests whose head branch matches the slug or whose body closes one of the card's issues.
+ * `mergedPrs`: merged pull requests from a slug-matched head into the default branch, shaped like merged branches.
+ */
+function githubLinks(slug, refs, github, addedAt) {
+  if (!github?.available) return { issues: [], pr: null, mergedPrs: [] }
+  const headMatches = (pr) => Boolean(pr.headRefName) && matchBranches(slug, [{ name: pr.headRefName }]).length > 0
+  const byNumber = new Map(github.issues.map((issue) => [issue.number, issue]))
+  const issues = refs.filter((n) => byNumber.has(n)).map((n) => {
+    const issue = byNumber.get(n)
+    return { number: n, state: String(issue.state ?? '').toLowerCase() || null, url: safeGithubUrl(issue.url) }
+  })
+  const own = new Set(issues.map((issue) => issue.number))
+  const linked = github.prs.filter((pr) => (pr.state === 'OPEN' || pr.state === 'MERGED')
+    && (headMatches(pr) || [...String(pr.body ?? '').matchAll(CLOSES)].some(([, n]) => own.has(Number(n)))))
+  linked.sort((a, b) => Number(b.state === 'OPEN') - Number(a.state === 'OPEN') || b.number - a.number)
+  const top = linked[0]
+  const pr = top ? { number: top.number, state: String(top.state).toLowerCase(), url: safeGithubUrl(top.url) } : null
+  // For staging, stricter than links: readSnapshot sets `implementation` only on merged pull requests into the
+  // default branch; the head's last segment starts with the slug; the merge is not older than the spec file
+  // (one minute of slack for a spec added by the same squash merge).
+  const startsWithSlug = new RegExp(`^(?:\\d{3}-)?${escapeRegExp(slug)}(?:$|[-_])`, 'u')
+  const added = Date.parse(addedAt ?? '')
+  const afterSpec = (p) => Number.isNaN(added) || Number.isNaN(Date.parse(p.mergedAt ?? '')) || Date.parse(p.mergedAt) >= added - 60_000
+  const mergedPrs = github.prs
+    .filter((p) => p.state === 'MERGED' && typeof p.implementation === 'boolean' && startsWithSlug.test(String(p.headRefName ?? '').split('/').pop()) && afterSpec(p))
+    .sort((a, b) => b.number - a.number)
+    .map((p) => ({ name: p.headRefName, remote: false, merged: true, implementation: p.implementation, pr: p.number }))
+  return { issues, pr, mergedPrs }
+}
+
 const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')
 
 /**
@@ -218,7 +454,7 @@ function stageFor({ status, tasks, branches }) {
   if (status === 'implemented') return { stage: 'shipped', reason: 'status implemented', branch: null }
   // A merge ships only implementation work (`implementation`: changes outside docs/), never a candidate.
   const merged = branches.find((b) => b.merged && b.implementation)
-  if (merged && tasksComplete && status !== 'candidate') return { stage: 'shipped', reason: `branch ${merged.name} merged`, branch: merged }
+  if (merged && tasksComplete && status !== 'candidate') return { stage: 'shipped', reason: merged.pr ? `pull request #${merged.pr} merged` : `branch ${merged.name} merged`, branch: merged }
   const open = branches.find((b) => !b.merged)
   if (open) return { stage: 'building', reason: `branch ${open.name}`, branch: open }
   if (tasks.done > 0) return { stage: 'building', reason: 'tasks started', branch: null }
@@ -252,7 +488,10 @@ export function deriveBoard(snapshot) {
     const onDefault = spec.onDefault ?? true
     const status = parseStatus(spec.content)
     const tasks = countTasks(spec.content)
-    const branches = matchBranches(slug, snapshot.branches ?? [])
+    const links = githubLinks(slug, taskIssueRefs(spec.content), snapshot.github, spec.addedAt)
+    // Merged git branches come first; a merged pull request adds what git cannot see (a squash merge later edited).
+    const matched = matchBranches(slug, snapshot.branches ?? [])
+    const branches = [...matched.filter((b) => b.merged), ...links.mergedPrs, ...matched.filter((b) => !b.merged)]
     let { stage, reason, branch } = stageFor({ status, tasks, branches })
     if (!onDefault && stage === 'shipped') {
       stage = 'building'
@@ -276,9 +515,18 @@ export function deriveBoard(snapshot) {
       source: spec.source ?? null,
       reason,
       marker: markers.length ? markers.join('; ') : null,
+      issues: links.issues,
+      pr: links.pr,
     })
   }
-  return { repoName: snapshot.repoName ?? null, defaultBranch: snapshot.defaultBranch ?? null, generatedAt: snapshot.generatedAt ?? null, columns }
+  const github = snapshot.github ?? null
+  const notes = []
+  if (github && !github.available) notes.push(`GitHub links unavailable: ${github.reason ?? 'unknown reason'}`)
+  if (github?.available && github.stale) notes.push(`GitHub links may be out of date: ${github.stale}`)
+  if (github?.available && github.truncated?.prs) notes.push(`GitHub links may be incomplete: read only the latest ${PR_LIMIT} pull requests`)
+  if (github?.available && github.truncated?.issues) notes.push(`GitHub links may be incomplete: read only the latest ${ISSUE_LIMIT} issues`)
+  const githubNote = notes.length ? notes.join('; ') : null
+  return { repoName: snapshot.repoName ?? null, defaultBranch: snapshot.defaultBranch ?? null, generatedAt: snapshot.generatedAt ?? null, githubNote, columns }
 }
 
 export function escapeHtml(value) {
@@ -290,7 +538,15 @@ function renderCard(card) {
   if (card.tasks.total) meta.push(`<span class="progress">${card.tasks.done}/${card.tasks.total}</span>`)
   if (card.branch) meta.push(`<span class="branch">${escapeHtml(card.branch)}</span>`)
   const marker = card.marker ? `<p class="marker">${escapeHtml(card.marker)}</p>` : ''
-  return `<li class="card" data-spec="${escapeHtml(card.number)}"><p class="num">${escapeHtml(card.number)}</p><h3>${escapeHtml(card.title)}</h3>${meta.length ? `<p class="meta">${meta.join('')}</p>` : ''}${marker}</li>`
+  const links = [
+    ...(card.pr ? [{ text: `PR #${card.pr.number}`, ...card.pr }] : []),
+    ...(card.issues ?? []).map((issue) => ({ text: `#${issue.number}`, ...issue })),
+  ].map(({ text, state, url }) => {
+    const label = escapeHtml(state ? `${text} ${state}` : text)
+    const href = safeGithubUrl(url)
+    return href ? `<a class="gh" href="${escapeHtml(href)}" target="_blank" rel="noreferrer">${label}</a>` : `<span class="gh">${label}</span>`
+  })
+  return `<li class="card" data-spec="${escapeHtml(card.number)}"><p class="num">${escapeHtml(card.number)}</p><h3>${escapeHtml(card.title)}</h3>${meta.length ? `<p class="meta">${meta.join('')}</p>` : ''}${links.length ? `<p class="links">${links.join('')}</p>` : ''}${marker}</li>`
 }
 
 const subline = (board) => [board.defaultBranch && `from ${board.defaultBranch}`, board.generatedAt && `generated ${board.generatedAt}`].filter(Boolean).join(' · ')
@@ -300,7 +556,7 @@ const subline = (board) => [board.defaultBranch && `from ${board.defaultBranch}`
  * textContent only. No board data is inlined into the script. Exported for the markup drift test.
  */
 export const LIVE_SCRIPT = `(() => {
-const main = document.querySelector('main'), sub = document.querySelector('header .sub'), banner = document.getElementById('banner')
+const main = document.querySelector('main'), sub = document.querySelector('header .sub'), note = document.querySelector('header .note'), banner = document.getElementById('banner')
 const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n }
 const card = (c) => {
   const li = el('li', 'card'); li.dataset.spec = c.number
@@ -309,6 +565,18 @@ const card = (c) => {
   if (c.tasks.total) meta.push(el('span', 'progress', c.tasks.done + '/' + c.tasks.total))
   if (c.branch) meta.push(el('span', 'branch', c.branch))
   if (meta.length) { const p = el('p', 'meta'); p.append(...meta); li.append(p) }
+  const links = (c.pr ? [Object.assign({ text: 'PR #' + c.pr.number }, c.pr)] : []).concat((c.issues || []).map((i) => Object.assign({ text: '#' + i.number }, i)))
+  if (links.length) {
+    const p = el('p', 'links')
+    for (const l of links) {
+      const label = l.state ? l.text + ' ' + l.state : l.text
+      const ok = typeof l.url === 'string' && /^https?:\\/\\/github\\.com\\//.test(l.url)
+      const a = el(ok ? 'a' : 'span', 'gh', label)
+      if (ok) { a.href = l.url; a.target = '_blank'; a.rel = 'noreferrer' }
+      p.append(a)
+    }
+    li.append(p)
+  }
   if (c.marker) li.append(el('p', 'marker', c.marker))
   return li
 }
@@ -332,6 +600,7 @@ async function poll() {
         const key = JSON.stringify(data.columns)
         if (key !== last) { last = key; main.replaceChildren(...data.columns.map(column)) }
         sub.textContent = [data.defaultBranch && 'from ' + data.defaultBranch, data.generatedAt && 'generated ' + data.generatedAt].filter(Boolean).join(' · ')
+        note.textContent = data.githubNote || ''; note.hidden = !data.githubNote
       }
     }
   } catch { show('Board server not reachable. Showing the last good board.') }
@@ -352,6 +621,7 @@ export function renderHtml(board, { live = false } = {}) {
   const sub = subline(board)
   // The live page always has a subtitle element for the client to update.
   const subHtml = sub || live ? `<p class="sub">${escapeHtml(sub)}</p>` : ''
+  const noteHtml = board.githubNote || live ? `<p class="note"${board.githubNote ? '' : ' hidden'}>${escapeHtml(board.githubNote ?? '')}</p>` : ''
   const csp = live ? `default-src 'none'; style-src 'unsafe-inline'; script-src 'sha256-${LIVE_SCRIPT_HASH}'; connect-src 'self'` : "default-src 'none'; style-src 'unsafe-inline'"
   const liveCss = live ? '\n.banner{margin:0 16px 12px;padding:8px 10px;border-radius:6px;background:var(--warn-bg);color:var(--warn);font-size:12px;overflow-wrap:anywhere}' : ''
   return `<!doctype html>
@@ -370,9 +640,10 @@ main{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding
 .card h3{margin:0;font-size:14px;font-weight:600}.num{margin:0;color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
 .meta{margin:6px 0 0;display:flex;flex-wrap:wrap;gap:6px;font-size:12px}.progress{font-weight:600;color:var(--accent)}
 .branch{color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.marker{margin:6px 0 0;font-size:12px;color:var(--warn)}
+.links{margin:6px 0 0;display:flex;flex-wrap:wrap;gap:6px;font-size:12px}.gh{color:var(--muted)}a.gh{color:var(--accent)}header .note{color:var(--warn)}
 @media (max-width:760px){main{grid-template-columns:1fr}}
 </style></head>
-<body><header><h1>${escapeHtml(title)}</h1>${subHtml}</header>${live ? '<p id="banner" class="banner" role="status" hidden></p>' : ''}<main>${columns}</main>${live ? `<script>${LIVE_SCRIPT}</script>` : ''}</body></html>
+<body><header><h1>${escapeHtml(title)}</h1>${subHtml}${noteHtml}</header>${live ? '<p id="banner" class="banner" role="status" hidden></p>' : ''}<main>${columns}</main>${live ? `<script>${LIVE_SCRIPT}</script>` : ''}</body></html>
 `
 }
 
@@ -405,17 +676,19 @@ const firstLines = (message) => String(message).split('\n').slice(0, 2).join(' '
  * recomputed at most once per `memoMs`, however many tabs poll. A git failure after start makes `/state`
  * answer 500 `{ error }`; the page keeps its last good board and shows a banner. Every `/state` body
  * carries `server: { repoRoot, pid }` so `--serve` and `--stop` can recognize this repository's board.
+ * `github` (a githubSource, or null) adds GitHub links. It refreshes in the background on its own longer
+ * cache, so a request never waits on `gh` and polling stays off the GitHub API; links fill in once it resolves.
  * Throws when the first derivation fails; rejects when the port cannot be bound.
  */
-export async function startServer({ repoRoot, port = 0, memoMs = 1000 }) {
+export async function startServer({ repoRoot, port = 0, memoMs = 1000, github = null }) {
   const identity = { repoRoot: realRoot(repoRoot), pid: process.pid }
-  let lastGood = deriveBoard(readSnapshot(repoRoot))
+  let lastGood = deriveBoard(readSnapshot(repoRoot, { github }))
   let memo = { at: Date.now(), value: { status: 200, body: { ...lastGood, server: identity } } }
   const state = () => {
     if (Date.now() - memo.at < memoMs) return memo.value
     let value
     try {
-      lastGood = deriveBoard(readSnapshot(repoRoot))
+      lastGood = deriveBoard(readSnapshot(repoRoot, { github }))
       value = { status: 200, body: { ...lastGood, server: identity } }
     } catch (error) {
       value = { status: 500, body: { error: firstLines(error.message), server: identity } }
@@ -455,15 +728,18 @@ export async function startServer({ repoRoot, port = 0, memoMs = 1000 }) {
 }
 
 export const DEFAULT_PORT = 4178
+// While serving, GitHub data is refetched at most once a minute, separate from the 1 s git memo.
+const GITHUB_TTL_MS = 60_000
 
 function parseArgs(argv) {
-  const args = { once: false, json: false, serve: false, stop: false, port: null, out: null, repo: process.cwd() }
+  const args = { once: false, json: false, serve: false, stop: false, github: true, port: null, out: null, repo: process.cwd() }
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]
     if (arg === '--once') args.once = true
     else if (arg === '--json') args.json = true
     else if (arg === '--serve') args.serve = true
     else if (arg === '--stop') args.stop = true
+    else if (arg === '--no-github') args.github = false
     else if (arg === '--out' || arg === '--repo' || arg === '--port') {
       const value = argv[++i]
       if (!value || value.startsWith('--')) throw new Error(`${arg} needs a value`)
@@ -479,17 +755,17 @@ function parseArgs(argv) {
   return args
 }
 
-async function serve(repoRoot, port) {
+async function serve(repoRoot, port, github) {
   const running = port === 0 ? null : await findBoard(repoRoot, port ?? DEFAULT_PORT)
   if (running) { console.log(`Board already running at ${running.url} (pid ${running.pid}).`); return 0 }
   let live
   try {
     try {
-      live = await startServer({ repoRoot, port: port ?? DEFAULT_PORT })
+      live = await startServer({ repoRoot, port: port ?? DEFAULT_PORT, github })
     } catch (error) {
       // The fixed default keeps the URL stable across restarts; fall back to any free port when it is taken.
       if (error.code !== 'EADDRINUSE' || port !== null) throw error
-      live = await startServer({ repoRoot, port: 0 })
+      live = await startServer({ repoRoot, port: 0, github })
     }
   } catch (error) {
     console.error(error.code === 'EADDRINUSE' ? `Port ${port} is in use.` : error.message)
@@ -514,16 +790,16 @@ async function stopServer(repoRoot, port) {
 
 /** Resolves to the exit code; with `--serve`, once the server stops on SIGINT or SIGTERM. */
 export async function main(argv = process.argv.slice(2)) {
-  const usage = 'Usage: board.mjs --serve [--port <n>] [--repo <path>] | --stop [--port <n>] [--repo <path>] | --once [--out <file>] [--repo <path>] | --json [--repo <path>]'
+  const usage = 'Usage: board.mjs --serve [--port <n>] [--repo <path>] [--no-github] | --stop [--port <n>] [--repo <path>] | --once [--out <file>] [--repo <path>] [--no-github] | --json [--repo <path>] [--no-github]'
   let args
   try { args = parseArgs(argv) } catch (error) { console.error(`${error.message}\n${usage}`); return 2 }
   if (!args.once && !args.json && !args.serve && !args.stop) { console.error(usage); return 2 }
   const repoRoot = tryGit(resolve(args.repo), ['rev-parse', '--show-toplevel'])
   if (!repoRoot) { console.error(`Not inside a git repository: ${args.repo}`); return 1 }
-  if (args.serve) return serve(repoRoot, args.port)
+  if (args.serve) return serve(repoRoot, args.port, args.github ? githubSource({ ttlMs: GITHUB_TTL_MS }) : null)
   if (args.stop) return stopServer(repoRoot, args.port)
   let board
-  try { board = deriveBoard(readSnapshot(repoRoot)) } catch (error) { console.error(error.message); return 1 }
+  try { board = deriveBoard(readSnapshot(repoRoot, { github: args.github ? githubReader() : null })) } catch (error) { console.error(error.message); return 1 }
   if (args.json) console.log(JSON.stringify(board, null, 2))
   if (args.once) {
     const out = args.out ? (isAbsolute(args.out) ? args.out : resolve(args.out)) : defaultOutPath(repoRoot)
