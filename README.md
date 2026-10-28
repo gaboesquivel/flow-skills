@@ -29,7 +29,7 @@ flowchart TB
 - **Set up Flow.** Say "set up Flow here" in an existing project, or "start a Next.js project" for a new one. `start` is the same setup plus a verified template bootstrap. Both write one removable Flow block into `AGENTS.md` and ask one question: **Lite** or **Full** process ([decision 0026](docs/decisions/0026-process-depth.md)).
 - **Define the goals.** Every Flow project gets the same goals from `explore`: the problem, who it serves (agents included), the riskiest assumption, one main metric with a kill criterion, core journeys, and alternatives. `start` hands off to `explore` automatically; `flow` names it when `PRODUCT.md` has none.
 - **Keep context aligned.** "Update the docs" has `flow` align `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` after meaningful changes.
-- **Deliver.** "Spec it", "break it down", and "ship it" land a spec's tasks on one branch, through one pull request or a reviewed merge into local `main` ([decision 0020](docs/decisions/0020-flow-mode.md)).
+- **Deliver.** "Spec it" writes a draft spec and "accept the spec" approves it. "Break it down" makes its tasks, "build it" runs them on one branch and ends at a pull request with green checks (or a checked branch in local mode), and "ship it" lands accepted work with no confirmation: independent review, green checks, merge ([decision 0028](docs/decisions/0028-build-and-ship.md)).
 - **Other skills.** Say what you want; each skill's leading word reaches it ("grill me", "build it"). Slash commands work too. No mandatory sequence.
 
 ### Lite or Full
@@ -58,22 +58,23 @@ One path through Flow mode. Decision records are optional, written only for sign
 flowchart TB
   explore["Explore · interview · grill<br/>Shape the problem"]
   decision["Decision record<br/>When significant"]
-  spec["Spec<br/>to-spec · candidate → draft"]
+  spec["Spec<br/>to-spec · candidate → draft → accepted"]
   tasks["Tasks<br/>to-tasks · issues or spec"]
-  wave["Ship a wave<br/>Current ready set"]
-  checkpoint["Checkpoint<br/>Preview, screenshots, go?"]
-  land["Land<br/>PR ready or merge to main"]
+  wave["Build a wave<br/>build · current ready set"]
+  checkpoint["Checkpoint<br/>Checks, CI links, screenshots"]
+  ready["Ready PR<br/>Green checks"]
+  land["Ship<br/>Review, merge, sync main"]
   align["flow aligns context<br/>Root docs stay current"]
   explore --> spec
   explore -.-> decision
   decision -.-> spec
   spec --> tasks --> wave --> checkpoint
   checkpoint -- next wave --> wave
-  checkpoint -- last wave --> land --> align
+  checkpoint -- last wave --> ready --> land --> align
   classDef doc fill:#EEEDFE,stroke:#534AB7,color:#3C3489
   classDef run fill:#FAECE7,stroke:#993C1D,color:#712B13
   class decision,spec,tasks doc
-  class wave,checkpoint,land run
+  class wave,checkpoint,ready,land run
 ```
 
 ## Catalog

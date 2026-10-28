@@ -45,7 +45,7 @@ These apply to manual work and skill use. They are not a fixed sequence.
 | Activity | Documentation responsibility |
 |---|---|
 | Exploration | Preserve worthwhile possibilities; link evidence when saving artifacts. |
-| Planning | Capture bounded scope in a spec when the work warrants it. |
+| Planning | Capture bounded scope in a spec when the work warrants it; accept it before shipping. |
 | Execution | Update root context and specs when behavior or accepted intent changes. |
 | Review | Record findings and update decisions or root docs when conclusions matter. |
 
