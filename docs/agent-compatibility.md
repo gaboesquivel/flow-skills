@@ -38,6 +38,8 @@ Metadata and contract tests show the intended invocation split. They do not show
 
 "Ship it" on a spec's task set needs isolated workers (for example subagents in separate Git worktrees) for parallel tasks and independent per-task review. Hosts without them run the tasks sequentially on the spec branch and label reviews single-agent. The **delivery mode** on the block's `Delivery:` line picks the finish: pull-request mode needs GitHub access, and local mode needs only Git and a push remote. When the line is unset, the [`ship`](../skills/ship/SKILL.md) skill infers the mode.
 
+The block's `Deploy:` line names the project's [deploy target](../GLOSSARY.md#deploy-target) (for example `vercel` or `none`); `ship` infers it when unset. A task-set run stops at a [checkpoint](../GLOSSARY.md#checkpoint) after each [wave](../GLOSSARY.md#wave) with the preview for that commit ([decision 0024](decisions/0024-wave-checkpoints.md)). Screenshots of changed screens need a browser tool from the host; without one, the checkpoint says so.
+
 **Dogfooding in this repository.** `.claude/skills` is a symlink to `skills/`, so Claude Code sessions here load the working-tree skills; `pnpm validate` fails if the link breaks. Other hosts read the source tree directly or install it with the skills CLI.
 
 ## Metadata

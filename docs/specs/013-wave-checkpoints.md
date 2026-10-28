@@ -1,6 +1,6 @@
 # 013: Wave checkpoints
 
-Status: draft (2026-10-28). Decision: [0024](../decisions/0024-wave-checkpoints.md). Builds on [spec 009](009-flow-mode.md).
+Status: implemented (2026-10-28). Decision: [0024](../decisions/0024-wave-checkpoints.md). Builds on [spec 009](009-flow-mode.md).
 
 ## Problem Statement
 
@@ -64,8 +64,8 @@ The project's Flow block records the deploy target on a `Deploy:` line, so a Ver
 
 Recorded as GitHub issues (pull-request mode):
 
-- [#50](https://github.com/gaboesquivel/flow-skills/issues/50) `flow`: `Deploy:` line in the Flow block.
-- [#51](https://github.com/gaboesquivel/flow-skills/issues/51) `ship`: waves, draft pull request, and preview checkpoints.
-- [#52](https://github.com/gaboesquivel/flow-skills/issues/52) `implement`: tests first at named seams.
-- [#53](https://github.com/gaboesquivel/flow-skills/issues/53) `ship`: per-wave review, shared notes, orchestrator-only shared files (blocked by #51).
-- [#54](https://github.com/gaboesquivel/flow-skills/issues/54) Docs alignment (blocked by #50–#53).
+- [x] [#50](https://github.com/gaboesquivel/flow-skills/issues/50) `flow`: `Deploy:` line in the Flow block.
+- [x] [#51](https://github.com/gaboesquivel/flow-skills/issues/51) `ship`: waves, draft pull request, and preview checkpoints.
+- [x] [#52](https://github.com/gaboesquivel/flow-skills/issues/52) `implement`: tests first at named seams.
+- [x] [#53](https://github.com/gaboesquivel/flow-skills/issues/53) `ship`: per-wave review, shared notes, orchestrator-only shared files (blocked by #51).
+- [x] [#54](https://github.com/gaboesquivel/flow-skills/issues/54) Docs alignment (blocked by #50–#53).

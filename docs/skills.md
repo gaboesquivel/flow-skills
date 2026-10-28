@@ -42,7 +42,7 @@ Product discovery, writing, advisory, prototype, quality, and misc skills are op
 | [to-tasks](../skills/to-tasks/SKILL.md) | "break it down" | Vertical-slice tasks with blockers, recorded as GitHub issues (pull-request mode) or in the spec's Tasks section (local mode); reports the ready set and waits for "ship it". |
 | [implement](../skills/implement/SKILL.md) | "build it" | Implement an authorized change; no spec required for small clear work. |
 | [review](../skills/review/SKILL.md) | "check it against the spec" | Review against intent and root context on five axes: correctness, readability, architecture, security, performance. |
-| [ship](../skills/ship/SKILL.md) | "ship it" | Verify, commit, confirm, push, and check the deployment this repo configures, deferring to the platform's deploy skill. On a spec's task set, orchestrates every task on one branch and finishes by [delivery mode](../GLOSSARY.md#delivery-mode). |
+| [ship](../skills/ship/SKILL.md) | "ship it" | Verify, commit, confirm, push, and check the deployment this repo configures, deferring to the platform's deploy skill. On a spec's task set, runs tasks in [waves](../GLOSSARY.md#wave) on one branch, opens a draft pull request early in pull-request mode, posts a [checkpoint](../GLOSSARY.md#checkpoint) with a preview after each wave, and finishes by [delivery mode](../GLOSSARY.md#delivery-mode) ([decision 0024](decisions/0024-wave-checkpoints.md)). |
 | [retro](../skills/retro/SKILL.md) | "let's do a retro" | Retrospective on the agent environment after a session. |
 
 ## Shared language
