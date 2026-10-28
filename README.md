@@ -39,11 +39,11 @@ Details and links to every `SKILL.md`: **[docs/skills.md](docs/skills.md)**.
 | Group | Skills |
 | --- | --- |
 | Flow Lite | `flow` |
-| Delivery | `explore`, `grill`, `to-spec`, `to-tasks`, `implement`, `review`, `ship`, `retro` |
+| Delivery | `explore`, `interview`, `grill`, `to-spec`, `to-tasks`, `implement`, `review`, `ship`, `retro` |
 | Advisory | `council` |
 | Prototype | `prototype` |
 | Quality | `simplify`, `security`, `performance`, `debug` |
-| Product discovery | `interview`, `jtbd`, `competitors` |
+| Product discovery | `jtbd`, `competitors` |
 | Writing | `write-agents`, `write-humans` |
 | Project start | `start` |
 | Misc | `tldr`, `handoff` |

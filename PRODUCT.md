@@ -86,11 +86,11 @@ flow-skills offers a small catalog: **Flow Lite** for root context alignment, pl
 | Layer | Skills |
 | --- | --- |
 | Flow Lite | [`flow`](skills/flow/SKILL.md) — align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md` where hosts support discovery. Not always-on, and not project initialization. |
-| Delivery | `explore`, `grill`, `to-spec`, `to-tasks`, `implement`, `review`, `ship`, `retro` |
+| Delivery | `explore`, `interview`, `grill`, `to-spec`, `to-tasks`, `implement`, `review`, `ship`, `retro` |
 | Advisory | `council` |
 | Prototype | `prototype` |
 | Quality | `simplify`, `security`, `performance`, `debug` |
-| Product discovery | `interview`, `jtbd`, `competitors` |
+| Product discovery | `jtbd`, `competitors` |
 | Writing | `write-agents`, `write-humans` |
 | Project start | [`start`](skills/start/SKILL.md) — verified bootstrap from flow-next or flow-mono (manual only) |
 | Misc | `tldr`, `handoff` |
@@ -105,7 +105,7 @@ Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Every skil
 
 | Chain stage | How the current catalog supports it |
 | --- | --- |
-| Product thinking | `explore`, `grill`, `interview`, `jtbd`, `competitors`, `council`; `flow` keeps product intent in root docs |
+| Product thinking | `explore`, `interview`, `grill`, `jtbd`, `competitors`, `council`; `flow` keeps product intent in root docs |
 | Engineering discipline | `to-spec`, `to-tasks`, `domain-modeling`, `write-agents`, `write-humans`, `prototype`, `simplify`, `security`, `performance`, `debug`; specs and decisions as flat durable artifacts |
 | Agent execution | `implement`, `ship`; portable packages with no mandatory router |
 | Verified value | `review`, `ship`, `retro`, `tldr`; evidence, alignment, and visual summaries without claiming a feature shipped |

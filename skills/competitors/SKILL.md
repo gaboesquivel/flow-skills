@@ -14,4 +14,4 @@ Summarize differentiation honestly: where the proposed direction wins, where it 
 
 Return the landscape, implications, open questions, and recommended next activity. Analysis does not authorize implementation.
 
-Optional `interview` or `jtbd` skills may deepen customer evidence when installed and invoked separately.
+The optional `jtbd` skill may deepen customer evidence when installed and invoked separately.

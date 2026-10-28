@@ -24,6 +24,7 @@ Primary workflow and engineering influence.
 - [git workflow and versioning](https://github.com/addyosmani/agent-skills/blob/main/skills/git-workflow-and-versioning/SKILL.md) — [Current research](research/2026-10-19-refinement-comparison.md).
 - [idea refine](https://github.com/addyosmani/agent-skills/blob/main/skills/idea-refine/SKILL.md) — [Current research](research/2026-10-19-refinement-comparison.md).
 - [refinement criteria](https://github.com/addyosmani/agent-skills/blob/main/skills/idea-refine/refinement-criteria.md) — [Current research](research/2026-10-19-refinement-comparison.md).
+- [interview me](https://github.com/addyosmani/agent-skills/blob/main/skills/interview-me/SKILL.md) — adapted as `interview`; [decision 0018](decisions/0018-interview-extracts-intent.md).
 - [spec driven development](https://github.com/addyosmani/agent-skills/blob/main/skills/spec-driven-development/SKILL.md) — [Current research](research/2026-10-19-refinement-comparison.md).
 
 ## Composition and refinement
