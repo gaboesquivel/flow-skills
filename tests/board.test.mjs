@@ -200,6 +200,7 @@ test('branch match uses slug token boundaries, not substrings', () => withRepo((
 }))
 
 test('empty branch cut from an older default commit is not merged', () => withRepo(({ dir, git, write, commit }) => {
+  git('remote', 'add', 'origin', 'https://github.com/example/fixture.git')
   write('001-old-branch.md', spec('001: Old branch', 'draft'))
   commit('specs')
   git('branch', 'feat/old-branch')
@@ -624,6 +625,7 @@ test('githubReader caches per repository for its TTL', () => withRepo(({ dir, gi
 }))
 
 test('readSnapshot: delivery mode gates GitHub; merged pull request with code ships a squash merge later edited', () => withRepo(({ dir, git, write, commit }) => {
+  writeFileSync(join(dir, 'AGENTS.md'), '# A\n\n<!-- BEGIN FLOW -->\nDelivery: pull-request\n<!-- END FLOW -->\n')
   write('020-widget.md', spec('020: Widget', 'draft'))
   commit('spec')
   git('switch', '--quiet', '-c', 'feat/widget')
@@ -785,6 +787,7 @@ test('readDelivery agrees with the flow skill on Flow block inputs', () => {
 })
 
 test('readSnapshot: merged pull requests stage only into the default branch, with a local merge commit, after the spec', () => withRepo(({ dir, git, write, commit }) => {
+  git('remote', 'add', 'origin', 'https://github.com/example/fixture.git')
   write('020-widget.md', spec('020: Widget', 'draft'))
   commit('spec')
   const specDate = git('log', '-1', '--format=%cI').trim()
@@ -1036,7 +1039,9 @@ test('recorder: parallel records all land; a held lock times out; a stale lock i
 
     writeFileSync(`${path}.lock`, '')
     assert.throws(() => record(dir, 'task', { task: '01', state: 'failed' }, { waitMs: 100 }), /locked by another record/u)
-    assert.equal(await main(['--record', 'task', '--task', '01', '--state', 'failed', '--repo', dir], { lockWaitMs: 50 }), 1, 'CLI timeout exits 1')
+    const errors = []
+    assert.equal(await main(['--record', 'task', '--task', '01', '--state', 'failed', '--repo', dir], { lockWaitMs: 50, error: (message) => errors.push(message) }), 1, 'CLI timeout exits 1')
+    assert.match(errors.join('\n'), /locked by another record/u, 'CLI timeout reports the lock')
     assert.equal(JSON.parse(readFileSync(path, 'utf8')).tasks['01'].state, 'working', 'nothing written on timeout')
     const old = new Date(Date.now() - 60_000)
     utimesSync(`${path}.lock`, old, old)
@@ -1104,6 +1109,7 @@ test('pull-request mode: an open branch alone is not Building; code, a ticked ta
 })
 
 test('readSnapshot: in pull-request mode open spec branches carry implementation from git', () => withRepo(({ dir, git, write, commit }) => {
+  git('remote', 'add', 'origin', 'https://github.com/example/fixture.git')
   write('020-widget.md', spec('020: Widget', 'draft'))
   write('021-gadget.md', spec('021: Gadget', 'draft'))
   commit('specs')
@@ -1134,6 +1140,13 @@ test('readSnapshot: in pull-request mode open spec branches carry implementation
   const local = readSnapshot(dir)
   assert.equal(local.branches.find((b) => b.name === 'origin/feat/020-widget').implementation, undefined, 'local reads skip the check')
   assert.equal(stageOf(deriveBoard(local), '020'), 'building', 'local mode: any open branch counts')
+  writeFileSync(join(dir, 'AGENTS.md'), '# Agents\n')
+  commit('unset delivery')
+  const tip = git('rev-parse', 'refs/remotes/origin/feat/020-widget').trim()
+  git('remote', 'remove', 'origin')
+  git('branch', '--quiet', 'feat/020-widget', tip)
+  assert.equal(readSnapshot(dir).delivery, 'local', 'unset delivery without a remote reads as local')
+  assert.equal(stageOf(deriveBoard(readSnapshot(dir)), '020'), 'building', 'no remote: any open branch counts')
 }))
 
 test('spec issue line and task checklist link issues, count progress, and match pull requests', () => {
