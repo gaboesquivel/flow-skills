@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import test from 'node:test'
 import vm from 'node:vm'
-import { countTasks, deriveBoard, escapeHtml, LIVE_SCRIPT, parseStatus, readSnapshot, renderHtml, startServer } from '../skills/board/scripts/board.mjs'
+import { countTasks, deriveBoard, escapeHtml, fetchGithub, githubReader, LIVE_SCRIPT, parseStatus, readSnapshot, renderHtml, startServer } from '../skills/board/scripts/board.mjs'
 
 const script = join(import.meta.dirname, '../skills/board/scripts/board.mjs')
 
@@ -398,7 +398,7 @@ test('live server: /state JSON, page, memo window, new commits, git failure, hos
     const board = await res.json()
     assert.deepEqual(board.columns.map((column) => column.id), ['candidate', 'specced', 'ready', 'building', 'shipped'])
     assert.equal(board.defaultBranch, 'main')
-    assert.deepEqual(Object.keys(cardOf(board, '001')).sort(), ['branch', 'marker', 'number', 'reason', 'slug', 'source', 'status', 'tasks', 'title'])
+    assert.deepEqual(Object.keys(cardOf(board, '001')).sort(), ['branch', 'issues', 'marker', 'number', 'pr', 'reason', 'slug', 'source', 'status', 'tasks', 'title'])
 
     const html = await (await fetch(memoized.url)).text()
     assert.match(html, /<h2>Specced <span class="count">1<\/span>/u)
@@ -445,7 +445,9 @@ class StubElement {
   replaceChildren(...nodes) { this.children = nodes }
   get innerHTML() { return this.children.map((child) => (typeof child === 'string' ? escapeHtml(child) : child.outerHTML)).join('') }
   get outerHTML() {
-    const attrs = (this.className ? ` class="${escapeHtml(this.className)}"` : '') + Object.entries(this.dataset).map(([key, value]) => ` data-${key}="${escapeHtml(value)}"`).join('')
+    const attrs = (this.className ? ` class="${escapeHtml(this.className)}"` : '')
+      + Object.entries(this.dataset).map(([key, value]) => ` data-${key}="${escapeHtml(value)}"`).join('')
+      + ['href', 'target', 'rel'].filter((name) => this[name] !== undefined).map((name) => ` ${name}="${escapeHtml(this[name])}"`).join('')
     return `<${this.tag}${attrs}>${this.innerHTML}</${this.tag}>`
   }
 }
@@ -453,12 +455,14 @@ class StubElement {
 async function runClient(response) {
   const main = new StubElement('main')
   const sub = new StubElement('p')
+  const note = new StubElement('p')
   const banner = new StubElement('p')
   let next
-  const document = { querySelector: (selector) => (selector === 'main' ? main : sub), getElementById: () => banner, createElement: (tag) => new StubElement(tag) }
+  const elements = { main, 'header .sub': sub, 'header .note': note }
+  const document = { querySelector: (selector) => elements[selector], getElementById: () => banner, createElement: (tag) => new StubElement(tag) }
   vm.runInNewContext(LIVE_SCRIPT, { document, setTimeout: (fn) => { next = fn }, fetch: async () => { if (response instanceof Error) throw response; return response } })
   await next()
-  return { main, sub, banner }
+  return { main, sub, note, banner }
 }
 
 const jsonResponse = (body, status = 200) => ({ ok: status < 400, status, headers: { get: () => 'application/json; charset=utf-8' }, json: async () => JSON.parse(JSON.stringify(body)) })
@@ -468,18 +472,167 @@ test('live client renders the same columns and cards as renderHtml', async () =>
   const branches = [{ name: 'feat/building', remote: false, merged: false }]
   const board = deriveBoard({
     ...snapshot({
-      '001-building.md': spec('001: Building <&"\'>', 'draft', '\n## Tasks\n\n- [x] a\n- [ ] b\n'),
+      '001-building.md': spec('001: Building <&"\'>', 'draft', '\n## Tasks\n\n### 01: A (#4)\n- [x] a\n\n### 02: B (#5)\n- [ ] b\n'),
       '002-odd.md': spec('002: Odd', 'proposed'),
       '003-done.md': spec('003: Done', 'implemented'),
     }, branches),
+    github: {
+      available: true,
+      prs: [{ number: 9, state: 'OPEN', headRefName: 'feat/building', baseRefName: 'main', url: 'https://github.com/o/r/pull/9?a=1&b="2"', body: '' }],
+      issues: [{ number: 4, state: 'CLOSED', url: 'https://github.com/o/r/issues/4' }, { number: 5, state: 'OPEN', url: 'javascript:alert(1)' }],
+    },
     repoName: 'demo',
     generatedAt: '2026-10-28T00:00:00.000Z',
   })
-  const { main, sub, banner } = await runClient(jsonResponse(board))
+  assert.equal(cardOf(board, '001').issues.length, 2, 'fixture exercises links')
+  const { main, sub, note, banner } = await runClient(jsonResponse(board))
   assert.equal(main.innerHTML, /<main>([\s\S]*)<\/main>/u.exec(renderHtml(board))[1])
   assert.equal(sub.textContent, 'from main · generated 2026-10-28T00:00:00.000Z')
+  assert.equal(note.hidden, true)
   assert.equal(banner.hidden, true)
+  const offline = await runClient(jsonResponse({ ...board, githubNote: 'GitHub links unavailable: gh not installed' }))
+  assert.equal(offline.note.hidden, false)
+  assert.equal(offline.note.textContent, 'GitHub links unavailable: gh not installed')
 })
+
+const github = (prs = [], issues = []) => ({ available: true, prs, issues })
+const tasked = (title, done) => spec(title, 'draft', `\n## Tasks\n\n### 01: One (#45)\n**Status:** ${done ? 'done' : 'planned'}\n\n### 02: Two (#46)\n**Status:** done in #12\n`)
+
+test('GitHub data: task heading issues and the matching pull request become card links', () => {
+  const prs = [
+    { number: 50, state: 'CLOSED', headRefName: 'feat/widget', baseRefName: 'main', url: 'https://github.com/o/r/pull/50', body: '' },
+    { number: 51, state: 'OPEN', headRefName: 'feat/widget', baseRefName: 'main', url: 'https://github.com/o/r/pull/51', body: '' },
+    { number: 60, state: 'MERGED', headRefName: 'task/two', baseRefName: 'main', url: 'https://github.com/o/r/pull/60', body: 'Closes #48' },
+  ]
+  const issues = [45, 46, 48, 12].map((number) => ({ number, state: number === 45 ? 'OPEN' : 'CLOSED', url: `https://github.com/o/r/issues/${number}` }))
+  const board = deriveBoard({
+    ...snapshot({
+      '020-widget.md': tasked('020: Widget', false),
+      '021-gadget.md': spec('021: Gadget', 'draft', '\n## Tasks\n\n### 01: Only (#48)\n- [ ] a\n'),
+    }),
+    github: github(prs, issues),
+  })
+  const widget = cardOf(board, '020')
+  assert.deepEqual(widget.issues, [{ number: 45, state: 'open', url: 'https://github.com/o/r/issues/45' }, { number: 46, state: 'closed', url: 'https://github.com/o/r/issues/46' }], 'heading refs only, not #12 from a status line')
+  assert.deepEqual(widget.pr, { number: 51, state: 'open', url: 'https://github.com/o/r/pull/51' }, 'closed-unmerged pull requests are skipped')
+  assert.equal(cardOf(board, '021').pr.number, 60, 'linked by Closes #N')
+  const html = renderHtml(board)
+  assert.match(html, /<a class="gh" href="https:\/\/github.com\/o\/r\/pull\/51" target="_blank" rel="noreferrer">PR #51 open<\/a>/u)
+  assert.match(html, />#46 closed<\/a>/u)
+  assert.equal(board.githubNote, null)
+})
+
+test('GitHub data: a merged pull request ships a done spec git still shows as unmerged, never a candidate or open tasks', () => {
+  const branches = [{ name: 'feat/widget', remote: false, merged: false }, { name: 'feat/idea', remote: false, merged: false }, { name: 'feat/half', remote: false, merged: false }]
+  const merged = (number, head, implementation = true, base = 'main') => ({ number, state: 'MERGED', headRefName: head, baseRefName: base, url: `https://github.com/o/r/pull/${number}`, body: '', implementation })
+  const board = deriveBoard({
+    ...snapshot({
+      '020-widget.md': tasked('020: Widget', true),
+      '021-idea.md': spec('021: Idea', 'candidate'),
+      '022-half.md': tasked('022: Half', false),
+      '023-docs.md': spec('023: Docs', 'draft'),
+    }, branches),
+    github: github([merged(7, 'feat/widget'), merged(8, 'feat/idea'), merged(9, 'feat/half'), merged(10, 'spec/023-docs', false)]),
+  })
+  assert.equal(stageOf(board, '020'), 'shipped')
+  assert.equal(cardOf(board, '020').reason, 'pull request #7 merged')
+  assert.equal(cardOf(board, '020').pr.state, 'merged')
+  assert.equal(stageOf(board, '021'), 'building', 'candidate never ships')
+  assert.equal(stageOf(board, '022'), 'building', 'open tasks never ship')
+  assert.equal(stageOf(board, '023'), 'specced', 'docs-only pull request is not implementation work')
+})
+
+test('GitHub unavailable: git-only board with a header note', () => {
+  const branches = [{ name: 'feat/widget', remote: false, merged: false }]
+  const board = deriveBoard({ ...snapshot({ '020-widget.md': tasked('020: Widget', true) }, branches), github: { available: false, reason: 'gh not authenticated' } })
+  assert.equal(stageOf(board, '020'), 'building')
+  assert.deepEqual([cardOf(board, '020').issues, cardOf(board, '020').pr], [[], null])
+  assert.equal(board.githubNote, 'GitHub links unavailable: gh not authenticated')
+  const html = renderHtml(board)
+  assert.match(html, /<p class="note">GitHub links unavailable: gh not authenticated<\/p>/u)
+  assert.doesNotMatch(html, /class="links"/u)
+  assert.equal(deriveBoard(snapshot({ '020-widget.md': tasked('020: Widget', true) })).githubNote, null, 'skipped GitHub adds no note')
+})
+
+test('only http(s) github.com URLs become links', () => {
+  const issues = [
+    { number: 45, state: 'OPEN', url: 'javascript:alert(1)' },
+    { number: 46, state: 'OPEN', url: 'https://github.com.evil.example/x' },
+  ]
+  const prs = [{ number: 3, state: 'OPEN', headRefName: 'feat/widget', baseRefName: 'main', url: 'data:text/html,<b>x</b>', body: '' }]
+  const board = deriveBoard({ ...snapshot({ '020-widget.md': tasked('020: Widget', false) }), github: github(prs, issues) })
+  assert.deepEqual(cardOf(board, '020').issues.map((issue) => issue.url), [null, null])
+  assert.equal(cardOf(board, '020').pr.url, null)
+  const html = renderHtml(board)
+  assert.doesNotMatch(html, /javascript:|data:text|evil\.example|<a /u)
+  assert.match(html, /<span class="gh">#45 open<\/span>/u)
+  // The renderer re-checks URLs it is handed directly.
+  const raw = { ...board, columns: board.columns.map((column) => ({ ...column, cards: column.cards.map((card) => ({ ...card, pr: { number: 3, state: 'open', url: 'javascript:alert(1)' } })) })) }
+  assert.doesNotMatch(renderHtml(raw), /javascript:/u)
+})
+
+test('fetchGithub: two gh calls with argument arrays; failures become reasons, never throws', () => withRepo(({ dir, git }) => {
+  assert.deepEqual(fetchGithub(dir, { run: () => { throw new Error('must not run') } }), { available: false, reason: 'no GitHub remote' })
+  git('remote', 'add', 'origin', 'git@github.com:o/r.git')
+  const calls = []
+  const ok = fetchGithub(dir, { run: (args, options) => { calls.push({ args, options }); return args[0] === 'pr' ? '[{"number":1}]' : '[]' } })
+  assert.deepEqual(ok, { available: true, prs: [{ number: 1 }], issues: [] })
+  assert.deepEqual(calls.map((call) => call.args.slice(0, 4)), [['pr', 'list', '--repo', 'o/r'], ['issue', 'list', '--repo', 'o/r']])
+  const fail = (error) => fetchGithub(dir, { run: () => { throw Object.assign(new Error('x'), error) } }).reason
+  assert.equal(fail({ code: 'ENOENT' }), 'gh not installed')
+  assert.equal(fail({ status: 4, stderr: 'To get started with GitHub CLI, please run:  gh auth login' }), 'gh not authenticated')
+  assert.equal(fail({ code: 'ETIMEDOUT', signal: 'SIGTERM' }), 'GitHub request timed out')
+  assert.equal(fail({ status: 1, stderr: 'HTTP 502' }), 'gh request failed')
+  assert.equal(fetchGithub(dir, { run: () => 'not json' }).reason, 'unexpected gh output')
+}))
+
+test('githubReader caches per repository for its TTL', () => withRepo(({ dir, git }) => {
+  git('remote', 'add', 'origin', 'https://github.com/o/r.git')
+  let calls = 0
+  const run = () => { calls++; return '[]' }
+  const cachedReader = githubReader({ run, ttlMs: 60_000 })
+  cachedReader(dir)
+  cachedReader(dir)
+  assert.equal(calls, 2, 'one fetch is two gh calls')
+  const freshReader = githubReader({ run, ttlMs: 0 })
+  freshReader(dir)
+  freshReader(dir)
+  assert.equal(calls, 6)
+}))
+
+test('readSnapshot: delivery mode gates GitHub; merged pull request with code ships a squash merge later edited', () => withRepo(({ dir, git, write, commit }) => {
+  write('020-widget.md', spec('020: Widget', 'draft'))
+  commit('spec')
+  git('switch', '--quiet', '-c', 'feat/widget')
+  touch(dir, 'widget.txt')
+  commit('widget')
+  git('switch', '--quiet', 'main')
+  git('merge', '--quiet', '--squash', 'feat/widget')
+  commit('squash widget')
+  const squash = git('rev-parse', 'HEAD').trim()
+  writeFileSync(join(dir, 'widget.txt'), 'edited later\n')
+  commit('edit widget')
+  assert.equal(stageOf(deriveBoard(readSnapshot(dir)), '020'), 'building', 'git alone cannot see this merge')
+
+  let runs = 0
+  const prs = [{ number: 7, state: 'MERGED', headRefName: 'feat/widget', baseRefName: 'main', url: 'https://github.com/o/r/pull/7', body: '', mergeCommit: { oid: squash } }]
+  const reader = () => { runs++; return github(prs, []) }
+  const board = deriveBoard(readSnapshot(dir, { github: reader }))
+  assert.equal(stageOf(board, '020'), 'shipped')
+  assert.equal(cardOf(board, '020').pr.number, 7)
+
+  writeFileSync(join(dir, 'AGENTS.md'), '# A\n\n<!-- BEGIN FLOW -->\nDelivery: local\n<!-- END FLOW -->\n')
+  commit('local mode')
+  runs = 0
+  assert.equal(readSnapshot(dir, { github: reader }).github, null)
+  assert.equal(runs, 0, 'local mode never calls GitHub')
+
+  writeFileSync(join(dir, 'AGENTS.md'), '# A\n\n<!-- BEGIN FLOW -->\nDelivery: pull-request\n<!-- END FLOW -->\n')
+  commit('pr mode')
+  const offline = deriveBoard(readSnapshot(dir, { github: githubReader({ run: () => { throw new Error('must not run') } }) }))
+  assert.equal(offline.githubNote, 'GitHub links unavailable: no GitHub remote')
+  assert.equal(stageOf(offline, '020'), 'building')
+}))
 
 test('live client keeps the board and shows distinct banners on errors', async () => {
   const errored = await runClient(jsonResponse({ error: 'git failed' }, 500))

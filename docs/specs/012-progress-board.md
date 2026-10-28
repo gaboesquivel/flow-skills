@@ -118,8 +118,8 @@ Specs that exist only on unmerged branches are shown too, marked with their bran
 ### 04: GitHub enrichment (#47)
 **What to build:** in pull-request mode, cards link their issues and pull request when `gh` is available.
 **Blocked by:** 01.
-**Status:** planned
-- [ ] Issue and pull-request links and states on cards; header notes when GitHub is unavailable.
+**Status:** done
+- [x] Issue and pull-request links and states on cards; header notes when GitHub is unavailable.
 
 ### 05: Catalog and context (#48)
 **What to build:** `board` is a documented catalog skill.
