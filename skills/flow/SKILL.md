@@ -38,7 +38,7 @@ Hosts may match this skill when the user asks to update or sync the docs. That i
 - Re-running replaces the block in place and keeps the recorded `Delivery:` unless the user names a mode. Never touch text outside the markers; stop and report when markers are unmatched or repeated.
 - Leave `Delivery:` unset unless the user names a mode; `ship` infers and records it. Deleting the block opts out.
 
-Show the resulting block and file path.
+Report which file was written and show the block. When both `AGENTS.md` and `CLAUDE.md` exist and `CLAUDE.md` does not import `AGENTS.md`, say the block may be invisible to Claude Code and suggest adding an `@AGENTS.md` line to `CLAUDE.md`.
 
 ## Boundaries
 

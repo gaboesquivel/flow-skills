@@ -1,6 +1,6 @@
 # Agent and host compatibility
 
-Flow skills target the [Agent Skills](https://agentskills.io) package layout: `skills/<name>/SKILL.md` with YAML frontmatter. The [skill catalog](skills.md) lists all twenty-four packages, the leading word for each, and when to use each.
+Flow skills target the [Agent Skills](https://agentskills.io) package layout: `skills/<name>/SKILL.md` with YAML frontmatter. The [skill catalog](skills.md) lists every package, the leading word for each, and when to use each.
 
 ## Installation
 
@@ -36,7 +36,7 @@ Metadata and contract tests show the intended invocation split. They do not show
 
 "Set up Flow here" writes one Flow block between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->` in `AGENTS.md`, or in `CLAUDE.md` when that is the only instruction file ([decision 0020](decisions/0020-flow-mode.md)). Every host that reads the file sees the phrases; this is the portable stand-in for a session-start hook. Re-running updates the block in place; deleting it opts out.
 
-"Ship it" on a spec's task set needs isolated workers (for example subagents in separate Git worktrees) for parallel tasks and independent per-task review. Hosts without them run the tasks sequentially on the spec branch and label reviews single-agent. The **delivery mode** on the block's `Delivery:` line picks the finish: pull-request mode needs GitHub access, and local mode needs only Git and a push remote. A `main` that requires pull requests always uses pull-request mode.
+"Ship it" on a spec's task set needs isolated workers (for example subagents in separate Git worktrees) for parallel tasks and independent per-task review. Hosts without them run the tasks sequentially on the spec branch and label reviews single-agent. The **delivery mode** on the block's `Delivery:` line picks the finish: pull-request mode needs GitHub access, and local mode needs only Git and a push remote. When the line is unset, the [`ship`](../skills/ship/SKILL.md) skill infers the mode.
 
 **Dogfooding in this repository.** `.claude/skills` is a symlink to `skills/`, so Claude Code sessions here load the working-tree skills; `pnpm validate` fails if the link breaks. Other hosts read the source tree directly or install it with the skills CLI.
 
