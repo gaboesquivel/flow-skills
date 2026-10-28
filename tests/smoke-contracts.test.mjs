@@ -34,6 +34,10 @@ const contracts = [
       'invoke `explore` when discovery is needed',
       'pnpm eval',
       'operator_fail_closed',
+      'inferTemplateFromRequest',
+      'copyTemplateInto',
+      'Bootstrap at that root, not in a nested folder',
+      'do not substitute a destination the user did not confirm',
     ],
   },
 ]
