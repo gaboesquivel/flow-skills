@@ -214,7 +214,9 @@ export function validateRepository(repoRoot) {
   const errors = validateSkills(join(repoRoot, 'skills'))
   errors.push(...collectDocLinkErrors(join(repoRoot, 'docs')))
   errors.push(...collectRecordNumberErrors(join(repoRoot, 'docs')))
-  errors.push(...collectCheckTableErrors(readFileSync(join(repoRoot, 'skills', 'start', 'SKILL.md'), 'utf8')))
+  const startSkill = join(repoRoot, 'skills', 'start', 'SKILL.md')
+  if (existsSync(startSkill)) errors.push(...collectCheckTableErrors(readFileSync(startSkill, 'utf8')))
+  else errors.push('skills/start/SKILL.md: missing')
   errors.push(...collectSkillsLinkErrors(repoRoot))
   return errors
 }

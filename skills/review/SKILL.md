@@ -22,7 +22,7 @@ Default an unspecified review to the current working tree. If it has no changes,
 
 Recover intended behavior from the request, specifications, tests, and accepted product/architecture decisions. Retrieve tracker context only when useful and accessible; report unavailable intent rather than requiring setup.
 
-Then assess the change on five **review axes** (adapted from Addy Osmani's code-review-and-quality), (fan-out rule: `write-agents` Workers): one read-only worker per axis the change can affect, launched in one batch, each given the scope, the intent, and its axis. An axis the change cannot affect gets no worker and no comment.
+Then assess the change on five **review axes** (adapted from Addy Osmani's code-review-and-quality): one read-only worker per axis the change can affect, launched in one batch, each given the scope, the intent, and its axis (fan-out rule: `write-agents` Workers). An axis the change cannot affect gets no worker and no comment.
 
 - **Correctness:** intent and spec match, missing requirements, regressions, broken references, failure paths, unsafe side effects, preservation of existing work, and useful test coverage.
 - **Readability and simplicity:** misleading names, needless complexity, dead code, and text a maintainer would misread.

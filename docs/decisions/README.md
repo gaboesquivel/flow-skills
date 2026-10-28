@@ -33,7 +33,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0027-progress-board-skill.md](0027-progress-board-skill.md) | Accepted (amended by 0029) | Read-only `board` skill derived from git, with a `ship` run overlay |
 | [0028-build-and-ship.md](0028-build-and-ship.md) | Accepted (amended by 0029, 0030) | `build` opens a pull request with green checks; `ship` lands accepted specs and hotfixes with no confirmation; spec acceptance; `Deploy:` retired |
 | [0029-spec-issues.md](0029-spec-issues.md) | Accepted (amended by 0030, 0031) | One issue per spec with tasks as sub-issues and one pull request; the spec file is the source of truth; frontier builds, one review per spec, automatic merge, tests that never sleep |
-| [0030-asked-delivery-and-local-mode.md](0030-asked-delivery-and-local-mode.md) | Accepted | Depth and delivery asked together once; local mode keeps the spec branch, needs no remote, pushes only on request; task worktrees removed on integration |
+| [0030-asked-delivery-and-local-mode.md](0030-asked-delivery-and-local-mode.md) | Accepted | Depth and delivery asked together once; local mode keeps the spec branch, needs no remote, pushes only on request; clean task worktrees removed on integration |
 | [0031-fan-out-by-default.md](0031-fan-out-by-default.md) | Accepted | Skills run independent steps as parallel workers by default; per-axis spec review; tasks declare an area |
 
 ## Rules
