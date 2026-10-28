@@ -1,6 +1,6 @@
 # 0024 — Gated hand-offs and outward writes
 
-Status: **Accepted** (2026-10-28). Amends [0019](0019-voice-first-invocation.md) (skills matched from a description do not chain), [0021](0021-autonomous-explore-and-ship.md) (one push confirmation per run), and [0022](0022-start-runs-explore.md) (Full depth from `start`). Spec: [013](../specs/013-consolidation.md). Amended by [0028](0028-build-and-ship.md) (no plan confirmation or main gate in ship; spec writes need no yes).
+Status: **Accepted** (2026-10-28). Amends [0019](0019-voice-first-invocation.md) (skills matched from a description do not chain), [0021](0021-autonomous-explore-and-ship.md) (one push confirmation per run), and [0022](0022-start-runs-explore.md) (Full depth from `start`). Spec: [013](../specs/013-consolidation.md). Amended by [0028](0028-build-and-ship.md) (no plan confirmation or main gate in ship; spec writes need no yes) and [0029](0029-spec-issues.md) (no explicit yes before publishing task records in pull-request mode).
 
 ## Context
 
