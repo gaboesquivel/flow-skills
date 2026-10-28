@@ -163,7 +163,7 @@ test('a stale block in an ignored AGENTS.md moves to CLAUDE.md with its delivery
   assert.equal(readDelivery(claude), 'local')
   assert.doesNotMatch(claude, /^Process:/mu)
   const agents = readFileSync(join(dir, 'AGENTS.md'), 'utf8')
-  assert.equal(agents, '# Generated\n\nKeep this.\n\n\n## After\n')
+  assert.equal(agents, '# Generated\n\nKeep this.\n\n## After\n')
   assert.equal(writeFlowBlock(dir).migrated, null)
   assert.equal(writeFlowBlock(dir, { delivery: 'pull-request' }).changed, true)
 })

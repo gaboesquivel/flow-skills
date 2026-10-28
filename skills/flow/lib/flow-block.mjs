@@ -100,7 +100,10 @@ export function removeFlowBlock(text) {
   if (!at) return text
   const tail = text.slice(at.end)
   const eol = tail.startsWith('\r\n') ? 2 : tail.startsWith('\n') ? 1 : 0
-  return text.slice(0, at.start) + tail.slice(eol)
+  const before = text.slice(0, at.start)
+  const after = tail.slice(eol)
+  // Removing the block must not leave a doubled blank line where it stood.
+  return /\r?\n\r?\n$/u.test(before) && /^\r?\n/u.test(after) ? before + after.replace(/^\r?\n/u, '') : before + after
 }
 
 // Exit status of `git <args>` in the project; 128 when it is not a Git work tree.
@@ -197,7 +200,14 @@ if (isMain()) {
     process.exit(1)
   }
   const project = resolve(dir)
-  const { file, changed, migrated, refused } = writeFlowBlock(project, { delivery })
+  let result
+  try {
+    result = writeFlowBlock(project, { delivery })
+  } catch (error) {
+    console.error(`Refused: ${error.message}; nothing written.`)
+    process.exit(1)
+  }
+  const { file, changed, migrated, refused } = result
   if (refused) {
     console.error(`Refused: ${refused}; nothing written.`)
     process.exit(1)
