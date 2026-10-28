@@ -50,18 +50,18 @@ flowchart TB
   decision["Decision record<br/>When significant"]
   spec["Spec<br/>to-spec · candidate → draft → accepted"]
   tasks["Tasks<br/>to-tasks · sub-issues or spec checklist"]
-  frontier["Build the frontier<br/>build · every unblocked task"]
+  frontier["Build the frontier<br/>build · every unblocked task, ready worktrees"]
   checkpoint["Checkpoint<br/>Integrated, local suite, screenshots"]
   ready["Ready PR<br/>One per spec · green checks"]
   land["Ship<br/>One review, merge, sync main"]
   verify["Verify<br/>Acceptance scenario on the deployment"]
-  align["flow aligns context<br/>Root docs stay current"]
+  align["flow aligns context<br/>Root docs current before review"]
   explore --> spec
   explore -.-> decision
   decision -.-> spec
   spec --> tasks --> frontier --> checkpoint
   checkpoint -- unblocked tasks --> frontier
-  checkpoint -- all integrated --> ready --> land --> verify --> align
+  checkpoint -- all integrated --> align --> ready --> land --> verify
   classDef doc fill:#EEEDFE,stroke:#534AB7,color:#3C3489
   classDef run fill:#FAECE7,stroke:#993C1D,color:#712B13
   class decision,spec,tasks doc
