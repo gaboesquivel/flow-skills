@@ -199,7 +199,7 @@ Sub-issues of #89. Tasks 01–11 each own different files and share only this sp
 - [x] 01: `flow`: ask depth and delivery together (#100)
 - [x] 02: `start`: delivery input and concurrent bootstrap (#92)
 - [x] 03: `explore`: question round and background readers (#97)
-- [ ] 04: `build`: asked delivery, local suite, worktree cleanup, areas (#91)
+- [x] 04: `build`: asked delivery, local suite, worktree cleanup, areas (#91)
 - [x] 05: `ship`: local without remote, per-axis review, worktree prune (#99)
 - [x] 06: `review`: per-axis workers and five-axis contract (#95)
 - [x] 07: `to-tasks` and `to-spec`: areas, parallel publishing, NNNN (#94)
