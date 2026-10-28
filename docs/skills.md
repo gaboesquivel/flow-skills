@@ -25,17 +25,17 @@ flowchart LR
 
 Product discovery, writing, advisory, prototype, quality, and misc skills are optional and do not block delivery.
 
-## Flow Lite
+## Context alignment
 
 | Skill | Say | When to use |
 | --- | --- | --- |
-| [flow](../skills/flow/SKILL.md) | "update the docs" | Align the current project's root docs after meaningful changes; "set up Flow here" writes the opt-in Flow block ([decision 0020](decisions/0020-flow-mode.md)). Not a pipeline and not initialization. |
+| [flow](../skills/flow/SKILL.md) | "update the docs" | Align the current project's root docs after meaningful changes; "set up Flow here" asks Lite or Full process, writes the opt-in Flow block, and names `explore` when the project has no goals yet ([decision 0020](decisions/0020-flow-mode.md), [decision 0026](decisions/0026-process-depth.md)). Not a pipeline and not template initialization. |
 
 ## Delivery
 
 | Skill | Say | When to use |
 | --- | --- | --- |
-| [explore](../skills/explore/SKILL.md) | "explore this" | Propose a depth (Skip, Lite, Full); extract intent, then challenge it; end in a confirmed brief, clearer intent, or a killed idea. Every brief asks who the agent users are. A new product gets spec 001 in full and later slices as candidate stubs. |
+| [explore](../skills/explore/SKILL.md) | "explore this" | Propose a depth (Skip, Lite, Full), defaulting to the project's recorded process depth; extract intent, then challenge it; end in a confirmed brief, clearer intent, or a killed idea. Every brief asks who the agent users are. A new product gets spec 001 in full and later slices as candidate stubs; Full also proposes a decision record per choice among alternatives. |
 | [interview](../skills/interview/SKILL.md) | "interview me" | Extract what you actually want, with a guess attached to each question, before any plan or spec exists. |
 | [grill](../skills/grill/SKILL.md) | "grill me" | Stress-test an idea or plan with focused questions and evidence. |
 | [to-spec](../skills/to-spec/SKILL.md) | "spec it" | Turn conversation into a numbered spec with contract-first interfaces; label assumptions; write candidate stubs for later slices; save only when requested. |
@@ -89,7 +89,7 @@ Code simplification, security audits, and performance work belong to host tools 
 
 | Skill | Say | When to use |
 | --- | --- | --- |
-| [start](../skills/start/SKILL.md) | "start a Next.js project" | Confirm template, name, and destination, then initialize from flow-next or flow-mono (rename identity, setup/QA/build/startup checks, baseline root docs, Flow block, one independent initial commit when verification passes) while `explore` shapes the product. Not Flow Lite. |
+| [start](../skills/start/SKILL.md) | "start a Next.js project" | Confirm template, name, and destination, then initialize from flow-next or flow-mono (rename identity, setup/QA/build/startup checks, baseline root docs, Flow block, one independent initial commit when verification passes) while `explore` shapes the product at the confirmed process depth. "Set up Flow here" plus a template bootstrap. |
 
 ## Misc
 
