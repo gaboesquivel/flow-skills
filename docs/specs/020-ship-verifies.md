@@ -1,6 +1,6 @@
 # 020: Local build lands, ship publishes and verifies
 
-Status: accepted (2026-10-28). Issue: [#104](https://github.com/gaboesquivel/flow-skills/issues/104). Decision: [0032](../decisions/0032-local-build-lands-ship-verifies.md) (Accepted). Builds on [spec 019](019-delivery-choice.md).
+Status: implemented (2026-10-28). Issue: [#104](https://github.com/gaboesquivel/flow-skills/issues/104). Decision: [0032](../decisions/0032-local-build-lands-ship-verifies.md) (Accepted). Builds on [spec 019](019-delivery-choice.md).
 
 ## Problem Statement
 
@@ -90,4 +90,4 @@ Sub-issues of #104. Tasks 01–04 each own one skill area and share only this sp
 - [x] 02: `build`: local mode reviews and lands on local `main` (#105)
 - [x] 03: `ship`: local push and Verify (deployment + scenario) (#107)
 - [x] 04: Setup wording: discovery depth and delivery are independent (#108)
-- [ ] 05: Docs, evals, and safety contracts (#109, blocked by 01–04)
+- [x] 05: Docs, evals, and safety contracts (#109, blocked by 01–04)
