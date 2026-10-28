@@ -18,7 +18,7 @@ Specs may cover product, research, marketing, engineering, operations, or cross-
 
 2. Sketch test seams at the highest practical level. Prefer existing seams; propose new ones only when necessary and as high as possible.
 
-3. Write a proportionate spec using the relevant sections below. Save or publish only when requested.
+3. Write a proportionate spec using the relevant sections below. Save or publish only when requested; `explore` reaching spec-ready with a brief counts as a request.
 
 <spec-template>
 

@@ -39,6 +39,6 @@ At Full depth, or whenever real web research happened, save findings with source
 
 Report spec-ready when intent is confirmed, the riskiest assumption and kill criterion are named, and the brief or diff is written or declined; a clearer outcome is spec-ready once its sharpened intent is restated. Otherwise say what is missing. Close with known facts, open assumptions, how many marked guesses were accepted unchanged, and the next activity. Missing optional skills must not block exploration.
 
-Once spec-ready and the outcome is not killed, write the spec with `to-spec` to `docs/specs/NNN-short-name.md` and publish its tasks as GitHub issues with `to-tasks`. The research, root-context changes, and spec ship together as one pull request.
+Once spec-ready with a brief, write the spec with `to-spec` to `docs/specs/NNN-short-name.md` and publish its tasks as GitHub issues with `to-tasks`; reaching spec-ready is the request to save. `ship` groups the results into pull requests.
 
 Discussion and exploration do not authorize implementation.

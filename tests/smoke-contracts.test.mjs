@@ -40,7 +40,7 @@ const contracts = [
     ],
   },
   { skill: 'grill', file: 'SKILL.md', includes: ['do not require an exhaustive interview', 'does not itself authorize implementation', 'already confirmed', 'riskiest claims', 'pre-mortem', 'six months from now', 'kill criterion', '\\*\\*clearer\\*\\*', '\\*\\*killed\\*\\*', 'all are valid'] },
-  { skill: 'to-spec', file: 'SKILL.md', includes: ['docs/specs/NNN-short-name.md', 'Do not run a separate interview'] },
+  { skill: 'to-spec', file: 'SKILL.md', includes: ['reaching spec-ready with a brief counts as a request', 'docs/specs/NNN-short-name.md', 'Do not run a separate interview'] },
   { skill: 'implement', file: 'SKILL.md', includes: ['untracked', 'not a prerequisite', 'PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'do not open new spec or decision', 'product identity', 'flow start', 'decision 0010', 'Ordinary small fixes', 'caller expectations', 'suggest an `explore` tier', 'never start exploration unasked'] },
   { skill: 'review', file: 'SKILL.md', includes: ['untracked', 'single-agent', 'PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'product identity', 'flow start', 'decision 0010', 'Pull request', 'pr-review-contract', 'safety-critical assumption', 'confirmed findings', 'workers are unavailable'] },
   { skill: 'write-agents', file: 'SKILL.md', includes: ['behavioral failure', 'architecture, types', 'Reject redundant or ineffective', 'Never claim independence'] },
@@ -51,7 +51,7 @@ const contracts = [
   { skill: 'tldr', file: 'SKILL.md', includes: ["Show, don't tell", 'GenUI', 'Check alignment', 'write-humans', 'does not authorize'] },
   { skill: 'to-tasks', file: 'SKILL.md', includes: ['vertical slice', 'Tasks are not pull requests', 'GitHub issues'] },
   { skill: 'handoff', file: 'SKILL.md', includes: ['temporary directory', 'suggested-skills', 'does not authorize'] },
-  { skill: 'ship', file: 'SKILL.md', includes: ['evidence', 'does not authorize destructive', 'Wait for an explicit yes', 'preview, not production', 'deploy skill', 'one branch and pull request', 'independently shippable', 'auto mode', 'Closes #N', 'GitHub issue'] },
+  { skill: 'ship', file: 'SKILL.md', includes: ['evidence', 'does not authorize destructive', 'Wait for an explicit yes', 'preview, not production', 'deploy skill', 'one branch and pull request', 'independently shippable', 'auto mode', 'Closes #N', 'each spec task has an issue', 'Ad-hoc changes need none'] },
   {
     skill: 'start',
     file: 'SKILL.md',

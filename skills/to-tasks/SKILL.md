@@ -43,7 +43,7 @@ Give each task its **blocking edges**: other tasks that must finish before it ca
 
 Show the proposed tasks, what each delivers, and real dependencies. Resolve only consequential scope or sequencing uncertainty. Reuse existing approval of the work; do not require a second approval for routine decomposition.
 
-### 5. Save or publish within authorization
+### 5. Publish
 
 Publish tasks as GitHub issues using the issue template below, with blocking links. Use another tracker only when the project already uses one. Without GitHub access, return a local draft and say so. Do not introduce a `.scratch/` task system or new labels. Use native dependency links when available, or plain references otherwise.
 

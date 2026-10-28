@@ -8,9 +8,9 @@ disable-model-invocation: false
 
 ## Purpose
 
-Complete the current authorized development task with evidence: test, fix, commit, push, deploy, verify.
+Complete the current authorized work (one task or a related group; see Preflight) with evidence: test, fix, commit, push, deploy, verify.
 
-Asking to ship authorizes ordinary commits and pushes of the current intended task, subject to repository permissions, existing release safeguards, and the confirmation below. Requests often arrive by voice, so confirm what you heard before anything leaves the machine.
+Asking to ship authorizes ordinary commits and pushes of that work, subject to repository permissions, existing release safeguards, and the confirmation below. Requests often arrive by voice, so confirm what you heard before anything leaves the machine.
 
 It does not authorize destructive Git operations, security bypasses, or unrelated changes.
 
@@ -24,7 +24,7 @@ Inspect:
 - Git status and diff.
 - Existing staged changes.
 - Task scope. Related work shares one branch and pull request: an exploration's research, spec, and root-context changes, or a spec's tasks. Split only large, independently shippable work or work that needs separate review.
-- Task issues. Each task has a GitHub issue; create missing ones with `to-tasks`.
+- Task issues. On GitHub, each spec task has an issue; create missing ones with `to-tasks`. Ad-hoc changes need none.
 - Repository verification scripts in package.json, Makefile, or CI config.
 - Available Git remote.
 - Deployment configuration (Vercel, container platform, static host, or documented manual process).
