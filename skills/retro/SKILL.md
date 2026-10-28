@@ -12,7 +12,7 @@ The user asked for a retrospective on how the agent environment could improve fu
 
 1. Follow `write-agents` conventions when that skill is installed and you propose instruction or skill changes.
 
-2. Read primary sources for the session the user names. If none is named, use the current session. Use available session or transcript tools when the host provides them. Separate evidence from inference; do not invent mistakes that are not supported by the session.
+2. Gather evidence for the session the user names, or the current session if none is named. Run independent evidence workers in parallel, following the fan-out rule in `write-agents`: the session transcript (through session or transcript tools when the host provides them), Git and CI history, instruction-file size, and navigation friction. Without workers, gather them in order and say so. If no transcript is available, ask the user for a short summary of the session or reconstruct it from `git log` and CI history, and say which source you used. Separate evidence from inference; do not invent mistakes that are not supported by the session.
 
 3. Look for improvement candidates:
 
