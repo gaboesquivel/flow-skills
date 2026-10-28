@@ -1,7 +1,7 @@
 ---
 name: write-agents
-description: Write or edit concise agent instructions and navigable project context.
-disable-model-invocation: true
+description: Write or edit concise agent instructions and navigable project context. Use when the user says "write agent instructions", "edit the skill", or "update AGENTS.md".
+disable-model-invocation: false
 ---
 
 # Write Agents

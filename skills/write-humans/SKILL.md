@@ -1,7 +1,7 @@
 ---
 name: write-humans
-description: Draft or edit clear, natural writing for its audience and purpose.
-disable-model-invocation: true
+description: Draft or edit clear, natural writing for its audience and purpose. Use when the user says "write this up", "make this readable", or "edit this for humans".
+disable-model-invocation: false
 ---
 
 # Write Humans

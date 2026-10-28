@@ -1,7 +1,7 @@
 ---
 name: jtbd
-description: Articulate jobs to be done, struggling moments, and desired progress for a product decision.
-disable-model-invocation: true
+description: Articulate jobs to be done, struggling moments, and desired progress for a product decision. Use when the user says "jobs to be done", "what job is this", or "what progress do they want".
+disable-model-invocation: false
 ---
 
 # Jobs To Be Done

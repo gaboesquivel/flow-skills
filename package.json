@@ -1,7 +1,7 @@
 {
   "name": "@gaboesquivel/flow-skills",
   "version": "0.3.0",
-  "description": "Portable Agent Skills catalog: discoverable Flow Lite context alignment plus explicit discovery and delivery skills",
+  "description": "Portable, voice-first Agent Skills catalog: Flow Lite context alignment plus discovery and delivery skills reached by plain language",
   "type": "module",
   "license": "MIT",
   "repository": {

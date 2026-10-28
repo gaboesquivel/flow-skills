@@ -19,7 +19,7 @@ Develop Flow through its own practices using conversation and available tools. T
 
 ## Distribution maintenance
 
-Flow ships a portable `skills/` tree for the [Agent Skills](https://agentskills.io) ecosystem. Consumers install with `npx skills add gaboesquivel/flow-skills` and invoke skills explicitly except where hosts surface `flow`. This repository does not ship a bootstrap installer or require changes to adopter instruction files.
+Flow ships a portable `skills/` tree for the [Agent Skills](https://agentskills.io) ecosystem. Consumers install with `npx skills add gaboesquivel/flow-skills` and reach skills by talking to their agent; only `start` must be named explicitly. This repository does not ship a bootstrap installer or require changes to adopter instruction files.
 
 | Task | Command |
 | --- | --- |

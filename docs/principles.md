@@ -36,4 +36,4 @@ Shorten the path from an assumption to useful evidence and a decision. Progress 
 
 Open exploration may begin with curiosity rather than a formal hypothesis. When it becomes a product commitment, make its intent and validation approach explicit. Apply these themes with judgment rather than as a checklist for every action.
 
-The [methodology](methodology.md) describes optional practices. [References](references.md) preserve influences and research. Shipped [skills](../skills/) include discoverable Flow Lite (`flow`) and otherwise manual packages; none enforce these themes as a mandatory workflow.
+The [methodology](methodology.md) describes optional practices. [References](references.md) preserve influences and research. Shipped [skills](../skills/) are reached by talking to the agent; none enforce these themes as a mandatory workflow.

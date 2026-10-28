@@ -1,7 +1,7 @@
 ---
 name: implement
-description: Implement an authorized change from a request, specification, or task.
-disable-model-invocation: true
+description: Implement an authorized change from a request, specification, or task, keeping root context aligned. Use when the user says "build it", "implement this", or "make the change".
+disable-model-invocation: false
 ---
 
 # Implement

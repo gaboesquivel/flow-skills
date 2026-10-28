@@ -16,14 +16,15 @@ test('README documents Agent Skills install without default agent flag', () => {
   assert.doesNotMatch(readme, /-a cursor/u)
   assert.doesNotMatch(readme, /flow-skills-init/u)
   assert.match(readme, /docs\/skills\.md/u)
-  assert.match(readme, /Catalog \(24\)/u)
   assert.match(readme, /Influences and engineering philosophy/u)
   assert.match(readme, /Project start/u)
   const catalog = readFileSync(join(root, 'docs/skills.md'), 'utf8')
-  assert.match(catalog, /Twenty-four skills/u)
-  assert.match(catalog, /Show, don't tell/u)
-  assert.match(catalog, /Leading word/u)
-  assert.match(readme, /flow/u)
+  assert.match(catalog, /leading word/u)
+  // Counts drift; require every shipped skill in both catalogs instead.
+  for (const name of EXPECTED_SKILL_NAMES) {
+    assert.match(readme, new RegExp(`\`${name}\``, 'u'), `README catalog missing ${name}`)
+    assert.match(catalog, new RegExp(`\\[${name}\\]\\(\\.\\./skills/${name}/SKILL\\.md\\)`, 'u'), `skill catalog missing ${name}`)
+  }
 })
 
 test('skills CLI lists all bundled skills from this repository', () => {
