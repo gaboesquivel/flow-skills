@@ -4,7 +4,13 @@ on:
   push:
     branches: [main]
   pull_request:
-    types: [opened, synchronize, reopened, labeled, unlabeled, edited]
+    # No `edited`: retitling reruns nothing. After adding an `Alignment:` line to the body, push or re-run the workflow.
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+# A new push to the same PR cancels its superseded run.
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   validate:
@@ -46,8 +52,9 @@ jobs:
           node scripts/check-pr-alignment.mjs --base "$merge_base" --head "${{ github.sha }}"
 
   context-review:
+    # Reads the diff only, so it runs beside validate instead of after it.
     if: github.event_name == 'pull_request'
-    needs: [validate, alignment]
+    needs: [alignment]
     runs-on: ubuntu-latest
     permissions:
       contents: read
