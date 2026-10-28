@@ -146,3 +146,14 @@ Source: the Signal demo rehearsal on 2026-10-28 in `/tmp/flow-demo`, on `feat/02
 - A self-check is enough for unspecced work because the size guard keeps anything consequential out of that path.
 - Declared shared files are the ones the project's instruction files tell every session to append to; `build` already names them in worker briefs.
 - This branch is stacked on spec 020's branch and rebases onto `main` once [#110](https://github.com/gaboesquivel/flow-skills/pull/110) merges.
+
+## Tasks
+
+Sub-issues of #111. Tasks 01–05 each own different skill areas and share only this spec, so they have no blockers; each edits only its own skills' entries in the smoke contracts. 06 waits for 01–05 because the docs, contracts, and evals describe their behavior.
+
+- [ ] 01: Setup keeps agent instructions correct and asks only delivery (#117)
+- [ ] 02: `explore`: one depth and an explore branch (#113)
+- [ ] 03: `to-spec`: issue at acceptance and spec-issue helper (#115)
+- [ ] 04: `build`: own worktrees, shared files, commit links, no ceremony (#116)
+- [ ] 05: `ship` and `review`: refused merge, shared files, checkout safety (#114)
+- [ ] 06: Docs, safety contracts, and evals (#118, blocked by 01–05)
