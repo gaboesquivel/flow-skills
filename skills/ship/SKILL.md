@@ -39,7 +39,7 @@ If the working tree contains changes with unclear ownership, preserve them and a
 Read the `Delivery:` line in the project's Flow block (`AGENTS.md` or `CLAUDE.md`). When it is missing or `unset`, infer: pull-request mode if `main` requires pull requests (for example branch protection or rulesets visible through `gh`), local mode only when you can confirm it does not. When protection cannot be determined (no access, unauthenticated CLI), pick pull-request mode or ask; never fall through to local mode. Include the pick in the plan confirmation; once confirmed, record it on that line, touching nothing outside the block's markers, in its own commit on the branch being shipped. Without a Flow block, use the pick for this run only. "Ship it local" or "ship it with a PR" overrides only the finish for one run; task records stay where they are. A `main` that requires pull requests always uses pull-request mode.
 
 - **Pull-request mode:** tasks are GitHub issues; the work lands through one pull request (see Push).
-- **Local mode:** no pull requests or issues. Run a final `review` and the full local check suite on the spec branch, merge it into local `main` with `git merge --no-ff` and a pull-request-style message (summary, tasks, checks), then push `main`.
+- **Local mode:** no pull requests or issues. Run a final `review` and the full local check suite on the spec branch, merge it into local `main` with `git merge --no-ff` and a pull-request-style message (summary, tasks, checks), then push `main` and delete the merged spec branch locally and, if it was pushed, on the remote.
 
 ## Task set
 
@@ -109,13 +109,13 @@ Push the authorized current branch to its intended remote.
 
 Respect branch protection.
 
-Never force-push, or delete or rewrite remote branches.
+Never force-push or rewrite remote branches. Delete a branch only after its work has merged into `main` (below).
 
 Do not promote to production or roll back through a separate manual operation unless explicitly authorized.
 
 If the remote cannot be safely determined, stop and report the required decision.
 
-In pull-request mode, the work lands through one pull request with a Conventional Commits title and a `Closes #N` line per task issue; for a task set it is the draft opened after the first task integrates, marked ready at the end. Merge only when checks pass and the main gate is passed; then fast-forward local `main` from the remote (no further yes). Update the branch from `main` only when the pull request is behind or conflicts. Local mode finishes as described under Delivery mode.
+In pull-request mode, the work lands through one pull request with a Conventional Commits title and a `Closes #N` line per task issue; for a task set it is the draft opened after the first task integrates, marked ready at the end. Merge only when checks pass and the main gate is passed; delete the pull request's head branch on the remote and locally (for example `gh pr merge --delete-branch`), then fast-forward local `main` from the remote (no further yes). Update the branch from `main` only when the pull request is behind or conflicts. Local mode finishes as described under Delivery mode.
 
 ## Deploy
 
