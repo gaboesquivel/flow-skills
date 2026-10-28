@@ -8,7 +8,7 @@ disable-model-invocation: false
 
 **Preserve intent** for the project you are in. Align its root context when work changes what that product is, how it behaves, how it is built, or how the team names important concepts.
 
-This skill runs no other skill and authorizes no implementation. Skills may name the next skill and wait; the only automatic hand-offs are `start` → `explore` and explore's `interview` and `grill` phases, each behind the user's yes (decision 0024). It is **not** project initialization.
+This skill runs no other skill and authorizes no implementation (decision 0024). It is **not** project initialization.
 
 ## Whose product
 
