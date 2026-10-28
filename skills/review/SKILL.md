@@ -14,7 +14,7 @@ Read repository instructions and inspect Git status before choosing the review s
 - **Working tree:** inspect staged and unstaged diffs plus relevant untracked files. Use `git diff --cached`, `git diff`, and `git ls-files --others --exclude-standard`; read untracked content explicitly.
 - **Committed comparison:** resolve the requested reference and use its merge-base with HEAD when appropriate. State the actual comparison. Include working-tree changes only when requested or relevant to the stated scope.
 - **Pull request:** treat the PR as a committed comparison from `merge-base(base, head)` through `head`. Product, design, spec, and marketing edits get the same bar as code. Repositories that enforce the **pr-review-contract** (documented in the project's docs tree) in CI expect the same checks without a separate manual invocation.
-- **Spec:** a spec gets one independent review, which `ship` runs on its final pull request, covering every task's change together on all five axes. `build` workers only self-check against their task; there are no per-task or per-wave reviews.
+- **Spec:** a spec gets one independent review, which `ship` runs on its final pull request, covering every task's change together: the per-axis workers and verifier below. `build` workers only self-check against their task; there are no per-task or per-wave reviews.
 
 Default an unspecified review to the current working tree. If it has no changes, inspect the repository area implied by the request and state that scope. Ask only when scope ambiguity materially changes the work. An empty committed diff does not establish that there is nothing to review.
 
@@ -22,7 +22,7 @@ Default an unspecified review to the current working tree. If it has no changes,
 
 Recover intended behavior from the request, specifications, tests, and accepted product/architecture decisions. Retrieve tracker context only when useful and accessible; report unavailable intent rather than requiring setup.
 
-Assess the change on five **review axes** (adapted from Addy Osmani's code-review-and-quality). Spend effort where the change can fail; an axis the change cannot affect needs no comment.
+Then assess the change on five **review axes** (adapted from Addy Osmani's code-review-and-quality), following the worker rule in `write-agents`: one read-only worker per axis the change can affect, launched in one batch, each given the scope, the intent, and its axis. An axis the change cannot affect gets no worker and no comment.
 
 - **Correctness:** intent and spec match, missing requirements, regressions, broken references, failure paths, unsafe side effects, preservation of existing work, and useful test coverage.
 - **Readability and simplicity:** misleading names, needless complexity, dead code, and text a maintainer would misread.
@@ -30,16 +30,16 @@ Assess the change on five **review axes** (adapted from Addy Osmani's code-revie
 - **Security:** trust boundaries, input handling, secrets, permissions, and authorization.
 - **Performance:** work that grows with input, repeated I/O, and blocking paths users or CI wait on.
 
-Follow important paths through callers and dependencies. A passing test is evidence only for behavior it actually covers. Distinguish **confirmed findings**, **plausible risks**, and **preferences**.
+Each worker follows important paths through callers and dependencies. A passing test is evidence only for behavior it actually covers. Distinguish **confirmed findings**, **plausible risks**, and **preferences**.
 
 For **consequential** changes (behavior many callers rely on, migrations, concurrency, security boundaries, or data-shape changes), add proportional blast-radius checks: state the observable behavior that must stay true, identify callers and indirect dependents beyond the diff, name the **safety-critical assumption** that makes the change safe, and prove that assumption with code or an executable test when cheap. A convincing explanation is not proof. Qualify unverified assumptions explicitly. Minor documentation or copy edits do not require this depth.
 
-Use independent workers only when available and authorized and the change justifies separate execution (for example specification compliance versus correctness, or adversarial review of a high-impact change). Give each worker a bounded goal; do not edit overlapping files concurrently. Verify findings and synthesize disagreements; record actual models when available. When workers are unavailable, continue directly or sequentially and label the review **single-agent**. Never claim independence or model diversity without actual separate execution.
+One verifier then merges the results: it dedupes findings across axes, checks each against the code, settles disagreements, and ranks by impact. Record actual models when the host exposes them. Without workers, assess the axes in order and label the review **single-agent**. Never claim independence or model diversity without actual separate execution.
 
 ## Report
 
 Lead with actionable findings ordered by impact. For each, name its axis and cite the file or line, concrete failure or mismatch, supporting evidence, and smallest viable correction. Separate open questions and verification limits. If no material findings remain, say what was checked.
 
-When the reviewed change affects product intent, experience, architecture, or shared vocabulary, note whether root context (`PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md`) still matches or needs alignment. Flag stale root docs as findings. Flag a change that replaces a project's product identity with Flow's methodology identity. Do not silently rewrite docs unless fixes are requested. The `flow` skill (when installed or surfaced by the host) owns detailed alignment passes. Absence of an always-on hook is not evidence the docs are current. `flow start` is not an initializer; the optional `start` skill (decision 0010) is the initializer, and it confirms template, name, and destination before writing.
+When the reviewed change affects product intent, experience, architecture, or shared vocabulary, note whether root context (`PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md`) still matches or needs alignment. Flag stale root docs as findings. Flag a change that replaces a project's product identity with Flow's methodology identity. Do not silently rewrite docs unless fixes are requested. The `flow` skill (when installed or surfaced by the host) owns detailed alignment passes. Absence of an always-on hook is not evidence the docs are current.
 
-Review is read-only unless fixes are requested. A review request does not authorize publishing comments, changing source, committing, or modifying tracker state. When `ship` runs the review, its request authorizes an independent worker and posting the report on the pull request as a comment or COMMENT-type review, never an approval.
+Review is read-only unless fixes are requested. A review request does not authorize publishing comments, changing source, committing, or modifying tracker state. When `ship` runs the review, its request authorizes the per-axis workers, the verifier, and posting the report on the pull request as a comment or COMMENT-type review, never an approval.
