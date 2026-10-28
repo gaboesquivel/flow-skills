@@ -31,7 +31,7 @@ In pull-request mode, a spec reaches `main` through its own pull request before 
 ## Implementation Decisions
 
 - **Spec header.** The file gains an `Issue:` link beside `Status:`. A spec without one has no issue (local mode, or older specs).
-- **Issue body.** A first line `Copied from docs/specs/NNN-….md; edit the file, this body is overwritten.` with a link to the file on the feature branch (on the default branch after merge), then the file's content, then a hidden marker holding a hash of the copied text. A body whose hash does not match was edited by hand: show the difference and ask before overwriting.
+- **Issue body.** A first line `Copied from docs/specs/NNN-….md; edit the file, this body is overwritten.` with a link to the file on the feature branch (on the default branch after merge), then the file's content with relative links rewritten to the same ref, then a hidden marker holding a hash of the body above it. A body whose hash does not match was edited by hand: show the difference and ask before overwriting.
 - **Sync points.** `to-spec` (draft, accept, scope change), `to-tasks` (Tasks section), `build` (ticked tasks, spec fixes), and `ship` (`implemented`, and the file link pointing at the default branch after merge, since the branch is deleted).
 - **Labels.** `candidate`, `draft`, and `accepted`, created on first use. Accepting sets the file status and swaps the label in one step; a label added by a maintainer counts as acceptance, and the next skill that touches the spec writes the file status to match. Changing an accepted spec's scope returns both to draft.
 - **Candidates** are issues only, labelled `candidate`. Fleshing one out writes the file and relabels the same issue.
@@ -59,6 +59,16 @@ The board keeps its five columns and stays read-only. Specs now sit on pushed fe
 - Smoke contracts: `to-spec` opens one issue and pushes the branch in pull-request mode, never in local mode; the issue copies the file with the marker; a hand edit stops the sync; `to-tasks` writes no per-task issues; `build`'s pull request carries `Closes #N`; `ship` gates on the `accepted` label in pull-request mode.
 - `board.test.mjs`: a draft spec on an open docs-only branch is Specced, not Building, and becomes Building when the branch changes code; a spec with an `Issue:` line links the issue and a pull request that closes it; a `candidate` issue without a file is a Candidate card, replaced once a file names it; an `accepted` label reads as accepted, and a label that disagrees with the file adds a marker; an issue closed as not planned hides the card; task headings without numbers still count.
 - Dogfood: this spec ships through its own issue and one pull request.
+
+## Further Notes
+
+Dogfood findings from opening this spec's issue (#79) by hand:
+
+- The issue number is needed in the file and the file in the issue, so opening takes two passes: create the issue, add the `Issue:` line, commit and push, then sync the body.
+- Relative links (`../decisions/…`, `#board`) break in an issue body; the copy rewrites them to the file's ref.
+- The marker must hash the body as written, not the file; a hash of the file cannot tell a hand edit from a stale copy.
+- Labels do not exist in a new repository; `draft` was created on first use.
+- Tasks written as a numbered list show no checkboxes in the issue; write them as a checklist so GitHub counts progress.
 
 ## Out of Scope
 
