@@ -8,69 +8,25 @@ disable-model-invocation: false
 
 ## Purpose
 
-Improve decision quality through independent, adversarial expert review.
-
-The council is advisory. It does not implement, approve, or change decisions automatically.
+Improve decision quality through independent, adversarial expert review. The council is advisory: it does not implement, approve, or change decisions.
 
 ## Invocation
 
-/council <question or proposal>
-/council quick <question>
-/council deep <question>
-/council review <specification or file>
+Run when the user asks for the council or a second opinion on a question, proposal, specification, or file ("ask the council", "get a second opinion"; a `/council` command works the same). Modes:
 
-Default mode: quick.
+- **Quick** (default): three perspectives, one review round.
+- **Deep** ("deep council", "council deep"): up to five perspectives, then one rebuttal round.
+- **Review** ("council review of the spec"): the subject is a specification or file.
 
-## Context
+## Evidence packet
 
-Read relevant specifications, decision records, implementation, and repository constraints.
-
-Clearly identify the decision to be evaluated.
-
-Distinguish accepted requirements from assumptions and proposals.
+Read the relevant specifications, decision records, implementation, and repository constraints. Build one shared evidence packet that states the decision under review and separates accepted requirements from assumptions and proposals. Every reviewer starts from this packet. Ask the user any clarifying question here, in the main thread, before reviewers launch.
 
 ## Reviewers
 
-Select specialists dynamically according to the question.
+Pick specialists for the question rather than a fixed panel, for example product value, UX, architecture, testing and reliability, security, or a simpler alternative. At least one reviewer actively challenges the proposal and the user's and agent's assumptions.
 
-Typical perspectives include:
-
-- Product and user value.
-- UX and interaction design.
-- Engineering and architecture.
-- Testing and operational reliability.
-- Security and risk.
-- Contrarian and simpler alternatives.
-
-Do not use the same fixed panel for every question.
-
-Always ensure at least one reviewer actively challenges the proposal.
-
-## Quick mode
-
-Use three complementary expert perspectives.
-
-Run one independent review round.
-
-Reviewers should evaluate the same initial evidence without access to one another's conclusions.
-
-Execute reviews concurrently when genuine isolated workers are available.
-
-## Deep mode
-
-Use up to five relevant perspectives.
-
-Perform independent reviews first.
-
-After collecting the initial findings, allow one targeted rebuttal round addressing material disagreements.
-
-Stop after that round.
-
-Do not conduct an unlimited debate.
-
-## Review contract
-
-Each reviewer provides:
+Each reviewer returns:
 
 1. Recommendation.
 2. Supporting evidence.
@@ -79,37 +35,18 @@ Each reviewer provides:
 5. Strongest viable alternative.
 6. What evidence would change the recommendation.
 
-Ask reviewers to challenge user and agent assumptions respectfully.
-
 ## Independence
 
-Use genuinely independent agent contexts when supported.
+Parallel groups (fan-out rule: `write-agents` Workers):
 
-Prefer model diversity when actually available and useful.
+- **Review round:** launch every reviewer in one batch, each in its own context with the evidence packet and no access to the others' conclusions.
+- **Deep rebuttals:** after collecting findings, launch one rebuttal per material disagreement in parallel; each sees only the findings it answers. Stop after that round.
 
-If multiple independent agents are unavailable, explicitly label the exercise as a single-agent multi-perspective analysis.
-
-Never claim independent execution when none occurred.
-
-Never invent model diversity.
+Use model diversity only when it is actually available and useful, and never invent it. Without workers, run the reviews in order and label the result a single-agent multi-perspective analysis; never claim independence that did not happen.
 
 ## Synthesis
 
-The coordinating agent identifies:
-
-- Areas of agreement.
-- Material disagreements.
-- Evidence quality.
-- Unresolved assumptions.
-- Strongest objections.
-- Simplest viable solution.
-- Recommended decision.
-
-Agreement is not proof of correctness.
-
-Do not decide based on majority voting.
-
-Prioritize arguments, evidence, and trade-offs.
+The main thread identifies agreement, material disagreements, evidence quality, unresolved assumptions, the strongest objections, the simplest viable solution, and a recommended decision. Agreement is not proof; weigh arguments and evidence, not votes.
 
 ## Output
 
@@ -131,24 +68,14 @@ One concrete recommended step.
 ### Execution
 Actual reviewers, available model identifiers, evidence inspected, and execution limitations.
 
-## Restrictions
-
-Read-only by default.
-
-Do not modify product code.
-
-Do not create or accept decision records automatically.
-
-Do not produce tasks or specifications unless explicitly requested.
-
-Do not fabricate findings or citations.
-
 Keep quick-mode output concise.
 
-## Integration
+## Restrictions
 
-The council may be invoked independently or during `/flow`.
+Read-only: do not modify product code, and do not write tasks or specifications unless asked. Do not fabricate findings or citations.
 
-If the human approves a consequential decision, record it under `docs/decisions/` per Flow conventions.
+When a recommended choice passes `to-spec`'s decision-record test, record it under `docs/decisions/` with status **Proposed** only; acceptance happens through `to-spec`. Council completion never implies approval.
 
-Council completion alone never implies approval.
+## Completion
+
+Done when the output sections are delivered, with the Execution section stating whether reviews ran as independent workers or as a single-agent analysis.
