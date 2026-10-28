@@ -3,7 +3,7 @@
 // Zero dependencies, Node >= 22. Stages: Candidate, Specced, Ready, Building, Shipped.
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, realpathSync, writeFileSync } from 'node:fs'
 import { createServer } from 'node:http'
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -376,42 +376,26 @@ main{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding
 `
 }
 
-const flowDir = (repoRoot) => join(git(repoRoot, ['rev-parse', '--path-format=absolute', '--git-common-dir']).trim(), 'flow')
-
 export function defaultOutPath(repoRoot) {
-  return join(flowDir(repoRoot), 'board.html')
+  const common = git(repoRoot, ['rev-parse', '--path-format=absolute', '--git-common-dir']).trim()
+  return join(common, 'flow', 'board.html')
 }
 
-/** Record of the running live board, `{ pid, url, repoRoot }`. Separate from the run overlay (`board.json`). */
-export function serverInfoPath(repoRoot) {
-  return join(flowDir(repoRoot), 'server.json')
-}
+const realRoot = (repoRoot) => { try { return realpathSync(repoRoot) } catch { return resolve(repoRoot) } }
 
-function readServerInfo(repoRoot) {
+/**
+ * Probes 127.0.0.1:<port>/state. Returns `{ url, pid }` when this repository's board answers there, or null
+ * for nothing, another repository's board, or any other service. Nothing is recorded on disk.
+ */
+async function findBoard(repoRoot, port) {
+  const url = `http://127.0.0.1:${port}/`
   try {
-    const info = JSON.parse(readFileSync(serverInfoPath(repoRoot), 'utf8'))
-    return Number.isInteger(info?.pid) && typeof info.url === 'string' ? info : null
+    const res = await fetch(new URL('state', url), { signal: AbortSignal.timeout(1500) })
+    if (!(res.headers.get('content-type') ?? '').includes('json')) { await res.body?.cancel(); return null }
+    const { server } = await res.json()
+    if (!Number.isInteger(server?.pid) || typeof server.repoRoot !== 'string') return null
+    return realRoot(server.repoRoot) === realRoot(repoRoot) ? { url, pid: server.pid } : null
   } catch { return null }
-}
-
-function writeServerInfo(repoRoot, info) {
-  const path = serverInfoPath(repoRoot)
-  mkdirSync(dirname(path), { recursive: true })
-  const temp = `${path}.${process.pid}.tmp`
-  writeFileSync(temp, `${JSON.stringify(info)}\n`)
-  renameSync(temp, path)
-}
-
-const removeServerInfo = (repoRoot) => rmSync(serverInfoPath(repoRoot), { force: true })
-
-/** A recorded board is live when its pid exists and its URL answers `/state` with JSON (guards pid reuse). */
-async function isLive(info) {
-  try { process.kill(info.pid, 0) } catch (error) { if (error.code !== 'EPERM') return false }
-  try {
-    const res = await fetch(new URL('state', info.url), { signal: AbortSignal.timeout(2000) })
-    await res.body?.cancel()
-    return (res.headers.get('content-type') ?? '').includes('json')
-  } catch { return false }
 }
 
 const firstLines = (message) => String(message).split('\n').slice(0, 2).join(' ').slice(0, 300)
@@ -419,20 +403,22 @@ const firstLines = (message) => String(message).split('\n').slice(0, 2).join(' '
 /**
  * Serves the live board on 127.0.0.1: `/` is the page, `/state` the derived board as JSON. The board is
  * recomputed at most once per `memoMs`, however many tabs poll. A git failure after start makes `/state`
- * answer 500 `{ error }`; the page keeps its last good board and shows a banner. Throws when the first
- * derivation fails; rejects when the port cannot be bound.
+ * answer 500 `{ error }`; the page keeps its last good board and shows a banner. Every `/state` body
+ * carries `server: { repoRoot, pid }` so `--serve` and `--stop` can recognize this repository's board.
+ * Throws when the first derivation fails; rejects when the port cannot be bound.
  */
 export async function startServer({ repoRoot, port = 0, memoMs = 1000 }) {
+  const identity = { repoRoot: realRoot(repoRoot), pid: process.pid }
   let lastGood = deriveBoard(readSnapshot(repoRoot))
-  let memo = { at: Date.now(), value: { status: 200, body: lastGood } }
+  let memo = { at: Date.now(), value: { status: 200, body: { ...lastGood, server: identity } } }
   const state = () => {
     if (Date.now() - memo.at < memoMs) return memo.value
     let value
     try {
       lastGood = deriveBoard(readSnapshot(repoRoot))
-      value = { status: 200, body: lastGood }
+      value = { status: 200, body: { ...lastGood, server: identity } }
     } catch (error) {
-      value = { status: 500, body: { error: firstLines(error.message) } }
+      value = { status: 500, body: { error: firstLines(error.message), server: identity } }
     }
     memo = { at: Date.now(), value }
     return value
@@ -494,11 +480,8 @@ function parseArgs(argv) {
 }
 
 async function serve(repoRoot, port) {
-  const running = readServerInfo(repoRoot)
-  if (running) {
-    if (await isLive(running)) { console.log(`Board already running at ${running.url} (pid ${running.pid}).`); return 0 }
-    removeServerInfo(repoRoot)
-  }
+  const running = port === 0 ? null : await findBoard(repoRoot, port ?? DEFAULT_PORT)
+  if (running) { console.log(`Board already running at ${running.url} (pid ${running.pid}).`); return 0 }
   let live
   try {
     try {
@@ -512,40 +495,33 @@ async function serve(repoRoot, port) {
     console.error(error.code === 'EADDRINUSE' ? `Port ${port} is in use.` : error.message)
     return 1
   }
-  writeServerInfo(repoRoot, { pid: process.pid, url: live.url, repoRoot })
   console.log(`Board at ${live.url} (pid ${process.pid}). Stop with --stop, Ctrl-C, or kill ${process.pid}.`)
   return new Promise((resolveExit) => {
-    const stop = () => {
-      // Leave a newer server's record alone.
-      if (readServerInfo(repoRoot)?.pid === process.pid) removeServerInfo(repoRoot)
-      live.close().then(() => resolveExit(0))
-    }
+    const stop = () => { live.close().then(() => resolveExit(0)) }
     process.once('SIGINT', stop)
     process.once('SIGTERM', stop)
   })
 }
 
-async function stopServer(repoRoot) {
-  const running = readServerInfo(repoRoot)
-  if (!running) { console.log('No board is running.'); return 0 }
-  if (await isLive(running)) {
-    process.kill(running.pid, 'SIGTERM')
-    console.log(`Stopped the board at ${running.url} (pid ${running.pid}).`)
-  } else console.log('No board was running; removed its stale record.')
-  removeServerInfo(repoRoot)
+async function stopServer(repoRoot, port) {
+  const target = port ?? DEFAULT_PORT
+  const running = target === 0 ? null : await findBoard(repoRoot, target)
+  if (!running) { console.log(`No board for this repo on port ${target}.`); return 0 }
+  process.kill(running.pid, 'SIGTERM')
+  console.log(`Stopped the board at ${running.url} (pid ${running.pid}).`)
   return 0
 }
 
 /** Resolves to the exit code; with `--serve`, once the server stops on SIGINT or SIGTERM. */
 export async function main(argv = process.argv.slice(2)) {
-  const usage = 'Usage: board.mjs --serve [--port <n>] [--repo <path>] | --stop [--repo <path>] | --once [--out <file>] [--repo <path>] | --json [--repo <path>]'
+  const usage = 'Usage: board.mjs --serve [--port <n>] [--repo <path>] | --stop [--port <n>] [--repo <path>] | --once [--out <file>] [--repo <path>] | --json [--repo <path>]'
   let args
   try { args = parseArgs(argv) } catch (error) { console.error(`${error.message}\n${usage}`); return 2 }
   if (!args.once && !args.json && !args.serve && !args.stop) { console.error(usage); return 2 }
   const repoRoot = tryGit(resolve(args.repo), ['rev-parse', '--show-toplevel'])
   if (!repoRoot) { console.error(`Not inside a git repository: ${args.repo}`); return 1 }
   if (args.serve) return serve(repoRoot, args.port)
-  if (args.stop) return stopServer(repoRoot)
+  if (args.stop) return stopServer(repoRoot, args.port)
   let board
   try { board = deriveBoard(readSnapshot(repoRoot)) } catch (error) { console.error(error.message); return 1 }
   if (args.json) console.log(JSON.stringify(board, null, 2))

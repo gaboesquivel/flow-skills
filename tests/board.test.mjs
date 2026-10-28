@@ -492,8 +492,8 @@ test('live client keeps the board and shows distinct banners on errors', async (
   assert.match(down.banner.textContent, /not reachable/u)
 })
 
-function startCli(dir) {
-  const child = spawn(process.execPath, [script, '--serve', '--port', '0', '--repo', dir], { stdio: ['ignore', 'pipe', 'pipe'] })
+function startCli(dir, port) {
+  const child = spawn(process.execPath, [script, '--serve', '--port', String(port), '--repo', dir], { stdio: ['ignore', 'pipe', 'pipe'] })
   const exited = new Promise((done) => child.on('exit', (code, signal) => done({ code, signal })))
   const url = new Promise((done, fail) => {
     let out = ''
@@ -505,47 +505,54 @@ function startCli(dir) {
 
 const cli = (...args) => spawnSync(process.execPath, [script, ...args], { encoding: 'utf8' })
 
-test('--serve records itself, reuses a running board, and --stop stops it', { timeout: 10_000 }, async () => {
-  const { dir, write, commit } = makeRepo()
-  write('001-served.md', spec('001: Served', 'draft'))
-  commit('specs')
-  const record = join(dir, '.git', 'flow', 'server.json')
-  const first = startCli(dir)
+async function freePort() {
+  const probe = http.createServer()
+  await new Promise((done) => probe.listen(0, '127.0.0.1', done))
+  const { port } = probe.address()
+  await new Promise((done) => probe.close(done))
+  return port
+}
+
+test('--serve and --stop find this repo\'s board by port probe, never another repo\'s', { timeout: 10_000 }, async () => {
+  const own = makeRepo()
+  const other = makeRepo()
+  for (const repo of [own, other]) {
+    repo.write('001-served.md', spec('001: Served', 'draft'))
+    repo.commit('specs')
+  }
+  const port = await freePort()
+  const board = startCli(own.dir, port)
   try {
-    const url = await first.url
-    assert.equal(cardOf(await getState(url), '001').title, 'Served')
-    assert.deepEqual(JSON.parse(readFileSync(record, 'utf8')), { pid: first.child.pid, url, repoRoot: realpathSync(dir) })
+    const url = await board.url
+    assert.equal(url, `http://127.0.0.1:${port}/`)
+    const state = await getState(url)
+    assert.equal(cardOf(state, '001').title, 'Served')
+    assert.deepEqual(state.server, { repoRoot: realpathSync(own.dir), pid: board.child.pid })
 
-    const again = cli('--serve', '--repo', dir)
+    const again = cli('--serve', '--port', String(port), '--repo', own.dir)
     assert.equal(again.status, 0, again.stderr)
-    assert.match(again.stdout, new RegExp(`already running at ${url.replaceAll('.', '\\.')}`, 'u'))
+    assert.equal(again.stdout.trim(), `Board already running at ${url} (pid ${board.child.pid}).`)
 
-    const stop = cli('--stop', '--repo', dir)
+    // Another repository's board on the port is neither reused nor stopped.
+    const foreignServe = cli('--serve', '--port', String(port), '--repo', other.dir)
+    assert.equal(foreignServe.status, 1)
+    assert.match(foreignServe.stderr, new RegExp(`Port ${port} is in use`, 'u'))
+    const foreignStop = cli('--stop', '--port', String(port), '--repo', other.dir)
+    assert.equal(foreignStop.status, 0, foreignStop.stderr)
+    assert.equal(foreignStop.stdout.trim(), `No board for this repo on port ${port}.`)
+    assert.equal(cardOf(await getState(url), '001').title, 'Served')
+
+    const stop = cli('--stop', '--port', String(port), '--repo', own.dir)
     assert.equal(stop.status, 0, stop.stderr)
-    assert.match(stop.stdout, /Stopped the board/u)
-    assert.deepEqual(await first.exited, { code: 0, signal: null })
-    assert.equal(existsSync(record), false)
-    assert.match(cli('--stop', '--repo', dir).stdout, /No board is running/u)
+    assert.match(stop.stdout, new RegExp(`Stopped the board at ${url.replaceAll('.', '\\.')} \\(pid ${board.child.pid}\\)`, 'u'))
+    assert.deepEqual(await board.exited, { code: 0, signal: null })
+    assert.equal(cli('--stop', '--port', String(port), '--repo', own.dir).stdout.trim(), `No board for this repo on port ${port}.`)
 
-    // A stale record (dead pid, closed port) is removed, never signalled, and does not block a new board.
-    const deadPid = spawnSync(process.execPath, ['-e', '']).pid
-    const stale = JSON.stringify({ pid: deadPid, url: 'http://127.0.0.1:1/', repoRoot: dir })
-    writeFileSync(record, stale)
-    assert.match(cli('--stop', '--repo', dir).stdout, /stale record/u)
-    assert.equal(existsSync(record), false)
-    writeFileSync(record, stale)
-    const second = startCli(dir)
-    try {
-      assert.notEqual(await second.url, 'http://127.0.0.1:1/')
-      second.child.kill('SIGTERM')
-      assert.deepEqual(await second.exited, { code: 0, signal: null })
-      assert.equal(existsSync(record), false)
-    } finally {
-      if (second.child.exitCode === null && second.child.signalCode === null) second.child.kill('SIGKILL')
-    }
+    for (const repo of [own, other]) assert.equal(existsSync(join(repo.dir, '.git', 'flow')), false, 'nothing written under .git')
   } finally {
-    if (first.child.exitCode === null && first.child.signalCode === null) first.child.kill('SIGKILL')
-    rmSync(dir, { recursive: true, force: true })
+    if (board.child.exitCode === null && board.child.signalCode === null) board.child.kill('SIGKILL')
+    rmSync(own.dir, { recursive: true, force: true })
+    rmSync(other.dir, { recursive: true, force: true })
   }
 })
 
