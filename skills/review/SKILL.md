@@ -14,7 +14,7 @@ Read repository instructions and inspect Git status before choosing the review s
 - **Working tree:** inspect staged and unstaged diffs plus relevant untracked files. Use `git diff --cached`, `git diff`, and `git ls-files --others --exclude-standard`; read untracked content explicitly.
 - **Committed comparison:** resolve the requested reference and use its merge-base with HEAD when appropriate. State the actual comparison. Include working-tree changes only when requested or relevant to the stated scope.
 - **Pull request:** treat the PR as a committed comparison from `merge-base(base, head)` through `head`. Product, design, spec, and marketing edits get the same bar as code. Repositories that enforce the **pr-review-contract** (documented in the project's docs tree) in CI expect the same checks without a separate manual invocation.
-- **Wave:** during a `ship` task-set run, a wave review covers the wave's combined change, from the merge-base at the wave's start through the checkpoint commit, on all five axes.
+- **Wave:** during a `ship` task-set run, a wave review covers the wave's combined change, from the spec-branch commit at the wave's start (the merge-base with the default branch for wave 1) through the checkpoint commit, on all five axes.
 
 Default an unspecified review to the current working tree. If it has no changes, inspect the repository area implied by the request and state that scope. Ask only when scope ambiguity materially changes the work. An empty committed diff does not establish that there is nothing to review.
 
