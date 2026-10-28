@@ -1,6 +1,6 @@
 # Flow principles
 
-Status: elaboration, updated 2026-10-27. The seven official principles live in [PRODUCT.md](../PRODUCT.md#principles). The themes below are optional methodology judgment; they do not replace that list.
+Status: elaboration, updated 2026-10-28. The eight official principles live in [PRODUCT.md](../PRODUCT.md#principles). The themes below are optional methodology judgment; they do not replace that list.
 
 ## Validation
 
@@ -16,7 +16,7 @@ Plan the signals needed to see what people and agents attempt, where they succee
 
 ## Agentic
 
-Build for agents and humans, with an API-first approach.
+Elaborates the official **Agent-first, API-first** principle ([decision 0023](decisions/0023-agent-first.md)). Build for agents and humans, with an API-first approach.
 
 Treat agent use as a first-class product interaction. Make relevant capabilities discoverable and usable through clear interfaces, including APIs, CLIs, and MCP where appropriate, alongside useful human experiences. Design permissions, errors, and results so an agent can act within the user's authority and understand the outcome.
 
