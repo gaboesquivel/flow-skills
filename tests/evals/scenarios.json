@@ -454,6 +454,7 @@
     {
       "id": "E21",
       "skills": [
+        "build",
         "ship",
         "to-tasks"
       ],
@@ -461,6 +462,7 @@
       "taskFile": "tests/evals/tasks/E21-task.md",
       "rubricFile": "tests/evals/rubrics/E21-rubric.md",
       "skillReferences": [
+        "skills/build/SKILL.md",
         "skills/ship/SKILL.md",
         "skills/to-tasks/SKILL.md"
       ],
