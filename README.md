@@ -17,7 +17,7 @@ Choose agent and scope in the installer. [Agent compatibility](docs/agent-compat
 ```mermaid
 flowchart TB
   setup["Set up Flow: 'set up Flow here' or start"]
-  depth{"Process depth: Lite or Full"}
+  depth{"Discovery depth: Lite or Full<br/>Delivery: pull requests or local"}
   goals["Goals: explore writes the brief in PRODUCT.md"]
   spec["Spec: one bet, tasks are its slices"]
   decision["Decision record: why X over Y"]
@@ -26,10 +26,10 @@ flowchart TB
   spec -.-> decision
 ```
 
-- **Set up Flow.** Say "set up Flow here" in an existing project, or "start a Next.js project" for a new one. `start` is the same setup plus a verified template bootstrap. Both write one removable Flow block into `AGENTS.md` and ask one question: **Lite** or **Full** process ([decision 0026](docs/decisions/0026-process-depth.md)).
+- **Set up Flow.** Say "set up Flow here" in an existing project, or "start a Next.js project" for a new one. `start` is the same setup plus a verified template bootstrap. Both write one removable Flow block into `AGENTS.md` and ask two independent questions: **Discovery depth**, Lite or Full ([decision 0026](docs/decisions/0026-process-depth.md)), and **Delivery**, pull requests or local ([decision 0030](docs/decisions/0030-asked-delivery-and-local-mode.md)).
 - **Define the goals.** Every Flow project gets the same goals from `explore`: the problem, who it serves (agents included), the riskiest assumption, one main metric with a kill criterion, core journeys, and alternatives. `start` hands off to `explore` automatically; `flow` names it when `PRODUCT.md` has none.
 - **Keep context aligned.** "Update the docs" has `flow` align `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` after meaningful changes.
-- **Deliver.** "Spec it" writes a draft spec (in pull-request mode, with an issue that copies it) and "accept the spec" approves it. "Break it down" makes its tasks (sub-issues of the spec issue in pull-request mode), "build it" runs every unblocked task at once on one branch and ends at one pull request per spec with green checks (or a checked branch in local mode), and "ship it" lands accepted work with no confirmation: one independent review, green checks, merge (decisions [0028](docs/decisions/0028-build-and-ship.md) and [0029](docs/decisions/0029-spec-issues.md)).
+- **Deliver.** "Spec it" writes a draft spec with one acceptance scenario (in pull-request mode, with an issue that copies it) and "accept the spec" approves it. "Break it down" makes its tasks (sub-issues of the spec issue in pull-request mode), "build it" runs every unblocked task at once on one branch and ends at one pull request per spec with green checks (local mode: reviewed and merged into local `main`, nothing pushed), and "ship it" lands accepted work with no confirmation (one independent review, green checks, merge; local mode: push `main`), then runs the spec's acceptance scenario on the shipped commit's deployment (decisions [0028](docs/decisions/0028-build-and-ship.md), [0029](docs/decisions/0029-spec-issues.md), and [0032](docs/decisions/0032-local-build-lands-ship-verifies.md)).
 - **Other skills.** Say what you want; each skill's leading word reaches it ("grill me", "build it"). Slash commands work too. No mandatory sequence.
 
 ### Lite or Full
@@ -64,17 +64,18 @@ flowchart TB
   checkpoint["Checkpoint<br/>Integrated, local suite, screenshots"]
   ready["Ready PR<br/>One per spec · green checks"]
   land["Ship<br/>One review, merge, sync main"]
+  verify["Verify<br/>Acceptance scenario on the deployment"]
   align["flow aligns context<br/>Root docs stay current"]
   explore --> spec
   explore -.-> decision
   decision -.-> spec
   spec --> tasks --> frontier --> checkpoint
   checkpoint -- unblocked tasks --> frontier
-  checkpoint -- all integrated --> ready --> land --> align
+  checkpoint -- all integrated --> ready --> land --> verify --> align
   classDef doc fill:#EEEDFE,stroke:#534AB7,color:#3C3489
   classDef run fill:#FAECE7,stroke:#993C1D,color:#712B13
   class decision,spec,tasks doc
-  class frontier,checkpoint,ready,land run
+  class frontier,checkpoint,ready,land,verify run
 ```
 
 ## Catalog
