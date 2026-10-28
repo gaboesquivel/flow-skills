@@ -14,13 +14,23 @@ Use the project's existing spec location when one exists. When the project has n
 
 Specs may cover product, research, marketing, engineering, operations, or cross-functional work. Use the sections below only when they fit the discipline; omit irrelevant headings. Keep small, understood changes brief.
 
-**Candidate specs.** A later bet that should not be specified yet gets a stub: status `candidate`, the problem, and the assumption it tests. Flesh it out into a full spec only when its turn comes; until then it has no tasks.
+**Candidate specs.** A later bet that should not be specified yet gets a stub: the problem and the assumption it tests. In pull-request mode it is an issue labelled `candidate`, with no file; in local mode, a file with status `candidate`. Flesh it out into a full spec only when its turn comes; until then it has no tasks.
 
 ## Status and acceptance
 
-A spec's `Status:` line follows `candidate → draft → accepted → implemented` (decision 0028). `to-spec` writes `candidate` and `draft`, and owns acceptance; `ship` sets `implemented`.
+A spec's `Status:` line follows `candidate → draft → accepted → implemented` (decision 0028). `to-spec` writes `candidate` and `draft`, and owns acceptance; `ship` sets `implemented`. In pull-request mode the spec issue's label (`candidate`, `draft`, `accepted`) carries the same state (decision 0029).
 
-**Accept the spec.** When the user approves a spec for delivery ("accept the spec"), set its status to `accepted` with the date, and set the status of each decision record it links from **Proposed** to **Accepted** with the date, in the project's decision format, in the same step. Writing a draft, reaching spec-ready, or a request to write a spec is not acceptance. A `candidate` must become a full draft before it can be accepted. Changing an accepted spec's scope or a decision it links returns the spec to `draft`. Report the files changed.
+**Accept the spec.** When the user approves a spec for delivery ("accept the spec"), set its status to `accepted` with the date, and set the status of each decision record it links from **Proposed** to **Accepted** with the date, in the project's decision format, in the same step; in pull-request mode, also swap the issue's `draft` label for `accepted` and sync the body. Writing a draft, reaching spec-ready, or a request to write a spec is not acceptance. An `accepted` label a maintainer added is acceptance: when `to-spec` touches a spec whose label is ahead of its file, write the file status (and linked decisions) to match. A `candidate` must become a full draft before it can be accepted. Changing an accepted spec's scope or a decision it links returns the spec to `draft`, and the label with it. Report the files changed.
+
+## Spec issue
+
+Pull-request mode only (the `Delivery:` line in the project's Flow block, or the mode `build` would infer); local mode keeps files only. The spec is written on a feature branch named for it, never the default branch, and merges with the work.
+
+- **Open.** Push the branch, then open the spec issue labelled `draft`, or reuse the `candidate` or feature-request issue the spec fleshes out and relabel it. Write `Issue: #N`, linked to the issue, beside `Status:`, commit and push, then sync the body. This is part of "spec it" and needs no separate yes; on a public repository, say the issue is public.
+- **Labels.** Create `candidate`, `draft`, and `accepted` on first use. A spec carries exactly one.
+- **Body.** A one-way copy of the file: first line `Copied from <path>; edit the file, this body is overwritten.` with `<path>` linked to the file on the branch, then the file content with relative links rewritten to that ref, then `<!-- flow-spec sha256:<hex> -->`, the SHA-256 of everything above it.
+- **Sync** after every change to the file. First hash the issue's current body above its marker; if that differs from the marker's hash (or a body this run did not just open has no marker), the body was edited by hand: stop, show the difference from the file's copy, and ask before overwriting. Carry wanted edits into the file instead.
+- Without GitHub access, write the file, say the issue was not opened, and stop there.
 
 ## Process
 
@@ -28,7 +38,7 @@ A spec's `Status:` line follows `candidate → draft → accepted → implemente
 
 2. Sketch test seams at the highest practical level. Prefer existing seams; propose new ones only when necessary and as high as possible.
 
-3. Write a proportionate spec using the relevant sections below, saved with status `draft` and the date, and any decision record it needs as **Proposed**. Do not show the text inline or ask before writing; report links to the files written, open assumptions, and that "accept the spec" is the next step.
+3. Write a proportionate spec using the relevant sections below, saved with status `draft` and the date, and any decision record it needs as **Proposed**. In pull-request mode, open or reuse its spec issue (see Spec issue). Do not show the text inline or ask before writing; report links to the files written and the issue, open assumptions, and that "accept the spec" is the next step.
 
 <spec-template>
 
