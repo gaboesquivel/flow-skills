@@ -6,7 +6,7 @@ disable-model-invocation: false
 
 # Write Agents
 
-**One authoritative home.** Identify the task, expected behavior, available capabilities, and observable completion condition. Read existing instructions before editing shared context. Preserve accepted intent and authorization boundaries.
+When you write agent instructions, keep **one authoritative home** for each fact. Identify the task, expected behavior, available capabilities, and observable completion condition. Read existing instructions before editing shared context. Preserve accepted intent and authorization boundaries.
 
 ## Make instructions useful
 
@@ -27,7 +27,13 @@ Communicate, as relevant: purpose, activation, leading word, executable procedur
 
 ## Workers
 
-Use separate workers only when independent tasks justify separate execution (for example specification compliance versus code correctness, read-only analysis of another package, or adversarial review of a high-impact change). Give each worker a bounded goal and sufficient context. Do not edit the same files concurrently from multiple workers. Verify findings and synthesize disagreements; record actual models when the host exposes them. Distinguish model diversity from host diversity. Never claim independence without separate execution. Continue directly or sequentially when workers are unavailable.
+This is the shared fan-out rule; other skills link here instead of restating it.
+
+- Run independent steps as parallel workers, launched in one batch up to the host's limit.
+- Keep a step sequential only when it needs another step's output, asks the user, or writes a shared file.
+- Each worker has one bounded goal and sufficient context, and is read-only or writes files no other worker touches.
+- The main thread verifies findings and synthesizes results and disagreements. Record actual models when the host exposes them; distinguish model diversity from host diversity.
+- Without workers, run the same steps in order and say so. Never claim independence without separate execution.
 
 ## Review
 
