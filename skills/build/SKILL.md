@@ -22,7 +22,7 @@ Then deliver (see Deliver). Report the result, files, checks, limitations, and r
 
 ## Deliver
 
-"Build it" ends in a pull request with green checks (local mode: a branch with the full local check suite passing). Asking to build authorizes these steps with no confirmation. It does not authorize committing to, pushing, or merging the default branch (for example `main`), force-pushing, rewriting remote branches, destructive Git, skipping checks, or unrelated changes. When the user asks only for local edits ("don't commit"), stop after the change and report; do not record `Delivery:` either.
+"Build it" ends in a pull request with green checks (local mode: the reviewed work merged into local `main`, nothing pushed). Asking to build authorizes these steps with no confirmation. It does not authorize committing to, pushing, or merging the default branch (for example `main`), force-pushing, rewriting remote branches, destructive Git, skipping checks, or unrelated changes. The one exception is local mode: a single `--no-ff` merge of the work's branch into local `main`, only after the gate and review (see Local mode); never a push. When the user asks only for local edits ("don't commit"), stop after the change and report; do not record `Delivery:` either.
 
 **Pull-request mode** (see Delivery mode):
 
@@ -34,7 +34,14 @@ Then deliver (see Deliver). Report the result, files, checks, limitations, and r
 6. **Fix rounds.** On a failing check or a blocking finding, read its evidence (logs, findings), fix what this work caused when safely in scope, commit, push (pull-request mode), and check again on the new head: at most 2 fix rounds. Then stop and report the failure with evidence. Never skip, disable, or weaken a check to get green. This is the one definition of a fix round; workers and `ship` use it.
 7. **Report** the pull request, each check's result, and the links CI attached (deployments and previews the pull request shows, such as deployment statuses or check details URLs); say when there are none.
 
-**Local mode:** commit to a branch that is not the default branch as above, run the full local check suite, apply the same fix rounds, and report the branch, commit SHA, the exact commands run, and their results. No push and no pull request; no remote is needed.
+**Local mode:** commit to a branch that is not the default branch as above, run the full local check suite, and apply the same fix rounds. Then land the branch on local `main`, for ad-hoc work and a task set alike:
+
+1. **Gate.** Check the gate `ship` defines under [Preflight](../ship/SKILL.md#preflight), and stop as it says when the gate fails. For spec work, the spec's `Status:` then reads `implemented` on the branch (Task set step 3 sets it; set it here otherwise).
+2. **Review.** Run the one independent review from merge base to branch head the way `ship`'s [Review](../ship/SKILL.md#review) runs it (per-axis `review` workers plus verifier, hotfix guard included), with fix rounds as above, then re-run the full local check suite on the new head.
+3. **Merge.** `git merge --no-ff` the branch into local `main` from a checkout of `main`. Stop and report when that checkout has changes the merge would touch or the merge conflicts; never discard changes to get through.
+4. **Clean up.** Delete the merged branch with `git branch -d` and remove the remaining clean worktrees on the worker list (Task set Cleanup rules apply).
+
+A failed task, a failed gate, or a blocking review after the fix rounds leaves local `main` untouched: stop with the branch kept and report. Report the branch, the merge commit SHA on `main`, the review result, the exact commands run, and their results. No push and no pull request; no remote is needed.
 
 **Full local check suite:** the project's documented check commands, from the instruction file's command table, else package scripts for test, lint, typecheck, and build. When none are found, report that no suite exists instead of claiming checks passed.
 
@@ -45,7 +52,7 @@ This section is the one home of the delivery rule; other skills point here inste
 When the line is missing or `unset`, ask before the first push or other step that depends on the mode, in one round together with process depth when that is unset too. Inference only suggests an answer: suggest pull requests when a GitHub remote exists and local when there is none. With no remote, never pick pull-request mode. With a remote and protection that cannot be determined (no access, unauthenticated CLI), suggest pull-request mode and never fall through to local mode on your own. Never record a mode the user did not give. Record the answer with `flow`'s block helper on that line, touching nothing outside the block's markers, in its own commit on the branch being built; without a Flow block, the answer holds for this run only.
 
 - **Pull-request mode:** tasks are sub-issues of the spec issue, listed as a checklist in the spec's Tasks section; the work is delivered as one pull request.
-- **Local mode:** no pull requests, issues, or remote required; tasks live only as the spec's Tasks checklist, and the work is delivered on the spec branch for `ship` to merge.
+- **Local mode:** no pull requests, issues, or remote required; tasks live only as the spec's Tasks checklist, and `build` reviews the spec branch and merges it into local `main` (see Deliver); `ship` publishes it.
 
 ## Task set
 
@@ -61,9 +68,9 @@ When the line is missing or `unset`, ask before the first push or other step tha
    - **Draft pull request.** In pull-request mode, after the first integration, open a draft pull request with a Conventional Commits title, a link to the spec file, a `Closes #N` line for each task already integrated, and a `Refs #N` line for the spec issue and every other sub-issue. Each later integration switches that task's line to `Closes #N`; the spec issue's line becomes `Closes #N` once every task has integrated.
    - **Failures.** A failed or stuck task keeps its worktree and branch, and stops its dependents, which wait for the user's decision and are not runnable until then: report it with evidence and its worktree path, and keep the rest of the frontier moving.
 4. **Checkpoint** once per integration batch: post tasks integrated, running, and blocked with one-line reasons, noting dependents that wait for the user's decision and the worktree paths kept for failed tasks; the local suite commands and result; the commit SHA; and screenshots of changed screens when a browser tool is available, otherwise say there are none. Pull-request mode posts it as a pull request comment; local mode reports it in the conversation. Checkpoints never wait for CI or the user, unless the user asked to wait at checkpoints. CI runs on every push, but intermediate pushes are never waited on.
-5. **Finish** once no runnable task remains, reporting dependents still waiting for the user's decision. In pull-request mode, wait for the final pull request's checks with fix rounds (see Deliver steps 5 and 6), then mark the draft ready for review and stop there: merging is `ship`'s job, after the one independent review per spec. In local mode, stop at the spec branch with the full local check suite passing; nothing is pushed.
+5. **Finish** once no runnable task remains, reporting dependents still waiting for the user's decision. In pull-request mode, wait for the final pull request's checks with fix rounds (see Deliver steps 5 and 6), then mark the draft ready for review and stop there: merging is `ship`'s job, after the one independent review per spec. In local mode, once every task has integrated and the full local check suite passes, land the spec branch on local `main` as Deliver › Local mode describes (gate, review, `--no-ff` merge, cleanup); nothing is pushed, and a failed or stopped task leaves `main` untouched.
 
-Gates: the full local suite passes for each integration batch, the final pull request's checks are green, branch protection is respected. Without independent workers, run the frontier tasks in dependency order on the spec branch. Report checkpoints posted, tasks integrated, tasks blocked and why, worktrees removed and kept, the limits used, and the pull request with its checks and links.
+Gates: the full local suite passes for each integration batch, the final pull request's checks are green, branch protection is respected. Without independent workers, run the frontier tasks in dependency order on the spec branch. Report checkpoints posted, tasks integrated, tasks blocked and why, worktrees removed and kept, the limits used, and the pull request with its checks and links (local mode: the review result and the merge commit on local `main`).
 
 **Board states.** Record live task states with `node <board>/scripts/board.mjs`, where `<board>` is the `board` directory next to this skill's directory; if that script is missing, skip recording. The orchestrator records the run; each worker records its own task's state (the script locks concurrent writes).
 
