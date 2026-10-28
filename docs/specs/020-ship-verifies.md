@@ -1,6 +1,6 @@
 # 020: Local build lands, ship publishes and verifies
 
-Status: draft (2026-10-28). Decision: [0032](../decisions/0032-local-build-lands-ship-verifies.md) (Proposed). Builds on [spec 019](019-delivery-choice.md).
+Status: draft (2026-10-28). Issue: [#104](https://github.com/gaboesquivel/flow-skills/issues/104). Decision: [0032](../decisions/0032-local-build-lands-ship-verifies.md) (Proposed). Builds on [spec 019](019-delivery-choice.md).
 
 ## Problem Statement
 
