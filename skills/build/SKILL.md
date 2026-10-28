@@ -54,7 +54,7 @@ A failed task, a failed gate, or a blocking review after the fix rounds leaves l
 
 ### Unspecced work
 
-Work that resolves to no spec or task is unspecced (decisions 0034, 0039). It never needs a spec: write a spec, candidate, or tasks only when the user asks ("spec it", "break it down"). When the current branch is `explore/<slug>` with a confirmed brief and no spec, the brief and the intent confirmed with it are the request: rename the branch to `feat/<slug>` (`fix/<slug>` for a fix) with `git branch -m` before the first commit, so the brief lands with the code; when that name exists, keep the explore branch.
+Work that resolves to no spec or task is unspecced (decisions 0034, 0039). It never needs a spec: write a spec, candidate, or tasks only when the user asks ("spec it", "break it down"). When the current branch is `explore/<slug>` with a confirmed brief and no spec, the brief and the intent confirmed with it are the request: rename the branch to `feat/<slug>` (`fix/<slug>` for a fix) with `git branch -m` before the first commit, so the brief lands with the code; when that name exists, keep the explore branch. The build request accepts any **Proposed** direction-change record the branch adds (decision 0038): make the first commit after the rename set it to **Accepted** with the date and write its back-pointers as the back-pointer bullet of `to-spec`'s Accept the spec describes (no spec or issue), linking the brief for a confirmed conflict that got no record.
 
 Every unspecced change gets the full local check suite. The size guard then picks its review and never stops the work:
 

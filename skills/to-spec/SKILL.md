@@ -20,7 +20,13 @@ Specs may cover product, research, marketing, engineering, operations, or cross-
 
 A spec's `Status:` line follows `candidate → draft → accepted → implemented` (decision 0028). `to-spec` writes `candidate` and `draft`, and owns acceptance; `build` sets `implemented` on an accepted spec once its last task integrates, and `ship` sets it if still missing. In GitHub mode the spec issue's label (`candidate`, `draft`, `accepted`) carries the same state once the issue exists (decisions 0029, 0035).
 
-**Accept the spec.** When the user approves a spec for delivery ("accept the spec"), set its status to `accepted` with the date, and set the status of each decision record it links from **Proposed** to **Accepted** with the date, in the project's decision format, in the same step, and commit; in GitHub mode, also open the spec issue labelled `accepted`, or relabel a shared draft's issue, as Spec issue describes. Writing a draft, reaching spec-ready, or a request to write a spec is not acceptance. An `accepted` label a maintainer added is acceptance: when `to-spec` touches a spec whose label is ahead of its file, write the file status (and linked decisions) to match. A `candidate` must become a full draft before it can be accepted. A spec without an acceptance scenario (see Testing Decisions) or an **Exposure** line (see Implementation Decisions) is not accepted: name what is missing and leave it in `draft`. Changing an accepted spec's scope or a decision it links returns the spec to `draft`, and the label with it. Report the files changed.
+**Accept the spec.** When the user approves a spec for delivery ("accept the spec"), in one commit:
+
+- Set its status to `accepted` with the date, and each decision record it links from **Proposed** to **Accepted** with the date, in the project's decision format.
+- Write the back-pointers (decision 0038). For each linked record that supersedes or amends an older one, append `Superseded by [NNNN]`, `Superseded in part by [NNNN]`, or `Amended by [NNNN]`, with a short scope, to the older record's Status line (in a frontmatter format, set `superseded_by` instead, and `status: superseded` only for a full supersession) and index row, and to the Status line of each spec it changes; update each contradicted `PRODUCT.md` fact to the new position, linking the record. Entries in the spec's Direction changes section get the same spec and `PRODUCT.md` updates, linking the spec.
+- Never write back-pointers before acceptance. A back-pointer is not a scope change and does not return another spec to `draft`.
+
+Then, in GitHub mode, open the spec issue labelled `accepted`, or relabel a shared draft's issue, as Spec issue describes. Writing a draft, reaching spec-ready, or a request to write a spec is not acceptance. An `accepted` label a maintainer added is acceptance: when `to-spec` touches a spec whose label is ahead of its file, write the file status (and linked decisions, with their back-pointers) to match. A `candidate` must become a full draft before it can be accepted. A spec without an acceptance scenario (see Testing Decisions) or an **Exposure** line (see Implementation Decisions) is not accepted: name what is missing and leave it in `draft`. Changing an accepted spec's scope or a decision it links returns the spec to `draft`, and the label with it. Report the files changed.
 
 ## Spec issue
 
@@ -36,7 +42,7 @@ GitHub mode only (the `Delivery:` line in the project's Flow block); local mode 
 
 ## Process
 
-1. Explore the repository when needed. Gather evidence with parallel read-only workers (fan-out rule: `write-agents` Workers): existing specs and decisions, code seams and tests, and the glossary. Use the project's domain vocabulary and respect decision records in the area you are touching.
+1. Explore the repository when needed. Gather evidence with parallel read-only workers (fan-out rule: `write-agents` Workers): existing specs and decisions, code seams and tests, and the glossary. Use the project's domain vocabulary and respect decision records in the area you are touching unless the gate below confirms a change. Before writing, check for contradictions with accepted decisions, specs, and `PRODUCT.md` through `explore`'s [Direction changes](../explore/SKILL.md#direction-changes) gate, asking only about conflicts not already confirmed in this conversation or in a Proposed record on the current branch.
 
 2. Sketch test seams at the highest practical level. Prefer existing seams; propose new ones only when necessary and as high as possible.
 
@@ -75,6 +81,10 @@ When a prototype encodes a decision more precisely than prose (state machine, sc
 What good tests mean here, which behavior is in scope, and prior art in the codebase.
 
 **Acceptance scenario** (required; `ship` runs it after landing): one representative end-to-end journey. Name the actor, the starting state with realistic data, and numbered steps with the observable result of each, marking each step that writes data (creates, sends, or changes it) as production-safe or not; on production `ship` runs read-only steps and production-safe writes, and never steps that need a real login, money, outbound messages, or deletion. When the spec names agent users, give the same journey through the agent interface (MCP tool).
+
+## Direction changes
+
+Confirmed changes to accepted specs or `PRODUCT.md` facts that got no decision record: the file, the old position, and the new one.
 
 ## Out of Scope
 

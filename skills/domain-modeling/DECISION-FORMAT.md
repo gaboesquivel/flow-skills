@@ -16,4 +16,4 @@ date: YYYY-MM-DD
 Context, choice, rationale, and material consequences.
 ```
 
-Use one actual status and category in a record. Mark proposals as proposed until accepted. For a changed accepted choice, create a new numbered record with a `supersedes` pointer; preserve the historical record and reflect the current position in the owning product, design, or architecture document. Do not silently rewrite intent to match implementation.
+Use one actual status and category in a record. Mark proposals as proposed until accepted. For a changed accepted choice, create a new numbered record with a `supersedes` pointer (or `Supersedes` / `Amends` on its Status line); preserve the historical record's body, add only a back-pointer to its status when the change is accepted, and reflect the current position in the owning product, design, or architecture document. Do not silently rewrite intent to match implementation.
