@@ -31,12 +31,12 @@ Hosts may match this skill when the user asks to update or sync the docs. That i
 
 ## Flow block
 
-"Set up Flow here" opts the project into Flow mode (decision 0020). This section is the one definition of the block; `start` writes the same block after a bootstrap. Run this skill's `lib/flow-block.mjs` with Node, passing the project's absolute path and optionally `local` or `pull-request`, or apply the same rules by hand:
+"Set up Flow here" opts the project into Flow mode (decision 0020). This section is the one definition of the block; `start` writes the same block after a bootstrap. Run this skill's `lib/flow-block.mjs` with Node, passing the project's absolute path, optionally `local` or `pull-request`, and optionally `--deploy <target>`, or apply the same rules by hand:
 
 - Target `AGENTS.md`, or `CLAUDE.md` when that is the only instruction file.
-- One block between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->`: a `Delivery:` line (`pull-request`, `local`, or `unset`), a short phrase-to-skill table (`PHRASES` in the helper is its one source), and a pointer to this skill. Under about 25 lines.
-- Re-running replaces the block in place and keeps the recorded `Delivery:` unless the user names a mode. Never touch text outside the markers; stop and report when markers are unmatched or repeated.
-- Leave `Delivery:` unset unless the user names a mode; `ship` owns the delivery-mode rule and records the mode. Deleting the block opts out.
+- One block between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->`: a `Delivery:` line (`pull-request`, `local`, or `unset`), a `Deploy:` line after it (a lowercase platform name such as `vercel`, `netlify`, or `fly`; `none`; or `unset`), a short phrase-to-skill table (`PHRASES` in the helper is its one source), and a pointer to this skill. Under about 25 lines.
+- Re-running replaces the block in place and keeps the recorded `Delivery:` and `Deploy:` unless the user names a new value. Never touch text outside the markers; stop and report when markers are unmatched or repeated.
+- Leave `Delivery:` unset unless the user names a mode, and `Deploy:` unset unless the user names a target; `ship` owns both rules and records the values. Deleting the block opts out.
 
 Report which file was written and show the block. When both `AGENTS.md` and `CLAUDE.md` exist and `CLAUDE.md` does not import `AGENTS.md`, say the block may be invisible to Claude Code and suggest adding an `@AGENTS.md` line to `CLAUDE.md`.
 
