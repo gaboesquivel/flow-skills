@@ -634,6 +634,27 @@
         "verified_second_host": "not_executed"
       },
       "claimsLiveRun": false
+    },
+    {
+      "id": "E29",
+      "skills": [
+        "to-spec"
+      ],
+      "behavior": "A hand-edited spec issue body stops the sync and asks before overwriting",
+      "taskFile": "tests/evals/tasks/E29-task.md",
+      "rubricFile": "tests/evals/rubrics/E29-rubric.md",
+      "skillReferences": [
+        "skills/to-spec/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "not_executed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
     }
   ]
 }
