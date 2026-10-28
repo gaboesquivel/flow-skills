@@ -1,6 +1,6 @@
 ---
 name: to-tasks
-description: Break a plan, spec, or conversation into verifiable vertical-slice tasks with explicit blockers; list them in the spec's Tasks checklist and, in pull-request mode, open them as sub-issues of the spec issue. Use when the user says "break it down", "make tasks", or "split this into tasks".
+description: Break a plan, spec, or conversation into verifiable vertical-slice tasks with explicit blockers; list them in the spec's Tasks checklist and, in GitHub mode, open them as sub-issues of the spec issue. Use when the user says "break it down", "make tasks", or "split this into tasks".
 disable-model-invocation: false
 ---
 
@@ -47,12 +47,12 @@ Show the proposed tasks, what each delivers, their areas, real dependencies, and
 
 ### 5. Record
 
-Choose by the delivery mode: the `Delivery:` line in the project's Flow block. When it is unset or there is no block, ask before recording anything, as `build`'s Delivery mode section describes; a request that names a mode answers it.
+Outside a Git repository, follow `write-agents` [Repository](../write-agents/SKILL.md#repository) before recording. Choose by the delivery mode: the `Delivery:` line in the project's Flow block. When it is unset or there is no block, ask before recording anything, as `build`'s Delivery mode section describes; a request that names a mode answers it.
 
-- **Pull-request mode:** a spec with no `Issue:` line is not accepted yet: suggest "accept the spec" (or "share the draft" for early comments) and stop, recording nothing. Otherwise open each task as a sub-issue of the spec issue (the spec's `Issue:` line names it) using the issue template below. Open them in parallel, since none needs another's number, then add each task's blocking links once every number exists, for example `gh issue create --parent <spec#>` followed by native blocked-by links. Without sub-issue or dependency support, start the body with plain `Part of #N` and `Blocked by #a, #b` lines. Use another tracker only when the project already uses one. On a public repository, the report says the issues are public. Without GitHub access, record the checklist without issue numbers and say so. If publishing stops partway, report which issues were created and which were not; on a retry, match existing sub-issues by title and open only the missing ones, never re-creating a task.
+- **GitHub mode:** a spec with no `Issue:` line is not accepted yet: suggest "accept the spec" (or "share the draft" for early comments) and stop, recording nothing. Otherwise open each task as a sub-issue of the spec issue (the spec's `Issue:` line names it) using the issue template below. Open them in parallel, since none needs another's number, then add each task's blocking links once every number exists, for example `gh issue create --parent <spec#>` followed by native blocked-by links. Without sub-issue or dependency support, start the body with plain `Part of #N` and `Blocked by #a, #b` lines. Use another tracker only when the project already uses one. On a public repository, the report says the issues are public. Without GitHub access, record the checklist without issue numbers and say so. If publishing stops partway, report which issues were created and which were not; on a retry, match existing sub-issues by title and open only the missing ones, never re-creating a task.
 - **Local mode:** no issues. Below the checklist, detail each task with the local task template.
 
-In both modes, write the spec's Tasks section as a checklist, one line per task: `- [ ] NN: Title (#N)`, without the issue number in local mode. Without a spec, write one with `to-spec` first, or return the tasks as a local draft and say so. In pull-request mode, then re-sync the spec issue body as `to-spec` describes. Do not introduce a `.scratch/` task system or new labels.
+In both modes, write the spec's Tasks section as a checklist, one line per task: `- [ ] NN: Title (#N)`, without the issue number in local mode. Without a spec, write one with `to-spec` first, or return the tasks as a local draft and say so. In GitHub mode, then re-sync the spec issue body as `to-spec` describes. Do not introduce a `.scratch/` task system or new labels.
 
 Tasks are not pull requests; `build` owns how tasks group into pull requests.
 
