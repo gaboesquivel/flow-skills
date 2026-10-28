@@ -1,6 +1,6 @@
 # 022: Requirement verdicts and data-not-instructions briefs
 
-Status: draft (2026-10-28). Source: [OpenProse research](../research/2026-10-28-openprose.md), candidate ideas 1 and 2.
+Status: accepted (2026-10-28). Source: [OpenProse research](../research/2026-10-28-openprose.md), candidate ideas 1 and 2.
 
 ## Problem Statement
 
