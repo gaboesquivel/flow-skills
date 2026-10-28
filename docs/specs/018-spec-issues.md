@@ -54,10 +54,10 @@ Status: accepted (2026-10-28). Issue: [#79](https://github.com/gaboesquivel/flow
 
 Sub-issues of #79. Tasks 01–04 each own one skill and share only this spec, so they have no blockers; 05 waits for 06 because both edit the board's files.
 
-- [ ] 01: `to-spec`: push the branch and open or reuse the spec issue at draft, the `Issue:` line, labels, acceptance by label, candidates as issues, and the sync with its hand-edit check (#80).
-- [ ] 02: `to-tasks`: sub-issues with blocking links under the spec issue, the Tasks checklist, local fallback (#81).
-- [ ] 03: `build`: frontier scheduling up to the host limit, context pointers instead of notes, integration with the full local suite, checkpoints that never wait, CI waited on only for the final pull request, per-task and per-wave reviews removed, `Closes` lines for the spec and sub-issues (#82).
-- [ ] 04: `ship` and `review`: the label gate, one independent review per spec, automatic merge, sync at merge with the default-branch link, abandoned specs (#83).
+- [x] 01: `to-spec`: push the branch and open or reuse the spec issue at draft, the `Issue:` line, labels, acceptance by label, candidates as issues, and the sync with its hand-edit check (#80).
+- [x] 02: `to-tasks`: sub-issues with blocking links under the spec issue, the Tasks checklist, local fallback (#81).
+- [x] 03: `build`: frontier scheduling up to the host limit, context pointers instead of notes, integration with the full local suite, checkpoints that never wait, CI waited on only for the final pull request, per-task and per-wave reviews removed, `Closes` lines for the spec and sub-issues (#82).
+- [x] 04: `ship` and `review`: the label gate, one independent review per spec, automatic merge, sync at merge with the default-branch link, abandoned specs (#83).
 - [ ] 05: `board`: an open branch alone is not Building; spec issue and checklist links; candidate issue cards; labels as status with a mismatch marker; frontier overlay; dropped specs hidden; labels and close reason in the GitHub read (#85, blocked by 06).
 - [ ] 06: Test speed: injectable waits in `board.test.mjs`, `pnpm test` under 8 s (#84).
 - [ ] 07: Docs and contracts: glossary (Spec, Candidate spec, Delivery mode, wave), `PRODUCT.md` default durable docs, methodology, `docs/skills.md`, the indexes, status lines of the decisions 0029 amends, smoke contracts reduced to safety rules (#86, blocked by 01–06).
