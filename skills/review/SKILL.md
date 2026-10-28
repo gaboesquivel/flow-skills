@@ -38,7 +38,7 @@ For **consequential** changes (behavior many callers rely on, migrations, concur
 
 One verifier then merges the results: it dedupes findings across axes, checks each against the code, settles disagreements, and ranks by impact. Record actual models when the host exposes them. Without workers, assess the axes in order and label the review **single-agent**. Never claim independence or model diversity without actual separate execution.
 
-**Requirement verdicts.** When the scope is a spec, the verifier lists each of its user stories, acceptance criteria, and acceptance scenario steps and gives each a **requirement verdict**: `satisfied`, `unmet`, or `unresolved`. Axis workers cite the requirements their evidence bears on; the verifier owns the verdict. A verdict cites its evidence (test, file and line, command output, or screenshot); without evidence it is `unresolved`, never `satisfied`. An `unresolved` verdict names what would settle it; scenario steps the review cannot exercise stay `unresolved` until `ship`'s Verify runs them. Every `unmet` requirement is also a blocking finding.
+**Requirement verdicts.** When the scope is a spec, the verifier lists each of its user stories, acceptance criteria, and acceptance scenario steps and gives each a **requirement verdict**: `satisfied`, `unmet`, or `unresolved`. Axis workers cite the requirements their evidence bears on; the verifier owns the verdict. A verdict cites its evidence (test, file and line, command output, or screenshot); without evidence it is `unresolved`, never `satisfied`. An `unresolved` verdict names what would settle it; scenario steps the review cannot exercise stay `unresolved`. Every `unmet` requirement is also a blocking finding.
 
 ## Report
 

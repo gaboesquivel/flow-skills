@@ -35,13 +35,14 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0029-spec-issues.md](0029-spec-issues.md) | Accepted (amended by 0030, 0031, 0032, 0034, 0035) | One issue per spec with tasks as sub-issues and one pull request; the spec file is the source of truth; frontier builds, one review per spec, automatic merge, tests that never sleep |
 | [0030-asked-delivery-and-local-mode.md](0030-asked-delivery-and-local-mode.md) | Accepted (amended by 0032, 0036, 0037, 0039) | Depth and delivery asked together once; local mode keeps the spec branch, needs no remote, pushes only on request; clean task worktrees removed on integration (local landing and push changed by 0032) |
 | [0031-fan-out-by-default.md](0031-fan-out-by-default.md) | Accepted | Skills run independent steps as parallel workers by default; per-axis spec review; tasks declare an area |
-| [0032-local-build-lands-ship-verifies.md](0032-local-build-lands-ship-verifies.md) | Accepted (amended by 0033, 0034) | Local `build` reviews and merges into local `main`; `ship` publishes, then verifies the shipped commit's deployment with the spec's acceptance scenario; specs require one; discovery depth and delivery asked as independent questions |
+| [0032-local-build-lands-ship-verifies.md](0032-local-build-lands-ship-verifies.md) | Accepted (amended by 0033, 0034, 0040) | Local `build` reviews and merges into local `main`; `ship` publishes, then verifies the shipped commit's deployment with the spec's acceptance scenario; specs require one; discovery depth and delivery asked as independent questions |
 | [0033-shared-files-and-reviewed-head.md](0033-shared-files-and-reviewed-head.md) | Accepted | Shared-file appends are committed on the spec branch and do not move the reviewed head |
 | [0034-no-ceremony-without-a-spec.md](0034-no-ceremony-without-a-spec.md) | Accepted (amended by 0039) | Unspecced work gets the local suite and one self-check, no spec gate or review workers; `build` owns the size guard |
 | [0035-spec-issue-on-acceptance.md](0035-spec-issue-on-acceptance.md) | Accepted | "Spec it" publishes nothing; the spec issue opens at "accept the spec", or early on "share the draft" |
 | [0036-one-explore-depth.md](0036-one-explore-depth.md) | Accepted | One `explore` depth with a pre-mortem; `competitors` and `jtbd` on request; setup asks only for delivery |
 | [0037-git-for-delivery-github-for-github-mode.md](0037-git-for-delivery-github-for-github-mode.md) | Accepted | Thinking skills need nothing, the delivery chain needs Git, GitHub mode needs GitHub; no repository offers `git init`; `Delivery: github` or `local` |
 | [0039-build-never-requires-a-spec.md](0039-build-never-requires-a-spec.md) | Accepted | The size guard escalates review instead of stopping; specs only on request; "build it" after `explore` builds the brief; "build it local" on a protected repository stops at a branch commit |
+| [0040-ship-verifies-liveness.md](0040-ship-verifies-liveness.md) | Accepted | `ship` verifies only that the shipped commit's checks are green and its deployment answers; no scenario, browser, or preview run |
 
 ## Rules
 

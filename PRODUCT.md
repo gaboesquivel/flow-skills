@@ -90,7 +90,7 @@ flow-skills offers a small catalog: **context alignment** (`flow`) for root cont
 | --- | --- | --- |
 | Thinking | `grill`, `interview`, `council`, `jtbd`, `competitors`, `domain-modeling`, `debug`, `tldr`, `write-humans`, `write-agents`, `retro`, `handoff`, `prototype` | Nothing: any folder, or none |
 | Delivery chain | `flow` (the Flow block), `start`, `explore`, `to-spec`, `to-tasks`, `build`, `review`, `ship`, `board` | A Git repository; outside one, the skill offers `git init` and stops on a no |
-| GitHub mode | Spec issues, sub-issues, pull requests, preview-deployment verification | GitHub access, on top of Git |
+| GitHub mode | Spec issues, sub-issues, pull requests, deployment liveness checks | GitHub access, on top of Git |
 
 Local delivery needs only Git, so the whole chain works with GitLab, Bitbucket, or no remote. Thinking skills may read Git when it exists and never ask the delivery question.
 

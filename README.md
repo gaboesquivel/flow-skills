@@ -35,7 +35,7 @@ The first time a delivery skill needs to know, Flow asks one question: **GitHub 
 | Tasks | A checklist in the spec's Tasks section. | The same checklist, plus sub-issues of the spec issue with blocking links. |
 | "Build it" | Runs the checks and the review, then merges the work's branch into your local `main`. Nothing is pushed. | Runs the checks and opens one pull request for the work with green CI. |
 | "Ship it" | Pushes `main` when a remote exists. | Reviews the pull request, waits for green checks, and merges it. |
-| Verification | Runs the spec's acceptance scenario on the deployment, or locally with "deployment unverified" when there is none. | The same, plus a run on the pull request's preview deployment before merging. |
+| Verification | Checks that the pushed commit is green and its deployment answers, or reports "deployment unverified" when there is none. | The same, on the merge commit. |
 
 Pick local when you work alone, use another Git host, or want nothing published. Pick GitHub when your team reviews in pull requests or your default branch requires them; Flow detects that protection and uses GitHub mode without asking. To use the other mode for one run, say so: "build it local" or "ship it with GitHub". The full rule lives in [`build`](skills/build/SKILL.md#delivery-mode); the glossary defines [delivery mode](GLOSSARY.md#delivery-mode).
 
@@ -94,7 +94,7 @@ flowchart TB
   checkpoint["Checkpoint<br/>Integrated, local suite, screenshots"]
   ready["Ready PR<br/>One per spec · green checks"]
   land["Ship<br/>One review, merge, sync main"]
-  verify["Verify<br/>Acceptance scenario on the deployment"]
+  verify["Verify<br/>Green checks, deployment live"]
   align["flow aligns context<br/>Root docs stay current"]
   explore --> spec
   explore -.-> decision
