@@ -45,8 +45,8 @@ Significant product, design, architecture, infrastructure, or process choices li
 
 ## Rules
 
-- **Accepted** records are immutable historical evidence.
-- Superseding a decision creates a new record linked to the previous one (`supersedes` / `superseded_by`).
+- **Accepted** records are historical evidence: the body never changes. Only the Status line and index row gain `Superseded by`, `Superseded in part by`, or `Amended by` pointers, added when the superseding spec is accepted ([0038](0038-direction-changes-are-confirmed-and-recorded.md)).
+- Superseding or amending a decision creates a new record linked to the previous one (`supersedes` / `superseded_by`, or `Supersedes` / `Amends` on its Status line).
 - `PRODUCT.md`, `DESIGN.md`, and `ARCHITECTURE.md` reflect the **current** accepted position.
 - Legacy `docs/adr/` or `docs/pdr/` folders, if present, are historical unless the project migrates them explicitly.
 

@@ -18,7 +18,15 @@ On arrival, read the supplied brief and conversation in the main thread, then la
 - glossary terms and decisions the request may conflict with
 - prior art (existing specs, research, and similar features)
 
-Fold their results in as they return; drop a question a result answers, and raise a conflict they find at the next turn. Questions and all writes stay in the main thread.
+Fold their results in as they return; drop a question a result answers, and raise a conflict they find at the next turn as [Direction changes](#direction-changes) describes. Questions and all writes stay in the main thread.
+
+## Direction changes
+
+This is the one home of the direction-change gate (decision 0038). The decisions reader also lists branches not merged into the default branch (`git branch -a --no-merged <default>`) and searches their `docs/decisions/` for `Supersedes` or `Amends` lines naming a record the request touches. Report each as a pending direction change (record, branch, status), never the old record as settled. Read only: no fetch or checkout.
+
+When a stated goal contradicts an Accepted decision, an accepted or implemented spec, or a `PRODUCT.md` fact, stop at a direction-change gate: name each conflicting file, quote its position, say what changes and whether that supersedes or amends it, and continue only on an explicit yes. Candidate and draft specs, Proposed decisions, and mere overlap do not gate; when unsure, name the possible conflict in one line and continue. On a no, explore within the current direction.
+
+On the yes, changing an Accepted decision gets a new decision record with status **Proposed** and `Supersedes [NNNN]` or `Amends [NNNN]` (with scope) on its Status line. A conflict only with a spec or a `PRODUCT.md` fact gets a record only when it passes `to-spec`'s decision test; otherwise the spec records it. Show the record's text and write it on the explore branch after a yes to that text, whatever the outcome except killed. Never edit the old record, spec, or `PRODUCT.md` here: `to-spec` writes the back-links when the spec is accepted.
 
 ## Depth
 
@@ -36,7 +44,7 @@ Follow the `interview` pattern, including its question forms, until you can pred
 
 ## Outcome and write gate
 
-End in one outcome: **brief** (`grill`'s resolved direction), **clearer**, or **killed**. All three are valid; clearer and killed write nothing.
+End in one outcome: **brief** (`grill`'s resolved direction), **clearer**, or **killed**. All three are valid; clearer writes only a confirmed direction-change record, and killed writes nothing.
 
 For a brief, show the exact text before writing:
 
@@ -49,7 +57,7 @@ Label unproven items as hypotheses with a confidence. An explicit yes to the sho
 
 **Write after the bootstrap commit.** In a run handed over by `start`, cut no branch and write nothing (brief, research, specs, or tasks) until the bootstrap lane reports its initial commit, even after a yes; then cut `explore/<slug>` from that commit, and the yes to the shown text carries over to that write. The confirmed brief then replaces the product sections of the baseline `PRODUCT.md` and keeps its template facts. If the bootstrap failed, keep everything confirmed in conversation and write it once a repository exists.
 
-Research is saved only when `competitors` ran; it owns the research-saving rule. Choices made during exploration become decision records only when they pass `to-spec`'s decision test; otherwise they stay in the spec.
+Research is saved only when `competitors` ran; it owns the research-saving rule. Choices made during exploration become decision records only when they pass `to-spec`'s decision test or change an Accepted decision (see Direction changes); otherwise they stay in the spec.
 
 ## Spec-ready
 
