@@ -153,7 +153,7 @@ Sub-issues of #111. Tasks 01–05 each own different skill areas and share only 
 
 - [ ] 01: Setup keeps agent instructions correct and asks only delivery (#117)
 - [x] 02: `explore`: one depth and an explore branch (#113) — 1247184
-- [ ] 03: `to-spec`: issue at acceptance and spec-issue helper (#115)
+- [x] 03: `to-spec`: issue at acceptance and spec-issue helper (#115) — 8521c76
 - [x] 04: `build`: own worktrees, shared files, commit links, no ceremony (#116) — fa3be47
-- [ ] 05: `ship` and `review`: refused merge, shared files, checkout safety (#114)
+- [x] 05: `ship` and `review`: refused merge, shared files, checkout safety (#114) — 4de8efd
 - [ ] 06: Docs, safety contracts, and evals (#118, blocked by 01–05)
