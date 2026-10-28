@@ -28,7 +28,11 @@ Four smaller frictions also showed up:
 
 ## Solution
 
-1. **The Flow block lands in a tracked file.** The block helper never writes into a file Git ignores: when `AGENTS.md` is ignored, it writes the block into `CLAUDE.md`, creating the file if needed. `start` confirms the block is in the initial commit.
+1. **`start` leaves the agent instructions correct.** Setup (in `start` and "set up Flow here") owns the project's instruction-file layout, not just the block:
+   - **One canonical, tracked file.** The block goes in the instruction file Git tracks: `AGENTS.md` when it is tracked, otherwise `CLAUDE.md` (created if needed). It never goes into a file Git ignores or a template regenerates, such as the `AGENTS.md` that flow-next ignores because Next writes its agent rules there.
+   - **Imports wired.** When `CLAUDE.md` and `AGENTS.md` both exist (or `AGENTS.md` is generated at dev time), `CLAUDE.md` gets an `@AGENTS.md` import line, so Claude Code sees both. Today the helper only warns.
+   - **Adopter text kept.** Everything the adopter wrote, such as a prompt-log rule, stays byte for byte; the template's copy of a kept file is reported as skipped, as today.
+   - **Reported and committed.** `start` reports the layout (which file holds the block, whether it is tracked, which imports exist) and confirms the block and import are in the initial commit.
 2. **`explore` commits its writes on a branch.** It writes the brief, research, and decision records on a new `explore/<slug>` branch from the default branch and commits them there. `to-spec`, run on an explore branch, renames it to the spec's branch and continues, so everything ships with spec 001.
 3. **Shared files do not move the reviewed head** ([0033](../decisions/0033-shared-files-and-reviewed-head.md)). The orchestrator commits shared-file appends on the spec branch. The landing merge (local `build`, or `ship` in pull-request mode) is allowed when every commit after the reviewed SHA touches only the project's declared shared files. The `Reviewed:` trailer keeps the reviewed SHA, and nothing is committed directly on the default branch.
 4. **`build` creates task worktrees itself** with `git worktree add` from the spec-branch head, outside the primary checkout, and checks that each worker's head descends from it before integrating. It does not rely on host isolation.
@@ -43,7 +47,7 @@ Four smaller frictions also showed up:
 
 ## User Stories
 
-1. As a developer whose template ignores `AGENTS.md`, I run `start` and find the Flow block in a tracked file in the initial commit.
+1. As a developer whose template ignores `AGENTS.md`, I run `start` and find the Flow block in my tracked `CLAUDE.md`, with an `@AGENTS.md` import and my prompt-log rule untouched, all in the initial commit.
 2. As a developer, I finish `explore` and see the brief committed on an `explore/` branch, with `main` clean; "spec it" turns that branch into the spec branch.
 3. As a developer whose project requires a prompt log, I say "build it": every prompt is logged, `main` receives only the reviewed merge, and its `Reviewed:` trailer names the commit the reviewers saw.
 4. As a developer, I watch "build it" start four workers, and every worktree starts from the spec branch with no worker resetting itself.
@@ -59,8 +63,12 @@ Four smaller frictions also showed up:
 
 ## Implementation Decisions
 
-- **`flow/lib/flow-block.mjs`:** `instructionFile(projectDir)` returns the first of `AGENTS.md` or `CLAUDE.md` that exists and is not ignored (`git check-ignore -q`). When both are ignored or missing, it returns `CLAUDE.md`. The existing `@AGENTS.md` import warning stays. Unit tests use a temporary Git repo.
-- **`start`:** after the Flow block step, verify `git check-ignore` is false for the block's file. The initial-commit report names the file.
+- **`flow/lib/flow-block.mjs`** (the one home of the layout rules, used by `flow` and `start`):
+  - `instructionFile(projectDir)` returns `AGENTS.md` when it exists and is not ignored (`git check-ignore -q`), otherwise `CLAUDE.md`.
+  - `ensureImport(projectDir)` adds `@AGENTS.md` as the first line of `CLAUDE.md` when `AGENTS.md` exists or is ignored-but-generated and `CLAUDE.md` lacks the import; it touches nothing else in the file. It replaces today's warning.
+  - `describeLayout(projectDir)` returns `{ blockFile, tracked, imports }` for the report.
+  - Unit tests use a temporary Git repo: tracked `AGENTS.md`; ignored `AGENTS.md` with an adopter `CLAUDE.md`; no instruction file.
+- **`start`:** the Flow block step writes the block, then `ensureImport`, and reports `describeLayout`. The boundary "edit adopter instruction files only to write the Flow block" widens to "only to write the Flow block and the `@AGENTS.md` import". The commit gate fails when the block's file is ignored. `flow`'s "set up Flow here" runs the same helper calls.
 - **`explore`:** under Outcome and write gate, writes go on `explore/<slug>` and are committed with a Conventional Commits message. In a run handed over by `start`, the branch is cut after the bootstrap commit.
 - **`to-spec`:** on an `explore/` branch with no spec yet, `git branch -m` it to the spec's branch name before writing.
 - **`build`:**
@@ -86,7 +94,7 @@ Four smaller frictions also showed up:
 
 - Unit tests: `instructionFile` with an ignored `AGENTS.md`; `spec-issue.mjs` round trip (body → check passes; edited body → check fails; CRLF and trailing spaces normalize).
 - Smoke contracts (safety only):
-  - the block is never written into an ignored file;
+  - the block is never written into an ignored file, and adopter text outside the block and import is never changed;
   - review workers never check out in a checkout they did not create;
   - 0033's "only declared shared files after the reviewed SHA";
   - a refused merge is never retried with another method;
@@ -99,7 +107,7 @@ Four smaller frictions also showed up:
 
 Actor: a developer with Claude Code and these skills. Starting state: an empty `/tmp/flow-021` holding only a `CLAUDE.md` that requires appending each prompt to `prompts.txt`.
 
-1. Say "Let's start a Next.js project" with a one-line idea; answer Lite and local. → The initial commit contains the Flow block (`git show HEAD --stat` lists its file; `git check-ignore` on it fails). *(writes; local only)*
+1. Say "Let's start a Next.js project" with a one-line idea; answer Lite and local. → The initial commit contains `CLAUDE.md` with the Flow block, an `@AGENTS.md` import, and the unchanged prompt-log rule (`git show HEAD:CLAUDE.md`). `git check-ignore CLAUDE.md` fails, and `start`'s report names the layout. *(writes; local only)*
 2. Finish a Lite `explore` with a yes to the brief. → `git branch` shows `explore/<slug>` holding a commit with `PRODUCT.md`; `main` has no new commit and a clean tree. *(writes; local only)*
 3. Say "spec it". → The explore branch is renamed to `feat/001-<slug>`, holding the brief and the draft spec, which has an Exposure line; in a pull-request-mode copy of the project nothing is pushed and no issue exists. Say "accept the spec", then "break it down". → The spec reads `accepted` and has its tasks; in the pull-request-mode copy the branch is pushed and the spec issue opens labelled `accepted`. *(writes; local, plus one issue in a scratch repository)*
 4. Say "build it" on two or more tasks. → `git worktree list` shows one sibling worktree per task, each starting at the spec-branch head, and no worker reports resetting. The primary checkout's branch is unchanged after the review. *(writes; local only)*
@@ -123,6 +131,7 @@ Source: the Signal demo rehearsal on 2026-10-28 in `/tmp/flow-demo`, on `feat/02
 ### Open assumptions
 
 - Writing the block into `CLAUDE.md` is preferable to changing the template's `.gitignore` (`start` must not edit it).
+- "Maintain the agent instructions" means the layout above (canonical file, imports, adopter text); it does not mean `start` writes project context such as commands or doc pointers into those files.
 - `explore/<slug>` uses the brief's product slug for a new product, or the feature's slug otherwise.
 - Issues already opened for drafts (#104, #111) stay as they are; the new rule applies from the next spec.
 - "Lite flow" in the maintainer's request reads as any run without issues, so commit links apply in both delivery modes.
