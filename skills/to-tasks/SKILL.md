@@ -1,6 +1,6 @@
 ---
 name: to-tasks
-description: Break a plan, spec, or conversation into verifiable vertical-slice tasks with explicit blockers; record them as GitHub issues or in the spec's Tasks section by delivery mode. Use when the user says "break it down", "make tasks", or "split this into tasks".
+description: Break a plan, spec, or conversation into verifiable vertical-slice tasks with explicit blockers; list them in the spec's Tasks checklist and, in pull-request mode, open them as sub-issues of the spec issue. Use when the user says "break it down", "make tasks", or "split this into tasks".
 disable-model-invocation: false
 ---
 
@@ -35,28 +35,28 @@ Break the work into vertical-slice tasks.
 
 </vertical-slice-rules>
 
-Give each task its **blocking edges**: other tasks that must finish before it can start. A task with no blockers can start immediately.
+Give each task its **blocking edges**: other tasks that must finish before it can start. An edge needs a real reason: the tasks edit the same files, or one uses what the other builds. Topic order is not a reason; tasks that touch different files and share only the spec have no blockers, so the frontier stays wide. A task with no blockers can start immediately.
 
 **Wide refactors are the exception to vertical slicing.** A **wide refactor** is one mechanical change (rename a column, retype a shared symbol) whose **affected scope** spans the codebase, so one edit breaks many call sites and no vertical slice can land green. Sequence it as **expand–contract**. Expand: add the new form beside the old so nothing breaks. Migrate call sites in batches sized by impact (per package or directory), each batch its own task blocked by the expand, keeping CI green because the old form still exists. Contract: remove the old form once no caller remains, in a task blocked by every migrate batch. When batches cannot stay green alone, they may share an integration branch and a final integrate-and-verify task; green is promised only there.
 
 ### 4. Check the breakdown
 
-Show the proposed tasks, what each delivers, real dependencies, and where they will be recorded. Resolve only consequential scope or sequencing uncertainty. Publishing issues or writing the spec's Tasks section needs an explicit yes to the shown list; approval of the work is not that yes.
+Show the proposed tasks, what each delivers, real dependencies, and where they will be recorded. Resolve only consequential scope or sequencing uncertainty. "Break it down" authorizes recording them; opening the sub-issues needs no separate yes.
 
 ### 5. Record
 
-Record tasks in exactly one place, chosen by the delivery mode: the `Delivery:` line in the project's Flow block, or when unset, the mode `build` would infer (say which).
+Choose by the delivery mode: the `Delivery:` line in the project's Flow block, or when unset, the mode `build` would infer (say which).
 
-- **Pull-request mode:** publish GitHub issues using the issue template below, with blocking links. Use another tracker only when the project already uses one. Use native dependency links when available, or plain references otherwise.
-- **Local mode:** write the tasks into the spec's Tasks section using the local task template; no issues. Without a spec, write one with `to-spec` first, or return the tasks as a local draft and say so.
+- **Pull-request mode:** open each task as a sub-issue of the spec issue (the spec's `Issue:` line names it) using the issue template below, with native blocking links, for example `gh issue create --parent <spec#> --blocked-by <n,...>`. Without sub-issue or dependency support, start the body with plain `Part of #N` and `Blocked by #a, #b` lines. Use another tracker only when the project already uses one. On a public repository, the report says the issues are public. Without GitHub access, or when the spec has no `Issue:` line, record the checklist without issue numbers and say so.
+- **Local mode:** no issues. Below the checklist, detail each task with the local task template.
 
-Never record the same tasks in both places. Without GitHub access in pull-request mode, return a local draft and say so. Do not introduce a `.scratch/` task system or new labels.
+In both modes, write the spec's Tasks section as a checklist, one line per task: `- [ ] NN: Title (#N)`, without the issue number in local mode. Without a spec, write one with `to-spec` first, or return the tasks as a local draft and say so. In pull-request mode, then re-sync the spec issue body as `to-spec` describes. Do not introduce a `.scratch/` task system or new labels.
 
 Tasks are not pull requests; `build` owns how tasks group into pull requests.
 
 Tasks that are **ready** have their blockers complete. In a purely linear chain, that means top to bottom.
 
-Do not close or modify any parent issue.
+Do not close any parent issue; change the spec issue only through that sync.
 
 ### 6. Hand off
 
@@ -83,10 +83,6 @@ End by naming where the tasks live and the ready set, then wait for "build it". 
 
 A link to the spec this task belongs to, so `ship` can resolve it (omit only when the task belongs to no spec).
 
-## Parent
-
-A reference to the parent issue on the tracker (if the source was an existing issue; otherwise omit this section).
-
 ## What to build
 
 The end-to-end behaviour this task makes work, from the user's perspective, not layer-by-layer implementation.
@@ -95,10 +91,6 @@ The end-to-end behaviour this task makes work, from the user's perspective, not 
 
 - [ ] Criterion 1
 - [ ] Criterion 2
-
-## Blocked by
-
-- A reference to each blocking task, or "None (can start immediately)". Omit this section when blockers were set as native edges.
 
 </issue-template>
 
