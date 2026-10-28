@@ -617,7 +617,7 @@ function stageFor({ status, tasks, branches, liveRun }) {
   const merged = branches.find((b) => b.merged && b.implementation)
   if (merged && tasksComplete && status !== 'candidate') return { stage: 'shipped', reason: merged.pr ? `pull request #${merged.pr} merged` : `branch ${merged.name} merged`, branch: merged }
   const open = branches.find((b) => !b.merged)
-  if (liveRun) return { stage: 'building', reason: 'ship run', branch: liveRun.branch ? { name: liveRun.branch } : open ?? null }
+  if (liveRun) return { stage: 'building', reason: 'build run', branch: liveRun.branch ? { name: liveRun.branch } : open ?? null }
   if (open) return { stage: 'building', reason: `branch ${open.name}`, branch: open }
   if (tasks.done > 0) return { stage: 'building', reason: 'tasks started', branch: null }
   if (tasks.total > 0) return { stage: 'ready', reason: 'tasks planned', branch: null }
@@ -651,7 +651,7 @@ function overlayRun(overlay, now) {
     branch: typeof run.branch === 'string' && run.branch ? run.branch : null,
     mode: typeof run.mode === 'string' ? run.mode : null,
     stale: ended || abandoned,
-    staleReason: abandoned ? `ship run stopped updating ${OVERLAY_STALE_MS / 60_000}+ min ago; its task states are ignored` : null,
+    staleReason: abandoned ? `build run stopped updating ${OVERLAY_STALE_MS / 60_000}+ min ago; its task states are ignored` : null,
     tasks,
   }
 }

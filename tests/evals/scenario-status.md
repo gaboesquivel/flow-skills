@@ -21,8 +21,8 @@
 | E17 | explore | passed | not_executed | not_executed | not_executed |
 | E18 | explore | passed | not_executed | not_executed | not_executed |
 | E19 | explore | passed | not_executed | not_executed | not_executed |
-| E20 | ship, to-tasks | passed | not_executed | not_executed | not_executed |
-| E21 | ship, to-tasks | passed | not_executed | not_executed | not_executed |
+| E20 | build, to-tasks | passed | not_executed | not_executed | not_executed |
+| E21 | build, ship, to-tasks | passed | not_executed | not_executed | not_executed |
 | E22 | flow | passed | passed | not_executed | not_executed |
 | E23 | start, explore | passed | not_executed | not_executed | not_executed |
 | E24 | start, explore | passed | not_executed | not_executed | not_executed |
