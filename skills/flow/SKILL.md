@@ -25,23 +25,28 @@ Hosts may match this skill when the user asks to update or sync the docs. That i
 
 ## Process
 
-1. Read existing `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` when present. Read relevant `docs/specs/` and `docs/decisions/` records only when they clarify the area you are aligning.
-2. Update only sections affected by the change. Keep one home per fact; link to specs, decisions, or code instead of duplicating detail that is cheap to rediscover.
+1. Read `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` when present, with parallel tool calls rather than spawned workers (fan-out rule: `write-agents` Workers). Read relevant `docs/specs/` and `docs/decisions/` records only when they clarify the area you are aligning.
+2. Update only sections affected by the change, with one writer per root file. Keep one home per fact; link to specs, decisions, or code instead of duplicating detail that is cheap to rediscover.
 3. Create a root file only when it would hold meaningful content about the current project. Do not scaffold empty trees, Flow methodology boilerplate, or parallel trackers (no PRD/PDR/ADR folders).
 
 ## Flow block
 
-"Set up Flow here" opts the project into Flow mode (decision 0020). This section is the one definition of the block; `start` writes the same block after a bootstrap. Run this skill's `lib/flow-block.mjs` with Node, passing the project's absolute path, optionally `local` or `pull-request` and optionally `--process <lite|full>`, or apply the same rules by hand:
+"Set up Flow here" opts the project into Flow mode (decision 0020). This section is the one definition of the block; `start` writes the same block after a bootstrap. Deleting the block opts out.
 
-- Target `AGENTS.md`, or `CLAUDE.md` when that is the only instruction file.
-- One block between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->`: a `Delivery:` line (`pull-request`, `local`, or `unset`), a `Process:` line (`lite`, `full`, or `unset`), a short phrase-to-skill table (`PHRASES` in the helper is its one source), and a pointer to this skill. Under about 25 lines.
-- Re-running replaces the block in place and keeps the recorded `Delivery:` and `Process:` unless the user names a new value, and drops any other line, such as a retired `Deploy:` line. Never touch text outside the markers; stop and report when markers are unmatched or repeated.
-- Leave `Delivery:` unset unless the user names a mode; `build` owns the `Delivery:` rule and records its value. Deleting the block opts out.
-- **Process depth** (decision 0026) is how much process the project wants. When the request does not name it, ask once before writing: **Lite** (recommended: brief, spec 001 in full with its tasks, decisions inside specs) or **Full** (deeper discovery and a decision record for each choice among alternatives). Record the answer on `Process:`. `explore` reads it as its default depth; `to-spec` owns the spec–decision boundary.
+**Ask.** Read any existing block first. For each of `Process:` and `Delivery:` that is missing or `unset` and that the request does not name, ask once before writing, both questions in one round, each with a suggested answer:
+
+- **Process depth** (decision 0026), how much process the project wants: **Lite** (brief, spec 001 in full with its tasks, decisions inside specs) or **Full** (deeper discovery and a decision record for each choice among alternatives). Suggest Lite unless the request points to Full. `explore` reads it as its default depth; `to-spec` owns the spec–decision boundary.
+- **Delivery mode** (decision 0030): **pull requests** or **local**, with a suggestion as `build`'s Delivery mode section describes; that section owns the rule and what each mode does. If `build` is unavailable, ask without a suggestion.
+
+Recorded values stay unless the user names a new one, so a re-run with both lines set asks nothing.
+
+**Write** with this skill's `lib/flow-block.mjs`: `node <skill-dir>/lib/flow-block.mjs <absolute-project-path> [local|pull-request] [--process <lite|full>]`. The helper owns the block's rules: target file, markers, phrase table (`PHRASES`), in-place replacement that keeps recorded values, and refusal of malformed markers. Never touch text outside the markers.
+
+**Fallback without Node:** in `AGENTS.md`, or `CLAUDE.md` when that is the only instruction file, write one block between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->` holding a `Delivery:` line, a `Process:` line, the helper's phrase table, and a pointer to this skill. Replace an existing block in place, dropping any other line (such as a retired `Deploy:`). Stop and report when markers are unmatched or repeated.
 
 **Goals.** Setup defines the same goals as `start`. After writing the block, when `PRODUCT.md` is missing or has no brief (problem, who, riskiest assumption, main metric and kill criterion, core journeys), name `explore` at the recorded depth as the next step and wait.
 
-Report which file was written and show the block. When both `AGENTS.md` and `CLAUDE.md` exist and `CLAUDE.md` does not import `AGENTS.md`, say the block may be invisible to Claude Code and suggest adding an `@AGENTS.md` line to `CLAUDE.md`.
+Report the file the helper names (`Wrote` or `Unchanged`), show the block, and relay any warning. When writing by hand and both `AGENTS.md` and `CLAUDE.md` exist without an `@AGENTS.md` import in `CLAUDE.md`, say the block may be invisible to Claude Code and suggest adding that line.
 
 ## Boundaries
 

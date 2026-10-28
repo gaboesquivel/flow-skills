@@ -1,4 +1,4 @@
-# Evaluation scenario status (2026-10-27)
+# Evaluation scenario status (2026-10-28)
 
 | ID | Skill | Structural | Fixture | Live (Cursor) | Second host |
 | --- | --- | --- | --- | --- | --- |
@@ -31,5 +31,9 @@
 | E27 | ship | passed | not_executed | not_executed | not_executed |
 | E28 | ship | passed | not_executed | not_executed | not_executed |
 | E29 | to-spec | not_executed | not_executed | not_executed | not_executed |
+| E30 | explore, flow | not_executed | not_executed | not_executed | not_executed |
+| E31 | ship | not_executed | not_executed | not_executed | not_executed |
+| E32 | explore | not_executed | not_executed | not_executed | not_executed |
+| E33 | ship, review | not_executed | not_executed | not_executed | not_executed |
 
 Live column: [2026-10-27-cursor-live.md](records/2026-10-27-cursor-live.md) (E03, E07, E08). Structural and fixture columns reflect `pnpm test` and `pnpm eval:check`. Second host still open.

@@ -12,10 +12,7 @@ Agent-agnostic checklist for reviewing a pull request in a Flow-shaped repositor
 
 Recover intent from the PR title and description, relevant specs under `docs/specs/`, decision records under `docs/decisions/`, tests, and root context files.
 
-Assess:
-
-- **Correctness and intent** — missing requirements, regressions, broken links or references, failure paths, unsafe side effects, and test coverage for changed behavior.
-- **Maintainability** — duplication, misleading names, unnecessary abstraction, and conventions documented for the repository.
+Assess the change on the five review axes the [`review` skill](../skills/review/SKILL.md) defines: correctness, readability, architecture, security, and performance. Skip any the change cannot affect.
 
 Distinguish confirmed defects from risks and preferences. A passing structural test suite is not proof of intent alignment.
 

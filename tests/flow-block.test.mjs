@@ -103,6 +103,19 @@ test('writes AGENTS.md, or CLAUDE.md when it is the only instruction file', (t) 
   assert.equal(readDelivery(readFileSync(file, 'utf8')), 'pull-request')
 })
 
+test('writeFlowBlock records both answers, Delivery and Process, in one write', (t) => {
+  const dir = mkdtempSync(join(tmpdir(), 'flow-block-'))
+  t.after(() => rmSync(dir, { recursive: true, force: true }))
+  writeFileSync(join(dir, 'AGENTS.md'), '# Agents\n')
+  const { file, changed } = writeFlowBlock(dir, { delivery: 'local', process: 'lite' })
+  assert.equal(changed, true)
+  const text = readFileSync(file, 'utf8')
+  assert.match(text, /^Delivery: local$/mu)
+  assert.match(text, /^Process: lite$/mu)
+  assert.equal(readDelivery(text), 'local')
+  assert.equal(readProcess(text), 'lite')
+})
+
 test('warns when CLAUDE.md does not import AGENTS.md', (t) => {
   const dir = mkdtempSync(join(tmpdir(), 'flow-block-'))
   t.after(() => rmSync(dir, { recursive: true, force: true }))

@@ -34,6 +34,10 @@ When a term is resolved, update `GLOSSARY.md` immediately. Follow [GLOSSARY-FORM
 
 ### Offer decision records sparingly
 
-Record a choice when rationale, tradeoffs, or consequences would be hard to recover later. Keep routine implementation detail in its owning context. Existing user authorization applies; a resolved choice does not need duplicate approval to document it.
+Write a decision record only when the choice passes the decision test in `to-spec`; otherwise keep it in its owning context. Write it with status **Proposed**. Existing user authorization applies; a resolved choice does not need duplicate approval to document it.
 
 Use [DECISION-FORMAT.md](./DECISION-FORMAT.md) and the project's conventions when present. Preserve accepted records and supersede explicitly when direction changes.
+
+## Completion
+
+Report the terms added or changed in `GLOSSARY.md`, any decision record written with its path, and terms still unresolved with the open question for each. If nothing was resolved, say so and name the next question.

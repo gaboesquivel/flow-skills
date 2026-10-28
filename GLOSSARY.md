@@ -24,7 +24,7 @@ The [`flow`](skills/flow/SKILL.md) skill: keep the current project's `PRODUCT.md
 
 ## Process depth
 
-How much process a project wants: **Lite** or **Full**, asked once at setup ("set up Flow here" or `start`) and recorded as a `Process:` line in the project's Flow block. It is `explore`'s default depth for new work; unset means Lite. Lite: brief, spec 001 in full with its tasks, later bets as candidates, choices inside specs. Full: Lite plus deeper discovery and a [decision record](#decision-record) for each choice among alternatives. Neither specifies later bets up front. [Decision 0026](docs/decisions/0026-process-depth.md).
+How much process a project wants: **Lite** or **Full**, asked once, together with [delivery mode](#delivery-mode), wherever Flow first needs it (setup, `start`, or `explore`) and recorded as a `Process:` line in the project's Flow block. It is `explore`'s default depth for new work; when it is unset, Flow asks and suggests Lite unless the request points to Full ([`flow`](skills/flow/SKILL.md)). Lite: brief, spec 001 in full with its tasks, later bets as candidates, choices inside specs. Full: Lite plus deeper discovery and a [decision record](#decision-record) for each choice among alternatives. Neither specifies later bets up front. [Decision 0026](docs/decisions/0026-process-depth.md).
 
 ## Spec
 
@@ -44,7 +44,11 @@ A portable `skills/<name>/SKILL.md` package in the Flow Skills distribution. Use
 
 ## Delivery mode
 
-How `build` delivers work and `ship` lands it in a project: **local** (files only, tasks as the spec's checklist, a branch merged into `main` by `ship`) or **pull request** (a [spec issue](#spec-issue) with tasks as sub-issues, one pull request per spec). Distinct from [process depth](#process-depth). The rule lives in [`build`](skills/build/SKILL.md#delivery-mode); decisions [0020](docs/decisions/0020-flow-mode.md), [0028](docs/decisions/0028-build-and-ship.md), and [0029](docs/decisions/0029-spec-issues.md) record why.
+How `build` delivers work and `ship` lands it in a project: **local** (tasks as the spec's checklist, a spec branch merged into `main` by `ship`; needs no remote and pushes only on request) or **pull request** (a [spec issue](#spec-issue) with tasks as sub-issues, one pull request per spec). Asked once, together with [process depth](#process-depth), wherever Flow first needs it, and recorded as the Flow block's `Delivery:` line; a default branch that requires pull requests is reported, not asked. The rule lives in [`build`](skills/build/SKILL.md#delivery-mode); decisions [0020](docs/decisions/0020-flow-mode.md), [0028](docs/decisions/0028-build-and-ship.md), [0029](docs/decisions/0029-spec-issues.md), and [0030](docs/decisions/0030-asked-delivery-and-local-mode.md) record why.
+
+## Area
+
+A task's `Area:` line: the package or directory it changes, coarse and never a file path. [`to-tasks`](skills/to-tasks/SKILL.md) assigns it; [`build`](skills/build/SKILL.md) uses it to schedule tasks. [Decision 0031](docs/decisions/0031-fan-out-by-default.md).
 
 ## Frontier
 

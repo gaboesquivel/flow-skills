@@ -12,7 +12,7 @@ Deterministic rename, destination safety, baseline docs, and commit-gating rules
 
 ## Gather inputs
 
-Take what the invocation already says before asking. `inferTemplateFromRequest` from `lib/identity.mjs` maps "Next.js", "next", or a flow-next URL to **flow-next**, and "mono", "monorepo", "Turborepo", or a flow-mono URL to **flow-mono**. A project name in the request, or the current directory's name, is the proposed name.
+Take what the invocation already says before asking. `inferTemplateFromRequest` from `lib/identity.mjs` picks the template the request names, using the hints in `TEMPLATE_HINTS` (`lib/constants.mjs`). A project name in the request, or the current directory's name, is the proposed name.
 
 Ask only for what is still missing, in one question round:
 
@@ -21,6 +21,7 @@ Ask only for what is still missing, in one question round:
 3. **Template** — only when not inferred. Recommend **flow-next** for a single Next.js app, **flow-mono** for Turborepo (`apps/web`, `packages/ui`).
 4. **Optional GitHub remote** — only when the user wants a new repository created or linked; never assume push access.
 5. **Process depth** — only when not stated: **Lite** (recommended) or **Full**, as the `flow` skill defines them.
+6. **Delivery mode** — only when not stated: **local** or **pull requests**, as `build`'s Delivery mode section defines them. Suggest local when no GitHub repository is created, and pull requests when one is; this basis is start-specific because the repository is being created.
 
 If an answer does not arrive, ask again; do not substitute a destination the user did not confirm.
 
@@ -30,13 +31,13 @@ Derive identity with `deriveProjectIdentity` from `lib/identity.mjs`: slug, `pac
 
 ## Confirm before writing
 
-A spoken request can be misheard, so write nothing until the user agrees. State the template, project name (with slug and host), destination, any GitHub repository to create with its visibility, the process depth, the Flow block it will write, and the hand-off to `explore` at that depth, then wait for an explicit yes. Anything else is not a yes; correct and restate.
+A spoken request can be misheard, so write nothing until the user agrees. State the template, project name (with slug and host), destination, any GitHub repository to create with its visibility, the process depth, the delivery mode, the Flow block it will write, and the hand-off to `explore` at that depth, then wait for an explicit yes. Anything else is not a yes; correct and restate.
 
 ## Run two lanes
 
 After the yes:
 
-- **Bootstrap lane.** A worker runs every section from "Obtain template" through "Initial commit" below, unchanged, and reports the completion facts.
+- **Bootstrap lane.** A worker runs every section from "Obtain template" through "Initial commit" below, in the order under "Bootstrap order", and reports the completion facts.
 - **Explore lane.** The main session hands the conversation to `explore` as a new-product run at the confirmed process depth, using the user's description as its first input. Explore drafts in conversation and writes nothing until the bootstrap lane reports its initial commit.
 
 When the host has no independent workers, run the bootstrap first, then `explore`, and say so. When `explore` is not installed, finish the bootstrap and suggest exploring next.
@@ -57,17 +58,17 @@ Otherwise clone the template into a temporary directory, then copy it into the d
 - Add the user's remote only when explicitly provided and authorized.
 - Use `assessDestination` and `assertNoTemplateOrigin` from `lib/git-safety.mjs` before writing files.
 
-**Bootstrapping in place.** A destination that holds only agent setup — `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, `.claude/`, `.agents/`, `.cursor/`, `skills-lock.json` — counts as empty. Bootstrap at that root, not in a nested folder. Keep those files, adding only the Flow block: when the template ships its own copy of a kept file, report it in `skipped` and leave the adopter's version. For other files (for example a prompt log), `assessDestination` names them; settle whether to keep them during Gather inputs, then pass them as `preserve`.
+**Bootstrapping in place.** A destination that holds only agent setup (the entries in `AGENT_SETUP_ENTRY_NAMES`, `lib/constants.mjs`) counts as empty. Bootstrap at that root, not in a nested folder. Keep those files, adding only the Flow block: when the template ships its own copy of a kept file, report it in `skipped` and leave the adopter's version. For other files (for example a prompt log), `assessDestination` names them; settle whether to keep them during Gather inputs, then pass them as `preserve`.
 
 **Stop** when the destination has unexpected files without authorization, or when the path already has Git commits. Never `reset`, `clean`, or delete history of an existing project.
 
 ## Rename template identifiers
 
-Use `renameAllowlistForTemplate`, `applyRenamesInTree`, and `scanTreeForStaleIdentifiers` from `lib/rename.mjs`. Update package names, Portless config, titles, MCP server names, discovery metadata, README startup host, tests that embed the dev host, and Operator prompts — including flow-mono's stale "Flow Next" operator line.
+Use `renameAllowlistForTemplate`, `applyRenamesInTree`, and `scanTreeForStaleIdentifiers` from `lib/rename.mjs`. The allowlist names the files to rename; do not widen it with a global replace.
 
-**Preserve** upstream interoperability prose in `docs/INTEROP.md`, `.env.example` template comments, baseline root docs that record the template source, vendored `.agents` skills, package imports (`@repo/ui`, `web`), and legitimate references to the template repositories.
+**Preserve** package imports (`@repo/ui`, `web`) and legitimate references to the template repositories. The scan's preserved paths and skipped directories are `STALE_SCAN_PRESERVE_REL_PATHS` and `STALE_SCAN_SKIP_DIR_NAMES` in `lib/constants.mjs`.
 
-After renames, identity verification **fails** while stale template identifiers remain outside preserved paths. The scan skips `.claude/`, `.cursor/`, and `.agents/`, where installed skills legitimately name the templates.
+After renames, identity verification **fails** while stale template identifiers remain outside preserved paths.
 
 ## Dependencies and setup
 
@@ -76,6 +77,18 @@ In the new project root, run the template's `pnpm setup` (installs curated **tec
 ## Baseline product documentation
 
 Write `PRODUCT.md`, `DESIGN.md`, `ARCHITECTURE.md`, and `GLOSSARY.md` for **this product** using `buildBaselineDocs` from `lib/baseline-docs.mjs`. Record template name, commit SHA, derived slug/host, and the template route shell. Do not copy Flow's mission, tagline, or principles from flow-skills. If `pnpm qa` reports formatting issues on those files, run the project's formatter (for example `pnpm exec oxfmt --write` on the new root docs) before re-running checks.
+
+## Bootstrap order
+
+Everything shares one tree, so run independent steps as concurrent processes, not workers, in five stages; each stage waits for the previous one:
+
+1. The identity renames.
+2. `pnpm setup` alongside the baseline docs.
+3. qa, eval, identity scan, and build.
+4. The dev server (portless_startup).
+5. The HTTP smoke checks and the Operator fail-closed check.
+
+Run gitignore_artifacts in any stage after setup. When the host cannot run processes concurrently, run the same steps in this order and say so.
 
 ## Verification (required before success)
 
@@ -101,7 +114,7 @@ If any **essential** check **failed**, report the blocker and do **not** claim a
 
 ## Flow block
 
-Once every essential check passes, write the project's Flow block into `AGENTS.md` (or `CLAUDE.md` when that is the only instruction file) in the format the `flow` skill defines for "set up Flow here", with `Process:` set to the confirmed depth, so the initial commit includes it. Touch nothing outside its markers. When `flow` is not installed, skip the block and say so.
+Once every essential check passes, write the project's Flow block with the `flow` skill's `lib/flow-block.mjs`: pass the project's absolute path, the confirmed delivery (`local` or `pull-request`), and `--process <lite|full>`, so both lines are filled and the initial commit includes the block. Touch nothing outside its markers. When `flow` is not installed, skip the block and say so.
 
 ## Initial commit
 
@@ -121,4 +134,4 @@ Do not use `--no-verify`. Do not push or deploy unless explicitly authorized.
 
 ## Completion
 
-Report template and template commit SHA, destination path, preserved and skipped files, renamed slug and Portless host, files created or updated, whether the Flow block was written and its process depth, each verification check, initial commit SHA (if created), and blockers. Report the bootstrap lane when it finishes, without interrupting an open exploration question.
+Report template and template commit SHA, destination path, preserved and skipped files, renamed slug and Portless host, files created or updated, whether the Flow block was written with its delivery mode and process depth, each verification check, initial commit SHA (if created), and blockers. Report the bootstrap lane when it finishes, without interrupting an open exploration question.

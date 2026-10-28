@@ -1,0 +1,5 @@
+interface:
+  display_name: ""
+  short_description: "Conduct a retrospective on a coding session, then propose many improvements."
+policy:
+  allow_implicit_invocation: true

@@ -18,7 +18,7 @@ Work from the conversation. If the user passes a spec path, issue number, or URL
 
 ### 2. Explore the codebase (optional)
 
-When you have not already explored the codebase, do so to see the current state. Task titles and descriptions should use the project glossary and respect decision records in the area you touch.
+When you have not already explored the codebase, do so to see the current state: one read-only explorer per area the work touches, launched together (fan-out rule: `write-agents` Workers). Task titles and descriptions should use the project glossary and respect decision records in the area you touch.
 
 Look for prefactors that make the implementation easier: make the change easy, then make the easy change.
 
@@ -35,19 +35,21 @@ Break the work into vertical-slice tasks.
 
 </vertical-slice-rules>
 
-Give each task its **blocking edges**: other tasks that must finish before it can start. An edge needs a real reason: the tasks edit the same files, or one uses what the other builds. Topic order is not a reason; tasks that touch different files and share only the spec have no blockers, so the frontier stays wide. A task with no blockers can start immediately.
+Give each task an **area**: the package or directory it changes, coarse and never a file path. Overlapping areas need no blocking edge; `build` schedules by area.
+
+Give each task its **blocking edges**: other tasks that must finish before it can start. An edge needs a real data or file dependency: one task uses what the other builds, or both must change the same file in order. Topic order is not a reason; prefer a wide frontier, where tasks that share only the spec have no blockers. A task with no blockers can start immediately.
 
 **Wide refactors are the exception to vertical slicing.** A **wide refactor** is one mechanical change (rename a column, retype a shared symbol) whose **affected scope** spans the codebase, so one edit breaks many call sites and no vertical slice can land green. Sequence it as **expand–contract**. Expand: add the new form beside the old so nothing breaks. Migrate call sites in batches sized by impact (per package or directory), each batch its own task blocked by the expand, keeping CI green because the old form still exists. Contract: remove the old form once no caller remains, in a task blocked by every migrate batch. When batches cannot stay green alone, they may share an integration branch and a final integrate-and-verify task; green is promised only there.
 
 ### 4. Check the breakdown
 
-Show the proposed tasks, what each delivers, real dependencies, and where they will be recorded. Resolve only consequential scope or sequencing uncertainty. "Break it down" authorizes recording them; opening the sub-issues needs no separate yes.
+Show the proposed tasks, what each delivers, their areas, real dependencies, and where they will be recorded. Resolve only consequential scope or sequencing uncertainty. "Break it down" authorizes recording them; opening the sub-issues needs no separate yes.
 
 ### 5. Record
 
-Choose by the delivery mode: the `Delivery:` line in the project's Flow block, or when unset, the mode `build` would infer (say which).
+Choose by the delivery mode: the `Delivery:` line in the project's Flow block. When it is unset or there is no block, ask before recording anything, as `build`'s Delivery mode section describes; a request that names a mode answers it.
 
-- **Pull-request mode:** open each task as a sub-issue of the spec issue (the spec's `Issue:` line names it) using the issue template below, with native blocking links, for example `gh issue create --parent <spec#> --blocked-by <n,...>`. Without sub-issue or dependency support, start the body with plain `Part of #N` and `Blocked by #a, #b` lines. Use another tracker only when the project already uses one. On a public repository, the report says the issues are public. Without GitHub access, or when the spec has no `Issue:` line, record the checklist without issue numbers and say so.
+- **Pull-request mode:** open each task as a sub-issue of the spec issue (the spec's `Issue:` line names it) using the issue template below. Open them in parallel, since none needs another's number, then add each task's blocking links once every number exists, for example `gh issue create --parent <spec#>` followed by native blocked-by links. Without sub-issue or dependency support, start the body with plain `Part of #N` and `Blocked by #a, #b` lines. Use another tracker only when the project already uses one. On a public repository, the report says the issues are public. Without GitHub access, or when the spec has no `Issue:` line, record the checklist without issue numbers and say so. If publishing stops partway, report which issues were created and which were not; on a retry, match existing sub-issues by title and open only the missing ones, never re-creating a task.
 - **Local mode:** no issues. Below the checklist, detail each task with the local task template.
 
 In both modes, write the spec's Tasks section as a checklist, one line per task: `- [ ] NN: Title (#N)`, without the issue number in local mode. Without a spec, write one with `to-spec` first, or return the tasks as a local draft and say so. In pull-request mode, then re-sync the spec issue body as `to-spec` describes. Do not introduce a `.scratch/` task system or new labels.
@@ -68,6 +70,8 @@ End by naming where the tasks live and the ready set, then wait for "build it". 
 
 **What to build:** the end-to-end behaviour this task makes work, from the user's perspective, not a layer-by-layer implementation list.
 
+**Area:** the package or directory this task changes, never a file path.
+
 **Blocked by:** the numbers or titles of tasks that gate this one, or "None (can start immediately)".
 
 **Status:** planned (`build` sets `done` as the task integrates)
@@ -84,6 +88,8 @@ End by naming where the tasks live and the ready set, then wait for "build it". 
 A link to the spec this task belongs to, so `ship` can resolve it (omit only when the task belongs to no spec).
 
 ## What to build
+
+Area: the package or directory this task changes, never a file path.
 
 The end-to-end behaviour this task makes work, from the user's perspective, not layer-by-layer implementation.
 
