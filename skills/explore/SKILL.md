@@ -6,14 +6,35 @@ disable-model-invocation: false
 
 # Explore
 
-Read supplied briefs, conversation, canonical product documents, and relevant code before asking questions. Recover facts with available tools; ask only for choices or missing information you cannot infer.
+Explore is the discovery lane for new products and for features inside an existing product. Read supplied briefs, conversation, canonical product documents, and relevant code before asking anything. Recover facts with available tools; ask only for choices or missing information you cannot infer.
 
-Classify the work (new product, existing product change, or internal improvement) and choose proportionate discovery. A small fix does not need a full product interview.
+## Propose a depth
 
-Map users, jobs to be done, constraints, risks, and open questions. Distinguish accepted decisions from proposals. Separate missing product information from implementation detail that can remain undecided.
+Classify the work (new product, feature, or fix) and propose one tier with a one-line reason. The user confirms or overrides. Prefer the lighter tier when unsure; propose stepping up mid-session only when evidence warrants it.
 
-Optional supporting skills may help when the user asks for that kind of work: `interview` when the user's intent is still unclear, `jtbd` for customer jobs, `competitors` for alternatives, `grill` for focused challenge, `domain-modeling` when shared vocabulary needs refinement, `to-spec` for a written increment, `to-tasks` for a task breakdown. Missing optional skills must not block exploration.
+- **Skip:** fixes and clear small changes. No questions, no writes; hand back to the requested work.
+- **Lite** (default for new work): confirmed intent, the riskiest assumption, a kill criterion, one main metric ("unknown, measure first" is acceptable), 1–3 core journeys in one line each, and three alternatives including the status quo.
+- **Full** (opt-in): Lite plus a pre-mortem, `jtbd`, a `competitors` report, 2–3 solution approaches including a minimal one, and saved research (below).
 
-Stop when the problem, intended outcome, and next useful activity are clear enough for the requested work. Return a concise summary: known facts, unresolved assumptions, recommended next activity, and whether implementation is still unauthorized.
+## Extract, then challenge
+
+Follow the `interview` pattern, including its question forms, until you can predict the user's next three answers. Restate intent and get an explicit yes before any challenge. When the user confirms, end the turn as `interview` does, but name the grill as the next step and start it on their reply; that yes confirms intent only and authorizes no write. Then follow `grill` on the riskiest claims only; at Full depth, include its pre-mortem. If a supporting skill is missing, apply the same order directly.
+
+## Outcome and write gate
+
+End in one outcome: **brief** (`grill`'s resolved direction), **clearer**, or **killed**. All three are valid; clearer and killed write nothing.
+
+For a brief, show the exact text before writing:
+
+- **New product:** the full `PRODUCT.md` brief: problem, who, why now, riskiest assumptions with confidence, main metric and kill criterion, core journeys (one line each; steps belong in `DESIGN.md`), alternatives, out of scope.
+- **Feature:** a diff of durable product facts only (a new user, journey, or metric). When the project has no `PRODUCT.md`, propose creating it with those facts. Feature detail flows to `to-spec`, not `PRODUCT.md`.
+
+Label unproven items as hypotheses with a confidence. An explicit yes to the shown text authorizes that write in the same turn; anything else is not a yes. Never write drafts before confirmation.
+
+At Full depth, or whenever real web research happened, save findings with sources and limits to `docs/research/YYYY-MM-DD-topic.md`. Never save transcripts.
+
+## Spec-ready
+
+Report spec-ready when intent is confirmed, the riskiest assumption and kill criterion are named, and the brief or diff is written or declined; a clearer outcome is spec-ready once its sharpened intent is restated. Otherwise say what is missing. Close with known facts, open assumptions, how many marked guesses were accepted unchanged, and the next activity (for example `to-spec`). Missing optional skills must not block exploration.
 
 Discussion and exploration do not authorize implementation.

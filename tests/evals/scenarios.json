@@ -343,6 +343,90 @@
         "verified_second_host": "not_executed"
       },
       "claimsLiveRun": false
+    },
+    {
+      "id": "E16",
+      "skills": [
+        "explore"
+      ],
+      "behavior": "Fix request proposes Skip with a one-line reason and writes nothing",
+      "taskFile": "tests/evals/tasks/E16-task.md",
+      "rubricFile": "tests/evals/rubrics/E16-rubric.md",
+      "skillReferences": [
+        "skills/explore/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E17",
+      "skills": [
+        "explore"
+      ],
+      "behavior": "New product proposes Lite and extracts intent before challenging",
+      "taskFile": "tests/evals/tasks/E17-task.md",
+      "rubricFile": "tests/evals/rubrics/E17-rubric.md",
+      "skillReferences": [
+        "skills/explore/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E18",
+      "skills": [
+        "explore"
+      ],
+      "behavior": "Killed outcome writes nothing",
+      "taskFile": "tests/evals/tasks/E18-task.md",
+      "rubricFile": "tests/evals/rubrics/E18-rubric.md",
+      "skillReferences": [
+        "skills/explore/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E19",
+      "skills": [
+        "explore"
+      ],
+      "behavior": "Feature exploration shows a diff limited to durable product facts",
+      "taskFile": "tests/evals/tasks/E19-task.md",
+      "rubricFile": "tests/evals/rubrics/E19-rubric.md",
+      "skillReferences": [
+        "skills/explore/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
     }
   ]
 }
