@@ -102,7 +102,7 @@ The short phrase a user says, typed or dictated, to reach a Flow skill, such as 
 
 ## Decision record
 
-A numbered document under `docs/decisions/` that preserves the context, decision, and rationale for a significant choice. Accepted records are historical evidence; superseding or amending creates a new record and, once accepted, adds only a back-pointer to the old record's Status line. Current product, design, and architecture documents reflect the accepted position today.
+A numbered document under `docs/decisions/` that preserves the context, decision, and rationale for a significant choice. Accepted records are historical evidence; superseding or amending creates a new record and, once accepted, adds only a back-pointer to the old record's Status line and index row. Current product, design, and architecture documents reflect the accepted position today.
 
 ## Specification
 
