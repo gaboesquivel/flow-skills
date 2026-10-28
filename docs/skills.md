@@ -89,7 +89,7 @@ Code simplification, security audits, and performance work belong to host tools 
 
 | Skill | Say | When to use |
 | --- | --- | --- |
-| [start](../skills/start/SKILL.md) | "start a Next.js project" | Confirm template, name, destination, and delivery (local when no GitHub repository is created), then initialize from flow-next or flow-mono (rename identity, setup, baseline root docs, the Flow block in the tracked instruction file with any `@AGENTS.md` import, then format every written and renamed file and run the QA, eval, build, and startup checks after that last write; one independent initial commit holding both when verification passes, so it passes the project's lint ([spec 026](specs/026-clean-baseline-and-worktrees.md))) while `explore` shapes the product. "Set up Flow here" plus a template bootstrap. |
+| [start](../skills/start/SKILL.md) | "start a Next.js project" | Confirm template, name, destination, and delivery (local when no GitHub repository is created), then initialize from flow-next or flow-mono (rename identity, setup, baseline root docs, the Flow block in the tracked instruction file with any `@AGENTS.md` import, then format every written and renamed file and run the QA, eval, build, and startup checks after that last write; one independent initial commit holding the docs, the block, and the import when verification passes, so it passes the project's lint ([spec 026](specs/026-clean-baseline-and-worktrees.md))) while `explore` shapes the product. "Set up Flow here" plus a template bootstrap. |
 
 ## Misc
 

@@ -66,11 +66,11 @@ A file the project's instructions tell every session to append to, such as a pro
 
 ## Area
 
-A task's `Area:` line: every package or directory it changes, comma-separated when there are several (such as `lib/feedback/connect, app/opportunities`), coarse and never a file path. [`to-tasks`](skills/to-tasks/SKILL.md) assigns it; [`build`](skills/build/SKILL.md#task-set) runs tasks whose listed areas intersect one after another, and checks that concurrent tasks changed no file in common before integrating. [Decision 0031](docs/decisions/0031-fan-out-by-default.md); [spec 026](docs/specs/026-clean-baseline-and-worktrees.md).
+A task's `Area:` line: every package or directory it changes, comma-separated when there are several (such as `lib/feedback/connect, app/opportunities`), coarse and never a file path. [`to-tasks`](skills/to-tasks/SKILL.md) assigns it; [`build`](skills/build/SKILL.md#task-set) schedules by it. [Decision 0031](docs/decisions/0031-fan-out-by-default.md); [spec 026](docs/specs/026-clean-baseline-and-worktrees.md).
 
 ## Baseline failure
 
-A check that already fails on a spec's head before any task runs, or a later batch failure that bisect traces to no task. [`build`](skills/build/SKILL.md#task-set) runs the full local check suite on the spec head before the first [frontier](#frontier); on a baseline failure it stops with a report naming the failing checks, starts no workers, and leaves the spec branch unchanged. It never sends one to a worker. [Spec 026](docs/specs/026-clean-baseline-and-worktrees.md).
+A check that already fails on a spec's head before any task runs, or a later batch failure that bisect traces to no task. [`build`](skills/build/SKILL.md#task-set) stops on it before starting workers. [Spec 026](docs/specs/026-clean-baseline-and-worktrees.md).
 
 ## Frontier
 
