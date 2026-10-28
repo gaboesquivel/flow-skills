@@ -165,16 +165,16 @@ export function readSnapshot(repoRoot, { github = null } = {}) {
   const { overlay, overlayError } = readOverlay(overlayPath(repoRoot))
   const runBranch = typeof overlay?.run?.branch === 'string' ? overlay.run.branch : null
   const claimed = (name) => slugs.some((slug) => matchBranches(slug, [{ name }]).length) || (runBranch !== null && branchNamed(name, runBranch))
-  // An unset Delivery line reads as pull-request mode, except in a repository with no remote, where nothing can open one.
+  // An unset Delivery line reads as GitHub mode, except in a repository with no remote, where nothing can open a pull request.
   const delivery = readDelivery(readBlobs(repoRoot, ['AGENTS.md', 'CLAUDE.md'].map((file) => `${defaultRef}:${file}`)))
     ?? (tryGit(repoRoot, ['remote']) ? null : 'local')
   let githubData = null
   if (github && delivery !== 'local') {
     githubData = github(repoRoot) ?? null
-    // Without a GitHub remote, enrichment is only worth a note when the project says it uses pull requests.
-    if (githubData?.reason === 'no GitHub remote' && delivery !== 'pull-request') githubData = null
+    // Without a GitHub remote, enrichment is only worth a note when the project says it uses GitHub mode.
+    if (githubData?.reason === 'no GitHub remote' && delivery !== 'github') githubData = null
   }
-  // Pull-request mode comes from delivery (unset counts as pull-request, like build), never from GitHub
+  // GitHub mode comes from delivery (unset counts as github, like build), never from GitHub
   // availability: there an open branch counts as Building only with implementation work.
   const prMode = delivery !== 'local'
   for (const branch of branches) {
@@ -240,7 +240,8 @@ const pad = (value, width) => {
 export function recordRunStart({ spec, branch, mode, tasks = [], now = new Date().toISOString() }) {
   if (!/^\d{1,3}$/u.test(String(spec ?? ''))) throw new Error('--spec must be a spec number, for example 012')
   if (!branch) throw new Error('--branch is required for run-start')
-  if (mode !== 'local' && mode !== 'pull-request') throw new Error('--mode must be local or pull-request')
+  if (mode === 'pull-request') mode = 'github' // legacy value (decision 0037)
+  if (mode !== 'local' && mode !== 'github') throw new Error('--mode must be local or github')
   const ids = tasks.map((id) => pad(id, 2))
   if (!ids.length || ids.some((id) => !/^\d+$/u.test(id))) throw new Error('--tasks must list task numbers, for example 01,02,03')
   return {
@@ -371,7 +372,7 @@ export function readDelivery(texts) {
     const block = /<!-- BEGIN FLOW -->([\s\S]*?)<!-- END FLOW -->/u.exec(text)?.[1]
     const value = block && /^Delivery:[ \t]*(.*)$/imu.exec(block)?.[1].trim().toLowerCase().replace(/[\s_]+/gu, '-')
     if (!value) continue
-    if (value === 'pr' || value === 'pullrequest' || value === 'pull-request') return 'pull-request'
+    if (['pr', 'pullrequest', 'pull-request', 'pull-requests', 'github'].includes(value)) return 'github'
     return value === 'local' ? 'local' : null
   }
   return null
@@ -663,7 +664,7 @@ function stageFor({ status, tasks, branches, liveRun, prMode }) {
   // A merge ships only implementation work (`implementation`: changes outside docs/), never a candidate.
   const merged = branches.find((b) => b.merged && b.implementation)
   if (merged && tasksComplete && status !== 'candidate') return { stage: 'shipped', reason: merged.pr ? `pull request #${merged.pr} merged` : `branch ${merged.name} merged`, branch: merged }
-  // In pull-request mode a pushed spec branch alone is not Building: it needs implementation work.
+  // In GitHub mode a pushed spec branch alone is not Building: it needs implementation work.
   const open = branches.find((b) => !b.merged && (!prMode || b.implementation))
   if (liveRun) return { stage: 'building', reason: 'build run', branch: liveRun.branch ? { name: liveRun.branch } : open ?? null }
   if (open) return { stage: 'building', reason: `branch ${open.name}`, branch: open }
@@ -744,7 +745,7 @@ export function deriveBoard(snapshot) {
     if (!byNumber.has(number)) byNumber.set(number, { spec, collisions: [] })
     else byNumber.get(number).collisions.push(spec)
   }
-  // Pull-request mode follows delivery alone (unset counts as pull-request); GitHub data only adds links,
+  // GitHub mode follows delivery alone (unset counts as github); GitHub data only adds links,
   // labels, and candidate issues, so warm-up, unauthenticated gh, and --no-github stage the same way.
   const prMode = snapshot.delivery !== 'local'
   const dropped = []
@@ -1133,7 +1134,7 @@ async function stopServer(repoRoot, port) {
  */
 export async function main(argv = process.argv.slice(2), { lockWaitMs, error: report = console.error } = {}) {
   const usage = 'Usage: board.mjs --serve [--port <n>] [--repo <path>] [--no-github] | --stop [--port <n>] [--repo <path>] | --once [--out <file>] [--repo <path>] [--no-github] | --json [--repo <path>] [--no-github]'
-    + ' | --record run-start --spec <NNN> --branch <name> --mode local|pull-request --tasks <01,02> | --record task --task <NN[,NN…]> --state <state> [--round <n>] [--note <text>] | --record run-end'
+    + ' | --record run-start --spec <NNN> --branch <name> --mode local|github --tasks <01,02> | --record task --task <NN[,NN…]> --state <state> [--round <n>] [--note <text>] | --record run-end'
   let args
   try { args = parseArgs(argv) } catch (error) { report(`${error.message}\n${usage}`); return 2 }
   if (!args.once && !args.json && !args.serve && !args.stop && args.record === null) { report(usage); return 2 }

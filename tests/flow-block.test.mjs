@@ -34,7 +34,7 @@ test('upsert appends once, then updates in place without touching outside text',
 test('re-running keeps a recorded delivery mode unless overridden', () => {
   const local = upsertFlowBlock('', { delivery: 'local' })
   assert.equal(readDelivery(upsertFlowBlock(local)), 'local')
-  assert.equal(readDelivery(upsertFlowBlock(local, { delivery: 'pull-request' })), 'pull-request')
+  assert.equal(readDelivery(upsertFlowBlock(local, { delivery: 'github' })), 'github')
   assert.equal(readDelivery('no block here'), null)
 })
 
@@ -76,10 +76,20 @@ test('CRLF files keep CRLF line endings', () => {
 test('Delivery is read case-insensitively and normalized', () => {
   const block = (line) => `${BEGIN}\n${line}\n${END}\n`
   assert.equal(readDelivery(block('delivery: LOCAL')), 'local')
-  assert.equal(readDelivery(block('Delivery: Pull Request')), 'pull-request')
-  assert.equal(readDelivery(block('DELIVERY: pull_request')), 'pull-request')
+  assert.equal(readDelivery(block('Delivery: GitHub')), 'github')
+  assert.equal(readDelivery(block('Delivery: unset')), null)
+  assert.equal(readDelivery(block('Delivery: bogus')), null)
   assert.equal(readDelivery(block('Delivery: unset')), null)
   assert.match(upsertFlowBlock(block('delivery: Local')), /^Delivery: local$/mu)
+})
+
+test('legacy pull-request values read as github and are rewritten as github (decision 0037)', () => {
+  const block = (line) => `${BEGIN}\n${line}\n${END}\n`
+  for (const legacy of ['pull-request', 'Pull Request', 'pull_request', 'pull requests', 'PR', 'pullrequest']) {
+    assert.equal(readDelivery(block(`Delivery: ${legacy}`)), 'github', legacy)
+    assert.match(upsertFlowBlock(block(`Delivery: ${legacy}`)), /^Delivery: github$/mu, legacy)
+  }
+  assert.equal(readDelivery(upsertFlowBlock('', { delivery: 'pull-request' })), 'github')
 })
 
 test('writes AGENTS.md, or CLAUDE.md when it is the only instruction file', (t) => {
@@ -89,9 +99,9 @@ test('writes AGENTS.md, or CLAUDE.md when it is the only instruction file', (t) 
   assert.equal(writeFlowBlock(dir).file, join(dir, 'CLAUDE.md'))
   assert.equal(writeFlowBlock(dir).changed, false)
   writeFileSync(join(dir, 'AGENTS.md'), '# Agents\n')
-  const { file } = writeFlowBlock(dir, { delivery: 'pull-request' })
+  const { file } = writeFlowBlock(dir, { delivery: 'github' })
   assert.equal(file, join(dir, 'AGENTS.md'))
-  assert.equal(readDelivery(readFileSync(file, 'utf8')), 'pull-request')
+  assert.equal(readDelivery(readFileSync(file, 'utf8')), 'github')
 })
 
 const git = (cwd, ...args) => {
@@ -142,7 +152,7 @@ test('an ignored AGENTS.md that is not generated yet still gets the import', (t)
 test('with no instruction file the block goes in a new CLAUDE.md', (t) => {
   const dir = repo(t)
   assert.equal(instructionFile(dir), join(dir, 'CLAUDE.md'))
-  writeFlowBlock(dir, { delivery: 'pull-request' })
+  writeFlowBlock(dir, { delivery: 'github' })
   assert.equal(ensureImport(dir).changed, false)
   assert.equal(existsSync(join(dir, 'AGENTS.md')), false)
   assert.deepEqual(describeLayout(dir), { blockFile: 'CLAUDE.md', tracked: true, imports: [] })
@@ -165,13 +175,13 @@ test('a stale block in an ignored AGENTS.md moves to CLAUDE.md with its delivery
   const agents = readFileSync(join(dir, 'AGENTS.md'), 'utf8')
   assert.equal(agents, '# Generated\n\nKeep this.\n\n## After\n')
   assert.equal(writeFlowBlock(dir).migrated, null)
-  assert.equal(writeFlowBlock(dir, { delivery: 'pull-request' }).changed, true)
+  assert.equal(writeFlowBlock(dir, { delivery: 'github' }).changed, true)
 })
 
 test('a named delivery wins over the migrated one', (t) => {
   const dir = repo(t, { '.gitignore': 'AGENTS.md\n', 'AGENTS.md': upsertFlowBlock('', { delivery: 'local' }) })
-  writeFlowBlock(dir, { delivery: 'pull-request' })
-  assert.equal(readDelivery(readFileSync(join(dir, 'CLAUDE.md'), 'utf8')), 'pull-request')
+  writeFlowBlock(dir, { delivery: 'github' })
+  assert.equal(readDelivery(readFileSync(join(dir, 'CLAUDE.md'), 'utf8')), 'github')
   assert.equal(readFileSync(join(dir, 'AGENTS.md'), 'utf8'), '')
 })
 

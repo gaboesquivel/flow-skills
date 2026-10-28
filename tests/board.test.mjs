@@ -232,7 +232,7 @@ test('empty branch cut from an older default commit is not merged', () => withRe
   const snap = readSnapshot(dir)
   assert.equal(snap.branches.find((b) => b.name === 'feat/old-branch').merged, false)
   assert.equal(stageOf(deriveBoard({ ...snap, delivery: 'local' }), '001'), 'building', 'local mode counts the open branch')
-  assert.equal(stageOf(deriveBoard(snap), '001'), 'specced', 'unset delivery is pull-request mode: no implementation work')
+  assert.equal(stageOf(deriveBoard(snap), '001'), 'specced', 'unset delivery is GitHub mode: no implementation work')
 }))
 
 test('merged branch ships only when tasks are done; card branch is the one the rule used', () => withRepo(async ({ dir, git, write, commit }) => {
@@ -646,7 +646,7 @@ test('githubReader caches per repository for its TTL', () => withRepo(async ({ d
 }))
 
 test('readSnapshot: delivery mode gates GitHub; merged pull request with code ships a squash merge later edited', () => withRepo(async ({ dir, git, write, commit }) => {
-  writeFileSync(join(dir, 'AGENTS.md'), '# A\n\n<!-- BEGIN FLOW -->\nDelivery: pull-request\n<!-- END FLOW -->\n')
+  writeFileSync(join(dir, 'AGENTS.md'), '# A\n\n<!-- BEGIN FLOW -->\nDelivery: github\n<!-- END FLOW -->\n')
   write('020-widget.md', spec('020: Widget', 'draft'))
   await commit('spec')
   await git('switch', '--quiet', '-c', 'feat/widget')
@@ -673,7 +673,7 @@ test('readSnapshot: delivery mode gates GitHub; merged pull request with code sh
   assert.equal(readSnapshot(dir, { github: reader }).github, null)
   assert.equal(runs, 0, 'local mode never calls GitHub')
 
-  writeFileSync(join(dir, 'AGENTS.md'), '# A\n\n<!-- BEGIN FLOW -->\nDelivery: pull-request\n<!-- END FLOW -->\n')
+  writeFileSync(join(dir, 'AGENTS.md'), '# A\n\n<!-- BEGIN FLOW -->\nDelivery: github\n<!-- END FLOW -->\n')
   await commit('pr mode')
   const offline = deriveBoard(readSnapshot(dir, { github: githubReader({ run: () => { throw new Error('must not run') } }) }))
   assert.equal(offline.githubNote, 'GitHub links unavailable: no GitHub remote')
@@ -816,8 +816,9 @@ test('GitHub note: list limits and stale data after a failed refresh', () => wit
 test('readDelivery agrees with the flow skill on Flow block inputs', () => {
   const block = (line) => `# A\n\n<!-- BEGIN FLOW -->\n## Flow\n\n${line}\n<!-- END FLOW -->\n`
   const inputs = ['# No block\n', block('Delivery: local'), block('Delivery: Local'), block('Delivery: pull-request'), block('Delivery: pull request'),
-    block('Delivery: pull_request'), block('Delivery: PR'), block('Delivery: pullrequest'), block('Delivery: unset'), block('Delivery:'), block('Delivery: bogus'), block('No delivery line')]
+    block('Delivery: pull_request'), block('Delivery: PR'), block('Delivery: pullrequest'), block('Delivery: pull requests'), block('Delivery: github'), block('Delivery: GitHub'), block('Delivery: unset'), block('Delivery:'), block('Delivery: bogus'), block('No delivery line')]
   for (const text of inputs) assert.equal(readDelivery([text]), flowReadDelivery(text), text)
+  assert.equal(readDelivery([block('Delivery: pull-request')]), 'github', 'legacy value reads as github (decision 0037)')
 })
 
 test('readSnapshot: merged pull requests stage only into the default branch, with a local merge commit, after the spec', () => withRepo(async ({ dir, git, write, commit }) => {
@@ -848,7 +849,7 @@ test('readSnapshot: merged pull requests stage only into the default branch, wit
 
 test('--no-github never runs gh', () => withRepo(async ({ dir, git, write, commit }) => {
   write('001-a.md', spec('001: A', 'draft'))
-  writeFileSync(join(dir, 'AGENTS.md'), '<!-- BEGIN FLOW -->\nDelivery: pull-request\n<!-- END FLOW -->\n')
+  writeFileSync(join(dir, 'AGENTS.md'), '<!-- BEGIN FLOW -->\nDelivery: github\n<!-- END FLOW -->\n')
   await commit('spec')
   await git('remote', 'add', 'origin', 'https://github.com/o/r.git')
   const bin = join(dir, '.git', 'fake-bin')
@@ -990,10 +991,10 @@ test('run overlay: invalid or foreign overlays become a header note, never a cra
 }))
 
 test('recorder: pure updates set states, rounds, notes, and timestamps', () => {
-  const start = recordRunStart({ spec: '12', branch: 'feat/x', mode: 'pull-request', tasks: ['1', '02', '03'], now: 't0' })
+  const start = recordRunStart({ spec: '12', branch: 'feat/x', mode: 'github', tasks: ['1', '02', '03'], now: 't0' })
   assert.deepEqual(start, {
     version: 1,
-    run: { spec: '012', branch: 'feat/x', mode: 'pull-request', startedAt: 't0', endedAt: null },
+    run: { spec: '012', branch: 'feat/x', mode: 'github', startedAt: 't0', endedAt: null },
     tasks: Object.fromEntries(['01', '02', '03'].map((id) => [id, { state: 'queued', round: 0, note: '', updatedAt: 't0' }])),
   })
   const working = recordTask(start, { task: '2', state: 'working', now: 't1' })
@@ -1104,11 +1105,11 @@ test('live server shows an overlay change on the next /state after the memo wind
   }
 })
 
-// Spec 018: spec issues, checklist tasks, candidate issues, labels, and dropped specs (pull-request mode).
+// Spec 018: spec issues, checklist tasks, candidate issues, labels, and dropped specs (GitHub mode).
 const withIssue = (content, number) => content.replace('(2026-10-28).', `(2026-10-28). Issue: [#${number}](https://github.com/o/r/issues/${number}).`)
 const ghIssue = (number, fields = {}) => ({ number, title: `Issue ${number}`, state: 'OPEN', labels: [], url: `https://github.com/o/r/issues/${number}`, ...fields })
 
-test('pull-request mode: an open branch alone is not Building; code, a ticked task, or a live run is', () => {
+test('GitHub mode: an open branch alone is not Building; code, a ticked task, or a live run is', () => {
   const specs = {
     '020-widget.md': spec('020: Widget', 'draft'),
     '021-gadget.md': spec('021: Gadget', 'accepted', '\n## Tasks\n\n- [ ] 01: One (#45)\n'),
@@ -1128,14 +1129,14 @@ test('pull-request mode: an open branch alone is not Building; code, a ticked ta
   assert.equal(cardOf(board, '020').branch, null, 'an uncounted branch is not the card branch')
   assert.equal(cardOf(board, '022').branch, 'feat/022-coded')
   const stages = (extra) => ['020', '021', '022', '023', '012'].map((n) => stageOf(deriveBoard({ ...snapshot(specs, branches), generatedAt: NOW, overlay, ...extra }), n))
-  for (const extra of [{}, { github: null }, { github: { available: false, reason: 'gh not authenticated' } }, { delivery: 'pull-request', github: null }]) {
+  for (const extra of [{}, { github: null }, { github: { available: false, reason: 'gh not authenticated' } }, { delivery: 'github', github: null }]) {
     assert.deepEqual(stages(extra), ['specced', 'ready', 'building', 'building', 'building'], `delivery decides, not GitHub data: ${JSON.stringify(extra)}`)
   }
   assert.equal(stageOf(deriveBoard({ ...snapshot(specs, branches), delivery: 'local' }), '020'), 'building', 'local mode: any open branch counts')
   assert.equal(stageOf(deriveBoard({ ...snapshot(specs, branches), delivery: 'local', github: github() }), '020'), 'building', 'local mode is unchanged with GitHub data')
 })
 
-test('readSnapshot: in pull-request mode open spec branches carry implementation from git', () => withRepo(async ({ dir, git, write, commit }) => {
+test('readSnapshot: in GitHub mode open spec branches carry implementation from git', () => withRepo(async ({ dir, git, write, commit }) => {
   await git('remote', 'add', 'origin', 'https://github.com/example/fixture.git')
   write('020-widget.md', spec('020: Widget', 'draft'))
   write('021-gadget.md', spec('021: Gadget', 'draft'))
@@ -1160,8 +1161,8 @@ test('readSnapshot: in pull-request mode open spec branches carry implementation
   assert.equal(stageOf(deriveBoard(noGh), '020'), 'specced', 'a docs-only pushed branch stays Specced without GitHub')
   assert.equal(stageOf(deriveBoard(readSnapshot(dir, { github: () => null })), '020'), 'specced', 'a null GitHub source changes nothing')
   writeFileSync(join(dir, 'AGENTS.md'), '<!-- BEGIN FLOW -->\nDelivery: pull-request\n<!-- END FLOW -->\n')
-  await commit('pull-request delivery')
-  assert.equal(stageOf(deriveBoard(readSnapshot(dir)), '020'), 'specced', 'Delivery: pull-request without GitHub')
+  await commit('legacy pull-request delivery')
+  assert.equal(stageOf(deriveBoard(readSnapshot(dir)), '020'), 'specced', 'legacy Delivery: pull-request reads as github, without GitHub data')
   writeFileSync(join(dir, 'AGENTS.md'), '<!-- BEGIN FLOW -->\nDelivery: local\n<!-- END FLOW -->\n')
   await commit('local delivery')
   const local = readSnapshot(dir)
@@ -1254,7 +1255,7 @@ test('run overlay: frontier task states, no wave numbers', () => {
   const board = deriveBoard({ ...snapshot({ '012-progress-board.md': content }), generatedAt: NOW, overlay: overlayOf('012', tasks) })
   assert.deepEqual(runTasksOf(board), [['01', 'Board', 'integrated', 1, ''], ['02', 'Live', 'running', 1, ''], ['03', 'Overlay', 'waiting', null, ''], ['04', 'Docs', 'blocked', 1, 'behind 02']])
   assert.doesNotMatch(renderHtml(board), /wave/iu)
-  const started = recordRunStart({ spec: '012', branch: 'feat/x', mode: 'pull-request', tasks: ['01'], now: NOW })
+  const started = recordRunStart({ spec: '012', branch: 'feat/x', mode: 'github', tasks: ['01'], now: NOW })
   assert.equal(recordTask(started, { task: '01', state: 'waiting', now: NOW }).tasks['01'].round, 0)
   assert.equal(recordTask(started, { task: '01', state: 'running', now: NOW }).tasks['01'].round, 1)
 })

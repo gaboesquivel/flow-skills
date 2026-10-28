@@ -32,9 +32,9 @@ When the user wants progress in chat rather than a page, run `--json` and summar
 
 A card shows the spec number, title, task progress (`done/total`, from `- [x] NN: Title (#45)` checklist items or `### NN: Title (#45)` headings in the Tasks section), and the branch that set its stage.
 
-**Pull-request mode** is every project whose Flow block does not say `Delivery: local` (an unset `Delivery` counts as pull-request, except in a repository with no remote, which counts as local). In this mode an open spec branch alone is not Building: it counts only when it changes something outside `docs/`. Otherwise a ticked task or a live `build` run moves the card; a draft stays in Specced, an accepted spec with tasks in Ready. This rule follows the delivery mode alone, so it holds without GitHub data and with `--no-github`.
+**GitHub mode** is every project whose Flow block does not say `Delivery: local` (`Delivery: github`; an unset `Delivery` counts as `github`, except in a repository with no remote, which counts as local). In this mode an open spec branch alone is not Building: it counts only when it changes something outside `docs/`. Otherwise a ticked task or a live `build` run moves the card; a draft stays in Specced, an accepted spec with tasks in Ready. This rule follows the delivery mode alone, so it holds without GitHub data and with `--no-github`.
 
-**GitHub links** (pull-request mode, when `gh` is installed and authenticated): cards also link the spec issue from the header's `Issue:` line, the task issues, and the pull request (head branch matches the slug, or its body closes the spec issue or a task issue), with each state in text. With GitHub data:
+**GitHub links** (GitHub mode, when `gh` is installed and authenticated): cards also link the spec issue from the header's `Issue:` line, the task issues, and the pull request (head branch matches the slug, or its body closes the spec issue or a task issue), with each state in text. With GitHub data:
 
 - An `accepted` label on the spec issue reads as status `accepted`.
 - An open issue labelled `candidate` that no spec's `Issue:` line names is a Candidate card numbered `#N`.
@@ -56,4 +56,4 @@ Report markers rather than fixing specs unasked.
 
 Limits: a merged branch ships a spec only when it changed something outside `docs/` and the spec's tasks are done. With GitHub links, a merged pull request counts the same way when its merge commit is in the local clone; a rebase merge is judged by its last commit only. Without them, fast-forward merges, and squash merges later edited on the default branch, may show as Building; a spec reads as Shipped for good once its `Status:` line says `implemented`, which `build` sets once an accepted spec's last task integrates (`ship` sets it if still missing). The board shows one `build` run per repository at a time: a new run start replaces the previous overlay.
 
-The script exits nonzero with a message when it is not inside a git repository or finds no default branch (`main`, `origin/HEAD`, `master`, or `init.defaultBranch`); report that message and the command you ran.
+The script exits nonzero with a message when it is not inside a git repository or finds no default branch (`main`, `origin/HEAD`, `master`, or `init.defaultBranch`); report that message and the command you ran; outside a repository, offer `git init` as `write-agents` [Repository](../write-agents/SKILL.md#repository) describes.
