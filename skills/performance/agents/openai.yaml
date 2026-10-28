@@ -1,5 +1,0 @@
-interface:
-  display_name: "Performance"
-  short_description: "Improve frontend, backend, and query performance"
-policy:
-  allow_implicit_invocation: false

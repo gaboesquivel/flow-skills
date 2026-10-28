@@ -1,5 +1,5 @@
 interface:
   display_name: "Interview"
-  short_description: "Customer discovery interviews"
+  short_description: "Extract what you actually want, one question at a time"
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

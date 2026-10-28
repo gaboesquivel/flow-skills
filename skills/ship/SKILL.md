@@ -1,18 +1,16 @@
 ---
 name: ship
-description: Verify, commit, push, and validate delivery using evidence from actual checks and configured deployment.
-disable-model-invocation: true
+description: Verify, commit, push, and check the configured deployment with evidence, confirming before pushing. Use when the user says "ship it", "commit and push", or "send it".
+disable-model-invocation: false
 ---
 
 # Ship
 
 ## Purpose
 
-Complete the current authorized development task through a bounded delivery pipeline.
+Complete the current authorized development task with evidence: test, fix, commit, push, deploy, verify.
 
-Test → Fix → Commit → Push → Deploy → Verify.
-
-The command authorizes ordinary commits and pushes of the current intended task, subject to repository permissions and existing release safeguards.
+Asking to ship authorizes ordinary commits and pushes of the current intended task, subject to repository permissions, existing release safeguards, and the confirmation below. Requests often arrive by voice, so confirm what you heard before anything leaves the machine.
 
 It does not authorize destructive Git operations, security bypasses, or unrelated changes.
 
@@ -78,6 +76,8 @@ Do not amend or rewrite unrelated commits.
 
 ## Push
 
+Before pushing, state the branch, remote, commit SHA, and a one-line summary of what will be pushed. Wait for an explicit yes. Silence or an ambiguous reply is not a yes.
+
 Push the authorized current branch to its intended remote.
 
 Respect branch protection.
@@ -94,7 +94,9 @@ If the remote cannot be safely determined, stop and report the required decision
 
 Determine whether a deployment is expected for the pushed commit.
 
-Use the project's existing integration (for example Vercel CLI, GitHub Actions, or documented release scripts) when available.
+Defer to the platform's own deploy skill or configuration when one is present (for example `deploy-to-vercel`, GitHub Actions, or documented release scripts) rather than restating platform steps here.
+
+Deploy a preview, not production, unless the user explicitly asks for production.
 
 Identify the deployment associated with the actual commit SHA.
 

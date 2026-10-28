@@ -2,4 +2,4 @@ interface:
   display_name: "Review"
   short_description: "Review a diff on standards and spec"
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

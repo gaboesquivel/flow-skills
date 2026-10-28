@@ -1,7 +1,7 @@
 ---
 name: domain-modeling
-description: Refine project terminology and capture resolved meanings in GLOSSARY.md; offer decision records sparingly.
-disable-model-invocation: true
+description: Refine project terminology and record resolved meanings in GLOSSARY.md; offer decision records sparingly. Use when the user says "what do we call this", "define this term", or "update the glossary".
+disable-model-invocation: false
 ---
 
 # Domain Modeling

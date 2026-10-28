@@ -1,15 +1,15 @@
 # Skill catalog
 
-Twenty-four skills in [`skills/`](../skills/). Install with `npx skills add gaboesquivel/flow-skills`. No workflow router and no mandatory sequence.
+Skills live in [`skills/`](../skills/); `scripts/validate.mjs` holds the authoritative list. Install with `npx skills add gaboesquivel/flow-skills`. No workflow router and no mandatory sequence.
 
-[Agent compatibility](agent-compatibility.md) · [Decision 0006](decisions/0006-flow-lite-and-flat-docs.md) · [Decision 0008](decisions/0008-leading-words-and-visual-summaries.md) · [Decision 0009](decisions/0009-adopter-product-context.md) · [Decision 0013](decisions/0013-restore-engineering-skills.md) · [Decision 0014](decisions/0014-handoff-skill.md) · [Decision 0015](decisions/0015-tasks-and-domain-modeling.md) · [Spec 002](specs/002-flow-lite-and-flat-docs.md) · [Spec 008](specs/008-tasks-and-domain-modeling.md)
+[Agent compatibility](agent-compatibility.md) · [Decision 0006](decisions/0006-flow-lite-and-flat-docs.md) · [Decision 0009](decisions/0009-adopter-product-context.md) · [Decision 0015](decisions/0015-tasks-and-domain-modeling.md) · [Decision 0018](decisions/0018-interview-extracts-intent.md) · [Decision 0019](decisions/0019-voice-first-invocation.md) · [Spec 002](specs/002-flow-lite-and-flat-docs.md) · [Spec 008](specs/008-tasks-and-domain-modeling.md)
 
-Each skill has one [leading word](../GLOSSARY.md#leading-word): a compact behavior anchor already used in that skill. The words are not a second catalog and not an invocation order.
+Talk to your agent, by typing or dictation. Each skill has a [leading word](../GLOSSARY.md#leading-word): the phrase you say to reach it. The first phrase is listed below; each skill's description carries two or three variants. Slash commands (`/interview`, `/ship`, …) remain optional shortcuts. Only `start` must be named explicitly.
 
 ## Process
 
 1. **Install** — Agent Skills CLI copies this repository’s `skills/` tree into the agent you choose.
-2. **Work** — Build your product; use **`flow`** when root docs need alignment, or invoke any other skill explicitly.
+2. **Work** — Build your product and say what you want; "update the docs" aligns root context with **`flow`**.
 3. **Document** — When saving artifacts, default to `docs/specs/NNN-short-name.md` and `docs/decisions/NNN-short-name.md` unless the project already uses something else.
 
 Optional skills (every step skippable; no required order):
@@ -18,7 +18,7 @@ Optional skills (every step skippable; no required order):
 flowchart LR
   subgraph delivery["Delivery skills — invoke any subset; no fixed order"]
     direction TB
-    explore ~~~ grill ~~~ toSpec[to-spec]
+    explore ~~~ interview ~~~ grill ~~~ toSpec[to-spec]
     toTasks[to-tasks] ~~~ implement ~~~ review ~~~ ship ~~~ retro
   end
 ```
@@ -27,77 +27,76 @@ Product discovery, writing, advisory, prototype, quality, and misc skills are op
 
 ## Flow Lite
 
-| Skill | Leading word | When to use |
+| Skill | Say | When to use |
 | --- | --- | --- |
-| [flow](../skills/flow/SKILL.md) | Preserve intent | Align the current project's root docs after meaningful changes. Not a pipeline, not initialization, and not an always-on guarantee. |
+| [flow](../skills/flow/SKILL.md) | "update the docs" | Align the current project's root docs after meaningful changes. Not a pipeline and not initialization. |
 
 ## Delivery
 
-| Skill | Leading word | When to use |
+| Skill | Say | When to use |
 | --- | --- | --- |
-| [explore](../skills/explore/SKILL.md) | Consequential uncertainty | Understand problem, users, repo context, and uncertainty before planning or building. |
-| [grill](../skills/grill/SKILL.md) | Stress-test | Stress-test an idea or plan with focused questions and evidence. |
-| [to-spec](../skills/to-spec/SKILL.md) | Label unresolved assumptions | Turn conversation into a numbered spec; label assumptions; save only when requested. |
-| [to-tasks](../skills/to-tasks/SKILL.md) | Vertical slice | Vertical-slice tasks with blockers; publish tracker issues only when requested. |
-| [implement](../skills/implement/SKILL.md) | Smallest useful increment | Implement an authorized change; no spec required for small clear work. |
-| [review](../skills/review/SKILL.md) | Actionable findings | Review repo, working tree, or committed comparison. |
-| [ship](../skills/ship/SKILL.md) | Evidence | Verify, commit, push, and check the deployment this repo actually configures. Explicit only; not a router. |
-| [retro](../skills/retro/SKILL.md) | Improvement candidates | Retrospective on the agent environment after a session. |
+| [explore](../skills/explore/SKILL.md) | "explore this" | Understand problem, users, repo context, and uncertainty before planning or building. |
+| [interview](../skills/interview/SKILL.md) | "interview me" | Extract what you actually want, with a guess attached to each question, before any plan or spec exists. |
+| [grill](../skills/grill/SKILL.md) | "grill me" | Stress-test an idea or plan with focused questions and evidence. |
+| [to-spec](../skills/to-spec/SKILL.md) | "spec it" | Turn conversation into a numbered spec; label assumptions; save only when requested. |
+| [to-tasks](../skills/to-tasks/SKILL.md) | "break it down" | Vertical-slice tasks with blockers; publish tracker issues only when requested. |
+| [implement](../skills/implement/SKILL.md) | "build it" | Implement an authorized change; no spec required for small clear work. |
+| [review](../skills/review/SKILL.md) | "check it against the spec" | Review against intent and root context as well as correctness. |
+| [ship](../skills/ship/SKILL.md) | "ship it" | Verify, commit, confirm, push, and check the deployment this repo configures, deferring to the platform's deploy skill. |
+| [retro](../skills/retro/SKILL.md) | "let's do a retro" | Retrospective on the agent environment after a session. |
 
 ## Shared language
 
-| Skill | Leading word | When to use |
+| Skill | Say | When to use |
 | --- | --- | --- |
-| [domain-modeling](../skills/domain-modeling/SKILL.md) | Resolved meaning | Refine terminology and update `GLOSSARY.md`; offer `docs/decisions/` records sparingly. |
+| [domain-modeling](../skills/domain-modeling/SKILL.md) | "what do we call this" | Refine terminology and update `GLOSSARY.md`; offer `docs/decisions/` records sparingly. |
 
 ## Advisory
 
-| Skill | Leading word | When to use |
+| Skill | Say | When to use |
 | --- | --- | --- |
-| [council](../skills/council/SKILL.md) | Advisory | Independent perspectives on a consequential decision. It does not implement or approve. |
+| [council](../skills/council/SKILL.md) | "ask the council" | Independent perspectives on a consequential decision. It does not implement or approve. |
 
 ## Prototype
 
-| Skill | Leading word | When to use |
+| Skill | Say | When to use |
 | --- | --- | --- |
-| [prototype](../skills/prototype/SKILL.md) | Disposable experiment | Build a throwaway experiment for a design, interaction, API, or logic question. |
+| [prototype](../skills/prototype/SKILL.md) | "prototype this" | Build a throwaway experiment for a design, interaction, API, or logic question. |
 
 ## Quality
 
-| Skill | Leading word | When to use |
+| Skill | Say | When to use |
 | --- | --- | --- |
-| [simplify](../skills/simplify/SKILL.md) | Exact behavior | Refactor for clarity while preserving behavior. |
-| [security](../skills/security/SKILL.md) | Untrusted input | Harden code that accepts untrusted data, sessions, or third-party input. |
-| [performance](../skills/performance/SKILL.md) | Measure | Measure first, then fix a bottleneck the measurement identifies. |
-| [debug](../skills/debug/SKILL.md) | Falsifiable hypothesis | Investigate a reproducible failure from evidence before changing code. |
+| [debug](../skills/debug/SKILL.md) | "debug this" | Investigate a reproducible failure from evidence before changing code. |
+
+Code simplification, security audits, and performance work belong to host tools ([0019](decisions/0019-voice-first-invocation.md)).
 
 ## Product discovery
 
-| Skill | Leading word | When to use |
+| Skill | Say | When to use |
 | --- | --- | --- |
-| [interview](../skills/interview/SKILL.md) | Past behavior | Plan or synthesize customer discovery interviews from what people did. |
-| [jtbd](../skills/jtbd/SKILL.md) | Desired progress | Frame jobs, struggling moments, and the progress someone wants. |
-| [competitors](../skills/competitors/SKILL.md) | Switching dynamics | Map alternatives, differentiation, and why people move or stay. |
+| [jtbd](../skills/jtbd/SKILL.md) | "jobs to be done" | Frame jobs, struggling moments, and the progress someone wants. |
+| [competitors](../skills/competitors/SKILL.md) | "who are the competitors" | Map alternatives, differentiation, and why people move or stay. |
 
 ## Writing
 
-| Skill | Leading word | When to use |
+| Skill | Say | When to use |
 | --- | --- | --- |
-| [write-humans](../skills/write-humans/SKILL.md) | Lead with the point | Draft or edit clear prose for human readers. |
-| [write-agents](../skills/write-agents/SKILL.md) | One authoritative home | Draft or edit agent instructions so each fact has one home. |
+| [write-humans](../skills/write-humans/SKILL.md) | "write this up" | Draft or edit clear prose for human readers. |
+| [write-agents](../skills/write-agents/SKILL.md) | "write agent instructions" | Draft or edit agent instructions so each fact has one home. |
 
 ## Project start
 
-| Skill | Leading word | When to use |
+| Skill | Say | When to use |
 | --- | --- | --- |
-| [start](../skills/start/SKILL.md) | New product | Initialize from flow-next or flow-mono: rename identity, run setup/QA/build/startup checks, baseline root docs, and one independent initial commit when verification passes. Manual only; not Flow Lite. |
+| [start](../skills/start/SKILL.md) | `/start` (explicit only) | Initialize from flow-next or flow-mono: rename identity, run setup/QA/build/startup checks, baseline root docs, and one independent initial commit when verification passes. Not Flow Lite. |
 
 ## Misc
 
-| Skill | Leading word | When to use |
+| Skill | Say | When to use |
 | --- | --- | --- |
-| [tldr](../skills/tldr/SKILL.md) | Show, don't tell | Visual human summary of named material, or a session recap and alignment check. Prose stays with `write-humans`. |
-| [handoff](../skills/handoff/SKILL.md) | Compact | Compact the current conversation into a temporary handoff document so a fresh agent can continue. |
+| [tldr](../skills/tldr/SKILL.md) | "tldr" | Visual human summary of named material, or a session recap and alignment check. Prose stays with `write-humans`. |
+| [handoff](../skills/handoff/SKILL.md) | "hand off" | Compact the current conversation into a temporary handoff document so a fresh agent can continue. |
 
 ## Maintain (this repository)
 

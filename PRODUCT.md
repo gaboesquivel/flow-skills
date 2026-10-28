@@ -69,13 +69,13 @@ Primary internal dogfooding targets: **flow-skills** first, then experience vali
 
 ## This repository: flow-skills
 
-Status: twenty-four-skill portable catalog on `main` ([0004](docs/decisions/0004-portable-skill-catalog.md), [0005](docs/decisions/0005-misc-tldr-skill.md), [0006](docs/decisions/0006-flow-lite-and-flat-docs.md), [0007](docs/decisions/0007-flow-product-identity.md), [0008](docs/decisions/0008-leading-words-and-visual-summaries.md), [0009](docs/decisions/0009-adopter-product-context.md), [0010](docs/decisions/0010-optional-start-skill.md), [0013](docs/decisions/0013-restore-engineering-skills.md), [0014](docs/decisions/0014-handoff-skill.md), [0015](docs/decisions/0015-tasks-and-domain-modeling.md)); live verification in multiple agent hosts remains ongoing.
+Status: portable, voice-first catalog on `main` ([0004](docs/decisions/0004-portable-skill-catalog.md), [0005](docs/decisions/0005-misc-tldr-skill.md), [0006](docs/decisions/0006-flow-lite-and-flat-docs.md), [0007](docs/decisions/0007-flow-product-identity.md), [0008](docs/decisions/0008-leading-words-and-visual-summaries.md), [0009](docs/decisions/0009-adopter-product-context.md), [0010](docs/decisions/0010-optional-start-skill.md), [0013](docs/decisions/0013-restore-engineering-skills.md), [0014](docs/decisions/0014-handoff-skill.md), [0015](docs/decisions/0015-tasks-and-domain-modeling.md), [0016](docs/decisions/0016-start-in-place.md), [0017](docs/decisions/0017-claude-code-skill-coexistence.md), [0018](docs/decisions/0018-interview-extracts-intent.md), [0019](docs/decisions/0019-voice-first-invocation.md)); live verification in multiple agent hosts remains ongoing.
 
 ### Problem
 
 AI makes it easy to ship faster than teams establish what matters. Disparate skills and heavy methodology leave founders reconciling workflows, terminology, and documentation alone.
 
-flow-skills offers a small catalog: **Flow Lite** for root context alignment, plus optional skills invoked only when you ask. Optional project initialization is the explicit [`start`](skills/start/SKILL.md) skill only — not Flow Lite, not `flow start`, and not mandatory. Templates work without Flow Skills. There is no pipeline router and no requirement to modify adopter `AGENTS.md`, `CLAUDE.md`, or equivalent files.
+flow-skills offers a small catalog: **Flow Lite** for root context alignment, plus optional skills you reach by talking to your agent, typed or dictated. Optional project initialization is the explicit [`start`](skills/start/SKILL.md) skill only — not Flow Lite, not `flow start`, and not mandatory. Templates work without Flow Skills. There is no pipeline router and no requirement to modify adopter `AGENTS.md`, `CLAUDE.md`, or equivalent files.
 
 **Adopter product context.** In another repository, `PRODUCT.md` is that product. This file is Flow's identity only. Flow Lite and `implement` update an adopter's product docs when that product changes. They do not overwrite them with the mission, principles, or tagline above. [Decision 0009](docs/decisions/0009-adopter-product-context.md).
 
@@ -86,16 +86,17 @@ flow-skills offers a small catalog: **Flow Lite** for root context alignment, pl
 | Layer | Skills |
 | --- | --- |
 | Flow Lite | [`flow`](skills/flow/SKILL.md) — align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md` where hosts support discovery. Not always-on, and not project initialization. |
-| Delivery | `explore`, `grill`, `to-spec`, `to-tasks`, `implement`, `review`, `ship`, `retro` |
+| Delivery | `explore`, `interview`, `grill`, `to-spec`, `to-tasks`, `implement`, `review`, `ship`, `retro` |
 | Advisory | `council` |
 | Prototype | `prototype` |
-| Quality | `simplify`, `security`, `performance`, `debug` |
-| Product discovery | `interview`, `jtbd`, `competitors` |
+| Shared language | `domain-modeling` |
+| Quality | `debug` |
+| Product discovery | `jtbd`, `competitors` |
 | Writing | `write-agents`, `write-humans` |
-| Project start | [`start`](skills/start/SKILL.md) — verified bootstrap from flow-next or flow-mono (manual only) |
+| Project start | [`start`](skills/start/SKILL.md) — verified bootstrap from flow-next or flow-mono (explicit only) |
 | Misc | `tldr`, `handoff` |
 
-Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Every skill except `flow` requires explicit invocation. No skill enforces a sequence (`/implement` does not require `/to-spec`).
+Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Say a skill's leading word ("interview me", "spec it", "ship it"); slash commands are optional. Only `start` must be named explicitly ([0019](docs/decisions/0019-voice-first-invocation.md)). No skill enforces a sequence (`/implement` does not require `/to-spec`).
 
 **Default durable docs in adopter projects:** `docs/specs/NNN-short-name.md` and `docs/decisions/NNN-short-name.md`, plus root context files when useful.
 
@@ -105,12 +106,12 @@ Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Every skil
 
 | Chain stage | How the current catalog supports it |
 | --- | --- |
-| Product thinking | `explore`, `grill`, `interview`, `jtbd`, `competitors`, `council`; `flow` keeps product intent in root docs |
-| Engineering discipline | `to-spec`, `to-tasks`, `domain-modeling`, `write-agents`, `write-humans`, `prototype`, `simplify`, `security`, `performance`, `debug`; specs and decisions as flat durable artifacts |
+| Product thinking | `explore`, `interview`, `grill`, `jtbd`, `competitors`, `council`; `flow` keeps product intent in root docs |
+| Engineering discipline | `to-spec`, `to-tasks`, `domain-modeling`, `write-agents`, `write-humans`, `prototype`, `debug`; specs and decisions as flat durable artifacts |
 | Agent execution | `implement`, `ship`; portable packages with no mandatory router |
 | Verified value | `review`, `ship`, `retro`, `tldr`; evidence, alignment, and visual summaries without claiming a feature shipped |
 
-Further catalog growth needs its own decision. [0013](docs/decisions/0013-restore-engineering-skills.md) restored `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug`. [0014](docs/decisions/0014-handoff-skill.md) adds `handoff`. [0015](docs/decisions/0015-tasks-and-domain-modeling.md) renames `to-tasks` and restores `domain-modeling`.
+Further catalog growth needs its own decision. [0013](docs/decisions/0013-restore-engineering-skills.md) restored `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug`. [0014](docs/decisions/0014-handoff-skill.md) adds `handoff`. [0015](docs/decisions/0015-tasks-and-domain-modeling.md) renames `to-tasks` and restores `domain-modeling`. [0019](docs/decisions/0019-voice-first-invocation.md) retires `simplify`, `security`, and `performance` in favor of host tools.
 
 ### Open choices
 

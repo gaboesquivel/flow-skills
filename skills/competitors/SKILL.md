@@ -1,7 +1,7 @@
 ---
 name: competitors
-description: Map alternatives, differentiation, and switching dynamics for a product decision.
-disable-model-invocation: true
+description: Map alternatives, differentiation, and switching dynamics for a product decision. Use when the user says "who are the competitors", "what are the alternatives", or "why would people switch".
+disable-model-invocation: false
 ---
 
 # Competitors
@@ -14,4 +14,4 @@ Summarize differentiation honestly: where the proposed direction wins, where it 
 
 Return the landscape, implications, open questions, and recommended next activity. Analysis does not authorize implementation.
 
-Optional `interview` or `jtbd` skills may deepen customer evidence when installed and invoked separately.
+The optional `jtbd` skill may deepen customer evidence when installed and invoked separately.

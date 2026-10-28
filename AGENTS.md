@@ -15,13 +15,13 @@ Load only what the task needs. `docs/archive/` is historical evidence, never cur
 
 ## Working practices
 
-Develop Flow through its own practices using conversation and available tools. This repository maintains its own skill source under `skills/`; dogfood those skills when useful. Notice recurring friction, preserve useful proposals and rationale, and update owning documents when adopted. Edit skill source directly; preserve applicable source notices. Run `pnpm validate` and `pnpm test` after distribution changes.
+Develop Flow through its own practices using conversation and available tools. This repository maintains its own skill source under `skills/`; dogfood those skills when useful. Notice recurring friction, preserve useful proposals and rationale, and update owning documents when adopted. Edit skill source directly; preserve applicable source notices. When writing or editing agent-consumed context (`skills/**`, `AGENTS.md`, adapter metadata), apply [`write-agents`](skills/write-agents/SKILL.md) so changes meet the same authoring bar the catalog ships. Run `pnpm validate` and `pnpm test` after distribution changes.
 
 Use [Conventional Commits](https://www.conventionalcommits.org) for commit messages and PR titles: `type(scope): summary`, with the skill or area as scope (for example `fix(start): …`, `docs(decisions): …`). Add a body when the reason is not obvious from the summary.
 
 ## Distribution maintenance
 
-Flow ships a portable `skills/` tree for the [Agent Skills](https://agentskills.io) ecosystem. Consumers install with `npx skills add gaboesquivel/flow-skills` and invoke skills explicitly except where hosts surface `flow`. This repository does not ship a bootstrap installer or require changes to adopter instruction files.
+Flow ships a portable `skills/` tree for the [Agent Skills](https://agentskills.io) ecosystem. Consumers install with `npx skills add gaboesquivel/flow-skills` and reach skills by talking to their agent; only `start` must be named explicitly. This repository does not ship a bootstrap installer or require changes to adopter instruction files.
 
 | Task | Command |
 | --- | --- |
