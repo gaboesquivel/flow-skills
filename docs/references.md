@@ -90,6 +90,19 @@ Additional sources retained from initial research; not automatically adopted.
 - [getting started with discovery](https://www.producttalk.org/getting-started-with-discovery/) — candidate outcome-to-opportunity and assumption-testing reasoning; [current assessment and source-review limitations](research/2026-10-19-productskills-and-lean.md#business-context-growth-and-skill-boundaries), with [historical research](archive/2026-10-18/docs/research/2026-10-18-focused-refinement.md).
 - [glossary discovery assumption testing](https://www.producttalk.org/glossary-discovery-assumption-testing/) — [Historical research](archive/2026-10-18/docs/research/2026-10-18-exploration-and-explanation.md).
 
+## Discovery entry points
+
+Candidate sources for the `explore` redesign (depth tiers, write gates, extract-then-challenge). Not adopted. Full comparison: [research/2026-10-28-explore-discovery-entry-points.md](research/2026-10-28-explore-discovery-entry-points.md).
+
+- [Superpowers — brainstorming](https://github.com/obra/superpowers/blob/main/skills/brainstorming/SKILL.md) — size stated in plain words, 2–3 approaches, gated design doc (inspected 2026-10-28).
+- [Addy Osmani — idea-refine](https://github.com/addyosmani/agent-skills/blob/main/skills/idea-refine/SKILL.md) and [code-review-and-quality](https://github.com/addyosmani/agent-skills/blob/main/skills/code-review-and-quality/SKILL.md) — one-pager on confirmation; five review axes (inspected 2026-10-28).
+- [BMAD Method — product brief and idea validation](https://github.com/bmad-code-org/BMAD-METHOD/blob/main/docs/plan/explore-and-validate-an-idea.md) — extraction and challenge kept apart; killed is a valid outcome (inspected 2026-10-28).
+- [Spec Kit — clarify](https://github.com/github/spec-kit/blob/main/templates/commands/clarify.md) — at most five questions, recommended answer first (inspected 2026-10-28).
+- [OpenSpec — explore](https://github.com/Fission-AI/OpenSpec/blob/main/docs/explore.md) — conversation that writes nothing unless asked (inspected 2026-10-28).
+- [gstack — office-hours](https://github.com/garrytan/gstack/tree/main/office-hours) — stage-selected forcing questions, ends with a real-world assignment (partially inspected 2026-10-28).
+- [Every — ce-brainstorm](https://github.com/EveryInc/compound-engineering-plugin/tree/main/skills/ce-brainstorm) — Lightweight / Standard / Deep tiers, blindspot pass (partially inspected 2026-10-28).
+- [Gary Klein — project premortem](https://hbr.org/2007/09/performing-a-project-premortem) — summary only; full page paywalled.
+
 ## Design and exploration
 
 Design candidates and alternative approaches. Inclusion does not add a Flow capability.
