@@ -702,6 +702,20 @@ function startCli(dir, port) {
   return { child, exited, url }
 }
 
+// Concurrent tests may take a probed port before the server binds it; retry on that race.
+async function startOnFreePort(dir) {
+  for (let attempt = 1; ; attempt++) {
+    const port = await freePort()
+    const board = startCli(dir, port)
+    try {
+      await board.url
+      return { board, port }
+    } catch (error) {
+      if (attempt >= 3 || !/in use|EADDRINUSE/u.test(String(error))) throw error
+    }
+  }
+}
+
 async function freePort() {
   const probe = http.createServer()
   await new Promise((done) => probe.listen(0, '127.0.0.1', done))
@@ -717,8 +731,7 @@ test('--serve and --stop find this repo\'s board by port probe, never another re
     repo.write('001-served.md', spec('001: Served', 'draft'))
     await repo.commit('specs')
   }
-  const port = await freePort()
-  const board = startCli(own.dir, port)
+  const { board, port } = await startOnFreePort(own.dir)
   try {
     const url = await board.url
     assert.equal(url, `http://127.0.0.1:${port}/`)
