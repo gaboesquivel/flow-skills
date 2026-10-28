@@ -95,10 +95,10 @@ Specs that exist only on unmerged branches are shown too, marked with their bran
 ### 01: Board from git (#45)
 **What to build:** "show the board" with `--once` renders every spec in this repository into the five columns from git alone.
 **Blocked by:** None (can start immediately).
-**Status:** planned
-- [ ] `skills/board/SKILL.md` and script; stage derivation as a pure, tested function.
-- [ ] Fixture-repo tests for each stage rule and missing status lines.
-- [ ] Snapshot of this repository shows specs 001–012 in the expected columns.
+**Status:** done
+- [x] `skills/board/SKILL.md` and script; stage derivation as a pure, tested function.
+- [x] Fixture-repo tests for each stage rule and missing status lines.
+- [x] Snapshot of this repository shows specs 001–012 in the expected columns.
 
 ### 02: Live page (#46)
 **What to build:** the board runs as a local page that updates within a few seconds of a commit or merge.
