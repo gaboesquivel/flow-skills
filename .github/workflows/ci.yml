@@ -14,11 +14,13 @@ concurrency:
 
 jobs:
   validate:
+    # PRs run ubuntu with the minimum Node; main runs the full matrix. macOS runner queues made PRs wait up to ten minutes.
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
-        node: [22, 24]
+        os: ${{ fromJSON(github.event_name == 'pull_request' && '["ubuntu-latest"]' || '["ubuntu-latest", "macos-latest"]') }}
+        node: ${{ fromJSON(github.event_name == 'pull_request' && '[22]' || '[22, 24]') }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -29,13 +31,13 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: pnpm
       - run: pnpm install --frozen-lockfile --ignore-scripts
-      - run: npx --yes skills@latest --version
       - run: pnpm validate
       - run: pnpm test
 
   alignment:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
         with:
@@ -56,6 +58,7 @@ jobs:
     if: github.event_name == 'pull_request'
     needs: [alignment]
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
       issues: write
