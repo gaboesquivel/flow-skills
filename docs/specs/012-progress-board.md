@@ -124,7 +124,7 @@ Specs that exist only on unmerged branches are shown too, marked with their bran
 ### 05: Catalog and context (#48)
 **What to build:** `board` is a documented catalog skill.
 **Blocked by:** 01.
-**Status:** planned
-- [ ] Decision record for adding `board` to the catalog.
-- [ ] `scripts/validate.mjs` expected names, evals, `docs/skills.md`, PRODUCT.md catalog and "not shipped" line, specs README.
-- [ ] `pnpm validate` and `pnpm test` pass.
+**Status:** done
+- [x] Decision record for adding `board` to the catalog.
+- [x] `scripts/validate.mjs` expected names, evals, `docs/skills.md`, PRODUCT.md catalog and "not shipped" line, specs README.
+- [x] `pnpm validate` and `pnpm test` pass.

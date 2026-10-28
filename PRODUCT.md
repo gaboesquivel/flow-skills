@@ -101,7 +101,7 @@ Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Say a skil
 
 **Default durable docs in adopter projects:** `docs/specs/NNN-short-name.md` and `docs/decisions/NNN-short-name.md`, plus root context files when useful.
 
-**Not shipped as skills:** validation-board UI (the read-only [`board`](skills/board/SKILL.md) shows spec progress, not hypotheses or evidence), OMTM automation, commercial discovery pipelines, or hosted, issue-triggered orchestration (Flow Factory). Project initialization is the optional [`start`](skills/start/SKILL.md) skill only (not a router or mandatory pipeline). Optional judgment for measurement and validation lives in [methodology](docs/methodology.md) as practice, not product enforcement.
+**Not shipped as skills:** validation-board UI (the read-only [`board`](skills/board/SKILL.md) is a [progress board](GLOSSARY.md#progress-board)), OMTM automation, commercial discovery pipelines, or hosted, issue-triggered orchestration (Flow Factory). Project initialization is the optional [`start`](skills/start/SKILL.md) skill only (not a router or mandatory pipeline). Optional judgment for measurement and validation lives in [methodology](docs/methodology.md) as practice, not product enforcement.
 
 ### Flow mode
 
@@ -114,7 +114,7 @@ Opt-in conversational delivery ([decision 0020](docs/decisions/0020-flow-mode.md
 | Product thinking | `explore`, `interview`, `grill`, `jtbd`, `competitors`, `council`; `flow` keeps product intent in root docs |
 | Engineering discipline | `to-spec`, `to-tasks`, `domain-modeling`, `write-agents`, `write-humans`, `prototype`, `debug`; specs and decisions as flat durable artifacts |
 | Agent execution | `implement`, `ship` (task-set orchestration in Flow mode); portable packages with no mandatory router |
-| Verified value | `review`, `ship`, `retro`, `tldr`, `board`; evidence, alignment, visual summaries, and a read-only progress view without claiming a feature shipped |
+| Verified value | `review`, `ship`, `retro`, `tldr`, `board`; evidence, alignment, visual summaries, and a read-only progress view derived from git |
 
 Further catalog growth needs its own decision. [0013](docs/decisions/0013-restore-engineering-skills.md) restored `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug`. [0014](docs/decisions/0014-handoff-skill.md) adds `handoff`. [0015](docs/decisions/0015-tasks-and-domain-modeling.md) renames `to-tasks` and restores `domain-modeling`. [0019](docs/decisions/0019-voice-first-invocation.md) retires `simplify`, `security`, and `performance` in favor of host tools. [0025](docs/decisions/0025-progress-board-skill.md) adds `board`.
 
