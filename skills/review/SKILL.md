@@ -36,9 +36,11 @@ For **consequential** changes (behavior many callers rely on, migrations, concur
 
 One verifier then merges the results: it dedupes findings across axes, checks each against the code, settles disagreements, and ranks by impact. Record actual models when the host exposes them. Without workers, assess the axes in order and label the review **single-agent**. Never claim independence or model diversity without actual separate execution.
 
+**Requirement verdicts.** When the scope is a spec, the verifier lists each of its user stories, acceptance criteria, and acceptance scenario steps and gives each a **requirement verdict**: `satisfied`, `unmet`, or `unresolved`. Axis workers cite the requirements their evidence bears on; the verifier owns the verdict. A verdict cites its evidence (test, file and line, command output, or screenshot); without evidence it is `unresolved`, never `satisfied`. An `unresolved` verdict names what would settle it; scenario steps the review cannot exercise stay `unresolved` until `ship`'s Verify runs them. Every `unmet` requirement is also a blocking finding.
+
 ## Report
 
-Lead with actionable findings ordered by impact. For each, name its axis and cite the file or line, concrete failure or mismatch, supporting evidence, and smallest viable correction. Separate open questions and verification limits. If no material findings remain, say what was checked.
+For a spec review, open with a requirements table (requirement, verdict, evidence). Then list actionable findings ordered by impact. For each, name its axis and cite the file or line, concrete failure or mismatch, supporting evidence, and smallest viable correction. Separate open questions and verification limits. If no material findings remain, say what was checked.
 
 When the reviewed change affects product intent, experience, architecture, or shared vocabulary, note whether root context (`PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md`) still matches or needs alignment. Flag stale root docs as findings. Flag a change that replaces a project's product identity with Flow's methodology identity. Do not silently rewrite docs unless fixes are requested. The `flow` skill (when installed or surfaced by the host) owns detailed alignment passes. Absence of an always-on hook is not evidence the docs are current.
 

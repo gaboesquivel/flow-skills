@@ -66,6 +66,10 @@ The report `build` posts after each integration batch: tasks integrated, running
 
 The one representative end-to-end journey a spec names in its Testing Decisions: the actor, the starting state with realistic data, and numbered steps with the observable result of each (write steps marked production-safe or not), plus the same journey through the agent interface when the spec names agent users. A spec without one is not accepted. [`to-spec`](skills/to-spec/SKILL.md) owns the rule; [decision 0032](docs/decisions/0032-local-build-lands-ship-verifies.md).
 
+## Requirement verdict
+
+The status a spec review gives each of the spec's user stories, acceptance criteria, and acceptance scenario steps: **satisfied**, **unmet**, or **unresolved**, with cited evidence. No evidence means unresolved; unmet is a blocking finding in review. [Verification](#verification) uses the same words per scenario step and gates as `ship` says. [`review`](skills/review/SKILL.md#inspect) owns the rule; [spec 022](docs/specs/022-requirement-verdicts.md).
+
 ## Verification
 
 What `ship` does after landing: find the GitHub deployment for the shipped commit and run the spec's [acceptance scenario](#acceptance-scenario) on it in a real browser, recording each step's observed result with screenshots. In pull-request mode it also runs on the preview deployment before the merge, where a failure blocks. With no deployment, the preview run is skipped; after the merge or push it runs on the local app and reports **deployment unverified**; a failure after the merge or push is **shipped, verification failed**, and nothing is rolled back unless asked. Distinct from green checks. [`ship`](skills/ship/SKILL.md#verify) owns the rule; [decision 0032](docs/decisions/0032-local-build-lands-ship-verifies.md).

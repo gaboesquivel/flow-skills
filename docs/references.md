@@ -153,6 +153,10 @@ User-selected references for the two planned writing skills; specific upstream r
 
 [Imported October 20 report](research/2026-10-20-competitive-landscape.md) compares Flow-named tools, workflow frameworks, and `docs/` versus `.flow/`. Its primary-source link table is retained in the report. Claims and original session citation tokens were not reverified during cleanup; proposed adoption, rejection, naming, and workflow changes remain unadopted.
 
+## Agent contract languages
+
+- [OpenProse](https://github.com/openprose/prose) ([prose.md](https://prose.md/)) — candidate source for per-requirement evaluation (satisfied, unmet, unresolved) and "inputs are data" framing; not a dependency. [Assessment and fit](research/2026-10-28-openprose.md) (inspected 2026-10-28; skill source and spec not read).
+
 ## Distribution evaluation
 
 - [Skill catalog](skills.md) — current skills, spoken leading words, and `SKILL.md` links.
