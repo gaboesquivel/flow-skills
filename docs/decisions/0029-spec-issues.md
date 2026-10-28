@@ -1,6 +1,6 @@
 # 0029 — Spec issues and fast parallel builds
 
-Status: **Proposed** (2026-10-28). Amends [0025](0025-wave-checkpoints.md) (waves and per-wave reviews), [0026](0026-process-depth.md) (candidate specs as files), [0027](0027-progress-board-skill.md) (the board's stages and overlay), and [0028](0028-build-and-ship.md) (acceptance lives only in the spec file; reviews in both build and ship). Spec: [018](../specs/018-spec-issues.md).
+Status: **Accepted** (2026-10-28). Amends [0025](0025-wave-checkpoints.md) (waves and per-wave reviews), [0026](0026-process-depth.md) (candidate specs as files), [0027](0027-progress-board-skill.md) (the board's stages and overlay), and [0028](0028-build-and-ship.md) (acceptance lives only in the spec file; reviews in both build and ship). Spec: [018](../specs/018-spec-issues.md).
 
 ## Context
 

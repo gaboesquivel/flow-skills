@@ -1,6 +1,6 @@
 # 018: Spec issues and fast parallel builds
 
-Status: draft (2026-10-28). Issue: [#79](https://github.com/gaboesquivel/flow-skills/issues/79). Decision: [0029](../decisions/0029-spec-issues.md). Builds on [spec 017](017-build-and-ship.md), which lands first.
+Status: accepted (2026-10-28). Issue: [#79](https://github.com/gaboesquivel/flow-skills/issues/79). Decision: [0029](../decisions/0029-spec-issues.md). Builds on [spec 017](017-build-and-ship.md), which lands first.
 
 ## Problem Statement
 
