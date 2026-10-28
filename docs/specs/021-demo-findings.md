@@ -1,6 +1,6 @@
 # 021: A clean run from start to ship
 
-Status: draft (2026-10-28). Issue: [#111](https://github.com/gaboesquivel/flow-skills/issues/111). Decisions: [0033](../decisions/0033-shared-files-and-reviewed-head.md) (Proposed), [0034](../decisions/0034-no-ceremony-without-a-spec.md) (Proposed), [0035](../decisions/0035-spec-issue-on-acceptance.md) (Proposed). Builds on [spec 020](020-ship-verifies.md), which lands first.
+Status: draft (2026-10-28). Issue: [#111](https://github.com/gaboesquivel/flow-skills/issues/111). Decisions: [0033](../decisions/0033-shared-files-and-reviewed-head.md) (Proposed), [0034](../decisions/0034-no-ceremony-without-a-spec.md) (Proposed), [0035](../decisions/0035-spec-issue-on-acceptance.md) (Proposed), [0036](../decisions/0036-one-explore-depth.md) (Proposed). Builds on [spec 020](020-ship-verifies.md), which lands first.
 
 ## Problem Statement
 
@@ -26,6 +26,8 @@ Four smaller frictions also showed up:
 - `explore`'s background readers have nothing to read in a project `start` just created.
 - Lite's "one main metric" clashed with a brief that needed two or three metrics.
 
+And one design problem the run exposed: **discovery depth is the wrong kind of setting.** It is recorded once per project (`Process:` on the Flow block) and asked at setup, but depth belongs to each piece of work: a new product and a small feature in the same repository need different amounts. The project-wide "Lite" was also read as "local delivery". The Full run's most useful output came from the pre-mortem; `jtbd`, `competitors`, and the approaches worker were valuable but not needed every time.
+
 ## Solution
 
 1. **`start` leaves the agent instructions correct.** Setup (in `start` and "set up Flow here") owns the project's instruction-file layout, not just the block:
@@ -43,7 +45,8 @@ Four smaller frictions also showed up:
 9. **Ticked tasks link their commit.** When `build` ticks a task, the checklist line ends with the short SHA of the commit that integrated it, linked when a remote exists: `- [x] 01: Title (#N) — a1b2c3d`.
 10. **No ceremony without a spec** ([0034](../decisions/0034-no-ceremony-without-a-spec.md)). "Build it" on work with no spec or task skips the spec gate and the per-axis review workers. It runs the full local suite and one self-check against the request, then lands as the mode delivers. In local mode it merges into local `main`; in pull-request mode it opens a ready pull request. The size guard still applies: new product behavior, a data-shape or public API change, or a migration stops and suggests `to-spec`.
 11. **The spec issue opens at acceptance** ([0035](../decisions/0035-spec-issue-on-acceptance.md)). "Spec it" writes and commits the draft locally on the spec branch and publishes nothing. "Accept the spec" pushes the branch and opens the spec issue labelled `accepted`. "Share the draft" opens it early, labelled `draft`, for team review. `to-spec` opens a `candidate` issue only when asked.
-12. **Small `explore` rules.** Skip background readers that have nothing to read. Lite keeps one main metric, plus supporting metrics when the user names them.
+12. **One `explore` depth** ([0036](../decisions/0036-one-explore-depth.md)). `explore` has a single default depth: confirmed intent, the riskiest assumption, a pre-mortem, a kill criterion, one main metric plus any supporting metrics the user names, core journeys, alternatives including the status quo, and the agent lens. Deeper discovery is opt-in: the user asks for `competitors` (with saved research) or `jtbd`, and `explore` may suggest one in a single line when evidence warrants it, without running it unasked. Decision records follow `to-spec`'s decision test at any depth. Setup no longer asks for or records a depth: the `Process:` line is dropped from the Flow block on the next rewrite, and `start` and "set up Flow here" ask only for delivery. Skip stays for fixes.
+13. **Small `explore` rule.** Skip background readers that have nothing to read.
 
 ## User Stories
 
@@ -57,9 +60,11 @@ Four smaller frictions also showed up:
 8. As a developer, I open spec 001 after the build and follow each ticked task to the commit that delivered it.
 9. As a developer, I say "build it" on a one-line fix with no spec: the suite runs, the change lands with a self-check, and no review workers start.
 10. As a developer, I say "build it" on unspecced work that adds an API: `build` stops and suggests `to-spec`.
-11. As a developer, I say "spec it" and review the draft file locally; nothing is pushed or public until I say "accept the spec".
-12. As a maintainer who wants comments first, I say "share the draft" and get a `draft` issue my teammates can read.
-13. As a maintainer, I sync a spec issue with one helper command, and a hand-edited body is reported instead of overwritten.
+11. As a developer, I say "explore this" on a feature and get the default depth with a pre-mortem, no depth question; I say "who are the competitors" when I want research.
+12. As a developer setting up Flow, I am asked only how work lands (pull requests or local).
+13. As a developer, I say "spec it" and review the draft file locally; nothing is pushed or public until I say "accept the spec".
+14. As a maintainer who wants comments first, I say "share the draft" and get a `draft` issue my teammates can read.
+15. As a maintainer, I sync a spec issue with one helper command, and a hand-edited body is reported instead of overwritten.
 
 ## Implementation Decisions
 
@@ -88,7 +93,8 @@ Four smaller frictions also showed up:
 - **`ship` and `build`:** the label gate is unchanged (`accepted` on the spec issue). A spec in pull-request mode with no `Issue:` line yet is not accepted; `ship` suggests "accept the spec".
 - **`explore`:**
   - Reader rule: launch only readers whose sources exist; in a run handed over by `start`, the bootstrap report replaces the status reader.
-  - Lite bullet: "one main metric, plus supporting metrics the user names".
+  - Depth ([0036](../decisions/0036-one-explore-depth.md)): replace "Propose a depth", the Lite and Full tiers, and the Question round's depth question with one default depth (item 12). Keep Skip for fixes. The pre-mortem runs as one read-only worker after the intent yes while the grill proceeds; `grill` skips its own pre-mortem, as today. Research is saved only when `competitors` runs, as it owns that rule.
+- **Depth removal:** `flow-block.mjs` drops `Process:` on rewrite (as it dropped `Deploy:`), removes `--process`, `normalizeProcess`, and `readProcess`; `flow`'s Ask and `start`'s inputs keep only Delivery; `to-spec`'s Full-depth decision-record rule and `explore`'s "Decision records at Full depth" go. Update `GLOSSARY.md` (retire Discovery depth / Process depth with a pointer to 0036), `README.md`, `PRODUCT.md`, `docs/skills.md`, and the status lines of 0026 and 0030.
 
 ## Testing Decisions
 
@@ -107,8 +113,8 @@ Four smaller frictions also showed up:
 
 Actor: a developer with Claude Code and these skills. Starting state: an empty `/tmp/flow-021` holding only a `CLAUDE.md` that requires appending each prompt to `prompts.txt`.
 
-1. Say "Let's start a Next.js project" with a one-line idea; answer Lite and local. → The initial commit contains `CLAUDE.md` with the Flow block, an `@AGENTS.md` import, and the unchanged prompt-log rule (`git show HEAD:CLAUDE.md`). `git check-ignore CLAUDE.md` fails, and `start`'s report names the layout. *(writes; local only)*
-2. Finish a Lite `explore` with a yes to the brief. → `git branch` shows `explore/<slug>` holding a commit with `PRODUCT.md`; `main` has no new commit and a clean tree. *(writes; local only)*
+1. Say "Let's start a Next.js project" with a one-line idea; answer local (no depth question is asked). → The initial commit contains `CLAUDE.md` with the Flow block, an `@AGENTS.md` import, and the unchanged prompt-log rule (`git show HEAD:CLAUDE.md`). `git check-ignore CLAUDE.md` fails, and `start`'s report names the layout. *(writes; local only)*
+2. Finish `explore` with a yes to the brief. → A pre-mortem ran and no depth was asked; `git branch` shows `explore/<slug>` holding a commit with `PRODUCT.md`; `main` has no new commit and a clean tree. *(writes; local only)*
 3. Say "spec it". → The explore branch is renamed to `feat/001-<slug>`, holding the brief and the draft spec, which has an Exposure line; in a pull-request-mode copy of the project nothing is pushed and no issue exists. Say "accept the spec", then "break it down". → The spec reads `accepted` and has its tasks; in the pull-request-mode copy the branch is pushed and the spec issue opens labelled `accepted`. *(writes; local, plus one issue in a scratch repository)*
 4. Say "build it" on two or more tasks. → `git worktree list` shows one sibling worktree per task, each starting at the spec-branch head, and no worker reports resetting. The primary checkout's branch is unchanged after the review. *(writes; local only)*
 5. After the review, the orchestrator appends to `prompts.txt`. → The landing merge on `main` carries `Reviewed: <sha>` equal to the reviewed commit. `git log <sha>..<merged-head>` before the merge lists only `prompts.txt` commits. No commit sits directly on `main`. *(writes; local only)*
@@ -121,6 +127,7 @@ No agent users; there is no MCP variant.
 ## Out of Scope
 
 - Reducing review cost (fewer workers for re-reviews); tracked as a candidate.
+- A per-project default for deeper discovery; ask for `competitors` or `jtbd` instead.
 - flow-next template bugs found in the run: nested `.eve` folders are not excluded from Vitest, `portless trust` needs an interactive terminal, and `generateObject` is deprecated in `ai` 7. They belong in the flow-next repository.
 - Simulating the operator in an interview.
 
@@ -134,6 +141,7 @@ Source: the Signal demo rehearsal on 2026-10-28 in `/tmp/flow-demo`, on `feat/02
 - "Maintain the agent instructions" means the layout above (canonical file, imports, adopter text); it does not mean `start` writes project context such as commands or doc pointers into those files.
 - `explore/<slug>` uses the brief's product slug for a new product, or the feature's slug otherwise.
 - Issues already opened for drafts (#104, #111) stay as they are; the new rule applies from the next spec.
+- Existing Flow blocks with `Process:` keep working until rewritten; skills ignore the line.
 - "Lite flow" in the maintainer's request reads as any run without issues, so commit links apply in both delivery modes.
 - A self-check is enough for unspecced work because the size guard keeps anything consequential out of that path.
 - Declared shared files are the ones the project's instruction files tell every session to append to; `build` already names them in worker briefs.
