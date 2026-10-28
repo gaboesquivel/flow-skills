@@ -19,7 +19,7 @@ A `board` skill. Saying "show the board" opens a local, read-only kanban page fo
 ## User Stories
 
 1. As a developer, I say "show the board" and get a local page with every spec in its stage, without GitHub access.
-2. As a developer in pull-request mode, I see the same board, with issue and pull-request links on each card.
+2. As a developer in pull-request mode, I see the same board, with pull-request links on each card and issue links for tasks whose headings name their issue.
 3. As a developer who said "ship it" on a task set, I watch each task move from queued to integrated, and I see which one failed and why, without reading the chat.
 4. As a developer, I leave the page open and it updates within a few seconds of a commit, merge, or overlay change.
 5. As a developer, I trust the board after a run ends or crashes: stale overlay entries never override what git shows.
@@ -37,7 +37,7 @@ A `board` skill. Saying "show the board" opens a local, read-only kanban page fo
 | --- | --- |
 | Shipped | `Status: implemented`, or the spec branch is merged (including squash) into the default branch with changes outside `docs/`, the spec has no tasks or all tasks are done, and it is not a candidate |
 | Building | An overlay run names this spec, a spec branch exists, or at least one task is done |
-| Ready | The spec has tasks (Tasks section or linked issues), none started |
+| Ready | The spec has tasks in its Tasks section, none started |
 | Specced | `Status: draft` without tasks |
 | Candidate | `Status: candidate` ([0022](../decisions/0022-start-runs-explore.md)) |
 
@@ -59,11 +59,11 @@ Specs that exist only on unmerged branches are shown too, marked with their bran
 }
 ```
 
-`state` ∈ `queued | working | reviewing | fixing | integrated | failed | blocked`. Git wins on conflict: a task whose change has merged into the spec branch shows as integrated whatever the overlay says. An overlay with `endedAt` set, or one not updated for 30 minutes, is shown as stale and ignored for staging.
+`state` ∈ `queued | working | reviewing | fixing | integrated | failed | blocked`. Git wins on conflict: a task the spec on the default branch marks done shows as integrated whatever the overlay says. A run with `endedAt` set is ignored; one not updated for 30 minutes is marked stale and ignored for staging, so `ship` re-records unfinished tasks as a heartbeat.
 
-**Ship integration.** `ship` task-set mode ([spec 009](009-flow-mode.md), implemented) writes the overlay at run start, at every task state change, and at run end. Writing the overlay is best-effort: a failure to write never stops a run. `ship` does not need the board to be running.
+**Ship integration.** `ship` task-set mode ([spec 009](009-flow-mode.md), implemented) writes the overlay at run start, at every task state change, as a heartbeat, and at run end, and sets the spec's status to `implemented` when every task has integrated, so finished specs stay Shipped after their branch is deleted. Writing the overlay is best-effort: a failure to write never stops a run. `ship` does not need the board to be running.
 
-**GitHub enrichment.** In pull-request mode, when `gh` is available and authenticated, the script adds issue and pull-request numbers, state, and links to cards. Without it, the board renders from git alone and says so in the header. A merged pull request from the spec's branch into the default branch counts as that branch's merge for Shipped; git rules otherwise.
+**GitHub enrichment.** Unless the delivery mode is `local`, when `gh` is available and authenticated, the script adds issue and pull-request numbers, state, and links to cards. Issue links come from `(#N)` refs on task headings; projects whose tasks live only as issues get pull-request links but no issue links or task counts yet (follow-up: `to-tasks` names the spec in each issue). Without `gh`, the board renders from git alone and says so in the header. A merged pull request from the spec's branch into the default branch counts as that branch's merge for Shipped; git rules otherwise.
 
 ## Testing Decisions
 
@@ -71,7 +71,7 @@ Specs that exist only on unmerged branches are shown too, marked with their bran
 - Stage derivation is a pure function from a repo snapshot (spec files, branches, merges, overlay) to cards. Most tests target it: each stage rule, git-over-overlay precedence, stale overlays, missing status lines.
 - One smoke test runs `--once` against a fixture repo and checks the HTML contains the expected columns and cards.
 - No browser tests. The page is a thin renderer of the JSON state.
-- `pnpm validate` and `pnpm test` pass with `board` in the expected skill list and its evals.
+- `pnpm validate` and `pnpm test` pass with `board` in the expected skill list; no eval scenario yet.
 
 ## Out of Scope
 
@@ -88,7 +88,7 @@ Specs that exist only on unmerged branches are shown too, marked with their bran
 - **Riskiest assumption** (confidence: medium): the main session keeps the overlay accurate enough during a run that watching the board beats reading the chat. Hosts may skip writes or lose track of workers.
 - **Kill criterion:** during the first dogfood `ship` run on a three-task set, if the board's task states lag or contradict the chat for more than one state change, drop the overlay and ship the git-only board.
 - **Main metric:** unknown, measure first. Candidate: how often you ask the agent "where are we?" during a run, before and after.
-- PRODUCT.md currently lists "validation-board UI" and workflow orchestration as not shipped. A progress board is neither, but the line and the catalog table change with task 05.
+- PRODUCT.md currently lists "validation-board UI" and workflow orchestration as not shipped. A progress board is neither; task 05 updated the line and the catalog table.
 
 ## Tasks
 
