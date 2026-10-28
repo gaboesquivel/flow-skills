@@ -1,6 +1,6 @@
 # 0035 — Open the spec issue at acceptance
 
-Status: **Proposed** (2026-10-28). Amends [0029](0029-spec-issues.md) (the spec issue opens at "spec it", labelled `draft`). Spec: [021](../specs/021-demo-findings.md).
+Status: **Accepted** (2026-10-28). Amends [0029](0029-spec-issues.md) (the spec issue opens at "spec it", labelled `draft`). Spec: [021](../specs/021-demo-findings.md).
 
 ## Context
 

@@ -1,6 +1,6 @@
 # 021: A clean run from start to ship
 
-Status: draft (2026-10-28). Issue: [#111](https://github.com/gaboesquivel/flow-skills/issues/111). Decisions: [0033](../decisions/0033-shared-files-and-reviewed-head.md) (Proposed), [0034](../decisions/0034-no-ceremony-without-a-spec.md) (Proposed), [0035](../decisions/0035-spec-issue-on-acceptance.md) (Proposed), [0036](../decisions/0036-one-explore-depth.md) (Proposed). Builds on [spec 020](020-ship-verifies.md), which lands first.
+Status: accepted (2026-10-28). Issue: [#111](https://github.com/gaboesquivel/flow-skills/issues/111). Decisions: [0033](../decisions/0033-shared-files-and-reviewed-head.md) (Accepted), [0034](../decisions/0034-no-ceremony-without-a-spec.md) (Accepted), [0035](../decisions/0035-spec-issue-on-acceptance.md) (Accepted), [0036](../decisions/0036-one-explore-depth.md) (Accepted). Builds on [spec 020](020-ship-verifies.md), which lands first.
 
 ## Problem Statement
 
