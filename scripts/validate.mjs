@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, readdirSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, realpathSync } from 'node:fs'
 import { dirname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { collectDocLinkErrors } from './check-doc-links.mjs'
@@ -102,9 +102,36 @@ function listMarkdownAndSupportFiles(folder) {
   return out
 }
 
+// Parallel sessions pick "next free number" independently; fail when two records claim one.
+export function collectRecordNumberErrors(docsDir) {
+  const errors = []
+  for (const [folder, digits] of [['decisions', 4], ['specs', 3]]) {
+    const path = join(docsDir, folder)
+    if (!existsSync(path)) continue
+    const seen = new Map()
+    for (const file of readdirSync(path).filter((file) => new RegExp(`^\\d{${digits}}-.+\\.md$`, 'u').test(file)).sort()) {
+      const number = file.slice(0, digits)
+      if (seen.has(number)) errors.push(`docs/${folder}/${file}: number ${number} already used by ${seen.get(number)}; renumber to the next free number`)
+      else seen.set(number, file)
+    }
+  }
+  return errors
+}
+
+// Dogfooding: Claude Code loads skills from .claude/skills, which must point at the source tree.
+export function collectSkillsLinkErrors(repoRoot) {
+  const link = join(repoRoot, '.claude', 'skills')
+  if (!existsSync(link) || realpathSync(link) !== realpathSync(join(repoRoot, 'skills'))) {
+    return ['.claude/skills must link to skills/ (run: ln -s ../skills .claude/skills)']
+  }
+  return []
+}
+
 export function validateRepository(repoRoot) {
   const errors = validateSkills(join(repoRoot, 'skills'))
   errors.push(...collectDocLinkErrors(join(repoRoot, 'docs')))
+  errors.push(...collectRecordNumberErrors(join(repoRoot, 'docs')))
+  errors.push(...collectSkillsLinkErrors(repoRoot))
   return errors
 }
 

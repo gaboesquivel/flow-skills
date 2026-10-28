@@ -21,3 +21,4 @@ Intent extraction is a recurring gap in agent work; customer interview planning 
 - `interview` carries Addy Osmani's MIT notice and source revision instead of the ProductSkills influence.
 - Catalog, README, product identity, and `explore` describe the new purpose.
 - Customer interview guidance is no longer a skill. Reintroduce it only if a recorded product decision needs it.
+- Amended by spec 010 (explore redesign): closed questions may be batched, up to three per form; open questions stay one per message.
