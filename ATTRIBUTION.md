@@ -7,7 +7,7 @@ Flow maintains the skill implementations in this repository as **local source**.
 | https://github.com/mattpocock/skills | `59db609eb1e18aaf59b63284d0e52255aff0c63c` | 2026 Matt Pocock |
 | https://github.com/addyosmani/agent-skills | `aeac41d4d005999432bb7312f7ff06383a91d59d` | 2025 Addy Osmani |
 | https://github.com/obra/superpowers | `2ce8aa15d05bd57213e6f746f953aafb7ded7a8b` | 2025 Jesse Vincent |
-| https://github.com/assimovt/productskills | discovery methods (interview, jtbd, competitors) | see per-skill ATTRIBUTION.md |
+| https://github.com/assimovt/productskills | discovery methods (jtbd, competitors) | see per-skill ATTRIBUTION.md |
 
 | https://github.com/vercel-labs/skills | Agent Skills CLI install path | see project README |
 | https://agentskills.io | Skill package format | specification reference |

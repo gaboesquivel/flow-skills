@@ -21,6 +21,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0015-tasks-and-domain-modeling.md](0015-tasks-and-domain-modeling.md) | Accepted | `to-tasks` rename; restore `domain-modeling` for glossary practice |
 | [0016-start-in-place.md](0016-start-in-place.md) | Accepted | `start` bootstraps at a root holding only agent setup and infers the template |
 | [0017-claude-code-skill-coexistence.md](0017-claude-code-skill-coexistence.md) | Accepted | Coexist with Claude Code built-ins; keep `simplify` name and document overlaps |
+| [0018-interview-extracts-intent.md](0018-interview-extracts-intent.md) | Accepted | `interview` extracts the user's intent (adapted from `interview-me`), not customer discovery |
 
 ## Rules
 

@@ -2,7 +2,7 @@
 
 Twenty-four skills in [`skills/`](../skills/). Install with `npx skills add gaboesquivel/flow-skills`. No workflow router and no mandatory sequence.
 
-[Agent compatibility](agent-compatibility.md) · [Decision 0006](decisions/0006-flow-lite-and-flat-docs.md) · [Decision 0008](decisions/0008-leading-words-and-visual-summaries.md) · [Decision 0009](decisions/0009-adopter-product-context.md) · [Decision 0013](decisions/0013-restore-engineering-skills.md) · [Decision 0014](decisions/0014-handoff-skill.md) · [Decision 0015](decisions/0015-tasks-and-domain-modeling.md) · [Spec 002](specs/002-flow-lite-and-flat-docs.md) · [Spec 008](specs/008-tasks-and-domain-modeling.md)
+[Agent compatibility](agent-compatibility.md) · [Decision 0006](decisions/0006-flow-lite-and-flat-docs.md) · [Decision 0008](decisions/0008-leading-words-and-visual-summaries.md) · [Decision 0009](decisions/0009-adopter-product-context.md) · [Decision 0013](decisions/0013-restore-engineering-skills.md) · [Decision 0014](decisions/0014-handoff-skill.md) · [Decision 0015](decisions/0015-tasks-and-domain-modeling.md) · [Spec 002](specs/002-flow-lite-and-flat-docs.md) · [Spec 008](specs/008-tasks-and-domain-modeling.md) · [Decision 0018](decisions/0018-interview-extracts-intent.md)
 
 Each skill has one [leading word](../GLOSSARY.md#leading-word): a compact behavior anchor already used in that skill. The words are not a second catalog and not an invocation order.
 
@@ -18,7 +18,7 @@ Optional skills (every step skippable; no required order):
 flowchart LR
   subgraph delivery["Delivery skills — invoke any subset; no fixed order"]
     direction TB
-    explore ~~~ grill ~~~ toSpec[to-spec]
+    explore ~~~ interview ~~~ grill ~~~ toSpec[to-spec]
     toTasks[to-tasks] ~~~ implement ~~~ review ~~~ ship ~~~ retro
   end
 ```
@@ -36,6 +36,7 @@ Product discovery, writing, advisory, prototype, quality, and misc skills are op
 | Skill | Leading word | When to use |
 | --- | --- | --- |
 | [explore](../skills/explore/SKILL.md) | Consequential uncertainty | Understand problem, users, repo context, and uncertainty before planning or building. |
+| [interview](../skills/interview/SKILL.md) | One question at a time | Extract what you actually want, with a guess attached to each question, before any plan or spec exists. |
 | [grill](../skills/grill/SKILL.md) | Stress-test | Stress-test an idea or plan with focused questions and evidence. |
 | [to-spec](../skills/to-spec/SKILL.md) | Label unresolved assumptions | Turn conversation into a numbered spec; label assumptions; save only when requested. |
 | [to-tasks](../skills/to-tasks/SKILL.md) | Vertical slice | Vertical-slice tasks with blockers; publish tracker issues only when requested. |
@@ -75,7 +76,6 @@ Product discovery, writing, advisory, prototype, quality, and misc skills are op
 
 | Skill | Leading word | When to use |
 | --- | --- | --- |
-| [interview](../skills/interview/SKILL.md) | Past behavior | Plan or synthesize customer discovery interviews from what people did. |
 | [jtbd](../skills/jtbd/SKILL.md) | Desired progress | Frame jobs, struggling moments, and the progress someone wants. |
 | [competitors](../skills/competitors/SKILL.md) | Switching dynamics | Map alternatives, differentiation, and why people move or stay. |
 

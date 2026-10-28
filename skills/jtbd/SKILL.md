@@ -12,4 +12,4 @@ Describe the functional, emotional, and social dimensions only when they affect 
 
 Return a concise JTBD summary: job statement, forces pushing and pulling change, anxieties and habits that resist change, and non-goals. Distinguish evidence from inference.
 
-This skill frames product intent; it does not authorize implementation. Optional `interview` or `competitors` skills may extend the work when installed and invoked separately.
+This skill frames product intent; it does not authorize implementation. The optional `competitors` skill may extend the work when installed and invoked separately.

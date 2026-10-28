@@ -16,7 +16,7 @@ const contracts = [
   { skill: 'review', file: 'SKILL.md', includes: ['untracked', 'single-agent', 'PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'product identity', 'flow start', 'decision 0010', 'Pull request', 'pr-review-contract', 'safety-critical assumption', 'confirmed findings', 'workers are unavailable'] },
   { skill: 'write-agents', file: 'SKILL.md', includes: ['behavioral failure', 'architecture, types', 'Reject redundant or ineffective', 'Never claim independence'] },
   { skill: 'write-agents', file: 'SKILL-MECHANICS.md', includes: ['explicit workflow activation', 'fallback', 'architecture that eliminates'] },
-  { skill: 'interview', file: 'SKILL.md', includes: ['do not authorize', 'limitations'] },
+  { skill: 'interview', file: 'SKILL.md', includes: ['one question per message', 'out of scope', 'explicit yes', 'does not authorize implementation'] },
   { skill: 'retro', file: 'SKILL.md', includes: ['do not modify', 'explicit user authorization', 'do not invent mistakes', 'Types or deterministic checks', 'single occurrence'] },
   { skill: 'flow', file: 'SKILL.md', includes: ['PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'workflow router', 'Do not edit adopter', 'Do not require installation', 'implement` and `review`', 'Do not create `docs/specs/`', "Do not replace a project's product identity", 'flow start', 'decision 0010', 'not an always-on hook'] },
   { skill: 'tldr', file: 'SKILL.md', includes: ["Show, don't tell", 'GenUI', 'Check alignment', 'write-humans', 'does not authorize'] },
