@@ -81,3 +81,13 @@ Source: the Signal demo rehearsal on 2026-10-28, where the operator's expectatio
 - GitHub deployment statuses are the platform-neutral signal; pipelines that deploy without reporting to GitHub show as "deployment unverified".
 - Moving the local review into `build` makes "build it" slower in local mode; that is the price of `main` only ever holding reviewed work.
 - "Ship it" in local mode counts as the explicit push request decision 0030 requires.
+
+## Tasks
+
+Sub-issues of #104. Tasks 01–04 each own one skill area and share only this spec, so they have no blockers; 02 and 03 each edit only their own entry in the smoke contracts. 05 waits for 01–04 because the docs, evals, and new contracts describe their behavior.
+
+- [ ] 01: `to-spec`: required acceptance scenario (#106)
+- [ ] 02: `build`: local mode reviews and lands on local `main` (#105)
+- [ ] 03: `ship`: local push and Verify (deployment + scenario) (#107)
+- [ ] 04: Setup wording: discovery depth and delivery are independent (#108)
+- [ ] 05: Docs, evals, and safety contracts (#109, blocked by 01–04)
