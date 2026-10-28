@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { existsSync, mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs'
+import { existsSync, lstatSync, mkdtempSync, mkdirSync, readlinkSync, symlinkSync, writeFileSync, readFileSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { execSync } from 'node:child_process'
@@ -208,6 +208,28 @@ test('copyTemplateInto keeps adopter files and skips the template git dir', () =
   assert.deepEqual(skipped, ['AGENTS.md'])
   assert.equal(readFileSync(join(dest, 'AGENTS.md'), 'utf8'), 'adopter rules')
   assert.equal(existsSync(join(dest, '.git')), false)
+  rmSync(template, { recursive: true })
+  rmSync(dest, { recursive: true })
+})
+
+test('copyTemplateInto copies symlinks as links, including to directories and dangling ones', () => {
+  const template = mkdtempSync(join(tmpdir(), 'start-tpl-'))
+  const dest = mkdtempSync(join(tmpdir(), 'start-dest-'))
+  mkdirSync(join(template, '.agents/.agents/skills/nextjs'), { recursive: true })
+  writeFileSync(join(template, '.agents/.agents/skills/nextjs/SKILL.md'), 'skill')
+  mkdirSync(join(template, '.agents/skills'), { recursive: true })
+  symlinkSync('../.agents/skills/nextjs', join(template, '.agents/skills/nextjs'))
+  symlinkSync('missing-target', join(template, 'dangling'))
+  mkdirSync(join(dest, '.claude'))
+  symlinkSync('elsewhere', join(dest, 'dangling'))
+
+  const { copied, skipped } = copyTemplateInto({ templateDir: template, destinationPath: dest })
+  assert.ok(copied.includes('.agents/skills/nextjs'))
+  assert.ok(lstatSync(join(dest, '.agents/skills/nextjs')).isSymbolicLink())
+  assert.equal(readlinkSync(join(dest, '.agents/skills/nextjs')), '../.agents/skills/nextjs')
+  assert.equal(readFileSync(join(dest, '.agents/skills/nextjs/SKILL.md'), 'utf8'), 'skill')
+  assert.deepEqual(skipped, ['dangling'])
+  assert.equal(readlinkSync(join(dest, 'dangling')), 'elsewhere')
   rmSync(template, { recursive: true })
   rmSync(dest, { recursive: true })
 })

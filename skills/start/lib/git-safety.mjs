@@ -1,4 +1,4 @@
-import { cpSync, existsSync, mkdirSync, readdirSync, statSync } from 'node:fs'
+import { cpSync, existsSync, lstatSync, mkdirSync, readdirSync, readlinkSync, statSync, symlinkSync } from 'node:fs'
 import { join } from 'node:path'
 import { execSync } from 'node:child_process'
 import { AGENT_SETUP_ENTRY_NAMES, TEMPLATE_GITHUB } from './constants.mjs'
@@ -48,6 +48,15 @@ export const assessDestination = ({ destinationPath, allowNonempty = false, pres
 
 // Copies a template checkout into the destination without overwriting anything already
 // there, so adopter instruction files and installed skills survive. Skips the template's `.git`.
+const pathExists = (path) => {
+  try {
+    lstatSync(path)
+    return true
+  } catch {
+    return false
+  }
+}
+
 export const copyTemplateInto = ({ templateDir, destinationPath }) => {
   const copied = []
   const skipped = []
@@ -66,11 +75,14 @@ export const copyTemplateInto = ({ templateDir, destinationPath }) => {
         walk(childRel)
         continue
       }
-      if (existsSync(target)) {
+      // lstat, not existsSync: a dangling link at the destination still counts as present.
+      if (pathExists(target)) {
         skipped.push(childRel)
         continue
       }
-      cpSync(join(templateDir, childRel), target)
+      // Recreate links as links with the same (usually relative) target; cpSync fails on links to directories.
+      if (entry.isSymbolicLink()) symlinkSync(readlinkSync(join(templateDir, childRel)), target)
+      else cpSync(join(templateDir, childRel), target)
       copied.push(childRel)
     }
   }

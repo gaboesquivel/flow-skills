@@ -50,6 +50,32 @@ Full records more of the *why*; it never specifies later slices up front, becaus
 
 Details and links to every `SKILL.md`: **[docs/skills.md](docs/skills.md)**.
 
+### From idea to shipped work
+
+One path through Flow mode. Decision records are optional, written only for significant standalone choices; every step can also run on its own.
+
+```mermaid
+flowchart TB
+  explore["Explore · interview · grill<br/>Shape the problem"]
+  decision["Decision record<br/>When significant"]
+  spec["Spec<br/>to-spec · candidate → draft"]
+  tasks["Tasks<br/>to-tasks · issues or spec"]
+  wave["Ship a wave<br/>Current ready set"]
+  checkpoint["Checkpoint<br/>Preview, screenshots, go?"]
+  land["Land<br/>PR ready or merge to main"]
+  align["flow aligns context<br/>Root docs stay current"]
+  explore --> spec
+  explore -.-> decision
+  decision -.-> spec
+  spec --> tasks --> wave --> checkpoint
+  checkpoint -- next wave --> wave
+  checkpoint -- last wave --> land --> align
+  classDef doc fill:#EEEDFE,stroke:#534AB7,color:#3C3489
+  classDef run fill:#FAECE7,stroke:#993C1D,color:#712B13
+  class decision,spec,tasks doc
+  class wave,checkpoint,land run
+```
+
 ## Catalog
 
 | Group | Skills |
