@@ -1,12 +1,15 @@
 #!/usr/bin/env node
 // Flow progress board: read-only kanban of a repository's specs, derived from git.
 // Zero dependencies, Node >= 22. Stages: Candidate, Specced, Ready, Building, Shipped.
-import { execFileSync } from 'node:child_process'
+import { execFile, execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { mkdirSync, realpathSync, writeFileSync } from 'node:fs'
 import { createServer } from 'node:http'
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { promisify } from 'node:util'
+
+const execFileAsync = promisify(execFile)
 
 export const COLUMNS = [
   { id: 'candidate', title: 'Candidate' },
@@ -166,22 +169,42 @@ export function readSnapshot(repoRoot, { github = null } = {}) {
   const delivery = readDelivery(readBlobs(repoRoot, ['AGENTS.md', 'CLAUDE.md'].map((file) => `${defaultRef}:${file}`)))
   let githubData = null
   if (github && delivery !== 'local') {
-    githubData = github(repoRoot)
+    githubData = github(repoRoot) ?? null
     // Without a GitHub remote, enrichment is only worth a note when the project says it uses pull requests.
-    if (githubData.reason === 'no GitHub remote' && delivery !== 'pull-request') githubData = null
+    if (githubData?.reason === 'no GitHub remote' && delivery !== 'pull-request') githubData = null
   }
   if (githubData?.available) {
     githubData = {
       ...githubData,
-      prs: githubData.prs.map((pr) => (pr.state === 'MERGED' && pr.baseRefName === defaultShort && claimed(pr.headRefName)
+      prs: githubData.prs.map((pr) => (pr.state === 'MERGED' && pr.baseRefName === defaultShort && claimed(pr.headRefName ?? '')
         ? { ...pr, implementation: prHasImplementationWork(repoRoot, pr.mergeCommit?.oid) }
         : pr)),
     }
+    const added = specAddedDates(repoRoot, defaultRef)
+    for (const spec of specs) if (spec.onDefault && added.has(spec.file)) spec.addedAt = added.get(spec.file)
   }
   return { repoName: basename(repoRoot), defaultBranch: defaultBranch.name, delivery, branches, specs, github: githubData, generatedAt: new Date().toISOString() }
 }
 
-/** `Delivery:` from the first Flow block (between the BEGIN/END FLOW markers) in the given texts; null when unset. */
+/** Committer date of the latest commit on `ref` that added each spec file, from one `git log`. */
+function specAddedDates(repoRoot, ref) {
+  const out = tryGit(repoRoot, ['-c', 'core.quotePath=false', 'log', '--diff-filter=A', '--format=@@%cI', '--name-only', ref, '--', SPEC_DIR]) ?? ''
+  const added = new Map()
+  let date = null
+  for (const line of out.split('\n')) {
+    if (line.startsWith('@@')) date = line.slice(2)
+    else if (line && date) {
+      const file = line.slice(SPEC_DIR.length + 1)
+      if (!added.has(file)) added.set(file, date)
+    }
+  }
+  return added
+}
+
+/**
+ * `Delivery:` from the first Flow block (between the BEGIN/END FLOW markers) in the given texts; null when unset.
+ * Mirrors readDelivery in skills/flow/lib/flow-block.mjs (copied: each skill installs on its own).
+ */
 export function readDelivery(texts) {
   for (const text of texts) {
     const block = /<!-- BEGIN FLOW -->([\s\S]*?)<!-- END FLOW -->/u.exec(text)?.[1]
@@ -195,68 +218,139 @@ export function readDelivery(texts) {
 
 /**
  * Whether a merged pull request changed a path outside `docs/`, measured from its merge commit's first parent
- * (squash and merge commits). A merge commit not fetched locally counts as implementation work: GitHub says it merged.
+ * (squash and merge commits; a rebase merge shows only its last commit). False when the merge commit is not
+ * available locally: without it, git cannot confirm implementation work.
  */
 function prHasImplementationWork(repoRoot, oid) {
-  if (!oid || !/^[0-9a-f]{40}$/u.test(oid)) return true
+  if (!oid || !/^[0-9a-f]{40}$/u.test(oid)) return false
   return cached(`pr ${repoRoot} ${oid}`, () => {
-    if (!tryGit(repoRoot, ['rev-parse', '--verify', '--quiet', `${oid}^{commit}`])) return true
+    if (!tryGit(repoRoot, ['rev-parse', '--verify', '--quiet', `${oid}^{commit}`])) return false
     const out = tryGit(repoRoot, ['diff', '-z', '--name-only', `${oid}^1`, oid]) ?? ''
     return out.split('\0').filter(Boolean).some((path) => !path.startsWith('docs/'))
   })
 }
 
-/** Runs `gh` with an argument array and a timeout; returns stdout. Throws like execFileSync. */
+export const PR_LIMIT = 200
+export const ISSUE_LIMIT = 500
+
+/** Runs `gh` with an argument array and a timeout; returns stdout. Throws like execFileSync. For `--once`/`--json`. */
 export function runGh(args, { cwd, timeout = 5000 } = {}) {
   return execFileSync('gh', args, { cwd, encoding: 'utf8', timeout, stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024 })
 }
 
-/** `owner/name` of the first GitHub remote (`origin` first), or null. */
-function githubRepo(repoRoot) {
-  const remotes = (tryGit(repoRoot, ['remote']) ?? '').split('\n').filter(Boolean).sort((a, b) => Number(b === 'origin') - Number(a === 'origin'))
-  for (const remote of remotes) {
-    const url = tryGit(repoRoot, ['remote', 'get-url', remote]) ?? ''
-    const match = /github\.com[:/]([\w.-]+)\/([\w.-]+?)(?:\.git)?\/?$/u.exec(url)
-    if (match) return `${match[1]}/${match[2]}`
-  }
-  return null
+/** Async `gh`: resolves to stdout, rejects like execFile. Keeps the live server's request path free. */
+export async function runGhAsync(args, { cwd, timeout = 5000 } = {}) {
+  const { stdout } = await execFileAsync('gh', args, { cwd, encoding: 'utf8', timeout, maxBuffer: 64 * 1024 * 1024 })
+  return stdout
+}
+
+/** `owner/name` when a remote URL points at github.com (https, ssh, scp-like); null otherwise. */
+export function parseGithubRemote(url) {
+  const match = /^(?:[a-z][\w+.-]*:\/\/)?(?:[^@/\s]+@)?github\.com(?::\d+)?[:/]([\w.-]+)\/([\w.-]+?)(?:\.git)?\/?$/iu.exec(String(url).trim())
+  return match ? `${match[1]}/${match[2]}` : null
 }
 
 function ghFailure(error) {
   if (error?.code === 'ENOENT') return 'gh not installed'
-  if (error?.code === 'ETIMEDOUT' || error?.signal === 'SIGTERM') return 'GitHub request timed out'
+  if (error?.code === 'ETIMEDOUT' || error?.killed || error?.signal === 'SIGTERM') return 'GitHub request timed out'
   const stderr = String(error?.stderr ?? '')
   if (/auth login|not logged in|authenticat/iu.test(stderr)) return 'gh not authenticated'
   return 'gh request failed'
 }
 
 /**
- * Fetches pull requests and issues with two `gh` calls. Returns `{ available: true, prs, issues }` or
- * `{ available: false, reason }`; never throws. `run(args, { cwd })` is injectable for tests.
+ * The fetch as a sequence of `gh` calls: yields argument arrays, receives stdout (or a thrown error), returns
+ * `{ available: true, prs, issues, truncated }` or `{ available: false, reason }`. One sequence, two drivers:
+ * synchronous for `--once`/`--json`, asynchronous for the live server.
  */
-export function fetchGithub(repoRoot, { run = runGh } = {}) {
-  const repo = githubRepo(repoRoot)
-  if (!repo) return { available: false, reason: 'no GitHub remote' }
+function* githubSteps(repoRoot) {
+  const remotes = (tryGit(repoRoot, ['remote']) ?? '').split('\n').filter(Boolean).sort((a, b) => Number(b === 'origin') - Number(a === 'origin'))
+  if (!remotes.length) return { available: false, reason: 'no GitHub remote' }
+  let repo = null
+  for (const remote of remotes) repo ??= parseGithubRemote(tryGit(repoRoot, ['remote', 'get-url', remote]) ?? '')
+  if (!repo) {
+    // Host aliases (`github.com-work`) or other hosts: let gh resolve the remote.
+    let view
+    try { view = JSON.parse(yield ['repo', 'view', '--json', 'nameWithOwner,url']) } catch { return { available: false, reason: 'no GitHub remote' } }
+    const host = /^https?:\/\/([^/]+)\//u.exec(String(view?.url ?? ''))?.[1]?.toLowerCase()
+    if (!view?.nameWithOwner || !host) return { available: false, reason: 'no GitHub remote' }
+    if (host !== 'github.com') return { available: false, reason: `remote is on ${host}, links support github.com only` }
+    repo = view.nameWithOwner
+  }
   try {
-    const prs = JSON.parse(run(['pr', 'list', '--repo', repo, '--state', 'all', '--limit', '200', '--json', 'number,title,state,headRefName,baseRefName,url,mergedAt,mergeCommit,body'], { cwd: repoRoot }))
-    const issues = JSON.parse(run(['issue', 'list', '--repo', repo, '--state', 'all', '--limit', '500', '--json', 'number,title,state,url'], { cwd: repoRoot }))
+    const prs = JSON.parse(yield ['pr', 'list', '--repo', repo, '--state', 'all', '--limit', String(PR_LIMIT), '--json', 'number,title,state,headRefName,baseRefName,url,mergedAt,mergeCommit,body'])
+    const issues = JSON.parse(yield ['issue', 'list', '--repo', repo, '--state', 'all', '--limit', String(ISSUE_LIMIT), '--json', 'number,title,state,url'])
     if (!Array.isArray(prs) || !Array.isArray(issues)) return { available: false, reason: 'unexpected gh output' }
-    return { available: true, prs, issues }
+    return { available: true, prs, issues, truncated: { prs: prs.length >= PR_LIMIT, issues: issues.length >= ISSUE_LIMIT } }
   } catch (error) {
     return { available: false, reason: error instanceof SyntaxError ? 'unexpected gh output' : ghFailure(error) }
   }
 }
 
-/** Wraps fetchGithub with a cache: at most one fetch per `ttlMs` per repository. */
+/** Fetches with synchronous `gh` calls; never throws. `run(args, { cwd })` is injectable for tests. */
+export function fetchGithub(repoRoot, { run = runGh } = {}) {
+  const steps = githubSteps(repoRoot)
+  let step = steps.next()
+  while (!step.done) {
+    let out
+    try { out = run(step.value, { cwd: repoRoot }) } catch (error) { step = steps.throw(error); continue }
+    step = steps.next(out)
+  }
+  return step.value
+}
+
+/** Same as fetchGithub with an async `run`; never rejects. */
+export async function fetchGithubAsync(repoRoot, { run = runGhAsync } = {}) {
+  const steps = githubSteps(repoRoot)
+  let step = steps.next()
+  while (!step.done) {
+    let out
+    try { out = await run(step.value, { cwd: repoRoot }) } catch (error) { step = steps.throw(error); continue }
+    step = steps.next(out)
+  }
+  return step.value
+}
+
+/** A failed refresh keeps the last good data, marked stale, so stages do not flip on a flaky network. */
+function keepLastGood(previous, next) {
+  if (next.available || !previous?.available) return next
+  return { ...previous, stale: next.reason }
+}
+
+/** Wraps fetchGithub with a cache: at most one synchronous fetch per `ttlMs` per repository. */
 export function githubReader({ run = runGh, ttlMs = 0 } = {}) {
   const cache = new Map()
   return (repoRoot) => {
     const hit = cache.get(repoRoot)
     if (hit && Date.now() - hit.at < ttlMs) return hit.value
-    const value = fetchGithub(repoRoot, { run })
+    const value = keepLastGood(hit?.value, fetchGithub(repoRoot, { run }))
     cache.set(repoRoot, { at: Date.now(), value })
     return value
   }
+}
+
+/**
+ * Stale-while-revalidate source for the live server: returns the cached data at once (null before the first
+ * fetch finishes) and starts a background refresh when it is older than `ttlMs`. Never waits on `gh`.
+ * `source.refresh(repoRoot)` returns the in-flight refresh.
+ */
+export function githubSource({ run = runGhAsync, ttlMs = 60_000 } = {}) {
+  const entries = new Map()
+  const refresh = (repoRoot) => {
+    let entry = entries.get(repoRoot)
+    if (!entry) entries.set(repoRoot, (entry = { at: 0, value: null, pending: null }))
+    entry.pending ??= fetchGithubAsync(repoRoot, { run })
+      .catch((error) => ({ available: false, reason: ghFailure(error) }))
+      .then((value) => { entry.value = keepLastGood(entry.value, value); entry.at = Date.now(); entry.pending = null })
+    return entry.pending
+  }
+  const source = (repoRoot) => {
+    const entry = entries.get(repoRoot)
+    if (!entry || (!entry.pending && Date.now() - entry.at >= ttlMs)) refresh(repoRoot)
+    return entries.get(repoRoot).value
+  }
+  source.refresh = refresh
+  return source
 }
 /** Status word from the spec header (`Status: draft` or `**Status:** draft`), lowercased; null when absent. */
 export function parseStatus(content) {
@@ -315,7 +409,7 @@ const CLOSES = /\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s*:?\s+#(\d+)\b/giu
  * open or merged pull requests whose head branch matches the slug or whose body closes one of the card's issues.
  * `mergedPrs`: merged pull requests from a slug-matched head into the default branch, shaped like merged branches.
  */
-function githubLinks(slug, refs, github) {
+function githubLinks(slug, refs, github, addedAt) {
   if (!github?.available) return { issues: [], pr: null, mergedPrs: [] }
   const headMatches = (pr) => Boolean(pr.headRefName) && matchBranches(slug, [{ name: pr.headRefName }]).length > 0
   const byNumber = new Map(github.issues.map((issue) => [issue.number, issue]))
@@ -329,9 +423,14 @@ function githubLinks(slug, refs, github) {
   linked.sort((a, b) => Number(b.state === 'OPEN') - Number(a.state === 'OPEN') || b.number - a.number)
   const top = linked[0]
   const pr = top ? { number: top.number, state: String(top.state).toLowerCase(), url: safeGithubUrl(top.url) } : null
-  // readSnapshot sets `implementation` only on merged pull requests into the default branch.
+  // For staging, stricter than links: readSnapshot sets `implementation` only on merged pull requests into the
+  // default branch; the head's last segment starts with the slug; the merge is not older than the spec file
+  // (one minute of slack for a spec added by the same squash merge).
+  const startsWithSlug = new RegExp(`^(?:\\d{3}-)?${escapeRegExp(slug)}(?:$|[-_])`, 'u')
+  const added = Date.parse(addedAt ?? '')
+  const afterSpec = (p) => Number.isNaN(added) || Number.isNaN(Date.parse(p.mergedAt ?? '')) || Date.parse(p.mergedAt) >= added - 60_000
   const mergedPrs = github.prs
-    .filter((p) => p.state === 'MERGED' && typeof p.implementation === 'boolean' && headMatches(p))
+    .filter((p) => p.state === 'MERGED' && typeof p.implementation === 'boolean' && startsWithSlug.test(String(p.headRefName ?? '').split('/').pop()) && afterSpec(p))
     .sort((a, b) => b.number - a.number)
     .map((p) => ({ name: p.headRefName, remote: false, merged: true, implementation: p.implementation, pr: p.number }))
   return { issues, pr, mergedPrs }
@@ -389,7 +488,7 @@ export function deriveBoard(snapshot) {
     const onDefault = spec.onDefault ?? true
     const status = parseStatus(spec.content)
     const tasks = countTasks(spec.content)
-    const links = githubLinks(slug, taskIssueRefs(spec.content), snapshot.github)
+    const links = githubLinks(slug, taskIssueRefs(spec.content), snapshot.github, spec.addedAt)
     // Merged git branches come first; a merged pull request adds what git cannot see (a squash merge later edited).
     const matched = matchBranches(slug, snapshot.branches ?? [])
     const branches = [...matched.filter((b) => b.merged), ...links.mergedPrs, ...matched.filter((b) => !b.merged)]
@@ -421,7 +520,12 @@ export function deriveBoard(snapshot) {
     })
   }
   const github = snapshot.github ?? null
-  const githubNote = github && !github.available ? `GitHub links unavailable: ${github.reason ?? 'unknown reason'}` : null
+  const notes = []
+  if (github && !github.available) notes.push(`GitHub links unavailable: ${github.reason ?? 'unknown reason'}`)
+  if (github?.available && github.stale) notes.push(`GitHub links may be out of date: ${github.stale}`)
+  if (github?.available && github.truncated?.prs) notes.push(`GitHub links may be incomplete: read only the latest ${PR_LIMIT} pull requests`)
+  if (github?.available && github.truncated?.issues) notes.push(`GitHub links may be incomplete: read only the latest ${ISSUE_LIMIT} issues`)
+  const githubNote = notes.length ? notes.join('; ') : null
   return { repoName: snapshot.repoName ?? null, defaultBranch: snapshot.defaultBranch ?? null, generatedAt: snapshot.generatedAt ?? null, githubNote, columns }
 }
 
@@ -572,7 +676,8 @@ const firstLines = (message) => String(message).split('\n').slice(0, 2).join(' '
  * recomputed at most once per `memoMs`, however many tabs poll. A git failure after start makes `/state`
  * answer 500 `{ error }`; the page keeps its last good board and shows a banner. Every `/state` body
  * carries `server: { repoRoot, pid }` so `--serve` and `--stop` can recognize this repository's board.
- * `github` (a githubReader or null) adds GitHub links; its own cache keeps polling off the GitHub API.
+ * `github` (a githubSource, or null) adds GitHub links. It refreshes in the background on its own longer
+ * cache, so a request never waits on `gh` and polling stays off the GitHub API; links fill in once it resolves.
  * Throws when the first derivation fails; rejects when the port cannot be bound.
  */
 export async function startServer({ repoRoot, port = 0, memoMs = 1000, github = null }) {
@@ -691,7 +796,7 @@ export async function main(argv = process.argv.slice(2)) {
   if (!args.once && !args.json && !args.serve && !args.stop) { console.error(usage); return 2 }
   const repoRoot = tryGit(resolve(args.repo), ['rev-parse', '--show-toplevel'])
   if (!repoRoot) { console.error(`Not inside a git repository: ${args.repo}`); return 1 }
-  if (args.serve) return serve(repoRoot, args.port, args.github ? githubReader({ ttlMs: GITHUB_TTL_MS }) : null)
+  if (args.serve) return serve(repoRoot, args.port, args.github ? githubSource({ ttlMs: GITHUB_TTL_MS }) : null)
   if (args.stop) return stopServer(repoRoot, args.port)
   let board
   try { board = deriveBoard(readSnapshot(repoRoot, { github: args.github ? githubReader() : null })) } catch (error) { console.error(error.message); return 1 }

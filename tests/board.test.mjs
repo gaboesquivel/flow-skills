@@ -6,7 +6,8 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import test from 'node:test'
 import vm from 'node:vm'
-import { countTasks, deriveBoard, escapeHtml, fetchGithub, githubReader, LIVE_SCRIPT, parseStatus, readSnapshot, renderHtml, startServer } from '../skills/board/scripts/board.mjs'
+import { readDelivery as flowReadDelivery } from '../skills/flow/lib/flow-block.mjs'
+import { countTasks, deriveBoard, escapeHtml, fetchGithub, githubReader, githubSource, LIVE_SCRIPT, parseGithubRemote, readDelivery, parseStatus, readSnapshot, renderHtml, startServer } from '../skills/board/scripts/board.mjs'
 
 const script = join(import.meta.dirname, '../skills/board/scripts/board.mjs')
 
@@ -576,7 +577,7 @@ test('fetchGithub: two gh calls with argument arrays; failures become reasons, n
   git('remote', 'add', 'origin', 'git@github.com:o/r.git')
   const calls = []
   const ok = fetchGithub(dir, { run: (args, options) => { calls.push({ args, options }); return args[0] === 'pr' ? '[{"number":1}]' : '[]' } })
-  assert.deepEqual(ok, { available: true, prs: [{ number: 1 }], issues: [] })
+  assert.deepEqual(ok, { available: true, prs: [{ number: 1 }], issues: [], truncated: { prs: false, issues: false } })
   assert.deepEqual(calls.map((call) => call.args.slice(0, 4)), [['pr', 'list', '--repo', 'o/r'], ['issue', 'list', '--repo', 'o/r']])
   const fail = (error) => fetchGithub(dir, { run: () => { throw Object.assign(new Error('x'), error) } }).reason
   assert.equal(fail({ code: 'ENOENT' }), 'gh not installed')
@@ -712,5 +713,117 @@ test('--serve and --stop find this repo\'s board by port probe, never another re
 test('--serve rejects bad ports and mixed modes', () => {
   for (const args of [['--serve', '--port', 'x'], ['--serve', '--port', '70000'], ['--serve', '--once'], ['--stop', '--serve']]) {
     assert.equal(cli(...args).status, 2, args.join(' '))
+  }
+})
+
+test('parseGithubRemote accepts github.com remotes only', () => {
+  const cases = [
+    ['git@github.com:o/r.git', 'o/r'],
+    ['https://github.com/o/r', 'o/r'],
+    ['https://github.com/o/r.git/', 'o/r'],
+    ['ssh://git@github.com:22/o/r.git', 'o/r'],
+    ['https://user@github.com/o/my.repo.git', 'o/my.repo'],
+    ['git@github.com-work:o/r.git', null],
+    ['https://notgithub.com/o/r', null],
+    ['https://github.company.com/o/r', null],
+    ['https://evil.example/github.com/o/r', null],
+    ['/srv/git/github.com/o/r', null],
+  ]
+  for (const [url, expected] of cases) assert.equal(parseGithubRemote(url), expected, url)
+})
+
+test('fetchGithub: host aliases resolve through gh repo view; other hosts get their own note', () => withRepo(({ dir, git }) => {
+  git('remote', 'add', 'origin', 'git@github.com-work:o/r.git')
+  const calls = []
+  const runAs = (url) => (args) => { calls.push(args.slice(0, 2).join(' ')); return args[0] === 'repo' ? JSON.stringify({ nameWithOwner: 'o/r', url }) : '[]' }
+  assert.equal(fetchGithub(dir, { run: runAs('https://github.com/o/r') }).available, true)
+  assert.deepEqual(calls, ['repo view', 'pr list', 'issue list'])
+  assert.equal(fetchGithub(dir, { run: runAs('https://ghe.example.com/o/r') }).reason, 'remote is on ghe.example.com, links support github.com only')
+  assert.equal(fetchGithub(dir, { run: () => { throw Object.assign(new Error('x'), { code: 'ENOENT' }) } }).reason, 'no GitHub remote')
+}))
+
+test('GitHub note: list limits and stale data after a failed refresh', () => withRepo(({ dir, git }) => {
+  const full = { available: true, prs: [], issues: [], truncated: { prs: true, issues: true } }
+  assert.match(deriveBoard({ ...snapshot({}), github: full }).githubNote, /latest 200 pull requests.*latest 500 issues/u)
+  git('remote', 'add', 'origin', 'https://github.com/o/r.git')
+  let fail = false
+  const reader = githubReader({ run: (args) => { if (fail) throw Object.assign(new Error('x'), { stderr: 'HTTP 502' }); return args[0] === 'issue' ? '[{"number":45,"state":"OPEN","url":"https://github.com/o/r/issues/45"}]' : '[]' } })
+  assert.equal(reader(dir).issues.length, 1)
+  fail = true
+  const stale = reader(dir)
+  assert.equal(stale.issues.length, 1, 'last good data kept')
+  assert.equal(deriveBoard({ ...snapshot({}), github: stale }).githubNote, 'GitHub links may be out of date: gh request failed')
+}))
+
+test('readDelivery agrees with the flow skill on Flow block inputs', () => {
+  const block = (line) => `# A\n\n<!-- BEGIN FLOW -->\n## Flow\n\n${line}\n<!-- END FLOW -->\n`
+  const inputs = ['# No block\n', block('Delivery: local'), block('Delivery: Local'), block('Delivery: pull-request'), block('Delivery: pull request'),
+    block('Delivery: pull_request'), block('Delivery: PR'), block('Delivery: pullrequest'), block('Delivery: unset'), block('Delivery:'), block('Delivery: bogus'), block('No delivery line')]
+  for (const text of inputs) assert.equal(readDelivery([text]), flowReadDelivery(text), text)
+})
+
+test('readSnapshot: merged pull requests stage only into the default branch, with a local merge commit, after the spec', () => withRepo(({ dir, git, write, commit }) => {
+  write('020-widget.md', spec('020: Widget', 'draft'))
+  commit('spec')
+  const specDate = git('log', '-1', '--format=%cI').trim()
+  git('switch', '--quiet', '-c', 'feat/widget')
+  touch(dir, 'widget.txt')
+  commit('widget')
+  git('switch', '--quiet', 'main')
+  git('merge', '--quiet', '--squash', 'feat/widget')
+  commit('squash widget')
+  const squash = git('rev-parse', 'HEAD').trim()
+  writeFileSync(join(dir, 'widget.txt'), 'edited later\n')
+  commit('edit widget')
+  const later = new Date(Date.parse(specDate) + 3_600_000).toISOString()
+  const pr = (fields) => ({ number: 7, state: 'MERGED', headRefName: 'feat/widget', baseRefName: 'main', url: 'https://github.com/o/r/pull/7', body: '', mergedAt: later, mergeCommit: { oid: squash }, ...fields })
+  const stage = (fields) => stageOf(deriveBoard(readSnapshot(dir, { github: () => github([pr(fields)], []) })), '020')
+  assert.equal(stage({}), 'shipped')
+  assert.equal(stage({ baseRefName: 'feat/other' }), 'building', 'non-default base is ignored')
+  assert.equal(stage({ mergeCommit: { oid: 'f'.repeat(40) } }), 'building', 'merge commit missing locally')
+  assert.equal(stage({ mergedAt: new Date(Date.parse(specDate) - 3_600_000).toISOString() }), 'building', 'merged before the spec existed')
+  assert.equal(stage({ headRefName: 'feat/old-widget' }), 'building', 'head must start with the slug to stage')
+  const board = deriveBoard(readSnapshot(dir, { github: () => github([pr({ headRefName: 'feat/old-widget' })], []) }))
+  assert.equal(cardOf(board, '020').pr.number, 7, 'links keep the looser match')
+}))
+
+test('--no-github never runs gh', () => withRepo(({ dir, git, write, commit }) => {
+  write('001-a.md', spec('001: A', 'draft'))
+  writeFileSync(join(dir, 'AGENTS.md'), '<!-- BEGIN FLOW -->\nDelivery: pull-request\n<!-- END FLOW -->\n')
+  commit('spec')
+  git('remote', 'add', 'origin', 'https://github.com/o/r.git')
+  const bin = join(dir, '.git', 'fake-bin')
+  const marker = join(dir, '.git', 'gh-ran')
+  mkdirSync(bin)
+  writeFileSync(join(bin, 'gh'), `#!/bin/sh\ntouch '${marker}'\nexit 1\n`, { mode: 0o755 })
+  const env = { ...process.env, PATH: `${bin}:${process.env.PATH}` }
+  const run = (...args) => JSON.parse(spawnSync(process.execPath, [script, '--json', '--repo', dir, ...args], { encoding: 'utf8', env }).stdout)
+  assert.equal(run('--no-github').githubNote, null)
+  assert.equal(existsSync(marker), false)
+  assert.equal(run().githubNote, 'GitHub links unavailable: gh request failed')
+  assert.equal(existsSync(marker), true, 'fake gh is on PATH')
+}))
+
+test('live server never waits on a slow gh; links appear after the refresh resolves', async () => {
+  const { dir, git, write, commit } = makeRepo()
+  write('020-widget.md', spec('020: Widget', 'draft', '\n## Tasks\n\n### 01: One (#45)\n- [ ] a\n'))
+  commit('spec')
+  git('remote', 'add', 'origin', 'https://github.com/o/r.git')
+  const run = async (args) => {
+    await new Promise((done) => setTimeout(done, 1500))
+    return args[0] === 'issue' ? '[{"number":45,"state":"OPEN","url":"https://github.com/o/r/issues/45"}]' : '[]'
+  }
+  const source = githubSource({ run, ttlMs: 60_000 })
+  const started = Date.now()
+  const live = await startServer({ repoRoot: dir, port: 0, memoMs: 0, github: source })
+  try {
+    const before = await getState(live.url)
+    assert.ok(Date.now() - started < 1000, `state answered in ${Date.now() - started} ms`)
+    assert.deepEqual(cardOf(before, '020').issues, [])
+    await source.refresh(dir)
+    assert.deepEqual(cardOf(await getState(live.url), '020').issues.map((issue) => issue.number), [45])
+  } finally {
+    await live.close()
+    rmSync(dir, { recursive: true, force: true })
   }
 })

@@ -63,7 +63,7 @@ Specs that exist only on unmerged branches are shown too, marked with their bran
 
 **Ship integration.** `ship` task-set mode ([spec 009](009-flow-mode.md), implemented) writes the overlay at run start, at every task state change, and at run end. Writing the overlay is best-effort: a failure to write never stops a run. `ship` does not need the board to be running.
 
-**GitHub enrichment.** In pull-request mode, when `gh` is available and authenticated, the script adds issue and pull-request numbers, state, and links to cards. Without it, the board renders from git alone and says so in the header.
+**GitHub enrichment.** In pull-request mode, when `gh` is available and authenticated, the script adds issue and pull-request numbers, state, and links to cards. Without it, the board renders from git alone and says so in the header. A merged pull request from the spec's branch into the default branch counts as that branch's merge for Shipped; git rules otherwise.
 
 ## Testing Decisions
 
