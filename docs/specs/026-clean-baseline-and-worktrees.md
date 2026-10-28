@@ -1,6 +1,6 @@
 # 026: A clean baseline and ready worktrees
 
-Status: draft (2026-10-28). Builds on [spec 021](021-demo-findings.md). Related: spec 025 (in flight on `feat/025-build-without-a-spec`; it stops `explore` writing specs and candidates unasked, so item 6 here applies only when a candidate is asked for).
+Status: accepted (2026-10-28). Builds on [spec 021](021-demo-findings.md). Related: spec 025 (in flight on `feat/025-build-without-a-spec`; it stops `explore` writing specs and candidates unasked, so item 6 here applies only when a candidate is asked for).
 
 ## Problem Statement
 
