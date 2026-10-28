@@ -1,6 +1,6 @@
 ---
 name: review
-description: Review work against intent, specs, and root context, plus correctness and maintainability. Use when the user says "check it against the spec", "does this match the intent", or "alignment review".
+description: Review work against intent, specs, and root context on five axes (correctness, readability, architecture, security, performance). Use when the user says "check it against the spec", "does this match the intent", or "alignment review".
 disable-model-invocation: false
 ---
 
@@ -21,10 +21,13 @@ Default an unspecified review to the current working tree. If it has no changes,
 
 Recover intended behavior from the request, specifications, tests, and accepted product/architecture decisions. Retrieve tracker context only when useful and accessible; report unavailable intent rather than requiring setup.
 
-Assess both:
+Assess the change on five **review axes** (adapted from Addy Osmani's code-review-and-quality). Spend effort where the change can fail; an axis the change cannot affect needs no comment.
 
-- **Correctness and intent:** missing requirements, regressions, broken references, failure paths, unsafe side effects, preservation of existing work, and useful test coverage.
-- **Maintainability and conventions:** documented standards, duplication, misleading names, unnecessary abstraction, and changes that scatter one responsibility across unrelated modules. Treat design smells as hypotheses, not automatic violations.
+- **Correctness:** intent and spec match, missing requirements, regressions, broken references, failure paths, unsafe side effects, preservation of existing work, and useful test coverage.
+- **Readability and simplicity:** misleading names, needless complexity, dead code, and text a maintainer would misread.
+- **Architecture:** documented conventions, boundaries, duplication, unnecessary abstraction, and one responsibility scattered across unrelated modules. Treat design smells as hypotheses, not automatic violations.
+- **Security:** trust boundaries, input handling, secrets, permissions, and authorization.
+- **Performance:** work that grows with input, repeated I/O, and blocking paths users or CI wait on.
 
 Follow important paths through callers and dependencies. A passing test is evidence only for behavior it actually covers. Distinguish **confirmed findings**, **plausible risks**, and **preferences**.
 
@@ -34,8 +37,8 @@ Use independent workers only when available and authorized and the change justif
 
 ## Report
 
-Lead with actionable findings ordered by impact. For each, cite the file or line, concrete failure or mismatch, supporting evidence, and smallest viable correction. Separate open questions and verification limits. If no material findings remain, say what was checked.
+Lead with actionable findings ordered by impact. For each, name its axis and cite the file or line, concrete failure or mismatch, supporting evidence, and smallest viable correction. Separate open questions and verification limits. If no material findings remain, say what was checked.
 
-When the reviewed change affects product intent, experience, architecture, or shared vocabulary, note whether root context (`PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md`) still matches or needs alignment. Flag stale root docs as findings. Flag a change that replaces a project's product identity with Flow's methodology identity. Do not silently rewrite docs unless fixes are requested. The `flow` skill (when installed or surfaced by the host) owns detailed alignment passes. Absence of an always-on hook is not evidence the docs are current. `flow start` is not an initializer; the `start` skill (decision 0010) is the supported initializer when explicitly invoked.
+When the reviewed change affects product intent, experience, architecture, or shared vocabulary, note whether root context (`PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md`) still matches or needs alignment. Flag stale root docs as findings. Flag a change that replaces a project's product identity with Flow's methodology identity. Do not silently rewrite docs unless fixes are requested. The `flow` skill (when installed or surfaced by the host) owns detailed alignment passes. Absence of an always-on hook is not evidence the docs are current. `flow start` is not an initializer; the optional `start` skill (decision 0010) is the initializer, and it confirms template, name, and destination before writing.
 
 Review is read-only unless fixes are requested. A review request does not authorize publishing comments, changing source, committing, or modifying tracker state.

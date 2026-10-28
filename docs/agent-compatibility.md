@@ -10,7 +10,7 @@ Flow skills target the [Agent Skills](https://agentskills.io) package layout: `s
 | Host skill UI | Some IDEs import a Git URL or local folder directly; behavior matches that host's skill loader. |
 | Manual copy | Copy `skills/*` into the host's expected skills directory. You are responsible for paths and updates. |
 
-Flow does not modify adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or similar files.
+Flow does not modify adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or similar files, except the opt-in Flow block below.
 
 ## Invocation
 
@@ -24,13 +24,21 @@ Every skill except `start` is model-invocable. `start` creates a repository, so 
 
 **Root context alignment** is not guaranteed by implicit `flow` invocation alone. Hosts may skip alignment on ordinary implementation work. The portable contract is: `implement` and `review` remind agents to align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` when meaningful changes warrant it; adopters can also say "update the docs".
 
-**Pull request automation** (optional, per repository): [pr-review-contract.md](pr-review-contract.md) is agent-agnostic — any IDE or model can follow it before opening a PR. This repository adds a deterministic checker (`scripts/check-pr-alignment.mjs`) and an OpenAI-compatible CI job on `pull_request`. `main` requires a pull request plus passing `alignment`, `validate`, and `context-review` checks when the review API key is configured; see [spec 004](specs/004-pr-alignment-review.md). Flow skills do not install workflows or edit adopter instruction files; copy the contract and scripts when adopting the pattern.
+**Pull request automation** (optional, per repository): [pr-review-contract.md](pr-review-contract.md) is agent-agnostic — any IDE or model can follow it before opening a PR. This repository adds a deterministic checker (`scripts/check-pr-alignment.mjs`) and an OpenAI-compatible CI job on `pull_request`. `main` requires a pull request plus passing `alignment`, `validate`, and `context-review` checks when the review API key is configured; see [spec 004](specs/004-pr-alignment-review.md). Flow skills do not install workflows or edit adopter instruction files beyond the opt-in Flow block; copy the contract and scripts when adopting the pattern.
 
 That alignment updates the **current project's** product context. It does not copy this repository's Flow identity into an adopter `PRODUCT.md`. [Decision 0009](decisions/0009-adopter-product-context.md).
 
 `flow` is not a project-start command. `flow start` and "start project" do not authorize scaffolding or instruction-file edits. The optional [`start`](../skills/start/SKILL.md) skill initializes from flow-next or flow-mono when explicitly invoked: template isolation, renamed Portless identity, verification (`pnpm setup`, `pnpm qa`, `pnpm build`, `pnpm eval`, Portless dev smoke), baseline product docs, and an initial Git commit only after essential checks pass. It does not invoke `flow` or `explore` automatically. It is the one explicit-only skill.
 
 Metadata and contract tests show the intended invocation split. They do not show that a host matched a spoken phrase to the right skill. Claude Code is recorded as a second agent product for read-only runs; see [smoke scenario status](../tests/smoke/2026-10-27-scenario-status.md).
+
+## Flow mode
+
+"Set up Flow here" writes one Flow block between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->` in `AGENTS.md`, or in `CLAUDE.md` when that is the only instruction file ([decision 0020](decisions/0020-flow-mode.md)). Every host that reads the file sees the phrases; this is the portable stand-in for a session-start hook. Re-running updates the block in place; deleting it opts out.
+
+"Ship it" on a spec's task set needs isolated workers (for example subagents in separate Git worktrees) for parallel tasks and independent per-task review. Hosts without them run the tasks sequentially on the spec branch and label reviews single-agent. The **delivery mode** on the block's `Delivery:` line picks the finish: pull-request mode needs GitHub access, and local mode needs only Git and a push remote. A `main` that requires pull requests always uses pull-request mode.
+
+**Dogfooding in this repository.** `.claude/skills` is a symlink to `skills/`, so Claude Code sessions here load the working-tree skills; `pnpm validate` fails if the link breaks. Other hosts read the source tree directly or install it with the skills CLI.
 
 ## Metadata
 

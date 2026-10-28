@@ -54,7 +54,7 @@ The methodology defines what good product engineering looks like. Reusable skill
 | **Flow** | The methodology (this document and related practice docs) |
 | **flow-skills** (this repository) | Reusable skills and conventions for agents |
 | **[flow-next](https://github.com/gaboesquivel/flow-next)** / **[flow-mono](https://github.com/gaboesquivel/flow-mono)** | Independent application foundations (templates); [interop contract](docs/specs/005-flow-templates-interop.md) (supersedes [003](docs/specs/003-flow-templates-baseline-v2.md) for new work) |
-| **[Flow Factory](https://github.com/gaboesquivel/flow-factory)** | Optional agent orchestration and automated execution built on Flow—not Flow itself |
+| **[Flow Factory](https://github.com/gaboesquivel/flow-factory)** | Optional hosted, issue-driven orchestration and automated execution built on Flow—not Flow itself. [Flow mode](#flow-mode) is the in-session counterpart and does not depend on it. |
 
 Templates remain usable without Flow. Flow owns the methodology; flow-skills implements portable agent behavior; templates own their application foundations.
 
@@ -70,13 +70,13 @@ Primary internal dogfooding targets: **flow-skills** first, then experience vali
 
 ## This repository: flow-skills
 
-Status: portable, voice-first catalog on `main` ([0004](docs/decisions/0004-portable-skill-catalog.md), [0005](docs/decisions/0005-misc-tldr-skill.md), [0006](docs/decisions/0006-flow-lite-and-flat-docs.md), [0007](docs/decisions/0007-flow-product-identity.md), [0008](docs/decisions/0008-leading-words-and-visual-summaries.md), [0009](docs/decisions/0009-adopter-product-context.md), [0010](docs/decisions/0010-optional-start-skill.md), [0013](docs/decisions/0013-restore-engineering-skills.md), [0014](docs/decisions/0014-handoff-skill.md), [0015](docs/decisions/0015-tasks-and-domain-modeling.md), [0016](docs/decisions/0016-start-in-place.md), [0017](docs/decisions/0017-claude-code-skill-coexistence.md), [0018](docs/decisions/0018-interview-extracts-intent.md), [0019](docs/decisions/0019-voice-first-invocation.md)); live verification in multiple agent hosts remains ongoing.
+Status: portable, voice-first catalog on `main` ([0004](docs/decisions/0004-portable-skill-catalog.md), [0005](docs/decisions/0005-misc-tldr-skill.md), [0006](docs/decisions/0006-flow-lite-and-flat-docs.md), [0007](docs/decisions/0007-flow-product-identity.md), [0008](docs/decisions/0008-leading-words-and-visual-summaries.md), [0009](docs/decisions/0009-adopter-product-context.md), [0010](docs/decisions/0010-optional-start-skill.md), [0013](docs/decisions/0013-restore-engineering-skills.md), [0014](docs/decisions/0014-handoff-skill.md), [0015](docs/decisions/0015-tasks-and-domain-modeling.md), [0016](docs/decisions/0016-start-in-place.md), [0017](docs/decisions/0017-claude-code-skill-coexistence.md), [0018](docs/decisions/0018-interview-extracts-intent.md), [0019](docs/decisions/0019-voice-first-invocation.md), [0020](docs/decisions/0020-flow-mode.md), [0021](docs/decisions/0021-autonomous-explore-and-ship.md)); live verification in multiple agent hosts remains ongoing.
 
 ### Problem
 
 AI makes it easy to ship faster than teams establish what matters. Disparate skills and heavy methodology leave founders reconciling workflows, terminology, and documentation alone.
 
-flow-skills offers a small catalog: **Flow Lite** for root context alignment, plus optional skills you reach by talking to your agent, typed or dictated. Optional project initialization is the explicit [`start`](skills/start/SKILL.md) skill only — not Flow Lite, not `flow start`, and not mandatory. Templates work without Flow Skills. There is no pipeline router and no requirement to modify adopter `AGENTS.md`, `CLAUDE.md`, or equivalent files.
+flow-skills offers a small catalog: **Flow Lite** for root context alignment, plus optional skills you reach by talking to your agent, typed or dictated. Optional project initialization is the [`start`](skills/start/SKILL.md) skill only — not Flow Lite, not `flow start`, and not mandatory; it confirms template, name, and destination before writing. Templates work without Flow Skills. There is no pipeline router. Adopter `AGENTS.md`, `CLAUDE.md`, or equivalent files change only when you opt into [Flow mode](#flow-mode).
 
 **Adopter product context.** In another repository, `PRODUCT.md` is that product. This file is Flow's identity only. Flow Lite and `implement` update an adopter's product docs when that product changes. They do not overwrite them with the mission, principles, or tagline above. [Decision 0009](docs/decisions/0009-adopter-product-context.md).
 
@@ -86,7 +86,7 @@ flow-skills offers a small catalog: **Flow Lite** for root context alignment, pl
 
 | Layer | Skills |
 | --- | --- |
-| Flow Lite | [`flow`](skills/flow/SKILL.md) — align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md` where hosts support discovery. Not always-on, and not project initialization. |
+| Flow Lite | [`flow`](skills/flow/SKILL.md) — align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md` where hosts support discovery, and write the opt-in Flow block. Not always-on, and not project initialization. |
 | Delivery | `explore`, `interview`, `grill`, `to-spec`, `to-tasks`, `implement`, `review`, `ship`, `retro` |
 | Advisory | `council` |
 | Prototype | `prototype` |
@@ -94,14 +94,18 @@ flow-skills offers a small catalog: **Flow Lite** for root context alignment, pl
 | Quality | `debug` |
 | Product discovery | `jtbd`, `competitors` |
 | Writing | `write-agents`, `write-humans` |
-| Project start | [`start`](skills/start/SKILL.md) — verified bootstrap from flow-next or flow-mono (explicit only) |
+| Project start | [`start`](skills/start/SKILL.md) — verified bootstrap from flow-next or flow-mono; confirms template, name, and destination before writing |
 | Misc | `tldr`, `handoff` |
 
-Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Say a skill's leading word ("interview me", "spec it", "ship it"); slash commands are optional. Only `start` must be named explicitly ([0019](docs/decisions/0019-voice-first-invocation.md)). No skill enforces a sequence (`/implement` does not require `/to-spec`).
+Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Say a skill's leading word ("interview me", "spec it", "ship it"); slash commands are optional. Every skill is reachable by phrase ([0019](docs/decisions/0019-voice-first-invocation.md)); `start` confirms template, name, and destination before it writes anything ([0022](docs/decisions/0022-start-runs-explore.md)). No skill enforces a sequence (`/implement` does not require `/to-spec`).
 
 **Default durable docs in adopter projects:** `docs/specs/NNN-short-name.md` and `docs/decisions/NNN-short-name.md`, plus root context files when useful.
 
-**Not shipped as skills:** validation-board UI, OMTM automation, commercial discovery pipelines, workflow orchestration, or Flow Factory. Project initialization is the optional [`start`](skills/start/SKILL.md) skill only (not a router or mandatory pipeline). Optional judgment for measurement and validation lives in [methodology](docs/methodology.md) as practice, not product enforcement.
+**Not shipped as skills:** validation-board UI, OMTM automation, commercial discovery pipelines, or hosted, issue-triggered orchestration (Flow Factory). Project initialization is the optional [`start`](skills/start/SKILL.md) skill only (not a router or mandatory pipeline). Optional judgment for measurement and validation lives in [methodology](docs/methodology.md) as practice, not product enforcement.
+
+### Flow mode
+
+Opt-in conversational delivery ([decision 0020](docs/decisions/0020-flow-mode.md), [spec 009](docs/specs/009-flow-mode.md)). Saying "set up Flow here" has `flow` write one removable Flow block into the project's `AGENTS.md` (or `CLAUDE.md`): a `Delivery:` line and the phrases that reach each skill. After "break it down", `to-tasks` reports the ready set; "ship it" has `ship` land the whole task set on one spec branch, with a worker and an independent review per task when the host supports workers, and sequentially otherwise. The [delivery mode](GLOSSARY.md#delivery-mode) decides the finish: one pull request closing the task issues, or a reviewed `--no-ff` merge into local `main`.
 
 ### Catalog alignment (evaluate before adding skills)
 
@@ -109,7 +113,7 @@ Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Say a skil
 | --- | --- |
 | Product thinking | `explore`, `interview`, `grill`, `jtbd`, `competitors`, `council`; `flow` keeps product intent in root docs |
 | Engineering discipline | `to-spec`, `to-tasks`, `domain-modeling`, `write-agents`, `write-humans`, `prototype`, `debug`; specs and decisions as flat durable artifacts |
-| Agent execution | `implement`, `ship`; portable packages with no mandatory router |
+| Agent execution | `implement`, `ship` (task-set orchestration in Flow mode); portable packages with no mandatory router |
 | Verified value | `review`, `ship`, `retro`, `tldr`; evidence, alignment, and visual summaries without claiming a feature shipped |
 
 Further catalog growth needs its own decision. [0013](docs/decisions/0013-restore-engineering-skills.md) restored `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug`. [0014](docs/decisions/0014-handoff-skill.md) adds `handoff`. [0015](docs/decisions/0015-tasks-and-domain-modeling.md) renames `to-tasks` and restores `domain-modeling`. [0019](docs/decisions/0019-voice-first-invocation.md) retires `simplify`, `security`, and `performance` in favor of host tools.

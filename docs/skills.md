@@ -29,7 +29,7 @@ Product discovery, writing, advisory, prototype, quality, and misc skills are op
 
 | Skill | Say | When to use |
 | --- | --- | --- |
-| [flow](../skills/flow/SKILL.md) | "update the docs" | Align the current project's root docs after meaningful changes. Not a pipeline and not initialization. |
+| [flow](../skills/flow/SKILL.md) | "update the docs" | Align the current project's root docs after meaningful changes; "set up Flow here" writes the opt-in Flow block ([decision 0020](decisions/0020-flow-mode.md)). Not a pipeline and not initialization. |
 
 ## Delivery
 
@@ -39,10 +39,10 @@ Product discovery, writing, advisory, prototype, quality, and misc skills are op
 | [interview](../skills/interview/SKILL.md) | "interview me" | Extract what you actually want, with a guess attached to each question, before any plan or spec exists. |
 | [grill](../skills/grill/SKILL.md) | "grill me" | Stress-test an idea or plan with focused questions and evidence. |
 | [to-spec](../skills/to-spec/SKILL.md) | "spec it" | Turn conversation into a numbered spec; label assumptions; save only when requested. |
-| [to-tasks](../skills/to-tasks/SKILL.md) | "break it down" | Vertical-slice tasks with blockers, published as GitHub issues (local draft without GitHub access). |
+| [to-tasks](../skills/to-tasks/SKILL.md) | "break it down" | Vertical-slice tasks with blockers, recorded as GitHub issues (pull-request mode) or in the spec's Tasks section (local mode); reports the ready set and waits for "ship it". |
 | [implement](../skills/implement/SKILL.md) | "build it" | Implement an authorized change; no spec required for small clear work. |
-| [review](../skills/review/SKILL.md) | "check it against the spec" | Review against intent and root context as well as correctness. |
-| [ship](../skills/ship/SKILL.md) | "ship it" | Verify, commit, confirm, push, and check the deployment this repo configures, deferring to the platform's deploy skill. |
+| [review](../skills/review/SKILL.md) | "check it against the spec" | Review against intent and root context on five axes: correctness, readability, architecture, security, performance. |
+| [ship](../skills/ship/SKILL.md) | "ship it" | Verify, commit, confirm, push, and check the deployment this repo configures, deferring to the platform's deploy skill. On a spec's task set, orchestrates every task on one branch and finishes by [delivery mode](../GLOSSARY.md#delivery-mode). |
 | [retro](../skills/retro/SKILL.md) | "let's do a retro" | Retrospective on the agent environment after a session. |
 
 ## Shared language

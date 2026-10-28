@@ -1,6 +1,6 @@
 ---
 name: flow
-description: Align the current project's PRODUCT.md, DESIGN.md, GLOSSARY.md, and ARCHITECTURE.md after meaningful changes. Use when the user says "update the docs", "sync the context", or "keep the docs aligned".
+description: Align the current project's PRODUCT.md, DESIGN.md, GLOSSARY.md, and ARCHITECTURE.md after meaningful changes, and write the project Flow block on request. Use when the user says "update the docs", "sync the context", "keep the docs aligned", or "set up Flow here".
 disable-model-invocation: false
 ---
 
@@ -17,7 +17,7 @@ This skill is **not** a workflow router: it does not run explore → spec → bu
 
 Do not replace a project's product identity with Flow's tagline, mission, principles, or strategic chain.
 
-`flow start` and "start project" are not this skill. The optional `start` skill (decision 0010) initializes from flow-next or flow-mono when installed and explicitly requested. If someone asks to scaffold a repository without `start`, stop and do not create starter trees, instruction-file snippets, or a Flow-branded `PRODUCT.md`.
+`flow start` and "start project" are not this skill. The optional `start` skill (decision 0010) initializes from flow-next or flow-mono when installed, and confirms template, name, and destination before writing. If someone asks to scaffold a repository without `start`, stop and do not create starter trees, instruction-file snippets, or a Flow-branded `PRODUCT.md`.
 
 ## Invocation
 
@@ -29,9 +29,20 @@ Hosts may match this skill when the user asks to update or sync the docs. That i
 2. Update only sections affected by the change. Keep one home per fact; link to specs, decisions, or code instead of duplicating detail that is cheap to rediscover.
 3. Create a root file only when it would hold meaningful content about the current project. Do not scaffold empty trees, Flow methodology boilerplate, or parallel trackers (no PRD/PDR/ADR folders).
 
+## Flow block
+
+"Set up Flow here" opts the project into Flow mode (decision 0020). This section is the one definition of the block; `start` writes the same block after a bootstrap. Run this skill's `lib/flow-block.mjs` with Node, passing the project's absolute path and optionally `local` or `pull-request`, or apply the same rules by hand:
+
+- Target `AGENTS.md`, or `CLAUDE.md` when that is the only instruction file.
+- One block between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->`: a `Delivery:` line (`pull-request`, `local`, or `unset`), a short phrase-to-skill table, and a pointer to this skill. Under about 25 lines.
+- Re-running replaces the block in place and keeps the recorded `Delivery:` unless the user names a mode. Never touch text outside the markers; stop and report when markers are unmatched or repeated.
+- Leave `Delivery:` unset unless the user names a mode; `ship` infers and records it. Deleting the block opts out.
+
+Show the resulting block and file path.
+
 ## Boundaries
 
-- Do not edit adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or similar instruction files.
+- Do not edit adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or similar instruction files outside the Flow block, and write the block only when the user asks or `start` finishes a confirmed bootstrap (decision 0020).
 - Do not require installation, initialization, or a prior skill invocation.
 - Do not treat alignment edits as permission to implement unrelated code. For authorized implementation and tests, invoke the `implement` skill when installed.
 - Do not create `docs/specs/` or `docs/decisions/` records here; use `to-spec` or explicit decision work when durable bounded artifacts are justified.
