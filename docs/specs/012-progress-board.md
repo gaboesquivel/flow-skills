@@ -35,13 +35,15 @@ A `board` skill. Saying "show the board" opens a local, read-only kanban page fo
 
 | Stage | Rule |
 | --- | --- |
-| Shipped | `Status: implemented`, or the spec branch is merged into the default branch |
+| Shipped | `Status: implemented`, or the spec branch is merged (including squash) into the default branch and the spec has no tasks or all tasks are done |
 | Building | An overlay run names this spec, a spec branch exists, or at least one task is done |
 | Ready | The spec has tasks (Tasks section or linked issues), none started |
 | Specced | `Status: draft` without tasks |
 | Candidate | `Status: candidate` ([0022](../decisions/0022-start-runs-explore.md)) |
 
 Unknown or missing status lines put the card in Specced and show a marker; they never hide the card.
+
+Specs that exist only on unmerged branches are shown too, marked with their branch and capped at Building.
 
 **Spec ↔ branch.** The overlay names the branch during a run. Otherwise, a local or remote branch whose last segment contains the spec slug matches (`feat/flow-mode` ↔ `009-flow-mode`). *Assumption: slug matching is reliable enough. If it is not, `ship` records the branch on the spec's status line.*
 

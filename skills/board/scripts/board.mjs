@@ -17,67 +17,108 @@ export const COLUMNS = [
 const SPEC_DIR = 'docs/specs'
 const SPEC_FILE = /^(\d{3})-(.+)\.md$/u
 
-function git(repoRoot, args) {
-  return execFileSync('git', args, { cwd: repoRoot, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 32 * 1024 * 1024 })
+function git(repoRoot, args, input) {
+  return execFileSync('git', args, { cwd: repoRoot, encoding: 'utf8', input, stdio: [input === undefined ? 'ignore' : 'pipe', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024 })
 }
 
 function tryGit(repoRoot, args) {
   try { return git(repoRoot, args).trim() } catch { return null }
 }
 
-/** Resolves the default branch ref: local `main`, else `origin/HEAD`'s target, else `master`. */
+const refExists = (repoRoot, ref) => Boolean(tryGit(repoRoot, ['rev-parse', '--verify', '--quiet', `${ref}^{commit}`]))
+
+/**
+ * Resolves the default branch: local `main`, `origin/HEAD`'s target, local `master`, then `init.defaultBranch`.
+ * Returns `{ name, ref }` with a full refname, or null when none exists.
+ */
 export function resolveDefaultBranch(repoRoot) {
-  if (tryGit(repoRoot, ['rev-parse', '--verify', '--quiet', 'refs/heads/main'])) return 'main'
-  const originHead = tryGit(repoRoot, ['symbolic-ref', '--quiet', '--short', 'refs/remotes/origin/HEAD'])
-  if (originHead) return originHead
-  if (tryGit(repoRoot, ['rev-parse', '--verify', '--quiet', 'refs/heads/master'])) return 'master'
+  if (refExists(repoRoot, 'refs/heads/main')) return { name: 'main', ref: 'refs/heads/main' }
+  const originHead = tryGit(repoRoot, ['symbolic-ref', '--quiet', 'refs/remotes/origin/HEAD'])
+  if (originHead && refExists(repoRoot, originHead)) return { name: originHead.replace(/^refs\/remotes\//u, ''), ref: originHead }
+  if (refExists(repoRoot, 'refs/heads/master')) return { name: 'master', ref: 'refs/heads/master' }
+  const configured = tryGit(repoRoot, ['config', '--get', 'init.defaultBranch'])
+  if (configured && refExists(repoRoot, `refs/heads/${configured}`)) return { name: configured, ref: `refs/heads/${configured}` }
   return null
 }
 
 function listSpecFiles(repoRoot, ref) {
-  const out = tryGit(repoRoot, ['ls-tree', '--name-only', `${ref}:${SPEC_DIR}`])
+  const out = tryGit(repoRoot, ['ls-tree', '-z', '--name-only', `${ref}:${SPEC_DIR}`])
   if (!out) return []
-  return out.split('\n').filter((name) => SPEC_FILE.test(name))
+  return out.split('\0').filter((name) => SPEC_FILE.test(name))
+}
+
+/** Reads many `ref:path` blobs with one `git cat-file --batch` pass. */
+function readBlobs(repoRoot, objects) {
+  if (!objects.length) return []
+  const out = execFileSync('git', ['cat-file', '--batch'], { cwd: repoRoot, input: `${objects.join('\n')}\n`, maxBuffer: 64 * 1024 * 1024 })
+  const contents = []
+  let offset = 0
+  for (let i = 0; i < objects.length; i++) {
+    const newline = out.indexOf(10, offset)
+    const header = out.subarray(offset, newline).toString('utf8')
+    offset = newline + 1
+    const size = Number(/ blob (\d+)$/u.exec(header)?.[1])
+    if (!Number.isFinite(size)) { contents.push(''); continue }
+    contents.push(out.subarray(offset, offset + size).toString('utf8'))
+    offset += size + 1
+  }
+  return contents
 }
 
 /**
- * Gathers raw facts from git. Specs come from the default branch; a spec file that exists only on
- * another branch (a spec drafted on its branch) is included with `source` set to that branch.
+ * A branch counts as merged when its tip is not on the default branch's first-parent history (so empty
+ * branches cut from the default branch never count) and either it is an ancestor of the default branch or
+ * merging it would leave the default branch's tree unchanged (squash merges).
+ */
+function isMerged(repoRoot, { ref, sha }, { defaultRef, defaultTree, firstParent, ancestors }) {
+  if (firstParent.has(sha)) return false
+  if (ancestors.has(ref)) return true
+  const tree = tryGit(repoRoot, ['merge-tree', '--write-tree', defaultRef, ref])
+  return Boolean(tree) && tree.split('\n')[0] === defaultTree
+}
+
+/**
+ * Gathers raw facts from git. Specs come from the default branch; spec files that exist only on unmerged
+ * branches are included once each (local before remote, then by name) with `onDefault: false`.
  */
 export function readSnapshot(repoRoot) {
   const defaultBranch = resolveDefaultBranch(repoRoot)
-  const defaultTip = defaultBranch ? tryGit(repoRoot, ['rev-parse', '--verify', '--quiet', `${defaultBranch}^{commit}`]) : null
-  const merged = new Set(defaultBranch
-    ? (tryGit(repoRoot, ['for-each-ref', `--merged=${defaultBranch}`, '--format=%(refname)', 'refs/heads', 'refs/remotes']) ?? '').split('\n').filter(Boolean)
-    : [])
+  if (!defaultBranch) throw new Error('No default branch found (tried main, origin/HEAD, master, init.defaultBranch).')
+  const defaultRef = defaultBranch.ref
+  const context = {
+    defaultRef,
+    defaultTree: git(repoRoot, ['rev-parse', `${defaultRef}^{tree}`]).trim(),
+    firstParent: new Set(git(repoRoot, ['rev-list', '--first-parent', defaultRef]).split('\n').filter(Boolean)),
+    ancestors: new Set(git(repoRoot, ['for-each-ref', `--merged=${defaultRef}`, '--format=%(refname)', 'refs/heads', 'refs/remotes']).split('\n').filter(Boolean)),
+  }
+  const defaultShort = defaultRef.startsWith('refs/remotes/') ? defaultBranch.name.split('/').slice(1).join('/') : defaultBranch.name
   const branches = []
-  const refs = (tryGit(repoRoot, ['for-each-ref', '--format=%(refname) %(objectname)', 'refs/heads', 'refs/remotes']) ?? '').split('\n').filter(Boolean)
-  for (const line of refs) {
+  for (const line of git(repoRoot, ['for-each-ref', '--format=%(refname) %(objectname)', 'refs/heads', 'refs/remotes']).split('\n').filter(Boolean)) {
     const [ref, sha] = line.split(' ')
+    if (ref === defaultRef || ref.endsWith('/HEAD')) continue
     const remote = ref.startsWith('refs/remotes/')
     const name = ref.replace(/^refs\/(?:heads|remotes)\//u, '')
-    if (name.endsWith('/HEAD') || name === 'HEAD') continue
-    if (name === defaultBranch || (remote && defaultBranch && name.split('/').slice(1).join('/') === defaultBranch.split('/').pop())) continue
-    // A branch still at the default tip has no work of its own yet; do not call it merged.
-    branches.push({ name, remote, merged: merged.has(ref) && sha !== defaultTip })
+    if (remote && name.split('/').slice(1).join('/') === defaultShort) continue
+    branches.push({ name, ref, remote, merged: isMerged(repoRoot, { ref, sha }, context) })
   }
+  branches.sort((a, b) => Number(a.remote) - Number(b.remote) || a.name.localeCompare(b.name))
 
-  const specs = []
+  const sources = []
   const seen = new Set()
-  if (defaultBranch) {
-    for (const file of listSpecFiles(repoRoot, defaultBranch)) {
-      seen.add(file)
-      specs.push({ file, source: defaultBranch, content: git(repoRoot, ['show', `${defaultBranch}:${SPEC_DIR}/${file}`]) })
-    }
+  for (const file of listSpecFiles(repoRoot, defaultRef)) {
+    seen.add(file)
+    sources.push({ file, ref: defaultRef, source: defaultBranch.name, onDefault: true, remote: defaultRef.startsWith('refs/remotes/') })
   }
   for (const branch of branches.filter((b) => !b.merged)) {
-    for (const file of listSpecFiles(repoRoot, branch.name)) {
+    for (const file of listSpecFiles(repoRoot, branch.ref)) {
       if (seen.has(file)) continue
       seen.add(file)
-      specs.push({ file, source: branch.name, content: git(repoRoot, ['show', `${branch.name}:${SPEC_DIR}/${file}`]) })
+      sources.push({ file, ref: branch.ref, source: branch.name, onDefault: false, remote: branch.remote })
     }
   }
-  return { repoName: basename(repoRoot), defaultBranch, branches, specs, generatedAt: new Date().toISOString() }
+  const contents = readBlobs(repoRoot, sources.map((s) => `${s.ref}:${SPEC_DIR}/${s.file}`))
+  const specs = sources.map(({ ref, ...rest }, i) => ({ ...rest, content: contents[i] }))
+  return { repoName: basename(repoRoot), defaultBranch: defaultBranch.name, branches, specs, generatedAt: new Date().toISOString() }
 }
 
 /** Status word from the spec header (`Status: draft` or `**Status:** draft`), lowercased; null when absent. */
@@ -116,50 +157,79 @@ export function countTasks(content) {
   return { done: boxes.filter((box) => box[1] !== ' ').length, total: boxes.length }
 }
 
-/** Branches whose last path segment contains the slug. Unmerged before merged, local before remote. */
+const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')
+
+/**
+ * Branches whose last path segment contains the slug on token boundaries (`feat/board`, `feat/012-board`,
+ * `feat/board-live`, not `feat/dashboard`). Unmerged before merged, local before remote, then by name.
+ */
 export function matchBranches(slug, branches) {
+  const pattern = new RegExp(`(?:^|[-_])(?:\\d{3}-)?${escapeRegExp(slug)}(?:$|[-_])`, 'u')
   return branches
-    .filter((branch) => branch.name.split('/').pop().includes(slug))
+    .filter((branch) => pattern.test(branch.name.split('/').pop()))
     .sort((a, b) => Number(a.merged) - Number(b.merged) || Number(a.remote) - Number(b.remote) || a.name.localeCompare(b.name))
 }
 
 function stageFor({ status, tasks, branches }) {
-  if (status === 'implemented') return { stage: 'shipped', reason: 'status implemented' }
+  const tasksComplete = tasks.total === 0 || tasks.done === tasks.total
+  if (status === 'implemented') return { stage: 'shipped', reason: 'status implemented', branch: null }
   const merged = branches.find((b) => b.merged)
-  if (merged) return { stage: 'shipped', reason: `branch ${merged.name} merged` }
+  if (merged && tasksComplete) return { stage: 'shipped', reason: `branch ${merged.name} merged`, branch: merged }
   const open = branches.find((b) => !b.merged)
-  if (open) return { stage: 'building', reason: `branch ${open.name}` }
-  if (tasks.done > 0) return { stage: 'building', reason: 'tasks started' }
-  if (tasks.total > 0) return { stage: 'ready', reason: 'tasks planned' }
-  if (status === 'candidate') return { stage: 'candidate', reason: 'status candidate' }
-  return { stage: 'specced', reason: status === 'draft' ? 'status draft' : 'status unknown' }
+  if (open) return { stage: 'building', reason: `branch ${open.name}`, branch: open }
+  if (tasks.done > 0) return { stage: 'building', reason: 'tasks started', branch: null }
+  if (tasks.total > 0) return { stage: 'ready', reason: 'tasks planned', branch: null }
+  if (status === 'candidate') return { stage: 'candidate', reason: 'status candidate', branch: null }
+  return { stage: 'specced', reason: status === 'draft' ? 'status draft' : 'status unknown', branch: null }
 }
 
-/** Pure: snapshot -> { columns: [{ id, title, cards }] }. First matching stage rule wins. */
+const sourceOrder = (a, b) => Number(b.onDefault ?? true) - Number(a.onDefault ?? true)
+  || Number(a.remote ?? false) - Number(b.remote ?? false)
+  || String(a.source ?? '').localeCompare(String(b.source ?? ''))
+  || a.file.localeCompare(b.file)
+
+/**
+ * Pure: snapshot -> { columns: [{ id, title, cards }] }. First matching stage rule wins.
+ * One card per spec number: the default branch wins, then local before remote branches, then by name;
+ * losing files are named in the winner's marker. Branch-only specs are capped at Building.
+ */
 export function deriveBoard(snapshot) {
   const columns = COLUMNS.map((column) => ({ ...column, cards: [] }))
   const byId = new Map(columns.map((column) => [column.id, column]))
-  const specs = [...snapshot.specs].sort((a, b) => a.file.localeCompare(b.file))
-  for (const spec of specs) {
-    const [, number, slug] = SPEC_FILE.exec(spec.file) ?? []
+  const byNumber = new Map()
+  for (const spec of [...snapshot.specs].sort(sourceOrder)) {
+    const number = SPEC_FILE.exec(spec.file)?.[1]
     if (!number) continue
+    if (!byNumber.has(number)) byNumber.set(number, { spec, collisions: [] })
+    else byNumber.get(number).collisions.push(spec)
+  }
+  for (const [number, { spec, collisions }] of [...byNumber].sort(([a], [b]) => a.localeCompare(b))) {
+    const slug = SPEC_FILE.exec(spec.file)[2]
+    const onDefault = spec.onDefault ?? true
     const status = parseStatus(spec.content)
     const tasks = countTasks(spec.content)
     const branches = matchBranches(slug, snapshot.branches ?? [])
-    const { stage, reason } = stageFor({ status, tasks, branches })
-    let marker = null
-    if (!status) marker = 'no status line'
-    else if (!['candidate', 'draft', 'implemented'].includes(status)) marker = `unknown status "${status}"`
+    let { stage, reason, branch } = stageFor({ status, tasks, branches })
+    if (!onDefault && stage === 'shipped') {
+      stage = 'building'
+      reason = `on branch ${spec.source}`
+      branch = { name: spec.source }
+    }
+    const markers = []
+    if (!status) markers.push('no status line')
+    else if (!['candidate', 'draft', 'implemented'].includes(status)) markers.push(`unknown status "${status}"`)
+    if (!onDefault) markers.push(`on branch ${spec.source}`)
+    for (const other of collisions) markers.push(`number ${number} also used by ${other.file}${other.onDefault === false ? ` on ${other.source}` : ''}`)
     byId.get(stage).cards.push({
       number,
       slug,
       title: parseTitle(spec.content, slug),
       status,
       tasks,
-      branch: branches[0]?.name ?? null,
+      branch: branch?.name ?? branches[0]?.name ?? null,
       source: spec.source ?? null,
       reason,
-      marker,
+      marker: markers.length ? markers.join('; ') : null,
     })
   }
   return { repoName: snapshot.repoName ?? null, defaultBranch: snapshot.defaultBranch ?? null, generatedAt: snapshot.generatedAt ?? null, columns }
@@ -214,9 +284,11 @@ function parseArgs(argv) {
     const arg = argv[i]
     if (arg === '--once') args.once = true
     else if (arg === '--json') args.json = true
-    else if (arg === '--out') args.out = argv[++i]
-    else if (arg === '--repo') args.repo = argv[++i]
-    else throw new Error(`Unknown argument: ${arg}`)
+    else if (arg === '--out' || arg === '--repo') {
+      const value = argv[++i]
+      if (!value || value.startsWith('--')) throw new Error(`${arg} needs a value`)
+      args[arg.slice(2)] = value
+    } else throw new Error(`Unknown argument: ${arg}`)
   }
   return args
 }
@@ -228,7 +300,8 @@ export function main(argv = process.argv.slice(2)) {
   if (!args.once && !args.json) { console.error(usage); return 2 }
   const repoRoot = tryGit(resolve(args.repo), ['rev-parse', '--show-toplevel'])
   if (!repoRoot) { console.error(`Not inside a git repository: ${args.repo}`); return 1 }
-  const board = deriveBoard(readSnapshot(repoRoot))
+  let board
+  try { board = deriveBoard(readSnapshot(repoRoot)) } catch (error) { console.error(error.message); return 1 }
   if (args.json) console.log(JSON.stringify(board, null, 2))
   if (args.once) {
     const out = args.out ? (isAbsolute(args.out) ? args.out : resolve(args.out)) : defaultOutPath(repoRoot)

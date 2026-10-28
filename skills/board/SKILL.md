@@ -1,6 +1,6 @@
 ---
 name: board
-description: Read-only progress board of the project's specs by stage, derived from git. Use when the user says "show the board", "where are we", or "show progress".
+description: Read-only progress board of the project's specs by stage, derived from git. Use when the user says "show the board", "show progress", or "open the board".
 disable-model-invocation: false
 ---
 
@@ -20,10 +20,16 @@ node <this skill's directory>/scripts/board.mjs --once
 
 It writes a self-contained HTML snapshot to `.git/flow/board.html` (the repository's common git directory, shared by worktrees) and prints the path. Open that file for the user, or give them the path. `--out <file>` writes elsewhere; `--repo <path>` targets another repository; `--json` prints the derived board instead, for answering in chat.
 
-When the user asks "where are we" without wanting a page, run `--json` and summarize the columns in a few lines.
+When the user wants progress in chat rather than a page, run `--json` and summarize the columns in a few lines.
 
 ## Read the cards
 
-A card shows the spec number, title, task progress (`done/total`), and matched branch. A marker such as `no status line` or `unknown status "proposed"` means the spec's status line is missing or nonstandard; the card stays in Specced unless git shows more progress. Report markers rather than fixing specs unasked.
+A card shows the spec number, title, task progress (`done/total`), and the branch that set its stage. Markers flag what needs a human look:
 
-If the script fails (not a git repository, no default branch), report the error and the command you ran.
+- `no status line` or `unknown status "…"`: the card stays in Specced unless git shows more progress.
+- `on branch <name>`: the spec is not on the default branch yet, so it never shows past Building.
+- `number NNN also used by …`: two spec files share a number.
+
+Report markers rather than fixing specs unasked.
+
+The script exits nonzero with a message when it is not inside a git repository or finds no default branch (`main`, `origin/HEAD`, `master`, or `init.defaultBranch`); report that message and the command you ran.
