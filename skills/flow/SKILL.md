@@ -25,7 +25,7 @@ Hosts may match this skill when the user asks to update or sync the docs. That i
 
 ## Process
 
-1. Read `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` when present, in parallel as read-only workers (the fan-out rule lives in `write-agents` Workers). Read relevant `docs/specs/` and `docs/decisions/` records only when they clarify the area you are aligning. Without workers, read them in order and say so.
+1. Read `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` when present, with parallel tool calls rather than spawned workers (fan-out rule: `write-agents` Workers). Read relevant `docs/specs/` and `docs/decisions/` records only when they clarify the area you are aligning.
 2. Update only sections affected by the change, with one writer per root file. Keep one home per fact; link to specs, decisions, or code instead of duplicating detail that is cheap to rediscover.
 3. Create a root file only when it would hold meaningful content about the current project. Do not scaffold empty trees, Flow methodology boilerplate, or parallel trackers (no PRD/PDR/ADR folders).
 
@@ -36,7 +36,7 @@ Hosts may match this skill when the user asks to update or sync the docs. That i
 **Ask.** Read any existing block first. For each of `Process:` and `Delivery:` that is missing or `unset` and that the request does not name, ask once before writing, both questions in one round, each with a suggested answer:
 
 - **Process depth** (decision 0026), how much process the project wants: **Lite** (brief, spec 001 in full with its tasks, decisions inside specs) or **Full** (deeper discovery and a decision record for each choice among alternatives). Suggest Lite unless the request points to Full. `explore` reads it as its default depth; `to-spec` owns the spec–decision boundary.
-- **Delivery mode** (decision 0030): **pull requests** or **local**. Suggest pull requests when a GitHub remote exists, local otherwise. When the default branch requires pull requests, state pull-request mode instead of asking. `build`'s Delivery mode section owns what each mode does.
+- **Delivery mode** (decision 0030): **pull requests** or **local**, with a suggestion as `build`'s Delivery mode section describes; that section owns the rule and what each mode does. If `build` is unavailable, ask without a suggestion.
 
 Recorded values stay unless the user names a new one, so a re-run with both lines set asks nothing.
 
