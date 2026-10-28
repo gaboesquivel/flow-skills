@@ -23,16 +23,16 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0017-claude-code-skill-coexistence.md](0017-claude-code-skill-coexistence.md) | Accepted (`simplify` retired by 0019) | Coexist with Claude Code built-ins; keep `simplify` name and document overlaps |
 | [0018-interview-extracts-intent.md](0018-interview-extracts-intent.md) | Accepted | `interview` extracts the user's intent (adapted from `interview-me`), not customer discovery |
 | [0019-voice-first-invocation.md](0019-voice-first-invocation.md) | Accepted (amended by 0028) | Talking is the interface: model-invocable skills, spoken leading words, host coexistence |
-| [0020-flow-mode.md](0020-flow-mode.md) | Accepted | Flow mode: project instruction block, `to-tasks` hand-off, `ship` task-set orchestration, local and pull-request delivery modes |
+| [0020-flow-mode.md](0020-flow-mode.md) | Accepted (amended by 0030) | Flow mode: project instruction block, `to-tasks` hand-off, `ship` task-set orchestration, local and pull-request delivery modes |
 | [0021-autonomous-explore-and-ship.md](0021-autonomous-explore-and-ship.md) | Accepted (amended by 0028) | Explore and ship create docs files and GitHub issues, group pull requests, and suggest the host's autonomous mode |
 | [0022-start-runs-explore.md](0022-start-runs-explore.md) | Accepted | Speakable `start` runs `explore` beside the bootstrap; spec 001 full, later slices as candidates |
 | [0023-agent-first.md](0023-agent-first.md) | Accepted | Agent-first, API-first becomes an official principle; explore and to-spec apply it |
 | [0024-gated-hand-offs.md](0024-gated-hand-offs.md) | Accepted (amended by 0028, 0029) | Named hand-offs; explicit yes before spec writes, task publishing, and merging or pushing `main`; `start` explores at Lite (depth amended by 0026) |
-| [0025-wave-checkpoints.md](0025-wave-checkpoints.md) | Accepted (amended by 0028, 0029) | `ship` runs task sets in waves with a draft pull request, preview checkpoints, and a `Deploy:` target |
+| [0025-wave-checkpoints.md](0025-wave-checkpoints.md) | Accepted (amended by 0028, 0029, 0031) | `ship` runs task sets in waves with a draft pull request, preview checkpoints, and a `Deploy:` target |
 | [0026-process-depth.md](0026-process-depth.md) | Accepted (amended by 0029) | Lite or Full process recorded in the Flow block; `start` is Flow setup plus bootstrap; spec–decision boundary; "Flow Lite" label retired |
 | [0027-progress-board-skill.md](0027-progress-board-skill.md) | Accepted (amended by 0029) | Read-only `board` skill derived from git, with a `ship` run overlay |
-| [0028-build-and-ship.md](0028-build-and-ship.md) | Accepted (amended by 0029) | `build` opens a pull request with green checks; `ship` lands accepted specs and hotfixes with no confirmation; spec acceptance; `Deploy:` retired |
-| [0029-spec-issues.md](0029-spec-issues.md) | Accepted | One issue per spec with tasks as sub-issues and one pull request; the spec file is the source of truth; frontier builds, one review per spec, automatic merge, tests that never sleep |
+| [0028-build-and-ship.md](0028-build-and-ship.md) | Accepted (amended by 0029, 0030) | `build` opens a pull request with green checks; `ship` lands accepted specs and hotfixes with no confirmation; spec acceptance; `Deploy:` retired |
+| [0029-spec-issues.md](0029-spec-issues.md) | Accepted (amended by 0030, 0031) | One issue per spec with tasks as sub-issues and one pull request; the spec file is the source of truth; frontier builds, one review per spec, automatic merge, tests that never sleep |
 | [0030-asked-delivery-and-local-mode.md](0030-asked-delivery-and-local-mode.md) | Accepted | Depth and delivery asked together once; local mode keeps the spec branch, needs no remote, pushes only on request; task worktrees removed on integration |
 | [0031-fan-out-by-default.md](0031-fan-out-by-default.md) | Accepted | Skills run independent steps as parallel workers by default; per-axis spec review; tasks declare an area |
 
