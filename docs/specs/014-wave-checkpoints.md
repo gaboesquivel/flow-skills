@@ -1,6 +1,6 @@
-# 013: Wave checkpoints
+# 014: Wave checkpoints
 
-Status: implemented (2026-10-28). Decision: [0024](../decisions/0024-wave-checkpoints.md). Builds on [spec 009](009-flow-mode.md).
+Status: implemented (2026-10-28). Decision: [0025](../decisions/0025-wave-checkpoints.md). Builds on [spec 009](009-flow-mode.md).
 
 ## Problem Statement
 

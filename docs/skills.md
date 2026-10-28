@@ -1,10 +1,10 @@
 # Skill catalog
 
-Skills live in [`skills/`](../skills/); `scripts/validate.mjs` holds the authoritative list. Install with `npx skills add gaboesquivel/flow-skills`. No workflow router and no mandatory sequence.
+Skills live in [`skills/`](../skills/); `scripts/validate.mjs` holds the authoritative list. Install with `npx skills add gaboesquivel/flow-skills`. No mandatory sequence. Skills may name the next skill and wait; the only automatic hand-offs are `start` → `explore` and explore's `interview` and `grill` phases, each behind the user's yes ([decision 0024](decisions/0024-gated-hand-offs.md)).
 
 [Agent compatibility](agent-compatibility.md) · [Decision 0006](decisions/0006-flow-lite-and-flat-docs.md) · [Decision 0009](decisions/0009-adopter-product-context.md) · [Decision 0015](decisions/0015-tasks-and-domain-modeling.md) · [Decision 0018](decisions/0018-interview-extracts-intent.md) · [Decision 0019](decisions/0019-voice-first-invocation.md) · [Spec 002](specs/002-flow-lite-and-flat-docs.md) · [Spec 008](specs/008-tasks-and-domain-modeling.md)
 
-Talk to your agent, by typing or dictation. Each skill has a [leading word](../GLOSSARY.md#leading-word): the phrase you say to reach it. The first phrase is listed below; each skill's description carries two or three variants. Slash commands (`/interview`, `/ship`, …) remain optional shortcuts. No skill must be named explicitly.
+Talk to your agent, by typing or dictation. Each skill has a [leading word](../GLOSSARY.md#leading-word): the phrase you say to reach it. The first phrase is listed below; each skill's description carries two or three variants. The Flow block's phrase table lives in [`flow-block.mjs`](../skills/flow/lib/flow-block.mjs) (`PHRASES`), and a test checks each phrase against its skill's description. Slash commands (`/interview`, `/ship`, …) remain optional shortcuts. No skill must be named explicitly.
 
 ## Process
 
@@ -42,7 +42,7 @@ Product discovery, writing, advisory, prototype, quality, and misc skills are op
 | [to-tasks](../skills/to-tasks/SKILL.md) | "break it down" | Vertical-slice tasks with blockers, recorded as GitHub issues (pull-request mode) or in the spec's Tasks section (local mode); reports the ready set and waits for "ship it". |
 | [implement](../skills/implement/SKILL.md) | "build it" | Implement an authorized change; no spec required for small clear work. |
 | [review](../skills/review/SKILL.md) | "check it against the spec" | Review against intent and root context on five axes: correctness, readability, architecture, security, performance. |
-| [ship](../skills/ship/SKILL.md) | "ship it" | Verify, commit, confirm, push, and check the deployment this repo configures, deferring to the platform's deploy skill. On a spec's task set, runs tasks in [waves](../GLOSSARY.md#wave) on one branch, opens a draft pull request early in pull-request mode, posts a [checkpoint](../GLOSSARY.md#checkpoint) with a preview after each wave, and finishes by [delivery mode](../GLOSSARY.md#delivery-mode) ([decision 0024](decisions/0024-wave-checkpoints.md)). |
+| [ship](../skills/ship/SKILL.md) | "ship it" | Verify, commit, confirm, push, and check the deployment this repo configures, deferring to the platform's deploy skill. On a spec's task set, runs tasks in [waves](../GLOSSARY.md#wave) on one branch, opens a draft pull request early in pull-request mode, posts a [checkpoint](../GLOSSARY.md#checkpoint) with a preview after each wave ([decision 0025](decisions/0025-wave-checkpoints.md)), and finishes by [delivery mode](../skills/ship/SKILL.md#delivery-mode). |
 | [retro](../skills/retro/SKILL.md) | "let's do a retro" | Retrospective on the agent environment after a session. |
 
 ## Shared language

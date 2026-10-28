@@ -20,7 +20,7 @@ An adopter project's own product identity, normally in that project's `PRODUCT.m
 
 ## Flow Lite
 
-The [`flow`](skills/flow/SKILL.md) skill: keep the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` aligned with meaningful changes. Not a workflow router and not project initialization. Model-invocable like most Flow skills ("update the docs"); that is not an always-on guarantee.
+The [`flow`](skills/flow/SKILL.md) skill: keep the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` aligned with meaningful changes. Not project initialization, and it does not run other skills. Model-invocable like most Flow skills ("update the docs"); that is not an always-on guarantee.
 
 ## Flow skill
 
@@ -28,19 +28,19 @@ A portable `skills/<name>/SKILL.md` package in the Flow Skills distribution. Use
 
 ## Delivery mode
 
-How `ship` lands a spec's work in a project: **local** (a reviewed spec branch merged into local `main` with `--no-ff` and pushed, tasks as checkboxes in the spec) or **pull request** (one GitHub pull request closing the task issues). Recorded as a `Delivery:` line in the project's Flow block. Distinct from Flow Lite and from explore's depth tiers. The [deploy target](#deploy-target) sits beside it on a `Deploy:` line. [Decision 0020](docs/decisions/0020-flow-mode.md).
+How `ship` lands a spec's work in a project: **local** or **pull request**. Distinct from Flow Lite and from explore's depth tiers. The rule lives in [`ship`](skills/ship/SKILL.md#delivery-mode); [decision 0020](docs/decisions/0020-flow-mode.md) records why. The [deploy target](#deploy-target) sits beside it on a `Deploy:` line.
 
 ## Deploy target
 
-The platform that builds previews and deployments for a project, such as `vercel`, or `none`. Recorded as a `Deploy:` line in the project's Flow block; `ship` infers it from repository configuration when unset and defers deploy steps to the platform's own skill or CLI. [Decision 0024](docs/decisions/0024-wave-checkpoints.md).
+The platform that builds previews and deployments for a project, such as `vercel`, or `none`. Recorded as a `Deploy:` line in the project's Flow block; `ship` infers it from repository configuration when unset and defers deploy steps to the platform's own skill or CLI. [Decision 0025](docs/decisions/0025-wave-checkpoints.md).
 
 ## Wave
 
-The tasks of a spec's task set that are ready when `ship` starts them; a wave ends when each has integrated, failed, or been blocked. Its combined change gets one five-axis review and one [checkpoint](#checkpoint). [Decision 0024](docs/decisions/0024-wave-checkpoints.md).
+The tasks of a spec's task set that are ready when `ship` starts them; a wave ends when each has integrated, failed, or been blocked. Its combined change gets one five-axis review and one [checkpoint](#checkpoint). [Decision 0025](docs/decisions/0025-wave-checkpoints.md).
 
 ## Checkpoint
 
-The report `ship` posts after each [wave](#wave): what integrated or failed, checks, the commit, the preview from the [deploy target](#deploy-target), and screenshots when the host has a browser tool. A pull request comment in pull-request mode, a message in local mode; by default the next wave waits for the user's go. [Decision 0024](docs/decisions/0024-wave-checkpoints.md).
+The report `ship` posts after each [wave](#wave): what integrated or failed, checks, the commit, the preview from the [deploy target](#deploy-target), and screenshots when the host has a browser tool. A pull request comment in pull-request mode, a message in local mode; by default the next wave waits for the user's go. [Decision 0025](docs/decisions/0025-wave-checkpoints.md).
 
 ## Candidate spec
 
