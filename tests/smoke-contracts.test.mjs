@@ -12,7 +12,7 @@ const contracts = [
   {
     skill: 'explore',
     file: 'SKILL.md',
-    includes: [
+    includes: ["predict the user's next three answers", 'Never write drafts before confirmation', 'Feature detail flows to', 'pre-mortem', 'accepted unchanged', 'authorizes no write', 
       'do not authorize implementation',
       'to-spec',
       '\\*\\*Skip:\\*\\*',
