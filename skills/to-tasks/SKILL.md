@@ -1,6 +1,6 @@
 ---
 name: to-tasks
-description: Break a plan, spec, or conversation into verifiable vertical-slice tasks with explicit blockers; publish to a tracker only when requested. Use when the user says "break it down", "make tasks", or "split this into tasks".
+description: Break a plan, spec, or conversation into verifiable vertical-slice tasks with explicit blockers; publish them as GitHub issues. Use when the user says "break it down", "make tasks", or "split this into tasks".
 disable-model-invocation: false
 ---
 
@@ -45,9 +45,9 @@ Show the proposed tasks, what each delivers, and real dependencies. Resolve only
 
 ### 5. Save or publish within authorization
 
-Use the requested output or the project's canonical tracker. Publish issues only when requested or already authorized. Otherwise return a draft or update an existing local plan. Do not introduce a `.scratch/` task system or new labels. Use native dependency links when available, or plain references otherwise.
+Publish tasks as GitHub issues using the issue template below, with blocking links. Use another tracker only when the project already uses one. Without GitHub access, return a local draft and say so. Do not introduce a `.scratch/` task system or new labels. Use native dependency links when available, or plain references otherwise.
 
-Tasks are not pull requests. A spec's tasks ship together on one branch and pull request; split only work that is large and independently shippable or needs separate review.
+Tasks are not pull requests; `ship` owns how tasks group into pull requests.
 
 Tasks that are **ready** have their blockers complete. In a purely linear chain, that means top to bottom.
 

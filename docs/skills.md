@@ -35,7 +35,7 @@ Product discovery, writing, advisory, prototype, quality, and misc skills are op
 
 | Skill | Say | When to use |
 | --- | --- | --- |
-| [explore](../skills/explore/SKILL.md) | "explore this" | Propose a Skip, Lite, or Full depth; extract intent, then challenge it; end in a confirmed brief, clearer intent, or a killed idea. |
+| [explore](../skills/explore/SKILL.md) | "explore this" | Propose a depth (Skip, Lite, Full); extract intent, then challenge it; end in a confirmed brief, clearer intent, or a killed idea. |
 | [interview](../skills/interview/SKILL.md) | "interview me" | Extract what you actually want, with a guess attached to each question, before any plan or spec exists. |
 | [grill](../skills/grill/SKILL.md) | "grill me" | Stress-test an idea or plan with focused questions and evidence. |
 | [to-spec](../skills/to-spec/SKILL.md) | "spec it" | Turn conversation into a numbered spec; label assumptions; save only when requested. |

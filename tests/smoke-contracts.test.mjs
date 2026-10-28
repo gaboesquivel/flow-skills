@@ -12,7 +12,7 @@ const contracts = [
   {
     skill: 'explore',
     file: 'SKILL.md',
-    includes: ["predict the user's next three answers", 'Never write drafts before confirmation', 'Feature detail flows to', 'pre-mortem', 'accepted unchanged', 'authorizes no write', 
+    includes: ['auto mode', 'publish its tasks as GitHub issues', 'docs/specs/NNN-short-name.md', "predict the user's next three answers", 'Never write drafts before confirmation', 'Feature detail flows to', 'pre-mortem', 'accepted unchanged', 'authorizes no write', 
       'do not authorize implementation',
       'to-spec',
       '\\*\\*Skip:\\*\\*',
@@ -49,9 +49,9 @@ const contracts = [
   { skill: 'retro', file: 'SKILL.md', includes: ['do not modify', 'explicit user authorization', 'do not invent mistakes', 'Types or deterministic checks', 'single occurrence'] },
   { skill: 'flow', file: 'SKILL.md', includes: ['PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'workflow router', 'Do not edit adopter', 'Do not require installation', 'implement` and `review`', 'Do not create `docs/specs/`', "Do not replace a project's product identity", 'flow start', 'decision 0010', 'not an always-on hook'] },
   { skill: 'tldr', file: 'SKILL.md', includes: ["Show, don't tell", 'GenUI', 'Check alignment', 'write-humans', 'does not authorize'] },
-  { skill: 'to-tasks', file: 'SKILL.md', includes: ['vertical slice', 'Tasks are not pull requests', 'one branch and pull request'] },
+  { skill: 'to-tasks', file: 'SKILL.md', includes: ['vertical slice', 'Tasks are not pull requests', 'GitHub issues'] },
   { skill: 'handoff', file: 'SKILL.md', includes: ['temporary directory', 'suggested-skills', 'does not authorize'] },
-  { skill: 'ship', file: 'SKILL.md', includes: ['evidence', 'does not authorize destructive', 'Wait for an explicit yes', 'preview, not production', 'deploy skill', 'one branch and pull request', 'independently shippable'] },
+  { skill: 'ship', file: 'SKILL.md', includes: ['evidence', 'does not authorize destructive', 'Wait for an explicit yes', 'preview, not production', 'deploy skill', 'one branch and pull request', 'independently shippable', 'auto mode', 'Closes #N', 'GitHub issue'] },
   {
     skill: 'start',
     file: 'SKILL.md',

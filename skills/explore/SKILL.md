@@ -8,6 +8,8 @@ disable-model-invocation: false
 
 Explore is the discovery lane for new products and for features inside an existing product. Read supplied briefs, conversation, canonical product documents, and relevant code before asking anything. Recover facts with available tools; ask only for choices or missing information you cannot infer.
 
+Before a multi-step run, suggest the host's autonomous permission mode when it has one (for example Claude Code auto mode) so file writes, issues, and pushes do not stop for each permission prompt. Elsewhere, continue with ordinary prompts. The skill's own confirmations still apply.
+
 ## Propose a depth
 
 Classify the work (new product, feature, or fix) and propose one tier with a one-line reason. The user confirms or overrides. Prefer the lighter tier when unsure; propose stepping up mid-session only when evidence warrants it.
@@ -35,6 +37,8 @@ At Full depth, or whenever real web research happened, save findings with source
 
 ## Spec-ready
 
-Report spec-ready when intent is confirmed, the riskiest assumption and kill criterion are named, and the brief or diff is written or declined; a clearer outcome is spec-ready once its sharpened intent is restated. Otherwise say what is missing. Close with known facts, open assumptions, how many marked guesses were accepted unchanged, and the next activity (for example `to-spec`). Missing optional skills must not block exploration.
+Report spec-ready when intent is confirmed, the riskiest assumption and kill criterion are named, and the brief or diff is written or declined; a clearer outcome is spec-ready once its sharpened intent is restated. Otherwise say what is missing. Close with known facts, open assumptions, how many marked guesses were accepted unchanged, and the next activity. Missing optional skills must not block exploration.
+
+Once spec-ready and the outcome is not killed, write the spec with `to-spec` to `docs/specs/NNN-short-name.md` and publish its tasks as GitHub issues with `to-tasks`. The research, root-context changes, and spec ship together as one pull request.
 
 Discussion and exploration do not authorize implementation.

@@ -23,6 +23,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0017-claude-code-skill-coexistence.md](0017-claude-code-skill-coexistence.md) | Accepted | Coexist with Claude Code built-ins; keep `simplify` name and document overlaps |
 | [0018-interview-extracts-intent.md](0018-interview-extracts-intent.md) | Accepted | `interview` extracts the user's intent (adapted from `interview-me`), not customer discovery |
 | [0019-voice-first-invocation.md](0019-voice-first-invocation.md) | Accepted | Talking is the interface: model-invocable skills, spoken leading words, host coexistence |
+| [0021-autonomous-explore-and-ship.md](0021-autonomous-explore-and-ship.md) | Accepted | Explore and ship create docs files and GitHub issues, group pull requests, and suggest the host's autonomous mode |
 
 ## Rules
 
