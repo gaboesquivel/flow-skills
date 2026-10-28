@@ -37,7 +37,7 @@ Label unproven items as hypotheses with a confidence. An explicit yes to the sho
 
 At Full depth, or whenever real web research happened, save findings with sources and limits to `docs/research/YYYY-MM-DD-topic.md`. Never save transcripts.
 
-**Decision records at Full depth.** Propose a decision record, as `to-spec` defines the boundary, for each choice among real alternatives made during exploration, starting with the chosen approach and the rejected ones as alternatives. Write each record as **Proposed** and report its link rather than its text, under the same write-after-commit rule; the user's yes is acceptance, which `to-spec` records when the spec is accepted. At Lite depth, choices stay in the spec unless they pass `to-spec`'s decision test.
+**Decision records at Full depth.** Propose a decision record, as `to-spec` defines the boundary, for each choice among real alternatives made during exploration, starting with the chosen approach and the rejected ones as alternatives. Write each record as **Proposed** and report its link rather than its text, under the same write-after-commit rule; `to-spec` links it from the spec and accepts it with the spec. At Lite depth, choices stay in the spec unless they pass `to-spec`'s decision test.
 
 ## Spec-ready
 
