@@ -26,6 +26,14 @@ The [`flow`](skills/flow/SKILL.md) skill: keep the current project's `PRODUCT.md
 
 A portable `skills/<name>/SKILL.md` package in the Flow Skills distribution. Users reach skills by talking: an agent matches the skill's [leading word](#leading-word). Slash commands are optional shortcuts. Only `start` must be named explicitly ([decision 0019](docs/decisions/0019-voice-first-invocation.md)). Skills may read local supporting files without imposing a mandatory workflow. The [skill catalog](docs/skills.md) groups skills for navigation; groups do not enforce invocation order.
 
+## Delivery mode
+
+How `ship` lands a spec's work in a project: **local** (a reviewed spec branch merged into local `main` with `--no-ff` and pushed, tasks as checkboxes in the spec) or **pull request** (one GitHub pull request closing the task issues). Recorded as a `Delivery:` line in the project's Flow block. Distinct from Flow Lite and from explore's depth tiers. [Decision 0020](docs/decisions/0020-flow-mode.md).
+
+## Candidate spec
+
+A stub spec for a later vertical slice: the problem, the assumption the slice tests, and status `candidate`. Fleshed out only after the first slice ships. [Decision 0022](docs/decisions/0022-start-runs-explore.md).
+
 ## Human summary
 
 A visual presentation for a person. Prefer generative UI (GenUI) when the host actually provides it; otherwise Mermaid, tables, and a short statement. The [`tldr`](skills/tldr/SKILL.md) skill owns this, including session recaps and "show me". [`write-humans`](skills/write-humans/SKILL.md) drafts prose. There is no separate `human` skill. [Decision 0008](docs/decisions/0008-leading-words-and-visual-summaries.md).

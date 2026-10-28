@@ -6,7 +6,7 @@ Conventions for Flow Skills and a default pattern adopters may follow. Create do
 |---|---|
 | [PRODUCT.md](../PRODUCT.md) | Flow's identity in **this** repository, plus ecosystem boundaries, dogfooding, and the flow-skills catalog. An adopter project's `PRODUCT.md` is that product ([0009](decisions/0009-adopter-product-context.md)) |
 | [GLOSSARY.md](../GLOSSARY.md) | Project-specific meanings and essential distinctions |
-| [principles.md](principles.md) | Optional methodology themes; the seven principles live in PRODUCT.md |
+| [principles.md](principles.md) | Optional methodology themes; the eight principles live in PRODUCT.md |
 | [methodology.md](methodology.md) | How principles apply in practice (optional judgment, not enforcement) |
 | [skills.md](skills.md) | Skill catalog and links to `skills/*/SKILL.md` |
 | [AGENTS.md](../AGENTS.md) | Instructions for maintaining this repository |

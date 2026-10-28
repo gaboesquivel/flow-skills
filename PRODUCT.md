@@ -31,6 +31,7 @@ Humans define direction and make consequential decisions. Agents help explore, d
 5. **Evidence over claims.** Verify outcomes through appropriate tests, reviews, and real-world checks.
 6. **Portable by design.** Work across agents, interfaces, frameworks, and tools.
 7. **Improve through use.** Develop Flow using Flow, and simplify it through real experience.
+8. **Agent-first, API-first.** Build every product for agents and people; define capabilities as contracts before interfaces.
 
 Methodology practices that elaborate these principles live in [docs/principles.md](docs/principles.md) and [docs/methodology.md](docs/methodology.md) as optional judgment, not enforcement.
 
