@@ -12,28 +12,27 @@ Before a multi-step run, suggest the host's autonomous permission mode when it h
 
 ## Read in the background
 
-On arrival, read the supplied brief and conversation in the main thread, then launch read-only background workers while the main thread asks the first question (fan-out rule: `write-agents` Workers):
+On arrival, read the supplied brief and conversation in the main thread, then launch read-only background workers while the main thread asks the first question (fan-out rule: `write-agents` Workers). Launch only readers whose sources exist; a project `start` just created has nothing for them, and in a run handed over by `start` the bootstrap lane's report replaces any status reader:
 
 - repository and root context (product documents and relevant code)
 - glossary terms and decisions the request may conflict with
 - prior art (existing specs, research, and similar features)
-- in a run handed over by `start`, the bootstrap lane's status
 
 Fold their results in as they return; drop a question a result answers, and raise a conflict they find at the next turn. Questions and all writes stay in the main thread.
 
-## Propose a depth
+## Depth
 
-Classify the work (new product, feature, or fix) and propose one tier with a one-line reason. New work defaults to the project's recorded discovery depth: the `Process:` line in its Flow block (decision 0026). A run handed over by `start` uses the depth and delivery confirmed there. The user confirms or overrides for this run. Prefer the lighter tier when unsure; propose stepping up mid-session only when evidence warrants it. A Skip-tier run asks nothing.
+Classify the work (new product, feature, or fix). Fixes and clear small changes are **Skip**: no questions, no writes; hand back to the requested work. Everything else gets the one default depth (decision 0036); never ask for a depth:
 
-**Question round.** When `Process:` or `Delivery:` is `unset`, or there is no Flow block, ask the missing ones together in one round, each with a suggested answer: **Discovery depth**, Lite or Full (suggest Lite unless the request points to Full), and **Delivery**, pull requests or local, independent of each other as `flow` defines them, with a suggestion as `build`'s Delivery mode section describes (if `build` is unavailable, ask without a suggestion). Ask once per run. Offer to record the answers on the Flow block with `flow`; without a block or a yes, they hold for this run.
+- confirmed intent, the riskiest assumption, a pre-mortem, a kill criterion, one main metric ("unknown, measure first" is acceptable) plus any supporting metrics the user names, 1–3 core journeys in one line each, alternatives including the status quo, and the **agent lens**: who the agent users are, with an agent journey beside the human ones and agent alternatives, or an explicit "no agent users".
 
-- **Skip:** fixes and clear small changes. No questions, no writes; hand back to the requested work.
-- **Lite** (the suggested default): confirmed intent, the riskiest assumption, a kill criterion, one main metric ("unknown, measure first" is acceptable), 1–3 core journeys in one line each, three alternatives including the status quo, and the **agent lens**: who the agent users are, with an agent journey beside the human ones and agent alternatives, or an explicit "no agent users".
-- **Full** (opt-in): Lite plus a pre-mortem, `jtbd`, a `competitors` report, 2–3 solution approaches including a minimal one, saved research (below), and decision records (below).
+Deeper discovery runs only when the user asks for it (`competitors`, `jtbd`). When evidence warrants one, suggest it in a single line; never run it unasked.
+
+**Delivery.** A run handed over by `start` uses the delivery confirmed there. Otherwise, when the Flow block's `Delivery:` is `unset` or there is no Flow block, ask it once per run, pull requests or local, with a suggestion as `build`'s Delivery mode section describes (if `build` is unavailable, ask without a suggestion). Offer to record the answer on the Flow block with `flow`; without a block or a yes, it holds for this run.
 
 ## Extract, then challenge
 
-Follow the `interview` pattern, including its question forms, until you can predict the user's next three answers. Restate intent and get an explicit yes before any challenge. When the user confirms, end the turn as `interview` does, but name the grill as the next step and start it on their reply; that yes confirms intent only and authorizes no write. Then follow `grill` on the riskiest claims only. At Full depth, after the intent yes, run `jtbd`, `competitors`, and the pre-mortem as parallel read-only workers (fan-out rule: `write-agents` Workers); then grill in the main thread while one worker drafts the solution approaches and the research file's text for the write gate. The pre-mortem runs once: `grill` skips its own pre-mortem worker because one already ran. If a supporting skill is missing, apply the same steps directly.
+Follow the `interview` pattern, including its question forms, until you can predict the user's next three answers. Restate intent and get an explicit yes before any challenge. When the user confirms, end the turn as `interview` does, but name the grill as the next step and start it on their reply; that yes confirms intent only and authorizes no write. Then follow `grill` on the riskiest claims only. After the intent yes, run the pre-mortem as one read-only worker (fan-out rule: `write-agents` Workers) while the grill proceeds in the main thread, and fold its failure modes into the grill. The pre-mortem runs once: `grill` skips its own pre-mortem worker because one already ran. Without workers, or if a supporting skill is missing, apply the same steps directly.
 
 ## Outcome and write gate
 
@@ -46,18 +45,18 @@ For a brief, show the exact text before writing:
 
 Label unproven items as hypotheses with a confidence. An explicit yes to the shown text authorizes that write in the same turn; anything else is not a yes. Never write the brief before confirmation.
 
-**Write after the bootstrap commit.** In a run handed over by `start`, write nothing (brief, research, specs, or tasks) until the bootstrap lane reports its initial commit, even after a yes; the yes to the shown text carries over to that write. The confirmed brief then replaces the product sections of the baseline `PRODUCT.md` and keeps its template facts. If the bootstrap failed, keep everything confirmed in conversation and write it once a repository exists.
+**Explore branch.** Write on a new `explore/<slug>` branch cut from the default branch, never on the default branch itself: the brief's product slug for a new product, otherwise the feature's slug. Commit the writes there with a Conventional Commits message (for example `docs(product): brief for <slug>`), staging only them, and report the branch and commit. Leave the default branch clean; `to-spec` renames the explore branch to the spec's branch.
 
-At Full depth, or whenever real web research happened, save research as `competitors` describes; it owns the research-saving rule.
+**Write after the bootstrap commit.** In a run handed over by `start`, cut no branch and write nothing (brief, research, specs, or tasks) until the bootstrap lane reports its initial commit, even after a yes; then cut `explore/<slug>` from that commit, and the yes to the shown text carries over to that write. The confirmed brief then replaces the product sections of the baseline `PRODUCT.md` and keeps its template facts. If the bootstrap failed, keep everything confirmed in conversation and write it once a repository exists.
 
-**Decision records at Full depth.** Propose a decision record, as `to-spec` defines the boundary, for each choice among real alternatives made during exploration, starting with the chosen approach and the rejected ones as alternatives. Once the brief is confirmed, write each record as **Proposed** and report its link rather than its text, under the same write-after-commit rule; `to-spec` links it from the spec and accepts it with the spec. At Lite depth, choices stay in the spec unless they pass `to-spec`'s decision test.
+Research is saved only when `competitors` ran; it owns the research-saving rule. Choices made during exploration become decision records only when they pass `to-spec`'s decision test; otherwise they stay in the spec.
 
 ## Spec-ready
 
-Report spec-ready when intent is confirmed, the riskiest assumption and kill criterion are named, and the brief or diff is written or waiting for the bootstrap commit; a clearer outcome is spec-ready once its sharpened intent is restated. A declined brief is not spec-ready for writing specs. Otherwise say what is missing. Close with known facts, open assumptions, how many marked guesses were accepted unchanged, and the next activity. Missing optional skills must not block exploration.
+Report spec-ready when intent is confirmed, the riskiest assumption and kill criterion are named, and the brief or diff is committed on the explore branch or waiting for the bootstrap commit; a clearer outcome is spec-ready once its sharpened intent is restated. A declined brief is not spec-ready for writing specs. Otherwise say what is missing. Close with known facts, open assumptions, how many marked guesses were accepted unchanged, and the next activity. Missing optional skills must not block exploration.
 
 Once spec-ready with a brief, name the next steps and wait for the user: `to-spec` for `docs/specs/NNN-short-name.md`, "accept the spec", then `to-tasks`.
 
-**New product specs.** At any depth, write only spec 001 in full: the first bet, with its tasks as the slices inside it (decision 0026). Spec 001 must test the riskiest assumption, ship the instrumentation for the main metric, and define its capability contract-first as `to-spec` describes, including an MCP tool when the brief names agent users. Write later bets as `candidate` stubs with `to-spec`; flesh them out only after spec 001 ships. In a new product, the brief, research, and specs ship with spec 001's implementation.
+**New product specs.** Write only spec 001 in full: the first bet, with its tasks as the slices inside it (decision 0026). Spec 001 must test the riskiest assumption, ship the instrumentation for the main metric, and define its capability contract-first as `to-spec` describes, including an MCP tool when the brief names agent users. Write later bets as `candidate` stubs with `to-spec`; flesh them out only after spec 001 ships. In a new product, the brief, research, and specs ship with spec 001's implementation.
 
 Discussion and exploration do not authorize implementation.
