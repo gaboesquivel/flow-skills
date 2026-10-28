@@ -31,7 +31,7 @@ That alignment updates the **current project's** product context. It does not co
 
 `flow` is not a project-start command. `flow start` and "start project" do not authorize scaffolding or instruction-file edits. The optional [`start`](../skills/start/SKILL.md) skill initializes from flow-next or flow-mono when explicitly invoked: template isolation, renamed Portless identity, verification (`pnpm setup`, `pnpm qa`, `pnpm build`, `pnpm eval`, Portless dev smoke), baseline product docs, and an initial Git commit only after essential checks pass. It does not invoke `flow` or `explore` automatically. It is not discoverable like Flow Lite.
 
-Metadata and contract tests show the intended invocation split. They do not show that a host surfaced `flow` during ordinary edits. A second agent product has not been recorded; see [smoke scenario status](../tests/smoke/2026-10-27-scenario-status.md).
+Metadata and contract tests show the intended invocation split. They do not show that a host surfaced `flow` during ordinary edits. Claude Code is recorded as a second agent product for read-only runs; see [smoke scenario status](../tests/smoke/2026-10-27-scenario-status.md).
 
 ## Metadata
 
@@ -46,6 +46,21 @@ Dual policy ([decision 0006](decisions/0006-flow-lite-and-flat-docs.md)):
 
 Core skill bodies avoid naming a single vendor tool, subagent API, or filesystem layout. Hosts may still expose different tools; skills describe outcomes and fallbacks in generic terms.
 
+## Claude Code
+
+Claude Code ships built-in skills that overlap with parts of the catalog. Flow owns intent and durable artifacts; built-ins own execution and output formats ([decision 0017](decisions/0017-claude-code-skill-coexistence.md)).
+
+| Flow | Built-in | Use Flow when |
+| --- | --- | --- |
+| `simplify` | `/simplify` (same name) | You want a behavior-preserving clarity refactor. An installed Flow `simplify` shadows the built-in ([live run](../tests/smoke/2026-10-27-claude-code-live.md)); remove it to get the built-in back. |
+| `review` | `/code-review` | Intent and root-context alignment matter, not only correctness bugs. |
+| `security` | `/security-review` | You are hardening untrusted-input handling rather than auditing a diff. |
+| `flow`, `start` | `/init`, memory | Product facts belong in root context files. Keep `CLAUDE.md` and memory as pointers, not copies. |
+| `handoff` | Automatic compaction | A fresh agent needs a standalone document. |
+| `to-tasks` | Session task list | Work needs durable vertical slices or tracker issues. |
+
+Built-ins may be model-invoked; Flow skills other than `flow` are not. Plain requests such as "review this" usually reach the built-in.
+
 ## Verification status
 
-Structural checks (`pnpm validate`, contract tests, `pnpm eval:check`) and Agent Skills CLI listing (`tests/distribution.test.mjs`) run in CI. Recorded live slash-command or skill-picker runs in a second agent product remain open; see [smoke scenario status](../tests/smoke/2026-10-27-scenario-status.md) and [evaluation scenario status](../tests/evals/scenario-status.md).
+Structural checks (`pnpm validate`, contract tests, `pnpm eval:check`) and Agent Skills CLI listing (`tests/distribution.test.mjs`) run in CI. Headless slash-command runs in Claude Code are recorded; interactive skill-picker runs and write paths remain open; see [smoke scenario status](../tests/smoke/2026-10-27-scenario-status.md) and [evaluation scenario status](../tests/evals/scenario-status.md).
