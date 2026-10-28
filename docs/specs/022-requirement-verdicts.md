@@ -1,6 +1,6 @@
 # 022: Requirement verdicts and data-not-instructions briefs
 
-Status: accepted (2026-10-28). Issue: [#120](https://github.com/gaboesquivel/flow-skills/issues/120). Source: [OpenProse research](../research/2026-10-28-openprose.md), candidate ideas 1 and 2.
+Status: implemented (2026-10-28). Issue: [#120](https://github.com/gaboesquivel/flow-skills/issues/120). Source: [OpenProse research](../research/2026-10-28-openprose.md), candidate ideas 1 and 2.
 
 ## Problem Statement
 
