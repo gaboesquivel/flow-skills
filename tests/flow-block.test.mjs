@@ -79,7 +79,6 @@ test('Delivery is read case-insensitively and normalized', () => {
   assert.equal(readDelivery(block('Delivery: GitHub')), 'github')
   assert.equal(readDelivery(block('Delivery: unset')), null)
   assert.equal(readDelivery(block('Delivery: bogus')), null)
-  assert.equal(readDelivery(block('Delivery: unset')), null)
   assert.match(upsertFlowBlock(block('delivery: Local')), /^Delivery: local$/mu)
 })
 

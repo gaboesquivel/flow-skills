@@ -236,11 +236,14 @@ const pad = (value, width) => {
   return /^\d+$/u.test(text) ? text.padStart(width, '0') : text
 }
 
+// Legacy Delivery values from before decision 0037; same list as LEGACY_GITHUB in skills/flow/lib/flow-block.mjs.
+const LEGACY_GITHUB = ['pull-request', 'pull-requests', 'pullrequest', 'pr']
+
 /** Pure: a new overlay for a run whose tasks are all queued. Replaces any previous run. */
 export function recordRunStart({ spec, branch, mode, tasks = [], now = new Date().toISOString() }) {
   if (!/^\d{1,3}$/u.test(String(spec ?? ''))) throw new Error('--spec must be a spec number, for example 012')
   if (!branch) throw new Error('--branch is required for run-start')
-  if (mode === 'pull-request') mode = 'github' // legacy value (decision 0037)
+  if (LEGACY_GITHUB.includes(String(mode ?? '').trim().toLowerCase().replace(/[\s_]+/gu, '-'))) mode = 'github'
   if (mode !== 'local' && mode !== 'github') throw new Error('--mode must be local or github')
   const ids = tasks.map((id) => pad(id, 2))
   if (!ids.length || ids.some((id) => !/^\d+$/u.test(id))) throw new Error('--tasks must list task numbers, for example 01,02,03')
@@ -365,14 +368,14 @@ function specAddedDates(repoRoot, ref) {
 
 /**
  * `Delivery:` from the first Flow block (between the BEGIN/END FLOW markers) in the given texts; null when unset.
- * Mirrors readDelivery in skills/flow/lib/flow-block.mjs (copied: each skill installs on its own).
+ * Mirrors readDelivery and normalizeDelivery in skills/flow/lib/flow-block.mjs (copied: each skill installs on its own).
  */
 export function readDelivery(texts) {
   for (const text of texts) {
     const block = /<!-- BEGIN FLOW -->([\s\S]*?)<!-- END FLOW -->/u.exec(text)?.[1]
     const value = block && /^Delivery:[ \t]*(.*)$/imu.exec(block)?.[1].trim().toLowerCase().replace(/[\s_]+/gu, '-')
     if (!value) continue
-    if (['pr', 'pullrequest', 'pull-request', 'pull-requests', 'github'].includes(value)) return 'github'
+    if (value === 'github' || LEGACY_GITHUB.includes(value)) return 'github'
     return value === 'local' ? 'local' : null
   }
   return null

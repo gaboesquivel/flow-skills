@@ -86,7 +86,7 @@ flow-skills offers a small catalog: **context alignment** (`flow`) for root cont
 
 **Requirements.** What a skill needs depends on its tier ([decision 0037](docs/decisions/0037-git-for-delivery-github-for-github-mode.md)):
 
-| Tier | Skills | Needs |
+| Tier | Skills or features | Needs |
 | --- | --- | --- |
 | Thinking | `grill`, `interview`, `council`, `jtbd`, `competitors`, `domain-modeling`, `debug`, `tldr`, `write-humans`, `write-agents`, `retro`, `handoff`, `prototype` | Nothing: any folder, or none |
 | Delivery chain | `flow` (the Flow block), `start`, `explore`, `to-spec`, `to-tasks`, `build`, `review`, `ship`, `board` | A Git repository; outside one, the skill offers `git init` and stops on a no |

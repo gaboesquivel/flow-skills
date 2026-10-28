@@ -1011,7 +1011,8 @@ test('recorder: pure updates set states, rounds, notes, and timestamps', () => {
   assert.throws(() => recordTask(start, { task: '02', state: 'done' }), /--state must be one of/u)
   assert.throws(() => recordTask(null, { task: '02', state: 'working' }), /record run-start first/u)
   assert.throws(() => recordRunStart({ spec: 'x', branch: 'b', mode: 'local', tasks: ['01'] }), /--spec/u)
-  assert.throws(() => recordRunStart({ spec: '012', branch: 'b', mode: 'pr', tasks: ['01'] }), /--mode/u)
+  assert.throws(() => recordRunStart({ spec: '012', branch: 'b', mode: 'bogus', tasks: ['01'] }), /--mode/u)
+  assert.equal(recordRunStart({ spec: '012', branch: 'b', mode: 'pr', tasks: ['01'] }).run.mode, 'github', 'legacy --mode reads as github')
 })
 
 test('recorder CLI: round trip from a linked worktree lands in the common git dir', () => withRepo(async ({ dir, git, write, commit }) => {

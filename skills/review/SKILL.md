@@ -8,10 +8,10 @@ disable-model-invocation: false
 
 ## Establish scope
 
-Read repository instructions and inspect Git status before choosing the review surface.
+Read repository instructions and inspect Git status before choosing the review surface. Outside a Git repository, review the named files as a repository audit; offer `git init` as `write-agents` [Repository](../write-agents/SKILL.md#repository) describes only when the request needs a diff.
 
 - **Repository audit:** inspect current relevant source, supporting files, tests, and owning documents, including untracked files. No baseline commit is required.
-- **Working tree:** outside a Git repository, follow `write-agents` [Repository](../write-agents/SKILL.md#repository), or review the named files as a repository audit. Inspect staged and unstaged diffs plus relevant untracked files. Use `git diff --cached`, `git diff`, and `git ls-files --others --exclude-standard`; read untracked content explicitly.
+- **Working tree:** inspect staged and unstaged diffs plus relevant untracked files. Use `git diff --cached`, `git diff`, and `git ls-files --others --exclude-standard`; read untracked content explicitly.
 - **Committed comparison:** resolve the requested reference and use its merge-base with HEAD when appropriate. State the actual comparison. Include working-tree changes only when requested or relevant to the stated scope.
 - **Pull request:** treat the PR as a committed comparison from `merge-base(base, head)` through `head`. Product, design, spec, and marketing edits get the same bar as code. Repositories that enforce the **pr-review-contract** (documented in the project's docs tree) in CI expect the same checks without a separate manual invocation.
 - **Spec:** a spec gets one independent review, which `ship` runs on its final pull request (GitHub mode) or `build` runs on the spec branch before merging into local `main` (local mode), covering every task's change together: the per-axis workers and verifier below. `build` workers only self-check against their task; there are no per-task or per-wave reviews. Unspecced work gets no independent review: `build`'s self-check against the request covers it (decision 0034).

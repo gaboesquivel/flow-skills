@@ -24,7 +24,7 @@ Then deliver (see Deliver). Report the result, files, checks, limitations, and r
 
 "Build it" ends in a pull request with green checks (local mode: the reviewed work merged into local `main`, nothing pushed). Asking to build authorizes these steps with no confirmation. It does not authorize committing to, pushing, or merging the default branch (for example `main`), force-pushing, rewriting remote branches, destructive Git, skipping checks, or unrelated changes. The one exception is local mode: a single `--no-ff` merge of the work's branch into local `main`, only after the gate and review (see Local mode); never a push. When the user asks only for local edits ("don't commit"), stop after the change and report; do not record `Delivery:` either.
 
-Outside a Git repository, follow `write-agents` [Repository](../write-agents/SKILL.md#repository) before the first commit.
+Outside a Git repository, follow `write-agents` [Repository](../write-agents/SKILL.md#repository) before its first Git operation.
 
 **GitHub mode** (see Delivery mode):
 

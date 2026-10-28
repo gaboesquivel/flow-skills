@@ -17,7 +17,7 @@ Choose agent and scope in the installer. Thinking skills work anywhere; the deli
 ```mermaid
 flowchart TB
   setup["Set up Flow: 'set up Flow here' or start"]
-  delivery{"Delivery: pull requests or local"}
+  delivery{"Delivery: GitHub or local"}
   goals["Goals: explore writes the brief in PRODUCT.md"]
   spec["Spec: one bet, tasks are its slices"]
   decision["Decision record: why X over Y"]
@@ -26,7 +26,7 @@ flowchart TB
   spec -.-> decision
 ```
 
-- **Set up Flow.** Say "set up Flow here" in an existing project, or "start a Next.js project" for a new one. `start` is the same setup plus a verified template bootstrap. Both write one removable [Flow block](GLOSSARY.md#flow-block) into the instruction file Git tracks (`AGENTS.md`, or `CLAUDE.md` with an `@AGENTS.md` import when `AGENTS.md` is ignored) and ask one question: **Delivery**, pull requests or local ([decision 0030](docs/decisions/0030-asked-delivery-and-local-mode.md), [decision 0036](docs/decisions/0036-one-explore-depth.md)).
+- **Set up Flow.** Say "set up Flow here" in an existing project, or "start a Next.js project" for a new one. `start` is the same setup plus a verified template bootstrap. Both write one removable [Flow block](GLOSSARY.md#flow-block) into the instruction file Git tracks (`AGENTS.md`, or `CLAUDE.md` with an `@AGENTS.md` import when `AGENTS.md` is ignored) and ask one question: **Delivery**, GitHub or local ([decision 0030](docs/decisions/0030-asked-delivery-and-local-mode.md), [decision 0036](docs/decisions/0036-one-explore-depth.md)).
 - **Define the goals.** Every Flow project gets the same goals from `explore`, at one default depth: the problem, who it serves (agents included), the riskiest assumption, a pre-mortem, one main metric with a kill criterion, core journeys, and alternatives. Ask for `competitors` or `jtbd` when you want deeper research. `explore` commits the brief on an `explore/<slug>` branch, which "spec it" turns into the spec branch. `start` hands off to `explore` automatically; `flow` names it when `PRODUCT.md` has none.
 - **Keep context aligned.** "Update the docs" has `flow` align `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` after meaningful changes.
 - **Deliver.** "Spec it" writes a draft spec with one acceptance scenario and publishes nothing; "accept the spec" approves it (in GitHub mode, opening the spec issue that copies it). "Break it down" makes its tasks (sub-issues of the spec issue in GitHub mode), "build it" runs every unblocked task at once on one branch and ends at one pull request per spec with green checks (local mode: reviewed and merged into local `main`, nothing pushed), and "ship it" lands accepted work with no confirmation (one independent review, green checks, merge; local mode: push `main`), then runs the spec's acceptance scenario on the shipped commit's deployment (decisions [0028](docs/decisions/0028-build-and-ship.md), [0029](docs/decisions/0029-spec-issues.md), and [0032](docs/decisions/0032-local-build-lands-ship-verifies.md)). A small fix with no spec skips that ceremony: "build it" runs the suite and one self-check, and a change too big for that stops for "spec it" ([unspecced work](GLOSSARY.md#unspecced-work)).

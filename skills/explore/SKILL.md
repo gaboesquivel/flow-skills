@@ -28,7 +28,7 @@ Classify the work (new product, feature, or fix). Fixes and clear small changes 
 
 Deeper discovery runs only when the user asks for it (`competitors`, `jtbd`). When evidence warrants one, suggest it in a single line; never run it unasked.
 
-**Delivery.** A run handed over by `start` uses the delivery confirmed there. Otherwise, when the Flow block's `Delivery:` is `unset` or there is no Flow block, ask it once per run, pull requests or local, with a suggestion as `build`'s Delivery mode section describes (if `build` is unavailable, ask without a suggestion). Offer to record the answer on the Flow block with `flow`; without a block or a yes, it holds for this run.
+**Delivery.** A run handed over by `start` uses the delivery confirmed there. Otherwise, when the Flow block's `Delivery:` is `unset` or there is no Flow block, ask it once per run, GitHub (issues and pull requests) or local, with a suggestion as `build`'s Delivery mode section describes (if `build` is unavailable, ask without a suggestion). Offer to record the answer on the Flow block with `flow`; without a block or a yes, it holds for this run.
 
 ## Extract, then challenge
 
@@ -45,7 +45,7 @@ For a brief, show the exact text before writing:
 
 Label unproven items as hypotheses with a confidence. An explicit yes to the shown text authorizes that write in the same turn; anything else is not a yes. Never write the brief before confirmation.
 
-**Explore branch.** Outside a Git repository, follow `write-agents` [Repository](../write-agents/SKILL.md#repository) before writing; a no keeps the confirmed brief in the conversation. Write on a new `explore/<slug>` branch cut from the default branch, never on the default branch itself: the brief's product slug for a new product, otherwise the feature's slug. Commit the writes there with a Conventional Commits message (for example `docs(product): brief for <slug>`), staging only them, and report the branch and commit. Leave the default branch clean; `to-spec` renames the explore branch to the spec's branch.
+**Explore branch.** Outside a Git repository, follow `write-agents` [Repository](../write-agents/SKILL.md#repository) before writing. Write on a new `explore/<slug>` branch cut from the default branch, never on the default branch itself: the brief's product slug for a new product, otherwise the feature's slug. Commit the writes there with a Conventional Commits message (for example `docs(product): brief for <slug>`), staging only them, and report the branch and commit. Leave the default branch clean; `to-spec` renames the explore branch to the spec's branch.
 
 **Write after the bootstrap commit.** In a run handed over by `start`, cut no branch and write nothing (brief, research, specs, or tasks) until the bootstrap lane reports its initial commit, even after a yes; then cut `explore/<slug>` from that commit, and the yes to the shown text carries over to that write. The confirmed brief then replaces the product sections of the baseline `PRODUCT.md` and keeps its template facts. If the bootstrap failed, keep everything confirmed in conversation and write it once a repository exists.
 

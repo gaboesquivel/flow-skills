@@ -29,7 +29,7 @@ Product discovery, writing, advisory, prototype, quality, and misc skills are op
 
 | Skill | Say | When to use |
 | --- | --- | --- |
-| [flow](../skills/flow/SKILL.md) | "update the docs" | Align the current project's root docs after meaningful changes; "set up Flow here" asks only pull requests or local delivery, writes the opt-in [Flow block](../GLOSSARY.md#flow-block) into the instruction file Git tracks (adding an `@AGENTS.md` import to `CLAUDE.md` when needed, touching no adopter text outside the block and import), reports the layout, and names `explore` when the project has no goals yet ([decision 0020](decisions/0020-flow-mode.md), [decision 0030](decisions/0030-asked-delivery-and-local-mode.md), [decision 0036](decisions/0036-one-explore-depth.md)). Not a pipeline and not template initialization. |
+| [flow](../skills/flow/SKILL.md) | "update the docs" | Align the current project's root docs after meaningful changes; "set up Flow here" asks only GitHub or local delivery, writes the opt-in [Flow block](../GLOSSARY.md#flow-block) into the instruction file Git tracks (adding an `@AGENTS.md` import to `CLAUDE.md` when needed, touching no adopter text outside the block and import), reports the layout, and names `explore` when the project has no goals yet ([decision 0020](decisions/0020-flow-mode.md), [decision 0030](decisions/0030-asked-delivery-and-local-mode.md), [decision 0036](decisions/0036-one-explore-depth.md)). Not a pipeline and not template initialization. |
 
 ## Delivery
 

@@ -72,4 +72,6 @@ Open assumptions:
 
 - **Initial commit after `git init`.** `explore` cuts its branch from the default branch, which has no commit in a new repository. Assumed: the skill makes an empty initial commit (`chore: initialize repository`) and leaves existing files untracked rather than committing the user's files unasked.
 - **`prototype` is a thinking skill.** It writes throwaway code and uses a branch when one exists, but works without Git. Assumed to belong in the Thinking tier.
+- **`flow` needs Git only for the Flow block.** Aligning root files is a document edit and works anywhere; the PRODUCT.md table says `flow` (the Flow block).
+- **Nested repositories.** A project folder inside a parent repository (for example a home directory under Git) names the parent and asks before the first write.
 - **"github" as the term.** Chosen over "remote" (clashes with `git remote`, which local mode uses) and "pull requests" (names one feature of the mode). See decision 0037.
