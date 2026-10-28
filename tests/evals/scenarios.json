@@ -434,7 +434,7 @@
         "build",
         "to-tasks"
       ],
-      "behavior": "Task-set build runs the task frontier on one spec branch, waits on CI only for the final pull request, and ends at a ready pull request, with no confirmation",
+      "behavior": "Task-set build runs the task frontier on one spec branch, serializes tasks whose areas intersect, removes each task's worktree as it integrates, waits on CI only for the final pull request, and ends at a ready pull request, with no confirmation",
       "taskFile": "tests/evals/tasks/E20-task.md",
       "rubricFile": "tests/evals/rubrics/E20-rubric.md",
       "skillReferences": [
@@ -645,6 +645,97 @@
       "rubricFile": "tests/evals/rubrics/E29-rubric.md",
       "skillReferences": [
         "skills/to-spec/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "not_executed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E30",
+      "skills": [
+        "explore",
+        "flow"
+      ],
+      "behavior": "A feature request with no Flow block asks depth and delivery once, in one round, and publishes nothing before the answers",
+      "taskFile": "tests/evals/tasks/E30-task.md",
+      "rubricFile": "tests/evals/rubrics/E30-rubric.md",
+      "skillReferences": [
+        "skills/explore/SKILL.md",
+        "skills/flow/SKILL.md",
+        "skills/build/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "not_executed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E31",
+      "skills": [
+        "ship"
+      ],
+      "behavior": "Local-mode ship with no remote merges the spec branch into the local default branch, pushes nothing, and leaves no integrated task worktrees",
+      "taskFile": "tests/evals/tasks/E31-task.md",
+      "rubricFile": "tests/evals/rubrics/E31-rubric.md",
+      "skillReferences": [
+        "skills/ship/SKILL.md",
+        "skills/build/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "not_executed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E32",
+      "skills": [
+        "explore"
+      ],
+      "behavior": "Explore asks its first question while background workers read the repository, decisions, and prior art",
+      "taskFile": "tests/evals/tasks/E32-task.md",
+      "rubricFile": "tests/evals/rubrics/E32-rubric.md",
+      "skillReferences": [
+        "skills/explore/SKILL.md",
+        "skills/write-agents/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "not_executed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E33",
+      "skills": [
+        "ship",
+        "review"
+      ],
+      "behavior": "Ship reviews per axis with parallel workers alongside the check wait, and one verifier merges findings before the gate",
+      "taskFile": "tests/evals/tasks/E33-task.md",
+      "rubricFile": "tests/evals/rubrics/E33-rubric.md",
+      "skillReferences": [
+        "skills/ship/SKILL.md",
+        "skills/review/SKILL.md"
       ],
       "fixtureReferences": [],
       "evidence": {

@@ -48,7 +48,7 @@ Label unproven items as hypotheses with a confidence. An explicit yes to the sho
 
 **Write after the bootstrap commit.** In a run handed over by `start`, write nothing (brief, research, specs, or tasks) until the bootstrap lane reports its initial commit, even after a yes; the yes to the shown text carries over to that write. The confirmed brief then replaces the product sections of the baseline `PRODUCT.md` and keeps its template facts. If the bootstrap failed, keep everything confirmed in conversation and write it once a repository exists.
 
-At Full depth, or whenever real web research happened, save findings with sources and limits to `docs/research/YYYY-MM-DD-topic.md`. Never save transcripts.
+At Full depth, or whenever real web research happened, save research as `competitors` describes; it owns the research-saving rule.
 
 **Decision records at Full depth.** Propose a decision record, as `to-spec` defines the boundary, for each choice among real alternatives made during exploration, starting with the chosen approach and the rejected ones as alternatives. Once the brief is confirmed, write each record as **Proposed** and report its link rather than its text, under the same write-after-commit rule; `to-spec` links it from the spec and accepts it with the spec. At Lite depth, choices stay in the spec unless they pass `to-spec`'s decision test.
 
