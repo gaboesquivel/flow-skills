@@ -2,7 +2,8 @@
 // Flow progress board: read-only kanban of a repository's specs, derived from git.
 // Zero dependencies, Node >= 22. Stages: Candidate, Specced, Ready, Building, Shipped.
 import { execFileSync } from 'node:child_process'
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import { mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs'
 import { createServer } from 'node:http'
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -294,9 +295,11 @@ function renderCard(card) {
 
 const subline = (board) => [board.defaultBranch && `from ${board.defaultBranch}`, board.generatedAt && `generated ${board.generatedAt}`].filter(Boolean).join(' · ')
 
-// Live page client: polls ./state and rebuilds the columns with the same markup as renderCard, through
-// textContent only. No board data is inlined into the script.
-const LIVE_SCRIPT = `(() => {
+/**
+ * Live page client: polls ./state and rebuilds the columns with the same markup as renderCard, through
+ * textContent only. No board data is inlined into the script. Exported for the markup drift test.
+ */
+export const LIVE_SCRIPT = `(() => {
 const main = document.querySelector('main'), sub = document.querySelector('header .sub'), banner = document.getElementById('banner')
 const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n }
 const card = (c) => {
@@ -320,19 +323,24 @@ let last = null
 async function poll() {
   try {
     const res = await fetch('state', { cache: 'no-store' })
-    const data = await res.json()
-    if (!res.ok || data.error) show('Not updating: ' + (data.error || 'HTTP ' + res.status) + '. Showing the last good board.')
+    if (!(res.headers.get('content-type') || '').includes('json')) show('Board server answered HTTP ' + res.status + ' without board data. Showing the last good board.')
     else {
-      show('')
-      const key = JSON.stringify(data.columns)
-      if (key !== last) { last = key; main.replaceChildren(...data.columns.map(column)) }
-      sub.textContent = [data.defaultBranch && 'from ' + data.defaultBranch, data.generatedAt && 'generated ' + data.generatedAt].filter(Boolean).join(' · ')
+      const data = await res.json()
+      if (!res.ok || data.error) show('Not updating: ' + (data.error || 'HTTP ' + res.status) + '. Showing the last good board.')
+      else {
+        show('')
+        const key = JSON.stringify(data.columns)
+        if (key !== last) { last = key; main.replaceChildren(...data.columns.map(column)) }
+        sub.textContent = [data.defaultBranch && 'from ' + data.defaultBranch, data.generatedAt && 'generated ' + data.generatedAt].filter(Boolean).join(' · ')
+      }
     }
   } catch { show('Board server not reachable. Showing the last good board.') }
   setTimeout(poll, 2000)
 }
 setTimeout(poll, 2000)
 })()`
+
+const LIVE_SCRIPT_HASH = createHash('sha256').update(LIVE_SCRIPT).digest('base64')
 
 /**
  * Self-contained page: inline CSS, no external requests. With `live`, adds an error banner and a script
@@ -341,7 +349,11 @@ setTimeout(poll, 2000)
 export function renderHtml(board, { live = false } = {}) {
   const title = board.repoName ? `${board.repoName} board` : 'Board'
   const columns = board.columns.map((column) => `<section class="col" data-stage="${escapeHtml(column.id)}"><h2>${escapeHtml(column.title)} <span class="count">${column.cards.length}</span></h2><ul>${column.cards.map(renderCard).join('')}</ul></section>`).join('')
-  const csp = live ? "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self'" : "default-src 'none'; style-src 'unsafe-inline'"
+  const sub = subline(board)
+  // The live page always has a subtitle element for the client to update.
+  const subHtml = sub || live ? `<p class="sub">${escapeHtml(sub)}</p>` : ''
+  const csp = live ? `default-src 'none'; style-src 'unsafe-inline'; script-src 'sha256-${LIVE_SCRIPT_HASH}'; connect-src 'self'` : "default-src 'none'; style-src 'unsafe-inline'"
+  const liveCss = live ? '\n.banner{margin:0 16px 12px;padding:8px 10px;border-radius:6px;background:var(--warn-bg);color:var(--warn);font-size:12px;overflow-wrap:anywhere}' : ''
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="${csp}">
@@ -350,8 +362,7 @@ export function renderHtml(board, { live = false } = {}) {
 :root{--bg:#f6f6f4;--col:#ecebe7;--card:#fff;--text:#1d1d1b;--muted:#6b6a65;--line:#d9d8d2;--accent:#2f5d8a;--warn:#9a5b00;--warn-bg:#fbf0dc;color-scheme:light dark}
 @media (prefers-color-scheme:dark){:root{--bg:#161615;--col:#1f1f1d;--card:#2a2a27;--text:#ecebe7;--muted:#a19f97;--line:#3a3a36;--accent:#8db4dc;--warn:#e0a84a;--warn-bg:#33281a}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
-header{padding:16px}header h1{margin:0;font-size:18px}header p{margin:4px 0 0;color:var(--muted);font-size:12px}
-.banner{margin:0 16px 12px;padding:8px 10px;border-radius:6px;background:var(--warn-bg);color:var(--warn);font-size:12px;overflow-wrap:anywhere}
+header{padding:16px}header h1{margin:0;font-size:18px}header p{margin:4px 0 0;color:var(--muted);font-size:12px}${liveCss}
 main{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding:0 16px 16px}
 .col{background:var(--col);border-radius:8px;padding:10px;min-width:0}.col h2{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
 .count{color:var(--muted);font-weight:400}ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
@@ -361,13 +372,46 @@ main{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding
 .branch{color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.marker{margin:6px 0 0;font-size:12px;color:var(--warn)}
 @media (max-width:760px){main{grid-template-columns:1fr}}
 </style></head>
-<body><header><h1>${escapeHtml(title)}</h1><p class="sub">${escapeHtml(subline(board))}</p></header>${live ? '<p id="banner" class="banner" role="status" hidden></p>' : ''}<main>${columns}</main>${live ? `<script>${LIVE_SCRIPT}</script>` : ''}</body></html>
+<body><header><h1>${escapeHtml(title)}</h1>${subHtml}</header>${live ? '<p id="banner" class="banner" role="status" hidden></p>' : ''}<main>${columns}</main>${live ? `<script>${LIVE_SCRIPT}</script>` : ''}</body></html>
 `
 }
 
+const flowDir = (repoRoot) => join(git(repoRoot, ['rev-parse', '--path-format=absolute', '--git-common-dir']).trim(), 'flow')
+
 export function defaultOutPath(repoRoot) {
-  const common = git(repoRoot, ['rev-parse', '--path-format=absolute', '--git-common-dir']).trim()
-  return join(common, 'flow', 'board.html')
+  return join(flowDir(repoRoot), 'board.html')
+}
+
+/** Record of the running live board, `{ pid, url, repoRoot }`. Separate from the run overlay (`board.json`). */
+export function serverInfoPath(repoRoot) {
+  return join(flowDir(repoRoot), 'server.json')
+}
+
+function readServerInfo(repoRoot) {
+  try {
+    const info = JSON.parse(readFileSync(serverInfoPath(repoRoot), 'utf8'))
+    return Number.isInteger(info?.pid) && typeof info.url === 'string' ? info : null
+  } catch { return null }
+}
+
+function writeServerInfo(repoRoot, info) {
+  const path = serverInfoPath(repoRoot)
+  mkdirSync(dirname(path), { recursive: true })
+  const temp = `${path}.${process.pid}.tmp`
+  writeFileSync(temp, `${JSON.stringify(info)}\n`)
+  renameSync(temp, path)
+}
+
+const removeServerInfo = (repoRoot) => rmSync(serverInfoPath(repoRoot), { force: true })
+
+/** A recorded board is live when its pid exists and its URL answers `/state` with JSON (guards pid reuse). */
+async function isLive(info) {
+  try { process.kill(info.pid, 0) } catch (error) { if (error.code !== 'EPERM') return false }
+  try {
+    const res = await fetch(new URL('state', info.url), { signal: AbortSignal.timeout(2000) })
+    await res.body?.cancel()
+    return (res.headers.get('content-type') ?? '').includes('json')
+  } catch { return false }
 }
 
 const firstLines = (message) => String(message).split('\n').slice(0, 2).join(' ').slice(0, 300)
@@ -393,14 +437,14 @@ export async function startServer({ repoRoot, port = 0, memoMs = 1000 }) {
     memo = { at: Date.now(), value }
     return value
   }
+  let allowedHosts = []
   const server = createServer((req, res) => {
     const send = (status, type, body) => {
       res.writeHead(status, { 'content-type': type, 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' })
       res.end(req.method === 'HEAD' ? undefined : body)
     }
     // Same-machine hostnames only: blocks DNS-rebinding reads from other sites.
-    const bound = server.address().port
-    if (![`127.0.0.1:${bound}`, `localhost:${bound}`].includes(req.headers.host)) return send(403, 'text/plain', 'Forbidden\n')
+    if (!allowedHosts.includes(req.headers.host)) return send(403, 'text/plain', 'Forbidden\n')
     if (req.method !== 'GET' && req.method !== 'HEAD') return send(405, 'text/plain', 'Method not allowed\n')
     const path = new URL(req.url, 'http://127.0.0.1').pathname
     if (path === '/state') {
@@ -417,7 +461,9 @@ export async function startServer({ repoRoot, port = 0, memoMs = 1000 }) {
     server.once('error', reject)
     server.listen(port, '127.0.0.1', () => { server.off('error', reject); resolveListen() })
   })
-  const url = `http://127.0.0.1:${server.address().port}/`
+  const bound = server.address().port
+  allowedHosts = [`127.0.0.1:${bound}`, `localhost:${bound}`]
+  const url = `http://127.0.0.1:${bound}/`
   const close = () => new Promise((resolveClose) => { server.close(() => resolveClose()); server.closeAllConnections() })
   return { server, url, close }
 }
@@ -425,12 +471,13 @@ export async function startServer({ repoRoot, port = 0, memoMs = 1000 }) {
 export const DEFAULT_PORT = 4178
 
 function parseArgs(argv) {
-  const args = { once: false, json: false, serve: false, port: null, out: null, repo: process.cwd() }
+  const args = { once: false, json: false, serve: false, stop: false, port: null, out: null, repo: process.cwd() }
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]
     if (arg === '--once') args.once = true
     else if (arg === '--json') args.json = true
     else if (arg === '--serve') args.serve = true
+    else if (arg === '--stop') args.stop = true
     else if (arg === '--out' || arg === '--repo' || arg === '--port') {
       const value = argv[++i]
       if (!value || value.startsWith('--')) throw new Error(`${arg} needs a value`)
@@ -442,11 +489,16 @@ function parseArgs(argv) {
     if (!Number.isInteger(port) || port < 0 || port > 65535) throw new Error(`--port must be 0-65535: ${args.port}`)
     args.port = port
   }
-  if (args.serve && (args.once || args.json)) throw new Error('--serve cannot be combined with --once or --json')
+  if (Number(args.serve) + Number(args.stop) + Number(args.once || args.json) > 1) throw new Error('--serve, --stop, and --once/--json are separate modes')
   return args
 }
 
 async function serve(repoRoot, port) {
+  const running = readServerInfo(repoRoot)
+  if (running) {
+    if (await isLive(running)) { console.log(`Board already running at ${running.url} (pid ${running.pid}).`); return 0 }
+    removeServerInfo(repoRoot)
+  }
   let live
   try {
     try {
@@ -460,23 +512,40 @@ async function serve(repoRoot, port) {
     console.error(error.code === 'EADDRINUSE' ? `Port ${port} is in use.` : error.message)
     return 1
   }
-  console.log(`Board at ${live.url} (pid ${process.pid}). Stop with Ctrl-C or kill ${process.pid}.`)
+  writeServerInfo(repoRoot, { pid: process.pid, url: live.url, repoRoot })
+  console.log(`Board at ${live.url} (pid ${process.pid}). Stop with --stop, Ctrl-C, or kill ${process.pid}.`)
   return new Promise((resolveExit) => {
-    const stop = () => { live.close().then(() => resolveExit(0)) }
+    const stop = () => {
+      // Leave a newer server's record alone.
+      if (readServerInfo(repoRoot)?.pid === process.pid) removeServerInfo(repoRoot)
+      live.close().then(() => resolveExit(0))
+    }
     process.once('SIGINT', stop)
     process.once('SIGTERM', stop)
   })
 }
 
+async function stopServer(repoRoot) {
+  const running = readServerInfo(repoRoot)
+  if (!running) { console.log('No board is running.'); return 0 }
+  if (await isLive(running)) {
+    process.kill(running.pid, 'SIGTERM')
+    console.log(`Stopped the board at ${running.url} (pid ${running.pid}).`)
+  } else console.log('No board was running; removed its stale record.')
+  removeServerInfo(repoRoot)
+  return 0
+}
+
 /** Resolves to the exit code; with `--serve`, once the server stops on SIGINT or SIGTERM. */
 export async function main(argv = process.argv.slice(2)) {
-  const usage = 'Usage: board.mjs --serve [--port <n>] [--repo <path>] | --once [--out <file>] [--repo <path>] | --json [--repo <path>]'
+  const usage = 'Usage: board.mjs --serve [--port <n>] [--repo <path>] | --stop [--repo <path>] | --once [--out <file>] [--repo <path>] | --json [--repo <path>]'
   let args
   try { args = parseArgs(argv) } catch (error) { console.error(`${error.message}\n${usage}`); return 2 }
-  if (!args.once && !args.json && !args.serve) { console.error(usage); return 2 }
+  if (!args.once && !args.json && !args.serve && !args.stop) { console.error(usage); return 2 }
   const repoRoot = tryGit(resolve(args.repo), ['rev-parse', '--show-toplevel'])
   if (!repoRoot) { console.error(`Not inside a git repository: ${args.repo}`); return 1 }
   if (args.serve) return serve(repoRoot, args.port)
+  if (args.stop) return stopServer(repoRoot)
   let board
   try { board = deriveBoard(readSnapshot(repoRoot)) } catch (error) { console.error(error.message); return 1 }
   if (args.json) console.log(JSON.stringify(board, null, 2))
