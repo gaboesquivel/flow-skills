@@ -86,8 +86,8 @@ Source: the Signal demo rehearsal on 2026-10-28, where the operator's expectatio
 
 Sub-issues of #104. Tasks 01–04 each own one skill area and share only this spec, so they have no blockers; 02 and 03 each edit only their own entry in the smoke contracts. 05 waits for 01–04 because the docs, evals, and new contracts describe their behavior.
 
-- [ ] 01: `to-spec`: required acceptance scenario (#106)
+- [x] 01: `to-spec`: required acceptance scenario (#106)
 - [ ] 02: `build`: local mode reviews and lands on local `main` (#105)
 - [ ] 03: `ship`: local push and Verify (deployment + scenario) (#107)
-- [ ] 04: Setup wording: discovery depth and delivery are independent (#108)
+- [x] 04: Setup wording: discovery depth and delivery are independent (#108)
 - [ ] 05: Docs, evals, and safety contracts (#109, blocked by 01–04)
