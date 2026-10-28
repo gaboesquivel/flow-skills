@@ -3,7 +3,7 @@
 // Zero dependencies, Node >= 22. Stages: Candidate, Specced, Ready, Building, Shipped.
 import { execFile, execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { mkdirSync, readFileSync, realpathSync, renameSync, rmSync, writeFileSync } from 'node:fs'
+import { closeSync, mkdirSync, openSync, readFileSync, realpathSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs'
 import { createServer } from 'node:http'
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -193,6 +193,7 @@ const branchNamed = (name, wanted) => name === wanted || name.split('/').slice(1
 
 export const TASK_STATES = ['queued', 'working', 'reviewing', 'fixing', 'integrated', 'failed', 'blocked']
 export const OVERLAY_STALE_MS = 30 * 60_000
+export const OVERLAY_FUTURE_MS = 5 * 60_000
 
 /** `<git common dir>/flow/board.json`: shared by every worktree, never committed. */
 export function overlayPath(repoRoot) {
@@ -244,22 +245,29 @@ export function recordRunStart({ spec, branch, mode, tasks = [], now = new Date(
 }
 
 /**
- * Pure: the overlay with one task's state set (a task not listed at run start is added). `round` defaults to
- * the previous round, at least 1 once the task leaves queued; `note` defaults to empty, so a note never
- * outlives the state it explained.
+ * Pure: the overlay with the state of one task, or of each task in a list (`task: ['01', '02']` or
+ * `'01,02'`), set; a task not listed at run start is added. `round` defaults to the previous round, at least 1
+ * once the task leaves queued. Without `note`, re-recording the same state (a heartbeat) keeps the note and a
+ * new state clears it, so a note never outlives the state it explained.
  */
-export function recordTask(overlay, { task, state, round, note = '', now = new Date().toISOString() }) {
+export function recordTask(overlay, { task, state, round, note, now = new Date().toISOString() }) {
   if (!overlay?.run) throw new Error('No run recorded: record run-start first')
-  const id = pad(task, 2)
-  if (!/^\d+$/u.test(id)) throw new Error('--task must be a task number, for example 02')
+  const ids = (Array.isArray(task) ? task : String(task ?? '').split(',')).map((id) => pad(id, 2)).filter(Boolean)
+  if (!ids.length || ids.some((id) => !/^\d+$/u.test(id))) throw new Error('--task must list task numbers, for example 02 or 01,02')
   if (!TASK_STATES.includes(state)) throw new Error(`--state must be one of ${TASK_STATES.join(', ')}`)
-  const previous = overlay.tasks?.[id]
-  let nextRound
+  let givenRound = null
   if (round !== undefined && round !== null) {
-    nextRound = Number(round)
-    if (!Number.isInteger(nextRound) || nextRound < 0) throw new Error('--round must be a whole number')
-  } else nextRound = Math.max(Number(previous?.round) || 0, state === 'queued' ? 0 : 1)
-  return { ...overlay, tasks: { ...overlay.tasks, [id]: { state, round: nextRound, note: String(note), updatedAt: now } } }
+    givenRound = Number(round)
+    if (!Number.isInteger(givenRound) || givenRound < 0) throw new Error('--round must be a whole number')
+  }
+  const tasks = { ...overlay.tasks }
+  for (const id of ids) {
+    const previous = tasks[id]
+    const nextRound = givenRound ?? Math.max(Number(previous?.round) || 0, state === 'queued' ? 0 : 1)
+    const nextNote = note ?? (previous?.state === state && typeof previous.note === 'string' ? previous.note : '')
+    tasks[id] = { state, round: nextRound, note: String(nextNote), updatedAt: now }
+  }
+  return { ...overlay, tasks }
 }
 
 /** Pure: the overlay with its run marked ended. */
@@ -281,22 +289,56 @@ export function writeOverlay(path, overlay) {
   }
 }
 
-/** Applies one `--record` to the repository's overlay file and returns a one-line summary. Throws on bad input. */
-export function record(repoRoot, kind, options) {
+export const LOCK_WAIT_MS = 2000
+export const LOCK_STALE_MS = 10_000
+
+const sleepSync = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms)
+
+/**
+ * Runs `fn` while holding `<path>.lock` (created exclusively), so concurrent records never lose an update.
+ * Waits up to `waitMs`; a lock older than `staleMs` is taken over (its holder crashed). Throws on timeout.
+ */
+export function withLock(path, fn, { waitMs = LOCK_WAIT_MS, staleMs = LOCK_STALE_MS } = {}) {
+  const lock = `${path}.lock`
+  mkdirSync(dirname(path), { recursive: true })
+  const deadline = Date.now() + waitMs
+  let fd
+  for (;;) {
+    try { fd = openSync(lock, 'wx'); break } catch (error) {
+      if (error?.code !== 'EEXIST') throw error
+    }
+    let age = 0
+    try { age = Date.now() - statSync(lock).mtimeMs } catch { continue } // released meanwhile: retry now
+    if (age > staleMs) { rmSync(lock, { force: true }); continue }
+    if (Date.now() >= deadline) throw new Error(`Run overlay is locked by another record (${lock}); try again`)
+    sleepSync(20 + Math.floor(Math.random() * 30))
+  }
+  try {
+    closeSync(fd)
+    return fn()
+  } finally {
+    rmSync(lock, { force: true })
+  }
+}
+
+/** Applies one `--record` to the repository's overlay file, under its lock, and returns a one-line summary. Throws on bad input. */
+export function record(repoRoot, kind, options, lockOptions) {
   if (!['run-start', 'task', 'run-end'].includes(kind)) throw new Error('--record must be run-start, task, or run-end')
   const path = overlayPath(repoRoot)
-  if (kind === 'run-start') {
-    writeOverlay(path, recordRunStart(options))
-    return `Recorded run start for spec ${pad(options.spec, 3)} in ${path}`
-  }
-  const { overlay, overlayError } = readOverlay(path)
-  if (!overlay) throw new Error(overlayError ? `Run overlay ${path} is ${overlayError}: record run-start first` : 'No run recorded: record run-start first')
-  if (kind === 'task') {
-    writeOverlay(path, recordTask(overlay, options))
-    return `Recorded task ${pad(options.task, 2)} ${options.state}`
-  }
-  writeOverlay(path, recordRunEnd(overlay, options))
-  return 'Recorded run end'
+  return withLock(path, () => {
+    if (kind === 'run-start') {
+      writeOverlay(path, recordRunStart(options))
+      return `Recorded run start for spec ${pad(options.spec, 3)} in ${path}`
+    }
+    const { overlay, overlayError } = readOverlay(path)
+    if (!overlay) throw new Error(overlayError ? `Run overlay ${path} is ${overlayError}: record run-start first` : 'No run recorded: record run-start first')
+    if (kind === 'task') {
+      writeOverlay(path, recordTask(overlay, options))
+      return `Recorded task ${String(options.task)} ${options.state}`
+    }
+    writeOverlay(path, recordRunEnd(overlay, options))
+    return 'Recorded run end'
+  }, lockOptions)
 }
 
 /** Committer date of the latest commit on `ref` that added each spec file, from one `git log`. */
@@ -598,16 +640,18 @@ function overlayRun(overlay, now) {
   if (!overlay?.run) return null
   const { run } = overlay
   const tasks = Object.entries(overlay.tasks ?? {}).filter(([, task]) => task && typeof task === 'object')
-  const latest = Math.max(...[run.startedAt, ...tasks.map(([, task]) => task.updatedAt)].map(time).filter((t) => !Number.isNaN(t)))
-  let staleReason = null
-  if (run.endedAt) staleReason = `ship run ended ${run.endedAt}; task states from git`
-  else if (!Number.isFinite(latest) || now - latest > OVERLAY_STALE_MS) staleReason = `ship run overlay stale: no update for ${OVERLAY_STALE_MS / 60_000} min; ignored`
+  // Timestamps more than OVERLAY_FUTURE_MS ahead of `now` are invalid: a skewed clock must not keep a run fresh.
+  const valid = (t) => !Number.isNaN(t) && (now === null || t <= now + OVERLAY_FUTURE_MS)
+  const latest = Math.max(...[run.startedAt, ...tasks.map(([, task]) => task.updatedAt)].map(time).filter(valid))
+  // An ended run is stale without a marker; an unended run that stopped updating (a crash) gets one.
+  const ended = Boolean(run.endedAt)
+  const abandoned = !ended && (!Number.isFinite(latest) || (now !== null && now - latest > OVERLAY_STALE_MS))
   return {
     spec: pad(run.spec, 3),
     branch: typeof run.branch === 'string' && run.branch ? run.branch : null,
     mode: typeof run.mode === 'string' ? run.mode : null,
-    stale: Boolean(staleReason),
-    staleReason,
+    stale: ended || abandoned,
+    staleReason: abandoned ? `ship run stopped updating ${OVERLAY_STALE_MS / 60_000}+ min ago; its task states are ignored` : null,
     tasks,
   }
 }
@@ -635,10 +679,12 @@ function runTasks(run, specTasks) {
  * One card per spec number: the default branch wins, then local before remote branches, then by name;
  * losing files are named in the winner's marker. Branch-only specs are capped at Building.
  * A fresh run overlay moves its spec to Building (unless git ships it) and adds `run.tasks` to the card;
- * a stale one only adds a marker. Staleness is judged against `snapshot.generatedAt`.
+ * a stale one (ended, or no update for 30 min) is ignored; only an unended one marks a card that is not Shipped.
+ * Staleness by age is judged against `snapshot.generatedAt`; without it, only `endedAt` makes a run stale.
  */
 export function deriveBoard(snapshot) {
-  const now = Number.isNaN(time(snapshot.generatedAt)) ? Date.now() : time(snapshot.generatedAt)
+  // No wall clock here: without `generatedAt`, age never makes a run stale.
+  const now = Number.isNaN(time(snapshot.generatedAt)) ? null : time(snapshot.generatedAt)
   const run = overlayRun(snapshot.overlay, now)
   let runMatched = false
   const columns = COLUMNS.map((column) => ({ ...column, cards: [] }))
@@ -679,7 +725,7 @@ export function deriveBoard(snapshot) {
     const open = tasks.total - tasks.done
     if (stage === 'shipped' && status === 'implemented' && open > 0) markers.push(`status implemented, ${open} task${open === 1 ? '' : 's'} open`)
     for (const other of collisions) markers.push(`number ${number} also used by ${other.file}${other.onDefault === false ? ` on ${other.source}` : ''}`)
-    if (ownRun?.stale) markers.push(ownRun.staleReason)
+    if (ownRun?.staleReason && stage !== 'shipped') markers.push(ownRun.staleReason)
     byId.get(stage).cards.push({
       number,
       slug,
@@ -998,7 +1044,7 @@ async function stopServer(repoRoot, port) {
 /** Resolves to the exit code; with `--serve`, once the server stops on SIGINT or SIGTERM. */
 export async function main(argv = process.argv.slice(2)) {
   const usage = 'Usage: board.mjs --serve [--port <n>] [--repo <path>] [--no-github] | --stop [--port <n>] [--repo <path>] | --once [--out <file>] [--repo <path>] [--no-github] | --json [--repo <path>] [--no-github]'
-    + ' | --record run-start --spec <NNN> --branch <name> --mode local|pull-request --tasks <01,02> | --record task --task <NN> --state <state> [--round <n>] [--note <text>] | --record run-end'
+    + ' | --record run-start --spec <NNN> --branch <name> --mode local|pull-request --tasks <01,02> | --record task --task <NN[,NN…]> --state <state> [--round <n>] [--note <text>] | --record run-end'
   let args
   try { args = parseArgs(argv) } catch (error) { console.error(`${error.message}\n${usage}`); return 2 }
   if (!args.once && !args.json && !args.serve && !args.stop && args.record === null) { console.error(usage); return 2 }

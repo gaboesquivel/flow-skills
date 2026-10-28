@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict'
 import { execFileSync, spawn, spawnSync } from 'node:child_process'
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, realpathSync, renameSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, realpathSync, renameSync, rmSync, utimesSync, writeFileSync } from 'node:fs'
 import http from 'node:http'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import test from 'node:test'
 import vm from 'node:vm'
 import { readDelivery as flowReadDelivery } from '../skills/flow/lib/flow-block.mjs'
-import { countTasks, deriveBoard, escapeHtml, fetchGithub, githubReader, githubSource, LIVE_SCRIPT, overlayPath, parseGithubRemote, parseTasks, readDelivery, parseStatus, readSnapshot, recordRunEnd, recordRunStart, recordTask, renderHtml, startServer } from '../skills/board/scripts/board.mjs'
+import { countTasks, deriveBoard, escapeHtml, fetchGithub, githubReader, githubSource, LIVE_SCRIPT, overlayPath, parseGithubRemote, parseTasks, readDelivery, parseStatus, readSnapshot, record, recordRunEnd, recordRunStart, recordTask, renderHtml, startServer } from '../skills/board/scripts/board.mjs'
 
 const script = join(import.meta.dirname, '../skills/board/scripts/board.mjs')
 
@@ -890,22 +890,30 @@ test('run overlay: the run branch ships the spec once git shows it merged with c
   assert.equal(cardOf(board, '012').reason, 'branch feat/run-branch merged')
 })
 
-test('run overlay: stale by endedAt or by age is a marker, ignored for staging and task states', () => {
+test('run overlay: ended or abandoned runs are ignored; only an abandoned run on an unshipped card is marked', () => {
   const ready = { '012-progress-board.md': runSpec.replace('**Status:** done\n- [x] a', '- [ ] a') }
-  const tasks = { '02': { state: 'working', round: 1, note: '', updatedAt: minutesBefore(1) } }
-  const ended = deriveBoard({ ...snapshot(ready), generatedAt: NOW, overlay: overlayOf('012', tasks, { endedAt: minutesBefore(1) }) })
+  const at = (stamp) => ({ '02': { state: 'working', round: 1, note: '', updatedAt: stamp } })
+  const board = (tasks, run, generatedAt = NOW, specs = ready) => deriveBoard({ ...snapshot(specs), generatedAt, overlay: overlayOf('012', tasks, run) })
+  const ended = board(at(minutesBefore(1)), { endedAt: minutesBefore(1) })
   assert.equal(stageOf(ended, '012'), 'ready')
   assert.equal(cardOf(ended, '012').run, null)
-  assert.match(cardOf(ended, '012').marker, /ship run ended/u)
-  const old = { '02': { state: 'working', round: 1, note: '', updatedAt: minutesBefore(31) } }
-  const aged = deriveBoard({ ...snapshot(ready), generatedAt: NOW, overlay: overlayOf('012', old, { startedAt: minutesBefore(40) }) })
+  assert.equal(cardOf(ended, '012').marker, null, 'a cleanly ended run needs no look')
+  const aged = board(at(minutesBefore(31)), { startedAt: minutesBefore(40) })
   assert.equal(stageOf(aged, '012'), 'ready')
   assert.equal(cardOf(aged, '012').run, null)
-  assert.match(cardOf(aged, '012').marker, /overlay stale/u)
-  const recent = deriveBoard({ ...snapshot(ready), generatedAt: NOW, overlay: overlayOf('012', { '02': { ...old['02'], updatedAt: minutesBefore(29) } }, { startedAt: minutesBefore(40) }) })
+  assert.match(cardOf(aged, '012').marker, /ship run stopped updating 30\+ min ago/u)
+  const shipped = board(at(minutesBefore(31)), { startedAt: minutesBefore(40) }, NOW, { '012-progress-board.md': spec('012: Progress board', 'implemented') })
+  assert.equal(stageOf(shipped, '012'), 'shipped')
+  assert.equal(cardOf(shipped, '012').marker, null, 'no crash marker once git ships the spec')
+  const recent = board(at(minutesBefore(29)), { startedAt: minutesBefore(40) })
   assert.equal(stageOf(recent, '012'), 'building', 'a task update inside 30 min keeps the run fresh')
-  const undated = deriveBoard({ ...snapshot(ready), generatedAt: NOW, overlay: overlayOf('012', {}, { startedAt: 'yesterday' }) })
-  assert.match(cardOf(undated, '012').marker, /overlay stale/u, 'no valid timestamp is stale')
+  assert.match(cardOf(board({}, { startedAt: 'yesterday' }), '012').marker, /stopped updating/u, 'no valid timestamp is stale')
+  const future = new Date(Date.parse(NOW) + 6 * 60_000).toISOString()
+  assert.match(cardOf(board(at(future), { startedAt: minutesBefore(40) }), '012').marker, /stopped updating/u, 'a timestamp beyond now + 5 min is ignored')
+  assert.equal(stageOf(board(at(new Date(Date.parse(NOW) + 4 * 60_000).toISOString()), { startedAt: minutesBefore(40) }), '012'), 'building', 'small clock skew is tolerated')
+  const clockless = board(at(minutesBefore(600)), { startedAt: minutesBefore(600) }, null)
+  assert.equal(stageOf(clockless, '012'), 'building', 'without generatedAt, age never makes a run stale')
+  assert.equal(stageOf(board(at(minutesBefore(1)), { endedAt: minutesBefore(1) }, null), '012'), 'ready', 'endedAt still does')
 })
 
 test('run overlay: invalid or foreign overlays become a header note, never a crash', () => withRepo(({ dir, write, commit }) => {
@@ -938,7 +946,11 @@ test('recorder: pure updates set states, rounds, notes, and timestamps', () => {
   assert.deepEqual(working.tasks['02'], { state: 'working', round: 1, note: '', updatedAt: 't1' })
   const fixing = recordTask(working, { task: '02', state: 'fixing', round: '2', note: 'lint', now: 't2' })
   assert.deepEqual(fixing.tasks['02'], { state: 'fixing', round: 2, note: 'lint', updatedAt: 't2' })
+  assert.deepEqual(recordTask(fixing, { task: '02', state: 'fixing', now: 't3' }).tasks['02'], { state: 'fixing', round: 2, note: 'lint', updatedAt: 't3' }, 'a heartbeat keeps the note')
   assert.deepEqual(recordTask(fixing, { task: '02', state: 'reviewing', now: 't3' }).tasks['02'], { state: 'reviewing', round: 2, note: '', updatedAt: 't3' })
+  const wave = recordTask(start, { task: '01,3', state: 'working', now: 't5' })
+  assert.deepEqual([wave.tasks['01'].state, wave.tasks['02'].state, wave.tasks['03'].state], ['working', 'queued', 'working'], 'a task list is one update')
+  assert.throws(() => recordTask(start, { task: '01,x', state: 'working' }), /--task must list task numbers/u)
   assert.equal(start.tasks['02'].state, 'queued', 'inputs are not mutated')
   assert.equal(recordRunEnd(fixing, { now: 't4' }).run.endedAt, 't4')
   assert.throws(() => recordTask(start, { task: '02', state: 'done' }), /--state must be one of/u)
@@ -977,27 +989,66 @@ test('recorder CLI: round trip from a linked worktree lands in the common git di
 
   assert.equal(rec('run-end').status, 0)
   assert.equal(typeof JSON.parse(readFileSync(path, 'utf8')).run.endedAt, 'string')
-  assert.match(cardOf(deriveBoard(readSnapshot(dir)), '012').marker, /ship run ended/u)
+  const afterEnd = deriveBoard(readSnapshot(dir))
+  assert.equal(cardOf(afterEnd, '012').run, null)
+  assert.equal(cardOf(afterEnd, '012').marker, null)
   assert.equal(cli('--record', 'bogus', '--repo', dir).status, 1)
   assert.equal(cli('--json', '--state', 'working', '--repo', dir).status, 2, 'record fields need --record')
 }))
 
-test('live server shows an overlay change on the next /state after the memo window', async () => {
+const runCli = (args) => new Promise((done) => {
+  const child = spawn(process.execPath, [script, ...args], { stdio: ['ignore', 'pipe', 'pipe'] })
+  let stderr = ''
+  child.stderr.on('data', (chunk) => { stderr += chunk })
+  child.on('exit', (code) => done({ code, stderr }))
+})
+
+test('recorder: parallel records all land; a held lock times out; a stale lock is taken over', { timeout: 30_000 }, async () => {
+  const { dir, write, commit } = makeRepo()
+  try {
+    write('012-progress-board.md', runSpec)
+    commit('spec')
+    const path = overlayPath(dir)
+    assert.equal(cli('--record', 'run-start', '--spec', '012', '--branch', 'feat/x', '--mode', 'local', '--tasks', '01,02,03,04,05,06', '--repo', dir).status, 0)
+    const ids = ['01', '02', '03', '04', '05', '06']
+    const results = await Promise.all(ids.map((id) => runCli(['--record', 'task', '--task', id, '--state', 'working', '--note', `n${id}`, '--repo', dir])))
+    for (const result of results) assert.equal(result.code, 0, result.stderr)
+    const overlay = JSON.parse(readFileSync(path, 'utf8'))
+    assert.deepEqual(ids.map((id) => [overlay.tasks[id].state, overlay.tasks[id].note]), ids.map((id) => ['working', `n${id}`]))
+    assert.deepEqual(readdirSync(join(dir, '.git', 'flow')), ['board.json'], 'lock and temp files removed')
+
+    writeFileSync(`${path}.lock`, '')
+    assert.throws(() => record(dir, 'task', { task: '01', state: 'failed' }, { waitMs: 100 }), /locked by another record/u)
+    const timedOut = spawnSync(process.execPath, [script, '--record', 'task', '--task', '01', '--state', 'failed', '--repo', dir], { encoding: 'utf8' })
+    assert.equal(timedOut.status, 1, 'CLI timeout exits 1')
+    assert.match(timedOut.stderr, /locked by another record/u)
+    assert.equal(JSON.parse(readFileSync(path, 'utf8')).tasks['01'].state, 'working', 'nothing written on timeout')
+    const old = new Date(Date.now() - 60_000)
+    utimesSync(`${path}.lock`, old, old)
+    assert.match(record(dir, 'task', { task: '01', state: 'failed' }, { waitMs: 100 }), /Recorded task 01 failed/u)
+    assert.equal(existsSync(`${path}.lock`), false)
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('live server shows an overlay change on the next /state after the memo window', { timeout: 30_000 }, async () => {
   const { dir, write, commit } = makeRepo()
   write('012-progress-board.md', runSpec)
   commit('spec')
-  const live = await startServer({ repoRoot: dir, port: 0, memoMs: 1000 })
+  // A 3 s memo leaves ample margin for the CLI records between reads inside one window.
+  const live = await startServer({ repoRoot: dir, port: 0, memoMs: 3000 })
   try {
     assert.equal(cardOf(await getState(live.url), '012').run, null)
     const rec = (...args) => { const run = cli('--record', ...args, '--repo', dir); assert.equal(run.status, 0, run.stderr) }
     rec('run-start', '--spec', '012', '--branch', 'feat/run-branch', '--mode', 'local', '--tasks', '02,03')
     rec('task', '--task', '03', '--state', 'working')
-    await new Promise((done) => setTimeout(done, 1100))
+    await new Promise((done) => setTimeout(done, 3100))
     const state = await getState(live.url)
     assert.deepEqual(cardOf(state, '012').run.tasks.map((t) => [t.id, t.state]), [['02', 'queued'], ['03', 'working']])
     rec('task', '--task', '03', '--state', 'blocked', '--note', 'needs a decision')
     assert.equal(cardOf(await getState(live.url), '012').run.tasks[1].state, 'working', 'inside the memo window')
-    await new Promise((done) => setTimeout(done, 1100))
+    await new Promise((done) => setTimeout(done, 3100))
     assert.deepEqual(cardOf(await getState(live.url), '012').run.tasks[1], { id: '03', title: 'Run overlay', state: 'blocked', round: 1, note: 'needs a decision' })
   } finally {
     await live.close()

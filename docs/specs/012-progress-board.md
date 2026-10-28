@@ -75,7 +75,7 @@ Specs that exist only on unmerged branches are shown too, marked with their bran
 
 ## Out of Scope
 
-- Dragging, editing, or creating cards; any write path from the board.
+- Dragging, editing, or creating cards; any write path from the board page or server. The only writer is `ship`'s orchestrator, through `board.mjs --record`, and it writes only the run overlay.
 - Hosted, shared, or multi-user boards, and authentication.
 - Replacing GitHub issues or GitHub Projects in pull-request mode.
 - Burndown, cycle time, or other metrics.
