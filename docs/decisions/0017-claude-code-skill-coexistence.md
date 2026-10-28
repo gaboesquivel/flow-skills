@@ -39,4 +39,4 @@ Renaming or dropping skills for one host would fragment the portable catalog. Th
 ## Consequences
 
 - [Agent compatibility](../agent-compatibility.md) gains a Claude Code section covering the name clash and overlaps.
-- Which `simplify` Claude Code runs when both are installed is unverified; record it during live smoke verification.
+- In Claude Code 2.1.308 an installed Flow `simplify` shadows the built-in `/simplify` ([live run](../../tests/smoke/2026-10-27-claude-code-live.md)). Adopters who prefer the built-in can remove the Flow skill.
