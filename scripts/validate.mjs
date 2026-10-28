@@ -3,8 +3,9 @@ import { dirname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { collectDocLinkErrors } from './check-doc-links.mjs'
 
-// Skills with irreversible setup effects stay explicit-only (decision 0019); all others are model-invocable.
-export const EXPLICIT_SKILL_NAMES = new Set(['start'])
+// Explicit-only skills must be named to run. Empty since decision 0022 made `start` speakable with a
+// pre-write confirmation; keep the set so a future skill with irreversible effects can opt out.
+export const EXPLICIT_SKILL_NAMES = new Set([])
 
 export const EXPECTED_SKILL_NAMES = [
   'competitors',

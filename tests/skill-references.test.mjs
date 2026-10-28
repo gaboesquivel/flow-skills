@@ -12,9 +12,9 @@ test('all shipped references and metadata validate', () => assert.deepEqual(vali
 
 test('documentation markdown links resolve', () => assert.deepEqual(validateRepository(repoRoot).filter((e) => e.includes(': missing target')), []))
 
-test('start is the only explicit-only skill', () => {
-  assert.deepEqual([...EXPLICIT_SKILL_NAMES], ['start'])
-  assert.match(readFileSync(join(skillsRoot, 'start/SKILL.md'), 'utf8'), /disable-model-invocation: true/u)
+test('no skill is explicit-only; start is speakable', () => {
+  assert.deepEqual([...EXPLICIT_SKILL_NAMES], [])
+  assert.match(readFileSync(join(skillsRoot, 'start/SKILL.md'), 'utf8'), /disable-model-invocation: false/u)
   assert.match(readFileSync(join(skillsRoot, 'flow/SKILL.md'), 'utf8'), /disable-model-invocation: false/u)
 })
 
