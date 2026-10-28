@@ -1,6 +1,6 @@
 # Skill catalog
 
-Skills live in [`skills/`](../skills/); `scripts/validate.mjs` holds the authoritative list. Install with `npx skills add gaboesquivel/flow-skills`. No mandatory sequence. Skills may name the next skill and wait; the only automatic hand-offs are `start` → `explore` and explore's `interview` and `grill` phases, each behind the user's yes ([decision 0024](decisions/0024-gated-hand-offs.md)).
+Skills live in [`skills/`](../skills/); `scripts/validate.mjs` holds the authoritative list. Install with `npx skills add gaboesquivel/flow-skills`. No mandatory sequence. Skills may name the next skill and wait; the only automatic hand-offs are `start` → `explore` and explore's `interview` and `grill` phases, each behind the user's yes, and `ship` running `build` and `review` as part of landing ([decision 0028](decisions/0028-build-and-ship.md); [decision 0024](decisions/0024-gated-hand-offs.md)).
 
 [Agent compatibility](agent-compatibility.md) · [Decision 0006](decisions/0006-flow-lite-and-flat-docs.md) · [Decision 0009](decisions/0009-adopter-product-context.md) · [Decision 0015](decisions/0015-tasks-and-domain-modeling.md) · [Decision 0018](decisions/0018-interview-extracts-intent.md) · [Decision 0019](decisions/0019-voice-first-invocation.md) · [Spec 002](specs/002-flow-lite-and-flat-docs.md) · [Spec 008](specs/008-tasks-and-domain-modeling.md)
 
@@ -19,7 +19,7 @@ flowchart LR
   subgraph delivery["Delivery skills — invoke any subset; no fixed order"]
     direction TB
     explore ~~~ interview ~~~ grill ~~~ toSpec[to-spec]
-    toTasks[to-tasks] ~~~ implement ~~~ review ~~~ ship ~~~ retro
+    toTasks[to-tasks] ~~~ build ~~~ review ~~~ ship ~~~ retro
   end
 ```
 
@@ -38,11 +38,11 @@ Product discovery, writing, advisory, prototype, quality, and misc skills are op
 | [explore](../skills/explore/SKILL.md) | "explore this" | Propose a depth (Skip, Lite, Full), defaulting to the project's recorded process depth; extract intent, then challenge it; end in a confirmed brief, clearer intent, or a killed idea. Every brief asks who the agent users are. A new product gets spec 001 in full with its tasks and later bets as candidate stubs; Full also proposes a decision record per choice among alternatives. |
 | [interview](../skills/interview/SKILL.md) | "interview me" | Extract what you actually want, with a guess attached to each question, before any plan or spec exists. |
 | [grill](../skills/grill/SKILL.md) | "grill me" | Stress-test an idea or plan with focused questions and evidence. |
-| [to-spec](../skills/to-spec/SKILL.md) | "spec it" | Turn conversation into a numbered spec with contract-first interfaces; label assumptions; write candidate stubs for later bets; save only when requested. |
-| [to-tasks](../skills/to-tasks/SKILL.md) | "break it down" | Vertical-slice tasks with blockers, recorded as GitHub issues (pull-request mode) or in the spec's Tasks section (local mode); reports the ready set and waits for "ship it". |
-| [implement](../skills/implement/SKILL.md) | "build it" | Implement an authorized change; no spec required for small clear work. |
+| [to-spec](../skills/to-spec/SKILL.md) | "spec it" | Turn conversation into a numbered spec with contract-first interfaces; label assumptions; write candidate stubs for later bets. Writes the spec as a `draft` file, and any decision beside it as **Proposed**, and links them instead of showing the text; "accept the spec" sets it to `accepted` and its linked decisions to **Accepted** ([decision 0028](decisions/0028-build-and-ship.md)). |
+| [to-tasks](../skills/to-tasks/SKILL.md) | "break it down" | Vertical-slice tasks with blockers, recorded as GitHub issues (pull-request mode) or in the spec's Tasks section (local mode); reports the ready set and waits for "build it". |
+| [build](../skills/build/SKILL.md) | "build it" | Implement an authorized change and deliver it as a pull request with green checks, with no confirmation (local mode: a branch with the local check suite passing); no spec required for small clear work. On a spec's task set, runs tasks in [waves](../GLOSSARY.md#wave) on one branch, posts a [checkpoint](../GLOSSARY.md#checkpoint) with the pull request's checks and links after each wave ([decision 0025](decisions/0025-wave-checkpoints.md)), and owns the [delivery mode](../skills/build/SKILL.md#delivery-mode) ([decision 0028](decisions/0028-build-and-ship.md)). |
 | [review](../skills/review/SKILL.md) | "check it against the spec" | Review against intent and root context on five axes: correctness, readability, architecture, security, performance. |
-| [ship](../skills/ship/SKILL.md) | "ship it" | Verify, commit, confirm, push, and check the deployment this repo configures, deferring to the platform's deploy skill. On a spec's task set, runs tasks in [waves](../GLOSSARY.md#wave) on one branch, opens a draft pull request early in pull-request mode, posts a [checkpoint](../GLOSSARY.md#checkpoint) with a preview after each wave ([decision 0025](decisions/0025-wave-checkpoints.md)), and finishes by [delivery mode](../skills/ship/SKILL.md#delivery-mode). |
+| [ship](../skills/ship/SKILL.md) | "ship it" | Land accepted work, or a hotfix, with no confirmation: build if needed, post an independent review on the pull request, fix findings, wait for green checks, merge, delete the branch, and sync the local default branch. Spec work needs an accepted spec; a hotfix that is not hotfix-sized stops for `to-spec` ([decision 0028](decisions/0028-build-and-ship.md)). |
 | [retro](../skills/retro/SKILL.md) | "let's do a retro" | Retrospective on the agent environment after a session. |
 
 ## Shared language

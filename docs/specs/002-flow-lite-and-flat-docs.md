@@ -21,7 +21,7 @@ Ship a single **`flow`** skill (Flow Lite) for root context alignment, keep thir
 ## Implementation decisions
 
 - Archive path: `docs/archive/2026-10-27-ideas-initiatives/`.
-- `flow` may link to [implement](../../skills/implement/SKILL.md) for implementation-time doc updates without duplicating implement scope.
+- `flow` may link to [implement](../../skills/build/SKILL.md) for implementation-time doc updates without duplicating implement scope.
 
 ## Testing decisions
 

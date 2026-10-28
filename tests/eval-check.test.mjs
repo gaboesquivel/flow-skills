@@ -16,9 +16,9 @@ test('eval check rejects duplicate ids and false live claims', () => {
     scenarios: [
       {
         id: 'E01',
-        skills: ['implement'],
+        skills: ['build'],
         behavior: 'x',
-        skillReferences: ['skills/implement/SKILL.md'],
+        skillReferences: ['skills/build/SKILL.md'],
         fixtureReferences: [],
         evidence: {
           structural_contract: 'passed',
@@ -31,7 +31,7 @@ test('eval check rejects duplicate ids and false live claims', () => {
       },
       {
         id: 'E01',
-        skills: ['implement'],
+        skills: ['build'],
         behavior: 'dup',
         skillReferences: [],
         evidence: {

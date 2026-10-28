@@ -28,7 +28,7 @@ Keep shared visual decisions in DESIGN.md and page-specific intent in a small br
 
 Keep product intent, experience design, and architecture distinct while allowing findings in one to inform the others. Use the [documentation guide](README.md) for ownership and [AGENTS.md](../AGENTS.md) for maintenance rules. Source assessments live in [research](research), indexed in [references](references.md).
 
-After meaningful changes, align root documents with [`flow`](../skills/flow/SKILL.md) or equivalent manual edits. Implementation work may update owning docs per [implement](../skills/implement/SKILL.md).
+After meaningful changes, align root documents with [`flow`](../skills/flow/SKILL.md) or equivalent manual edits. Implementation work may update owning docs per [build](../skills/build/SKILL.md).
 
 ## Write context for agents and humans
 
@@ -45,7 +45,7 @@ These apply to manual work and skill use. They are not a fixed sequence.
 | Activity | Documentation responsibility |
 |---|---|
 | Exploration | Preserve worthwhile possibilities; link evidence when saving artifacts. |
-| Planning | Capture bounded scope in a spec when the work warrants it. |
+| Planning | Capture bounded scope in a spec when the work warrants it; accept it before shipping. |
 | Execution | Update root context and specs when behavior or accepted intent changes. |
 | Review | Record findings and update decisions or root docs when conclusions matter. |
 

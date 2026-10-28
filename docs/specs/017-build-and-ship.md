@@ -1,6 +1,6 @@
 # 017: Build and ship
 
-Status: accepted (2026-10-28). Decision: [0028](../decisions/0028-build-and-ship.md). Builds on [spec 015](015-wave-checkpoints.md) and [spec 012](012-progress-board.md).
+Status: implemented (2026-10-28). Decision: [0028](../decisions/0028-build-and-ship.md). Builds on [spec 015](015-wave-checkpoints.md) and [spec 012](012-progress-board.md).
 
 ## Problem Statement
 
@@ -28,7 +28,7 @@ A developer who says "ship it" is asked to confirm twice after deciding. A devel
 ## Implementation Decisions
 
 - `skills/implement/` moves to `skills/build/` with its ATTRIBUTION, LICENSE, and `agents/openai.yaml`; `EXPECTED_SKILL_NAMES` and `PHRASES` follow.
-- `build` owns Delivery mode and Task set (waves, notes, worker limits, checkpoints, board recording); `ship` links to them and owns acceptance checks, the hotfix guard, review, merge, and sync. `ship` drops its Push confirmation, Main gate, and Deploy sections.
+- `build` owns Delivery mode and Task set (waves, notes, worker limits, checkpoints, board recording); `ship` refers to them by name and owns acceptance checks, the hotfix guard, review, merge, and sync. `ship` drops its Push confirmation, Main gate, and Deploy sections.
 - `to-spec` owns spec statuses and acceptance. It writes specs as `draft` and decisions it proposes as **Proposed** without asking, and reports links rather than inline text; its description gains "accept the spec". The "save only after an explicit yes to the shown text" rule is removed.
 - `review` accepts `ship`'s authorization to use an independent worker and post on the pull request.
 - `flow-block.mjs` drops `Deploy:`, `--deploy`, `normalizeDeploy`, and `readDeploy`; rewriting a block drops an existing `Deploy:` line.
@@ -40,7 +40,7 @@ A developer who says "ship it" is asked to confirm twice after deciding. A devel
 - Smoke contracts for `build`, `ship`, `review`, `to-spec`, `to-tasks`, `flow`, and `board`: `to-spec` writes drafts and links them; the pull request and green checks in build; no confirmation in ship; the acceptance precondition; the hotfix guard; no self-approval or protection bypass; stopping on a required approval.
 - `flow-block.test.mjs`: no `Deploy:` line, and an existing one is dropped on rewrite.
 - `board.test.mjs`: `accepted` raises no unknown-status marker.
-- The catalog count and evals follow the rename; E16 and E20 (one confirmation) are rewritten, and an eval covers ship refusing a draft spec.
+- The catalog count and evals follow the rename; E20 (build opens the pull request) and E21 (ship with no confirmation) are rewritten, and new evals cover ship refusing a draft spec (E26), refusing a Proposed linked decision (E27), and refusing a draft spec found from the branch name when nothing links it (E28).
 
 ## Out of Scope
 
@@ -50,11 +50,11 @@ A developer who says "ship it" is asked to confirm twice after deciding. A devel
 
 ## Tasks
 
-Proposed; published as issues with `to-tasks` after a yes:
+Recorded as GitHub issues (pull-request mode):
 
-1. Rename `implement` to `build`: skill directory, adapter, validate list, phrase table, tests, links.
-2. `build` delivers a pull request with green checks, and owns Delivery mode, Task set, and board recording moved from `ship` (blocked by 1).
-3. Spec drafts and acceptance: `to-spec` writes draft specs and Proposed decisions and links them, and sets `accepted`; the board recognizes `accepted`.
-4. Retire `Deploy:`: `flow-block.mjs`, the `flow` skill, tests, glossary (blocked by 2).
-5. `ship` full cycle: acceptance precondition, hotfix guard, adversarial review, merge, sync; gates removed; `review` accepts ship's authorization (blocked by 2, 3).
-6. `to-tasks` hand-off to "build it" and docs alignment: `docs/skills.md`, `PRODUCT.md`, `GLOSSARY.md`, the README diagram, methodology, agent compatibility, evals, the decisions and specs indexes, and status lines of amended decisions (blocked by 2–5).
+- [x] [#72](https://github.com/gaboesquivel/flow-skills/issues/72) Rename `implement` to `build`.
+- [x] [#74](https://github.com/gaboesquivel/flow-skills/issues/74) `build` delivers a pull request with green checks (blocked by #72).
+- [x] [#73](https://github.com/gaboesquivel/flow-skills/issues/73) Spec drafts and acceptance.
+- [x] [#75](https://github.com/gaboesquivel/flow-skills/issues/75) Retire the `Deploy:` line (blocked by #74).
+- [x] [#76](https://github.com/gaboesquivel/flow-skills/issues/76) `ship` runs the full cycle (blocked by #74, #73).
+- [x] [#77](https://github.com/gaboesquivel/flow-skills/issues/77) Hand-off and docs alignment (blocked by #73–#76).

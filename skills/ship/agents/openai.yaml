@@ -1,5 +1,5 @@
 interface:
   display_name: "Ship"
-  short_description: "Verify, commit, push, and validate delivery"
+  short_description: "Review, merge, and sync accepted work"
 policy:
   allow_implicit_invocation: true

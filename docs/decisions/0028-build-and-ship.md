@@ -14,7 +14,8 @@ Status: **Accepted** (2026-10-28). Amends [0019](0019-voice-first-invocation.md)
 4. **Hotfixes.** Work with no spec and no task ships through the same cycle. The review also judges whether the change is hotfix-sized: new product behavior, a data-shape or public API change, or a migration is a blocking finding, and ship stops and suggests `to-spec`.
 5. **The review is the gate.** Ship merges only when checks are green, no findings are blocking, and branch protection is satisfied. The agent never approves its own pull request and never bypasses protection (for example `gh pr merge --admin`). When protection requires a human approval, ship stops and reports. Without a separate worker, the review is labelled single-agent on the pull request and still gates.
 6. **No deploy target.** The Flow block drops `Deploy:`. Environments are the pipeline's job; skills read what the pull request shows.
-7. **Unchanged.** No destructive Git, no force-push, no production promotion unless asked; publishing task records still needs a yes to the shown list (0024).
+7. **Chained skills.** `ship` runs `build` and `review` as part of landing, beside the automatic hand-offs 0024 lists.
+8. **Unchanged.** No destructive Git, no force-push, no production promotion unless asked; publishing task records still needs a yes to the shown list (0024).
 
 ## Rationale
 

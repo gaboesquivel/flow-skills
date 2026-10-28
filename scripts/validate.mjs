@@ -9,6 +9,7 @@ export const EXPLICIT_SKILL_NAMES = new Set([])
 
 export const EXPECTED_SKILL_NAMES = [
   'board',
+  'build',
   'competitors',
   'council',
   'debug',
@@ -17,7 +18,6 @@ export const EXPECTED_SKILL_NAMES = [
   'flow',
   'grill',
   'handoff',
-  'implement',
   'interview',
   'jtbd',
   'prototype',

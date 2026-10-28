@@ -14,7 +14,7 @@ Read repository instructions and inspect Git status before choosing the review s
 - **Working tree:** inspect staged and unstaged diffs plus relevant untracked files. Use `git diff --cached`, `git diff`, and `git ls-files --others --exclude-standard`; read untracked content explicitly.
 - **Committed comparison:** resolve the requested reference and use its merge-base with HEAD when appropriate. State the actual comparison. Include working-tree changes only when requested or relevant to the stated scope.
 - **Pull request:** treat the PR as a committed comparison from `merge-base(base, head)` through `head`. Product, design, spec, and marketing edits get the same bar as code. Repositories that enforce the **pr-review-contract** (documented in the project's docs tree) in CI expect the same checks without a separate manual invocation.
-- **Wave:** during a `ship` task-set run, a wave review covers the wave's combined change, from the spec-branch commit at the wave's start (the merge-base with the default branch for wave 1) through the checkpoint commit, on all five axes.
+- **Wave:** during a `build` task-set run, a wave review covers the wave's combined change, from the spec-branch commit at the wave's start (the merge-base with the default branch for wave 1) through the checkpoint commit, on all five axes.
 
 Default an unspecified review to the current working tree. If it has no changes, inspect the repository area implied by the request and state that scope. Ask only when scope ambiguity materially changes the work. An empty committed diff does not establish that there is nothing to review.
 
@@ -42,4 +42,4 @@ Lead with actionable findings ordered by impact. For each, name its axis and cit
 
 When the reviewed change affects product intent, experience, architecture, or shared vocabulary, note whether root context (`PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md`) still matches or needs alignment. Flag stale root docs as findings. Flag a change that replaces a project's product identity with Flow's methodology identity. Do not silently rewrite docs unless fixes are requested. The `flow` skill (when installed or surfaced by the host) owns detailed alignment passes. Absence of an always-on hook is not evidence the docs are current. `flow start` is not an initializer; the optional `start` skill (decision 0010) is the initializer, and it confirms template, name, and destination before writing.
 
-Review is read-only unless fixes are requested. A review request does not authorize publishing comments, changing source, committing, or modifying tracker state.
+Review is read-only unless fixes are requested. A review request does not authorize publishing comments, changing source, committing, or modifying tracker state. When `ship` runs the review, its request authorizes an independent worker and posting the report on the pull request as a comment or COMMENT-type review, never an approval.

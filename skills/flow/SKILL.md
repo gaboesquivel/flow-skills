@@ -21,7 +21,7 @@ Do not replace a project's product identity with Flow's tagline, mission, princi
 
 ## Invocation
 
-Hosts may match this skill when the user asks to update or sync the docs. That is not an always-on hook, and it is not evidenced on every host. Confirmed portable behavior is narrower: the user asks for it or invokes `/flow`, or `implement` and `review` apply the same alignment rules when those skills are in use. Do not claim alignment ran only because metadata allows a host to suggest this skill.
+Hosts may match this skill when the user asks to update or sync the docs. That is not an always-on hook, and it is not evidenced on every host. Confirmed portable behavior is narrower: the user asks for it or invokes `/flow`, or `build` and `review` apply the same alignment rules when those skills are in use. Do not claim alignment ran only because metadata allows a host to suggest this skill.
 
 ## Process
 
@@ -31,12 +31,12 @@ Hosts may match this skill when the user asks to update or sync the docs. That i
 
 ## Flow block
 
-"Set up Flow here" opts the project into Flow mode (decision 0020). This section is the one definition of the block; `start` writes the same block after a bootstrap. Run this skill's `lib/flow-block.mjs` with Node, passing the project's absolute path, optionally `local` or `pull-request`, optionally `--deploy <target>`, and optionally `--process <lite|full>`, or apply the same rules by hand:
+"Set up Flow here" opts the project into Flow mode (decision 0020). This section is the one definition of the block; `start` writes the same block after a bootstrap. Run this skill's `lib/flow-block.mjs` with Node, passing the project's absolute path, optionally `local` or `pull-request` and optionally `--process <lite|full>`, or apply the same rules by hand:
 
 - Target `AGENTS.md`, or `CLAUDE.md` when that is the only instruction file.
-- One block between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->`: a `Delivery:` line (`pull-request`, `local`, or `unset`), a `Deploy:` line after it (a lowercase platform name such as `vercel`, `netlify`, or `fly`; `none`; or `unset`), a `Process:` line (`lite`, `full`, or `unset`), a short phrase-to-skill table (`PHRASES` in the helper is its one source), and a pointer to this skill. Under about 25 lines.
-- Re-running replaces the block in place and keeps the recorded `Delivery:`, `Deploy:`, and `Process:` unless the user names a new value. Never touch text outside the markers; stop and report when markers are unmatched or repeated.
-- Leave `Delivery:` unset unless the user names a mode, and `Deploy:` unset unless the user names a target; `ship` owns both rules and records the values. Deleting the block opts out.
+- One block between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->`: a `Delivery:` line (`pull-request`, `local`, or `unset`), a `Process:` line (`lite`, `full`, or `unset`), a short phrase-to-skill table (`PHRASES` in the helper is its one source), and a pointer to this skill. Under about 25 lines.
+- Re-running replaces the block in place and keeps the recorded `Delivery:` and `Process:` unless the user names a new value, and drops any other line, such as a retired `Deploy:` line. Never touch text outside the markers; stop and report when markers are unmatched or repeated.
+- Leave `Delivery:` unset unless the user names a mode; `build` owns the `Delivery:` rule and records its value. Deleting the block opts out.
 - **Process depth** (decision 0026) is how much process the project wants. When the request does not name it, ask once before writing: **Lite** (recommended: brief, spec 001 in full with its tasks, decisions inside specs) or **Full** (deeper discovery and a decision record for each choice among alternatives). Record the answer on `Process:`. `explore` reads it as its default depth; `to-spec` owns the spec–decision boundary.
 
 **Goals.** Setup defines the same goals as `start`. After writing the block, when `PRODUCT.md` is missing or has no brief (problem, who, riskiest assumption, main metric and kill criterion, core journeys), name `explore` at the recorded depth as the next step and wait.
@@ -47,7 +47,7 @@ Report which file was written and show the block. When both `AGENTS.md` and `CLA
 
 - Do not edit adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or similar instruction files outside the Flow block, and write the block only when the user asks or `start` finishes a confirmed bootstrap (decision 0020).
 - Do not require installation, initialization, or a prior skill invocation.
-- Do not treat alignment edits as permission to implement unrelated code. For authorized implementation and tests, invoke the `implement` skill when installed.
+- Do not treat alignment edits as permission to implement unrelated code. For authorized implementation and tests, invoke the `build` skill when installed.
 - Do not create `docs/specs/` or `docs/decisions/` records here; use `to-spec` or explicit decision work when durable bounded artifacts are justified.
 - Name another skill (`to-spec`, `domain-modeling`, `review`, …) only when the user asks or setup finds no goals (see Flow block), then wait.
 

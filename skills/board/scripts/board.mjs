@@ -617,12 +617,12 @@ function stageFor({ status, tasks, branches, liveRun }) {
   const merged = branches.find((b) => b.merged && b.implementation)
   if (merged && tasksComplete && status !== 'candidate') return { stage: 'shipped', reason: merged.pr ? `pull request #${merged.pr} merged` : `branch ${merged.name} merged`, branch: merged }
   const open = branches.find((b) => !b.merged)
-  if (liveRun) return { stage: 'building', reason: 'ship run', branch: liveRun.branch ? { name: liveRun.branch } : open ?? null }
+  if (liveRun) return { stage: 'building', reason: 'build run', branch: liveRun.branch ? { name: liveRun.branch } : open ?? null }
   if (open) return { stage: 'building', reason: `branch ${open.name}`, branch: open }
   if (tasks.done > 0) return { stage: 'building', reason: 'tasks started', branch: null }
   if (tasks.total > 0) return { stage: 'ready', reason: 'tasks planned', branch: null }
   if (status === 'candidate') return { stage: 'candidate', reason: 'status candidate', branch: null }
-  return { stage: 'specced', reason: status === 'draft' ? 'status draft' : 'status unknown', branch: null }
+  return { stage: 'specced', reason: status === 'draft' || status === 'accepted' ? `status ${status}` : 'status unknown', branch: null }
 }
 
 const sourceOrder = (a, b) => Number(b.onDefault ?? true) - Number(a.onDefault ?? true)
@@ -651,7 +651,7 @@ function overlayRun(overlay, now) {
     branch: typeof run.branch === 'string' && run.branch ? run.branch : null,
     mode: typeof run.mode === 'string' ? run.mode : null,
     stale: ended || abandoned,
-    staleReason: abandoned ? `ship run stopped updating ${OVERLAY_STALE_MS / 60_000}+ min ago; its task states are ignored` : null,
+    staleReason: abandoned ? `build run stopped updating ${OVERLAY_STALE_MS / 60_000}+ min ago; its task states are ignored` : null,
     tasks,
   }
 }
@@ -720,7 +720,7 @@ export function deriveBoard(snapshot) {
     }
     const markers = []
     if (!status) markers.push('no status line')
-    else if (!['candidate', 'draft', 'implemented'].includes(status)) markers.push(`unknown status "${status}"`)
+    else if (!['candidate', 'draft', 'accepted', 'implemented'].includes(status)) markers.push(`unknown status "${status}"`)
     if (!onDefault) markers.push(`on branch ${spec.source}`)
     const open = tasks.total - tasks.done
     if (stage === 'shipped' && status === 'implemented' && open > 0) markers.push(`status implemented, ${open} task${open === 1 ? '' : 's'} open`)

@@ -3,13 +3,13 @@
     {
       "id": "E01",
       "skills": [
-        "implement"
+        "build"
       ],
       "behavior": "Small fix proceeds without mandatory discovery or spec",
       "taskFile": "tests/evals/tasks/E01-task.md",
       "rubricFile": "tests/evals/rubrics/E01-rubric.md",
       "skillReferences": [
-        "skills/implement/SKILL.md"
+        "skills/build/SKILL.md"
       ],
       "fixtureReferences": [],
       "evidence": {
@@ -223,7 +223,7 @@
       "rubricFile": "tests/evals/rubrics/E10-rubric.md",
       "skillReferences": [
         "skills/flow/SKILL.md",
-        "skills/implement/SKILL.md"
+        "skills/build/SKILL.md"
       ],
       "fixtureReferences": [],
       "evidence": {
@@ -431,14 +431,14 @@
     {
       "id": "E20",
       "skills": [
-        "ship",
+        "build",
         "to-tasks"
       ],
-      "behavior": "Task-set ship orchestrates ready tasks on one spec branch with one confirmation",
+      "behavior": "Task-set build orchestrates ready tasks on one spec branch and ends at a ready pull request, with no confirmation",
       "taskFile": "tests/evals/tasks/E20-task.md",
       "rubricFile": "tests/evals/rubrics/E20-rubric.md",
       "skillReferences": [
-        "skills/ship/SKILL.md",
+        "skills/build/SKILL.md",
         "skills/to-tasks/SKILL.md"
       ],
       "fixtureReferences": [],
@@ -454,6 +454,7 @@
     {
       "id": "E21",
       "skills": [
+        "build",
         "ship",
         "to-tasks"
       ],
@@ -461,6 +462,7 @@
       "taskFile": "tests/evals/tasks/E21-task.md",
       "rubricFile": "tests/evals/rubrics/E21-rubric.md",
       "skillReferences": [
+        "skills/build/SKILL.md",
         "skills/ship/SKILL.md",
         "skills/to-tasks/SKILL.md"
       ],
@@ -555,6 +557,72 @@
       "rubricFile": "tests/evals/rubrics/E25-rubric.md",
       "skillReferences": [
         "skills/explore/SKILL.md",
+        "skills/to-spec/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E26",
+      "skills": [
+        "ship"
+      ],
+      "behavior": "Ship it on a draft spec names what is not accepted and stops before building",
+      "taskFile": "tests/evals/tasks/E26-task.md",
+      "rubricFile": "tests/evals/rubrics/E26-rubric.md",
+      "skillReferences": [
+        "skills/ship/SKILL.md",
+        "skills/to-spec/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E27",
+      "skills": [
+        "ship"
+      ],
+      "behavior": "Ship it on an accepted spec with a Proposed linked decision refuses before review or merge",
+      "taskFile": "tests/evals/tasks/E27-task.md",
+      "rubricFile": "tests/evals/rubrics/E27-rubric.md",
+      "skillReferences": [
+        "skills/ship/SKILL.md",
+        "skills/to-spec/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E28",
+      "skills": [
+        "ship"
+      ],
+      "behavior": "Ship it on a draft spec branch with no pull request or Closes line is classified as spec work and refused",
+      "taskFile": "tests/evals/tasks/E28-task.md",
+      "rubricFile": "tests/evals/rubrics/E28-rubric.md",
+      "skillReferences": [
+        "skills/ship/SKILL.md",
         "skills/to-spec/SKILL.md"
       ],
       "fixtureReferences": [],

@@ -28,7 +28,7 @@ How much process a project wants: **Lite** or **Full**, asked once at setup ("se
 
 ## Spec
 
-One bet: a numbered document that tests one assumption and ships as one unit, with tasks as the slices inside it. A bet that depends on how another one does gets its own spec, stubbed as a [candidate](#candidate-spec) until its turn. [`to-spec`](skills/to-spec/SKILL.md) owns the rule.
+One bet: a numbered document that tests one assumption and ships as one unit, with tasks as the slices inside it. A bet that depends on how another one does gets its own spec, stubbed as a [candidate](#candidate-spec) until its turn. Its `Status:` line moves `candidate → draft → accepted → implemented`: `to-spec` writes drafts without asking first and sets `accepted` when the user approves the spec ("accept the spec"), moving its linked decision records from **Proposed** to **Accepted**; `ship` lands only accepted specs and sets `implemented`. [`to-spec`](skills/to-spec/SKILL.md) owns the rules; [decision 0028](docs/decisions/0028-build-and-ship.md).
 
 ## Decision record
 
@@ -40,19 +40,15 @@ A portable `skills/<name>/SKILL.md` package in the Flow Skills distribution. Use
 
 ## Delivery mode
 
-How `ship` lands a spec's work in a project: **local** or **pull request**. Distinct from [process depth](#process-depth). The rule lives in [`ship`](skills/ship/SKILL.md#delivery-mode); [decision 0020](docs/decisions/0020-flow-mode.md) records why. The [deploy target](#deploy-target) sits beside it on a `Deploy:` line.
-
-## Deploy target
-
-The platform that builds previews and deployments for a project, such as `vercel`, or `none`. Recorded as a `Deploy:` line in the project's Flow block; `ship` infers it from repository configuration when unset and defers deploy steps to the platform's own skill or CLI. [Decision 0025](docs/decisions/0025-wave-checkpoints.md).
+How `build` delivers work and `ship` lands it in a project: **local** (a branch, merged into `main` by `ship`) or **pull request**. Distinct from [process depth](#process-depth). The rule lives in [`build`](skills/build/SKILL.md#delivery-mode); decisions [0020](docs/decisions/0020-flow-mode.md) and [0028](docs/decisions/0028-build-and-ship.md) record why.
 
 ## Wave
 
-The tasks of a spec's task set that are ready when `ship` starts them; a wave ends when each has integrated, failed, or been blocked. Its combined change gets one five-axis review and one [checkpoint](#checkpoint). [Decision 0025](docs/decisions/0025-wave-checkpoints.md).
+The tasks of a spec's task set that are ready when `build` starts them; a wave ends when each has integrated, failed, or been blocked. Its combined change gets one five-axis review and one [checkpoint](#checkpoint). Decisions [0025](docs/decisions/0025-wave-checkpoints.md) and [0028](docs/decisions/0028-build-and-ship.md).
 
 ## Checkpoint
 
-The report `ship` posts after each [wave](#wave): what integrated or failed, checks, the commit, the preview from the [deploy target](#deploy-target), and screenshots when the host has a browser tool. A pull request comment in pull-request mode, a message in local mode; by default the next wave waits for the user's go. [Decision 0025](docs/decisions/0025-wave-checkpoints.md).
+The report `build` posts after each [wave](#wave): what integrated or failed, the commit, the pull request's checks and the links CI attached (deployments and previews the pull request shows; there is no deploy target), and screenshots when the host has a browser tool. A pull request comment in pull-request mode, a message in local mode. Checkpoints do not wait: the next wave starts unless the user asked to wait at checkpoints. Decisions [0025](docs/decisions/0025-wave-checkpoints.md) and [0028](docs/decisions/0028-build-and-ship.md).
 
 ## Candidate spec
 

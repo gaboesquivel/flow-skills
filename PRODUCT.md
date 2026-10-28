@@ -70,15 +70,15 @@ Primary internal dogfooding targets: **flow-skills** first, then experience vali
 
 ## This repository: flow-skills
 
-Status: portable, voice-first catalog on `main` ([0004](docs/decisions/0004-portable-skill-catalog.md), [0005](docs/decisions/0005-misc-tldr-skill.md), [0006](docs/decisions/0006-flow-lite-and-flat-docs.md), [0007](docs/decisions/0007-flow-product-identity.md), [0008](docs/decisions/0008-leading-words-and-visual-summaries.md), [0009](docs/decisions/0009-adopter-product-context.md), [0010](docs/decisions/0010-optional-start-skill.md), [0013](docs/decisions/0013-restore-engineering-skills.md), [0014](docs/decisions/0014-handoff-skill.md), [0015](docs/decisions/0015-tasks-and-domain-modeling.md), [0016](docs/decisions/0016-start-in-place.md), [0017](docs/decisions/0017-claude-code-skill-coexistence.md), [0018](docs/decisions/0018-interview-extracts-intent.md), [0019](docs/decisions/0019-voice-first-invocation.md), [0020](docs/decisions/0020-flow-mode.md), [0021](docs/decisions/0021-autonomous-explore-and-ship.md), [0022](docs/decisions/0022-start-runs-explore.md), [0023](docs/decisions/0023-agent-first.md), [0024](docs/decisions/0024-gated-hand-offs.md), [0025](docs/decisions/0025-wave-checkpoints.md), [0026](docs/decisions/0026-process-depth.md), [0027](docs/decisions/0027-progress-board-skill.md)); live verification in multiple agent hosts remains ongoing.
+Status: portable, voice-first catalog on `main` ([0004](docs/decisions/0004-portable-skill-catalog.md), [0005](docs/decisions/0005-misc-tldr-skill.md), [0006](docs/decisions/0006-flow-lite-and-flat-docs.md), [0007](docs/decisions/0007-flow-product-identity.md), [0008](docs/decisions/0008-leading-words-and-visual-summaries.md), [0009](docs/decisions/0009-adopter-product-context.md), [0010](docs/decisions/0010-optional-start-skill.md), [0013](docs/decisions/0013-restore-engineering-skills.md), [0014](docs/decisions/0014-handoff-skill.md), [0015](docs/decisions/0015-tasks-and-domain-modeling.md), [0016](docs/decisions/0016-start-in-place.md), [0017](docs/decisions/0017-claude-code-skill-coexistence.md), [0018](docs/decisions/0018-interview-extracts-intent.md), [0019](docs/decisions/0019-voice-first-invocation.md), [0020](docs/decisions/0020-flow-mode.md), [0021](docs/decisions/0021-autonomous-explore-and-ship.md), [0022](docs/decisions/0022-start-runs-explore.md), [0023](docs/decisions/0023-agent-first.md), [0024](docs/decisions/0024-gated-hand-offs.md), [0025](docs/decisions/0025-wave-checkpoints.md), [0026](docs/decisions/0026-process-depth.md), [0027](docs/decisions/0027-progress-board-skill.md), [0028](docs/decisions/0028-build-and-ship.md)); live verification in multiple agent hosts remains ongoing.
 
 ### Problem
 
 AI makes it easy to ship faster than teams establish what matters. Disparate skills and heavy methodology leave founders reconciling workflows, terminology, and documentation alone.
 
-flow-skills offers a small catalog: **context alignment** (`flow`) for root context and Flow setup, plus optional skills you reach by talking to your agent, typed or dictated. Optional template initialization is the [`start`](skills/start/SKILL.md) skill only — Flow setup plus a template bootstrap, not `flow start`, and not mandatory; it confirms template, name, destination, and process depth before writing. Templates work without Flow Skills. Skills may name the next skill and wait; the only automatic hand-offs are `start` → `explore` and explore's `interview` and `grill` phases, each behind the user's yes ([0024](docs/decisions/0024-gated-hand-offs.md)). Adopter `AGENTS.md`, `CLAUDE.md`, or equivalent files change only when you opt into [Flow mode](#flow-mode).
+flow-skills offers a small catalog: **context alignment** (`flow`) for root context and Flow setup, plus optional skills you reach by talking to your agent, typed or dictated. Optional template initialization is the [`start`](skills/start/SKILL.md) skill only — Flow setup plus a template bootstrap, not `flow start`, and not mandatory; it confirms template, name, destination, and process depth before writing. Templates work without Flow Skills. Skills may name the next skill and wait; the only automatic hand-offs are `start` → `explore` and explore's `interview` and `grill` phases, each behind the user's yes, and `ship` running `build` and `review` as part of landing ([decision 0028](docs/decisions/0028-build-and-ship.md); [0024](docs/decisions/0024-gated-hand-offs.md)). Adopter `AGENTS.md`, `CLAUDE.md`, or equivalent files change only when you opt into [Flow mode](#flow-mode).
 
-**Adopter product context.** In another repository, `PRODUCT.md` is that product. This file is Flow's identity only. `flow` and `implement` update an adopter's product docs when that product changes. They do not overwrite them with the mission, principles, or tagline above. [Decision 0009](docs/decisions/0009-adopter-product-context.md).
+**Adopter product context.** In another repository, `PRODUCT.md` is that product. This file is Flow's identity only. `flow` and `build` update an adopter's product docs when that product changes. They do not overwrite them with the mission, principles, or tagline above. [Decision 0009](docs/decisions/0009-adopter-product-context.md).
 
 ### Install and catalog
 
@@ -87,7 +87,7 @@ flow-skills offers a small catalog: **context alignment** (`flow`) for root cont
 | Layer | Skills |
 | --- | --- |
 | Context alignment | [`flow`](skills/flow/SKILL.md) — align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md` where hosts support discovery, and set up Flow: the opt-in Flow block with a Lite or Full [process depth](GLOSSARY.md#process-depth). Not always-on, and not template initialization. |
-| Delivery | `explore`, `interview`, `grill`, `to-spec`, `to-tasks`, `implement`, `review`, `ship`, `retro` |
+| Delivery | `explore`, `interview`, `grill`, `to-spec`, `to-tasks`, `build`, `review`, `ship`, `retro` |
 | Advisory | `council` |
 | Prototype | `prototype` |
 | Shared language | `domain-modeling` |
@@ -97,7 +97,7 @@ flow-skills offers a small catalog: **context alignment** (`flow`) for root cont
 | Project start | [`start`](skills/start/SKILL.md) — Flow setup plus a verified bootstrap from flow-next or flow-mono in one lane while `explore` shapes the product in the other; confirms template, name, destination, and process depth before writing |
 | Misc | `tldr`, `handoff`, `board` |
 
-Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Say a skill's leading word ("interview me", "spec it", "ship it"); slash commands are optional. Every skill is reachable by phrase ([0019](docs/decisions/0019-voice-first-invocation.md)); `start` confirms template, name, and destination before it writes anything ([0022](docs/decisions/0022-start-runs-explore.md)). No skill enforces a sequence (`/implement` does not require `/to-spec`).
+Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Say a skill's leading word ("interview me", "spec it", "ship it"); slash commands are optional. Every skill is reachable by phrase ([0019](docs/decisions/0019-voice-first-invocation.md)); `start` confirms template, name, and destination before it writes anything ([0022](docs/decisions/0022-start-runs-explore.md)). No skill enforces a sequence (`/build` does not require `/to-spec`).
 
 **Default durable docs in adopter projects:** `docs/specs/NNN-short-name.md` and `docs/decisions/NNN-short-name.md`, plus root context files when useful.
 
@@ -105,7 +105,7 @@ Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Say a skil
 
 ### Flow mode
 
-Opt-in conversational delivery ([decision 0020](docs/decisions/0020-flow-mode.md), [spec 009](docs/specs/009-flow-mode.md)). Saying "set up Flow here" has `flow` write one removable Flow block into the project's `AGENTS.md` (or `CLAUDE.md`): `Delivery:`, `Deploy:`, and `Process:` lines and the phrases that reach each skill. When the project has no goals yet, `flow` names `explore` next. After "break it down", `to-tasks` reports the ready set; "ship it" has `ship` land the whole task set on one spec branch, with a worker and an independent review per task when the host supports workers, and sequentially otherwise. The [delivery mode](GLOSSARY.md#delivery-mode) decides the finish; [`ship`](skills/ship/SKILL.md#delivery-mode) owns the rule.
+Opt-in conversational delivery ([decision 0020](docs/decisions/0020-flow-mode.md), [spec 009](docs/specs/009-flow-mode.md)). Saying "set up Flow here" has `flow` write one removable Flow block into the project's `AGENTS.md` (or `CLAUDE.md`): `Delivery:` and `Process:` lines and the phrases that reach each skill. When the project has no goals yet, `flow` names `explore` next. After "break it down", `to-tasks` reports the ready set; "build it" has `build` run the whole task set on one spec branch, with a worker and an independent review per task when the host supports workers, and sequentially otherwise; "ship it" lands the accepted result with no confirmation ([0028](docs/decisions/0028-build-and-ship.md)). The [delivery mode](GLOSSARY.md#delivery-mode) decides where tasks live and how work lands; [`build`](skills/build/SKILL.md#delivery-mode) owns the rule.
 
 ### Catalog alignment (evaluate before adding skills)
 
@@ -113,7 +113,7 @@ Opt-in conversational delivery ([decision 0020](docs/decisions/0020-flow-mode.md
 | --- | --- |
 | Product thinking | `explore`, `interview`, `grill`, `jtbd`, `competitors`, `council`; `flow` keeps product intent in root docs |
 | Engineering discipline | `to-spec`, `to-tasks`, `domain-modeling`, `write-agents`, `write-humans`, `prototype`, `debug`; specs and decisions as flat durable artifacts |
-| Agent execution | `implement`, `ship` (task-set orchestration in Flow mode); portable packages with no mandatory router |
+| Agent execution | `build` (task-set orchestration in Flow mode), `ship`; portable packages with no mandatory router |
 | Verified value | `review`, `ship`, `retro`, `tldr`, `board`; evidence, alignment, visual summaries, and a read-only progress view derived from git |
 
 Further catalog growth needs its own decision. [0013](docs/decisions/0013-restore-engineering-skills.md) restored `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug`. [0014](docs/decisions/0014-handoff-skill.md) adds `handoff`. [0015](docs/decisions/0015-tasks-and-domain-modeling.md) renames `to-tasks` and restores `domain-modeling`. [0019](docs/decisions/0019-voice-first-invocation.md) retires `simplify`, `security`, and `performance` in favor of host tools. [0027](docs/decisions/0027-progress-board-skill.md) adds `board`.
