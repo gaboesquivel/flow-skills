@@ -1,4 +1,4 @@
-import { FORBIDDEN_INSTRUCTION_BASENAMES } from './constants.mjs'
+import { FORBIDDEN_INSTRUCTION_BASENAMES, TEMPLATE_HINTS } from './constants.mjs'
 
 const SLUG_PATTERN = /^[a-z][a-z0-9-]{0,62}$/u
 
@@ -41,3 +41,10 @@ export const deriveProjectIdentity = ({ projectName }) => {
 
 export const isForbiddenInstructionPath = (relativePath) =>
   FORBIDDEN_INSTRUCTION_BASENAMES.has(relativePath.split('/').pop() ?? '')
+
+// Picks the template the invocation already names ("nextjs app", "turborepo", a template URL).
+// flow-mono hints win so "Next.js monorepo" resolves to flow-mono. Returns undefined when unclear.
+export const inferTemplateFromRequest = (request) => {
+  if (!request?.trim()) return
+  return ['flow-mono', 'flow-next'].find((template) => TEMPLATE_HINTS[template].some((hint) => hint.test(request)))
+}
