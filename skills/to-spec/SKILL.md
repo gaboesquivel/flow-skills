@@ -20,7 +20,7 @@ Specs may cover product, research, marketing, engineering, operations, or cross-
 
 A spec's `Status:` line follows `candidate → draft → accepted → implemented` (decision 0028). `to-spec` writes `candidate` and `draft`, and owns acceptance; `build` sets `implemented` on an accepted spec once its last task integrates, and `ship` sets it if still missing. In pull-request mode the spec issue's label (`candidate`, `draft`, `accepted`) carries the same state (decision 0029).
 
-**Accept the spec.** When the user approves a spec for delivery ("accept the spec"), set its status to `accepted` with the date, and set the status of each decision record it links from **Proposed** to **Accepted** with the date, in the project's decision format, in the same step; in pull-request mode, also swap the issue's `draft` label for `accepted` and sync the body. Writing a draft, reaching spec-ready, or a request to write a spec is not acceptance. An `accepted` label a maintainer added is acceptance: when `to-spec` touches a spec whose label is ahead of its file, write the file status (and linked decisions) to match. A `candidate` must become a full draft before it can be accepted. Changing an accepted spec's scope or a decision it links returns the spec to `draft`, and the label with it. Report the files changed.
+**Accept the spec.** When the user approves a spec for delivery ("accept the spec"), set its status to `accepted` with the date, and set the status of each decision record it links from **Proposed** to **Accepted** with the date, in the project's decision format, in the same step; in pull-request mode, also swap the issue's `draft` label for `accepted` and sync the body. Writing a draft, reaching spec-ready, or a request to write a spec is not acceptance. An `accepted` label a maintainer added is acceptance: when `to-spec` touches a spec whose label is ahead of its file, write the file status (and linked decisions) to match. A `candidate` must become a full draft before it can be accepted. A spec without an acceptance scenario (see Testing Decisions) is not accepted: name what is missing and leave it in `draft`. Changing an accepted spec's scope or a decision it links returns the spec to `draft`, and the label with it. Report the files changed.
 
 ## Spec issue
 
@@ -69,6 +69,8 @@ When a prototype encodes a decision more precisely than prose (state machine, sc
 ## Testing Decisions
 
 What good tests mean here, which behavior is in scope, and prior art in the codebase.
+
+**Acceptance scenario** (required; `ship` runs it after landing): one representative end-to-end journey. Name the actor, the starting state with realistic data, and numbered steps with the observable result of each. When the spec names agent users, give the same journey through the agent interface (MCP tool).
 
 ## Out of Scope
 
