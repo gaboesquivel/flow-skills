@@ -9,7 +9,7 @@ Talk to your agent, by typing or dictation. Each skill has a [leading word](../G
 ## Process
 
 1. **Install** — Agent Skills CLI copies this repository’s `skills/` tree into the agent you choose.
-2. **Work** — Build your product and say what you want; "update the docs" aligns root context with **`flow`**.
+2. **Work** — Build your product and say what you want; "update the docs" aligns root context with **`flow`**. Small fixes need no spec: ask your agent directly, or say "build it" for [unspecced work](../GLOSSARY.md#unspecced-work) ([work without a spec](../README.md#work-without-a-spec)).
 3. **Document** — When saving artifacts, default to `docs/specs/NNN-short-name.md` and `docs/decisions/NNN-short-name.md` unless the project already uses something else.
 
 Optional skills (every step skippable; no required order):
