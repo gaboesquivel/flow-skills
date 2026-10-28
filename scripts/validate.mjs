@@ -68,7 +68,7 @@ export function validateSkills(root) {
     if (files.includes('ATTRIBUTION.md') && !files.includes('LICENSE')) errors.push(`${name}: attribution requires bundled license`)
     for (const file of files.filter((file) => file.endsWith('.md'))) {
       const path = join(folder, file)
-      const text = readFileSync(path, 'utf8').replace(/^```[^\n]*\n[\s\S]*?^```\s*$/gmu, '')
+      const text = stripFencedCode(readFileSync(path, 'utf8'))
       const refs = [...text.matchAll(/\]\(([^)]+)\)/gu)].map((match) => match[1])
       refs.push(...[...text.matchAll(/`((?:\.\.?\/)[^`\n]+\.(?:md|sh|ts|mjs))`/gu)].map((match) => match[1]))
       for (let ref of refs) {
@@ -82,7 +82,7 @@ export function validateSkills(root) {
         if (text.includes(forbidden)) errors.push(`${name}/${file}: retired dependency ${forbidden}`)
       }
       if (/docs\/(?:adr|pdr|decision)\//u.test(text)) errors.push(`${name}/${file}: legacy decision path`)
-      for (const bare of collectBareFilenameErrors(text, root)) errors.push(`${name}/${file}: ${bare}`)
+      for (const bare of collectBareFilenameErrors(text, folder)) errors.push(`${name}/${file}: ${bare}`)
     }
     const adapter = join(folder, 'agents', 'openai.yaml')
     if (!existsSync(adapter)) errors.push(`${name}: missing agents/openai.yaml`)
@@ -115,24 +115,32 @@ export function collectAdapterErrors(adapterText) {
   return errors
 }
 
-// Bare backtick filenames (no slash) that look like skill-bundled files must exist in some skill
-// directory. Scope is deliberately narrow to avoid false positives on adopter-project names:
-// script extensions (.sh, .mjs, .cjs, .js, .ts, .py) and lowercase-initial .md names only, so
-// `AGENTS.md`, `PRODUCT.md`, `package.json`, and other project files are never checked.
+// Fenced code blocks hold examples and commands, not references; every Markdown check (and its
+// tests) strips them through this one function so they cannot disagree.
+export function stripFencedCode(text) {
+  return text.replace(/^```[^\n]*\n[\s\S]*?^```\s*$/gmu, '')
+}
+
+// Bare backtick filenames (no slash) that look like skill-bundled files must exist in the citing
+// skill's own directory: a packaged skill must work when installed alone. A helper owned by another
+// skill is named with a path (for example the `flow` skill's `lib/flow-block.mjs`), which this
+// check leaves alone. Scope is deliberately narrow to avoid false positives on adopter-project
+// names: script extensions (.sh, .mjs, .cjs, .js, .ts, .py) and lowercase-initial .md names only,
+// so `AGENTS.md`, `PRODUCT.md`, `package.json`, and other project files are never checked.
 export const BARE_FILENAME_PATTERN = /`([a-z0-9][A-Za-z0-9_.-]*\.(?:sh|mjs|cjs|js|ts|py|md))`/gu
 
-export function collectBareFilenameErrors(text, skillsRoot) {
+export function collectBareFilenameErrors(text, skillDir) {
   const errors = []
-  const known = skillFileNames(skillsRoot)
+  const known = skillFileNames(skillDir)
   for (const name of new Set([...text.matchAll(BARE_FILENAME_PATTERN)].map((match) => match[1]))) {
-    if (!known.has(name)) errors.push(`bare filename \`${name}\` not found in any skill directory`)
+    if (!known.has(name)) errors.push(`bare filename \`${name}\` not found in this skill's directory`)
   }
   return errors
 }
 
 const skillFileNameCache = new Map()
-function skillFileNames(skillsRoot) {
-  const key = resolve(skillsRoot)
+function skillFileNames(skillDir) {
+  const key = resolve(skillDir)
   if (!skillFileNameCache.has(key)) {
     const names = new Set()
     const walk = (dir) => {
@@ -206,8 +214,7 @@ export function validateRepository(repoRoot) {
   const errors = validateSkills(join(repoRoot, 'skills'))
   errors.push(...collectDocLinkErrors(join(repoRoot, 'docs')))
   errors.push(...collectRecordNumberErrors(join(repoRoot, 'docs')))
-  const startSkill = join(repoRoot, 'skills', 'start', 'SKILL.md')
-  if (existsSync(startSkill)) errors.push(...collectCheckTableErrors(readFileSync(startSkill, 'utf8')))
+  errors.push(...collectCheckTableErrors(readFileSync(join(repoRoot, 'skills', 'start', 'SKILL.md'), 'utf8')))
   errors.push(...collectSkillsLinkErrors(repoRoot))
   return errors
 }

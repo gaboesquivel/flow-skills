@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { execFileSync, spawn, spawnSync } from 'node:child_process'
+import { execFile, spawn } from 'node:child_process'
 import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, realpathSync, renameSync, rmSync, utimesSync, writeFileSync } from 'node:fs'
 import http from 'node:http'
 import { tmpdir } from 'node:os'
@@ -10,6 +10,21 @@ import { readDelivery as flowReadDelivery } from '../skills/flow/lib/flow-block.
 import { countTasks, deriveBoard, main, escapeHtml, fetchGithub, githubReader, githubSource, LIVE_SCRIPT, overlayPath, parseGithubRemote, parseTasks, readDelivery, parseStatus, readSnapshot, record, recordRunEnd, recordRunStart, recordTask, renderHtml, startServer } from '../skills/board/scripts/board.mjs'
 
 const script = join(import.meta.dirname, '../skills/board/scripts/board.mjs')
+
+// Subprocesses run asynchronously so concurrent tests overlap their git and CLI work instead of
+// queueing behind one blocked event loop. Both resolve like spawnSync: { status, stdout, stderr }.
+const run = (file, args, options = {}) => new Promise((done) => {
+  execFile(file, args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, ...options }, (error, stdout, stderr) => {
+    done({ status: error ? (typeof error.code === 'number' ? error.code : null) : 0, stdout, stderr })
+  })
+})
+const cliIn = (options, ...args) => run(process.execPath, [script, ...args], options)
+const cli = (...args) => cliIn({}, ...args)
+const gitIn = async (dir, args, options = {}) => {
+  const result = await run('git', args, { cwd: dir, ...options })
+  if (result.status !== 0) throw new Error(`git ${args.join(' ')} failed: ${result.stderr}`)
+  return result.stdout
+}
 
 const spec = (title, status, rest = '') => `# ${title}\n\n${status === null ? '' : `Status: ${status} (2026-10-28).\n`}\n## Problem\n\nText.\n${rest}`
 const snapshot = (specs, branches = []) => ({ defaultBranch: 'main', branches, specs: Object.entries(specs).map(([file, content]) => ({ file, content, source: 'main' })) })
@@ -102,19 +117,19 @@ test('renderHtml escapes text', () => {
   assert.match(html, /&lt;script&gt;/u)
 })
 
-function makeRepo() {
+async function makeRepo() {
   const dir = mkdtempSync(join(tmpdir(), 'board-git-'))
-  const git = (...args) => execFileSync('git', args, { cwd: dir, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
-  git('init', '--quiet', '--initial-branch=main')
+  const git = (...args) => gitIn(dir, args)
+  await git('init', '--quiet', '--initial-branch=main')
   // Written directly: three fewer git processes per fixture repository.
   appendFileSync(join(dir, '.git', 'config'), '[user]\n\temail = board@test.invalid\n\tname = Board Test\n[commit]\n\tgpgsign = false\n')
   const write = (file, content) => { mkdirSync(join(dir, 'docs/specs'), { recursive: true }); writeFileSync(join(dir, 'docs/specs', file), content) }
-  const commit = (message) => { git('add', '-A'); git('commit', '--quiet', '-m', message) }
+  const commit = async (message) => { await git('add', '-A'); await git('commit', '--quiet', '-m', message) }
   return { dir, git, write, commit }
 }
 
-test('readSnapshot and --once render a fixture repository', () => {
-  const { dir, git, write, commit } = makeRepo()
+test('readSnapshot and --once render a fixture repository', async () => {
+  const { dir, git, write, commit } = await makeRepo()
   try {
     write('README.md', '# Specs\n')
     write('001-shipped.md', spec('001: Shipped thing', 'implemented'))
@@ -123,18 +138,18 @@ test('readSnapshot and --once render a fixture repository', () => {
     write('004-planned.md', spec('004: Planned', 'draft', '\n## Tasks\n\n- [ ] one\n'))
     write('005-merged-work.md', spec('005: Merged work', 'draft'))
     write('006-active.md', spec('006: Active', 'draft'))
-    commit('specs')
-    git('switch', '--quiet', '-c', 'feat/merged-work')
+    await commit('specs')
+    await git('switch', '--quiet', '-c', 'feat/merged-work')
     writeFileSync(join(dir, 'work.txt'), 'done\n')
-    commit('work')
-    git('switch', '--quiet', 'main')
-    git('merge', '--quiet', '--no-ff', '-m', 'merge', 'feat/merged-work')
-    git('branch', 'feat/active')
-    git('switch', '--quiet', 'feat/active')
+    await commit('work')
+    await git('switch', '--quiet', 'main')
+    await git('merge', '--quiet', '--no-ff', '-m', 'merge', 'feat/merged-work')
+    await git('branch', 'feat/active')
+    await git('switch', '--quiet', 'feat/active')
     writeFileSync(join(dir, 'active.txt'), 'wip\n')
     write('007-branch-only.md', spec('007: Branch only', 'draft'))
-    commit('wip')
-    git('switch', '--quiet', 'main')
+    await commit('wip')
+    await git('switch', '--quiet', 'main')
 
     const snap = readSnapshot(dir)
     assert.equal(snap.defaultBranch, 'main')
@@ -149,15 +164,15 @@ test('readSnapshot and --once render a fixture repository', () => {
     assert.equal(cardOf(board, '007').source, 'feat/active')
 
     const out = join(dir, 'out', 'board.html')
-    const run = spawnSync(process.execPath, [script, '--once', '--out', out], { cwd: join(dir, 'docs'), encoding: 'utf8' })
-    assert.equal(run.status, 0, run.stderr)
-    assert.equal(run.stdout.trim(), out)
+    const once = await cliIn({ cwd: join(dir, 'docs') }, '--once', '--out', out)
+    assert.equal(once.status, 0, once.stderr)
+    assert.equal(once.stdout.trim(), out)
     const html = readFileSync(out, 'utf8')
     for (const title of ['Candidate', 'Specced', 'Ready', 'Building', 'Shipped']) assert.match(html, new RegExp(`<h2>${title} `, 'u'))
     for (const title of ['Shipped thing', 'Idea', 'Plain draft', 'Planned', 'Merged work', 'Active']) assert.match(html, new RegExp(title, 'u'))
     assert.doesNotMatch(html, /https?:\/\//u)
 
-    const defaultRun = spawnSync(process.execPath, [script, '--once', '--repo', dir], { encoding: 'utf8' })
+    const defaultRun = await cli('--once', '--repo', dir)
     assert.equal(defaultRun.status, 0, defaultRun.stderr)
     assert.match(defaultRun.stdout.trim(), /\.git[/\\]flow[/\\]board\.html$/u)
   } finally {
@@ -165,31 +180,39 @@ test('readSnapshot and --once render a fixture repository', () => {
   }
 })
 
-test('CLI without a mode prints usage', () => {
-  const run = spawnSync(process.execPath, [script], { encoding: 'utf8' })
-  assert.equal(run.status, 2)
-  assert.match(run.stderr, /--once/u)
+test('CLI without a mode prints usage', async () => {
+  const usage = await cli()
+  assert.equal(usage.status, 2)
+  assert.match(usage.stderr, /--once/u)
 })
 
-function withRepo(fn) {
-  const repo = makeRepo()
-  try { return fn(repo) } finally { rmSync(repo.dir, { recursive: true, force: true }) }
+// Argument errors return before any git or server work, so main() covers them in-process; the test
+// above covers the process exit code.
+const usageExit = async (args) => {
+  const errors = []
+  const code = await main(args, { error: (message) => errors.push(message) })
+  return { code, stderr: errors.join('\n') }
+}
+
+async function withRepo(fn) {
+  const repo = await makeRepo()
+  try { return await fn(repo) } finally { rmSync(repo.dir, { recursive: true, force: true }) }
 }
 
 const touch = (dir, file) => writeFileSync(join(dir, file), `${file}\n`)
 
-test('branch match uses slug token boundaries, not substrings', () => withRepo(({ dir, git, write, commit }) => {
+test('branch match uses slug token boundaries, not substrings', () => withRepo(async ({ dir, git, write, commit }) => {
   write('001-board.md', spec('001: Board', 'draft'))
   write('002-auth.md', spec('002: Auth', 'draft'))
   write('003-api.md', spec('003: Api', 'draft'))
   write('004-live.md', spec('004: Live', 'draft'))
-  commit('specs')
+  await commit('specs')
   for (const branch of ['feat/dashboard', 'fix/oauth-token', 'feat/rapid-fix', 'feat/004-live-page']) {
-    git('switch', '--quiet', '-c', branch, 'main')
+    await git('switch', '--quiet', '-c', branch, 'main')
     touch(dir, branch.replace('/', '-'))
-    commit(branch)
+    await commit(branch)
   }
-  git('switch', '--quiet', 'main')
+  await git('switch', '--quiet', 'main')
   const board = deriveBoard(readSnapshot(dir))
   for (const number of ['001', '002', '003']) {
     assert.equal(stageOf(board, number), 'specced', number)
@@ -199,37 +222,37 @@ test('branch match uses slug token boundaries, not substrings', () => withRepo((
   assert.equal(cardOf(board, '004').branch, 'feat/004-live-page')
 }))
 
-test('empty branch cut from an older default commit is not merged', () => withRepo(({ dir, git, write, commit }) => {
-  git('remote', 'add', 'origin', 'https://github.com/example/fixture.git')
+test('empty branch cut from an older default commit is not merged', () => withRepo(async ({ dir, git, write, commit }) => {
+  await git('remote', 'add', 'origin', 'https://github.com/example/fixture.git')
   write('001-old-branch.md', spec('001: Old branch', 'draft'))
-  commit('specs')
-  git('branch', 'feat/old-branch')
+  await commit('specs')
+  await git('branch', 'feat/old-branch')
   touch(dir, 'later.txt')
-  commit('main moves on')
+  await commit('main moves on')
   const snap = readSnapshot(dir)
   assert.equal(snap.branches.find((b) => b.name === 'feat/old-branch').merged, false)
   assert.equal(stageOf(deriveBoard({ ...snap, delivery: 'local' }), '001'), 'building', 'local mode counts the open branch')
   assert.equal(stageOf(deriveBoard(snap), '001'), 'specced', 'unset delivery is pull-request mode: no implementation work')
 }))
 
-test('merged branch ships only when tasks are done; card branch is the one the rule used', () => withRepo(({ dir, git, write, commit }) => {
+test('merged branch ships only when tasks are done; card branch is the one the rule used', () => withRepo(async ({ dir, git, write, commit }) => {
   touch(dir, 'README.md')
-  commit('init')
-  git('switch', '--quiet', '-c', 'feat/tasked')
+  await commit('init')
+  await git('switch', '--quiet', '-c', 'feat/tasked')
   write('001-tasked.md', spec('001: Tasked', 'draft', '\n## Tasks\n\n- [ ] a\n- [ ] b\n- [ ] c\n'))
-  commit('spec only')
-  git('switch', '--quiet', 'main')
-  git('merge', '--quiet', '--no-ff', '-m', 'merge tasked', 'feat/tasked')
-  git('switch', '--quiet', '-c', 'feat/finished')
+  await commit('spec only')
+  await git('switch', '--quiet', 'main')
+  await git('merge', '--quiet', '--no-ff', '-m', 'merge tasked', 'feat/tasked')
+  await git('switch', '--quiet', '-c', 'feat/finished')
   write('002-finished.md', spec('002: Finished', 'draft', '\n## Tasks\n\n- [x] a\n- [x] b\n'))
   touch(dir, 'feature.js')
-  commit('finished')
-  git('switch', '--quiet', 'main')
-  git('merge', '--quiet', '--no-ff', '-m', 'merge finished', 'feat/finished')
-  git('switch', '--quiet', '-c', 'feat/finished-followup')
+  await commit('finished')
+  await git('switch', '--quiet', 'main')
+  await git('merge', '--quiet', '--no-ff', '-m', 'merge finished', 'feat/finished')
+  await git('switch', '--quiet', '-c', 'feat/finished-followup')
   touch(dir, 'followup.txt')
-  commit('followup')
-  git('switch', '--quiet', 'main')
+  await commit('followup')
+  await git('switch', '--quiet', 'main')
   const board = deriveBoard(readSnapshot(dir))
   assert.equal(stageOf(board, '001'), 'ready')
   assert.deepEqual(cardOf(board, '001').tasks, { done: 0, total: 3 })
@@ -238,38 +261,38 @@ test('merged branch ships only when tasks are done; card branch is the one the r
   assert.equal(cardOf(board, '002').branch, 'feat/finished')
 }))
 
-test('squash-merged branch counts as merged', () => withRepo(({ dir, git, write, commit }) => {
+test('squash-merged branch counts as merged', () => withRepo(async ({ dir, git, write, commit }) => {
   write('001-squashed.md', spec('001: Squashed', 'draft'))
-  commit('specs')
-  git('switch', '--quiet', '-c', 'feat/squashed')
+  await commit('specs')
+  await git('switch', '--quiet', '-c', 'feat/squashed')
   touch(dir, 'a.txt')
-  commit('a')
+  await commit('a')
   touch(dir, 'b.txt')
-  commit('b')
-  git('switch', '--quiet', 'main')
-  git('merge', '--quiet', '--squash', 'feat/squashed')
-  commit('squash')
+  await commit('b')
+  await git('switch', '--quiet', 'main')
+  await git('merge', '--quiet', '--squash', 'feat/squashed')
+  await commit('squash')
   const board = deriveBoard(readSnapshot(dir))
   assert.equal(stageOf(board, '001'), 'shipped')
   assert.equal(cardOf(board, '001').branch, 'feat/squashed')
 }))
 
-test('branch-only specs cap at Building, dedupe by number, prefer local refs', () => withRepo(({ dir, git, write, commit }) => {
+test('branch-only specs cap at Building, dedupe by number, prefer local refs', () => withRepo(async ({ dir, git, write, commit }) => {
   write('002-alpha.md', spec('002: Alpha', 'draft'))
-  commit('main spec')
-  git('switch', '--quiet', '-c', 'feat/side')
+  await commit('main spec')
+  await git('switch', '--quiet', '-c', 'feat/side')
   write('001-side.md', spec('001: Side', 'implemented'))
   write('002-beta.md', spec('002: Beta', 'draft'))
-  commit('side specs')
-  git('switch', '--quiet', '-c', 'feat/zeta', 'main')
+  await commit('side specs')
+  await git('switch', '--quiet', '-c', 'feat/zeta', 'main')
   write('003-shared.md', spec('003: Shared local', 'draft'))
-  commit('zeta')
-  git('switch', '--quiet', '-c', 'tmp', 'main')
+  await commit('zeta')
+  await git('switch', '--quiet', '-c', 'tmp', 'main')
   write('003-shared.md', spec('003: Shared remote', 'draft'))
-  commit('remote copy')
-  git('update-ref', 'refs/remotes/origin/feat/aaa', 'HEAD')
-  git('switch', '--quiet', 'main')
-  git('branch', '-D', 'tmp')
+  await commit('remote copy')
+  await git('update-ref', 'refs/remotes/origin/feat/aaa', 'HEAD')
+  await git('switch', '--quiet', 'main')
+  await git('branch', '-D', 'tmp')
   const board = deriveBoard(readSnapshot(dir))
   assert.equal(stageOf(board, '001'), 'building')
   assert.match(cardOf(board, '001').marker, /on branch feat\/side/u)
@@ -280,34 +303,32 @@ test('branch-only specs cap at Building, dedupe by number, prefer local refs', (
   assert.equal(cardOf(board, '003').source, 'feat/zeta')
 }))
 
-test('full refnames and -z listing: a tag named main and non-ASCII names do not break reads', () => withRepo(({ dir, git, write, commit }) => {
+test('full refnames and -z listing: a tag named main and non-ASCII names do not break reads', () => withRepo(async ({ dir, git, write, commit }) => {
   touch(dir, 'README.md')
-  commit('init')
-  git('tag', 'main')
+  await commit('init')
+  await git('tag', 'main')
   write('001-café.md', spec('001: Café', 'implemented'))
-  commit('specs')
+  await commit('specs')
   const board = deriveBoard(readSnapshot(dir))
   assert.equal(cardOf(board, '001').title, 'Café')
   assert.equal(stageOf(board, '001'), 'shipped')
 }))
 
-test('default branch falls back to init.defaultBranch, else exits 1', () => {
+test('default branch falls back to init.defaultBranch, else exits 1', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'board-nodefault-'))
   const env = { ...process.env, GIT_CONFIG_GLOBAL: '/dev/null', GIT_CONFIG_NOSYSTEM: '1' }
-  const run = (...args) => execFileSync('git', args, { cwd: dir, env, stdio: ['ignore', 'pipe', 'pipe'] })
+  const git = (...args) => gitIn(dir, args, { env })
   try {
-    run('init', '--quiet', '--initial-branch=trunk')
-    run('config', 'user.email', 'board@test.invalid')
-    run('config', 'user.name', 'Board Test')
-    run('config', 'commit.gpgsign', 'false')
+    await git('init', '--quiet', '--initial-branch=trunk')
+    appendFileSync(join(dir, '.git', 'config'), '[user]\n\temail = board@test.invalid\n\tname = Board Test\n[commit]\n\tgpgsign = false\n')
     touch(dir, 'README.md')
-    run('add', '-A')
-    run('commit', '--quiet', '-m', 'init')
-    const missing = spawnSync(process.execPath, [script, '--json', '--repo', dir], { encoding: 'utf8', env })
+    await git('add', '-A')
+    await git('commit', '--quiet', '-m', 'init')
+    const missing = await cliIn({ env }, '--json', '--repo', dir)
     assert.equal(missing.status, 1)
     assert.match(missing.stderr, /No default branch/u)
-    run('config', 'init.defaultBranch', 'trunk')
-    const found = spawnSync(process.execPath, [script, '--json', '--repo', dir], { encoding: 'utf8', env })
+    await git('config', 'init.defaultBranch', 'trunk')
+    const found = await cliIn({ env }, '--json', '--repo', dir)
     assert.equal(found.status, 0, found.stderr)
     assert.equal(JSON.parse(found.stdout).defaultBranch, 'trunk')
   } finally {
@@ -315,29 +336,29 @@ test('default branch falls back to init.defaultBranch, else exits 1', () => {
   }
 })
 
-test('merging a candidate spec branch does not ship it', () => withRepo(({ dir, git, write, commit }) => {
+test('merging a candidate spec branch does not ship it', () => withRepo(async ({ dir, git, write, commit }) => {
   touch(dir, 'README.md')
-  commit('init')
-  git('switch', '--quiet', '-c', 'explore/payments-flow')
+  await commit('init')
+  await git('switch', '--quiet', '-c', 'explore/payments-flow')
   write('001-payments-flow.md', spec('001: Payments flow', 'candidate'))
   touch(dir, 'notes.js')
-  commit('explore')
-  git('switch', '--quiet', 'main')
-  git('merge', '--quiet', '--no-ff', '-m', 'merge explore', 'explore/payments-flow')
+  await commit('explore')
+  await git('switch', '--quiet', 'main')
+  await git('merge', '--quiet', '--no-ff', '-m', 'merge explore', 'explore/payments-flow')
   const board = deriveBoard(readSnapshot(dir))
   assert.equal(stageOf(board, '001'), 'candidate')
   assert.equal(cardOf(board, '001').branch, null)
 }))
 
-test('docs-only squash merge of a draft without tasks is not shipped', () => withRepo(({ dir, git, write, commit }) => {
+test('docs-only squash merge of a draft without tasks is not shipped', () => withRepo(async ({ dir, git, write, commit }) => {
   touch(dir, 'README.md')
-  commit('init')
-  git('switch', '--quiet', '-c', 'docs/006-search')
+  await commit('init')
+  await git('switch', '--quiet', '-c', 'docs/006-search')
   write('006-search.md', spec('006: Search', 'draft'))
-  commit('spec')
-  git('switch', '--quiet', 'main')
-  git('merge', '--quiet', '--squash', 'docs/006-search')
-  commit('squash spec')
+  await commit('spec')
+  await git('switch', '--quiet', 'main')
+  await git('merge', '--quiet', '--squash', 'docs/006-search')
+  await commit('squash spec')
   const snap = readSnapshot(dir)
   const branch = snap.branches.find((b) => b.name === 'docs/006-search')
   assert.equal(branch.merged, true)
@@ -345,16 +366,16 @@ test('docs-only squash merge of a draft without tasks is not shipped', () => wit
   assert.equal(stageOf(deriveBoard(snap), '006'), 'specced')
 }))
 
-test('add-then-revert branch is not implementation work', () => withRepo(({ dir, git, write, commit }) => {
+test('add-then-revert branch is not implementation work', () => withRepo(async ({ dir, git, write, commit }) => {
   write('001-revert.md', spec('001: Revert', 'draft'))
-  commit('specs')
-  git('switch', '--quiet', '-c', 'feat/revert')
+  await commit('specs')
+  await git('switch', '--quiet', '-c', 'feat/revert')
   touch(dir, 'code.js')
-  commit('add')
-  git('rm', '--quiet', 'code.js')
-  commit('revert')
-  git('switch', '--quiet', 'main')
-  git('merge', '--quiet', '--no-ff', '-m', 'merge revert', 'feat/revert')
+  await commit('add')
+  await git('rm', '--quiet', 'code.js')
+  await commit('revert')
+  await git('switch', '--quiet', 'main')
+  await git('merge', '--quiet', '--no-ff', '-m', 'merge revert', 'feat/revert')
   const board = deriveBoard(readSnapshot(dir))
   assert.equal(stageOf(board, '001'), 'specced')
 }))
@@ -368,23 +389,23 @@ test('status rule cards carry no fallback branch; implemented with open tasks is
   assert.equal(cardOf(board, '010').marker, 'status implemented, 1 task open')
 })
 
-test('repository without commits says so', () => {
+test('repository without commits says so', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'board-unborn-'))
   try {
-    execFileSync('git', ['init', '--quiet'], { cwd: dir })
-    const run = spawnSync(process.execPath, [script, '--json', '--repo', dir], { encoding: 'utf8' })
-    assert.equal(run.status, 1)
-    assert.match(run.stderr, /No commits yet/u)
+    await gitIn(dir, ['init', '--quiet'])
+    const unborn = await cli('--json', '--repo', dir)
+    assert.equal(unborn.status, 1)
+    assert.match(unborn.stderr, /No commits yet/u)
   } finally {
     rmSync(dir, { recursive: true, force: true })
   }
 })
 
-test('--repo or --out without a value prints usage and exits 2', () => {
+test('--repo or --out without a value prints usage and exits 2', async () => {
   for (const args of [['--once', '--repo'], ['--once', '--out'], ['--once', '--out', '--json']]) {
-    const run = spawnSync(process.execPath, [script, ...args], { encoding: 'utf8' })
-    assert.equal(run.status, 2, args.join(' '))
-    assert.match(run.stderr, /Usage/u)
+    const result = await usageExit(args)
+    assert.equal(result.code, 2, args.join(' '))
+    assert.match(result.stderr, /Usage/u)
   }
 })
 
@@ -397,9 +418,9 @@ function statusWithHost(url, host) {
 const getState = async (url) => (await fetch(new URL('state', url))).json()
 
 test('live server: /state JSON, page, memo window, new commits, git failure, host check', async () => {
-  const { dir, write, commit } = makeRepo()
+  const { dir, write, commit } = await makeRepo()
   write('001-first.md', spec('001: First', 'draft'))
-  commit('first')
+  await commit('first')
   // Same repo, two memo windows: one never expires during the test, one recomputes on every request.
   const memoized = await startServer({ repoRoot: dir, port: 0, memoMs: 60_000 })
   const fresh = await startServer({ repoRoot: dir, port: 0, memoMs: 0 })
@@ -425,7 +446,7 @@ test('live server: /state JSON, page, memo window, new commits, git failure, hos
     assert.doesNotMatch(html, /innerHTML/u)
 
     write('002-second.md', spec('002: Second', 'candidate'))
-    commit('second')
+    await commit('second')
     assert.equal(cardOf(await getState(memoized.url), '002'), undefined, 'recomputed inside the memo window')
     assert.equal(stageOf(await getState(fresh.url), '002'), 'candidate')
 
@@ -595,9 +616,9 @@ test('only http(s) github.com URLs become links', () => {
   assert.doesNotMatch(renderHtml(raw), /javascript:/u)
 })
 
-test('fetchGithub: two gh calls with argument arrays; failures become reasons, never throws', () => withRepo(({ dir, git }) => {
+test('fetchGithub: two gh calls with argument arrays; failures become reasons, never throws', () => withRepo(async ({ dir, git }) => {
   assert.deepEqual(fetchGithub(dir, { run: () => { throw new Error('must not run') } }), { available: false, reason: 'no GitHub remote' })
-  git('remote', 'add', 'origin', 'git@github.com:o/r.git')
+  await git('remote', 'add', 'origin', 'git@github.com:o/r.git')
   const calls = []
   const ok = fetchGithub(dir, { run: (args, options) => { calls.push({ args, options }); return args[0] === 'pr' ? '[{"number":1}]' : '[]' } })
   assert.deepEqual(ok, { available: true, prs: [{ number: 1 }], issues: [], truncated: { prs: false, issues: false } })
@@ -610,8 +631,8 @@ test('fetchGithub: two gh calls with argument arrays; failures become reasons, n
   assert.equal(fetchGithub(dir, { run: () => 'not json' }).reason, 'unexpected gh output')
 }))
 
-test('githubReader caches per repository for its TTL', () => withRepo(({ dir, git }) => {
-  git('remote', 'add', 'origin', 'https://github.com/o/r.git')
+test('githubReader caches per repository for its TTL', () => withRepo(async ({ dir, git }) => {
+  await git('remote', 'add', 'origin', 'https://github.com/o/r.git')
   let calls = 0
   const run = () => { calls++; return '[]' }
   const cachedReader = githubReader({ run, ttlMs: 60_000 })
@@ -624,19 +645,19 @@ test('githubReader caches per repository for its TTL', () => withRepo(({ dir, gi
   assert.equal(calls, 6)
 }))
 
-test('readSnapshot: delivery mode gates GitHub; merged pull request with code ships a squash merge later edited', () => withRepo(({ dir, git, write, commit }) => {
+test('readSnapshot: delivery mode gates GitHub; merged pull request with code ships a squash merge later edited', () => withRepo(async ({ dir, git, write, commit }) => {
   writeFileSync(join(dir, 'AGENTS.md'), '# A\n\n<!-- BEGIN FLOW -->\nDelivery: pull-request\n<!-- END FLOW -->\n')
   write('020-widget.md', spec('020: Widget', 'draft'))
-  commit('spec')
-  git('switch', '--quiet', '-c', 'feat/widget')
+  await commit('spec')
+  await git('switch', '--quiet', '-c', 'feat/widget')
   touch(dir, 'widget.txt')
-  commit('widget')
-  git('switch', '--quiet', 'main')
-  git('merge', '--quiet', '--squash', 'feat/widget')
-  commit('squash widget')
-  const squash = git('rev-parse', 'HEAD').trim()
+  await commit('widget')
+  await git('switch', '--quiet', 'main')
+  await git('merge', '--quiet', '--squash', 'feat/widget')
+  await commit('squash widget')
+  const squash = (await git('rev-parse', 'HEAD')).trim()
   writeFileSync(join(dir, 'widget.txt'), 'edited later\n')
-  commit('edit widget')
+  await commit('edit widget')
   assert.equal(stageOf(deriveBoard(readSnapshot(dir)), '020'), 'building', 'git alone cannot see this merge')
 
   let runs = 0
@@ -647,13 +668,13 @@ test('readSnapshot: delivery mode gates GitHub; merged pull request with code sh
   assert.equal(cardOf(board, '020').pr.number, 7)
 
   writeFileSync(join(dir, 'AGENTS.md'), '# A\n\n<!-- BEGIN FLOW -->\nDelivery: local\n<!-- END FLOW -->\n')
-  commit('local mode')
+  await commit('local mode')
   runs = 0
   assert.equal(readSnapshot(dir, { github: reader }).github, null)
   assert.equal(runs, 0, 'local mode never calls GitHub')
 
   writeFileSync(join(dir, 'AGENTS.md'), '# A\n\n<!-- BEGIN FLOW -->\nDelivery: pull-request\n<!-- END FLOW -->\n')
-  commit('pr mode')
+  await commit('pr mode')
   const offline = deriveBoard(readSnapshot(dir, { github: githubReader({ run: () => { throw new Error('must not run') } }) }))
   assert.equal(offline.githubNote, 'GitHub links unavailable: no GitHub remote')
   assert.equal(stageOf(offline, '020'), 'building')
@@ -681,8 +702,6 @@ function startCli(dir, port) {
   return { child, exited, url }
 }
 
-const cli = (...args) => spawnSync(process.execPath, [script, ...args], { encoding: 'utf8' })
-
 async function freePort() {
   const probe = http.createServer()
   await new Promise((done) => probe.listen(0, '127.0.0.1', done))
@@ -692,11 +711,11 @@ async function freePort() {
 }
 
 test('--serve and --stop find this repo\'s board by port probe, never another repo\'s', { timeout: 10_000 }, async () => {
-  const own = makeRepo()
-  const other = makeRepo()
+  const own = await makeRepo()
+  const other = await makeRepo()
   for (const repo of [own, other]) {
     repo.write('001-served.md', spec('001: Served', 'draft'))
-    repo.commit('specs')
+    await repo.commit('specs')
   }
   const port = await freePort()
   const board = startCli(own.dir, port)
@@ -707,24 +726,24 @@ test('--serve and --stop find this repo\'s board by port probe, never another re
     assert.equal(cardOf(state, '001').title, 'Served')
     assert.deepEqual(state.server, { repoRoot: realpathSync(own.dir), pid: board.child.pid })
 
-    const again = cli('--serve', '--port', String(port), '--repo', own.dir)
+    const again = await cli('--serve', '--port', String(port), '--repo', own.dir)
     assert.equal(again.status, 0, again.stderr)
     assert.equal(again.stdout.trim(), `Board already running at ${url} (pid ${board.child.pid}).`)
 
     // Another repository's board on the port is neither reused nor stopped.
-    const foreignServe = cli('--serve', '--port', String(port), '--repo', other.dir)
+    const foreignServe = await cli('--serve', '--port', String(port), '--repo', other.dir)
     assert.equal(foreignServe.status, 1)
     assert.match(foreignServe.stderr, new RegExp(`Port ${port} is in use`, 'u'))
-    const foreignStop = cli('--stop', '--port', String(port), '--repo', other.dir)
+    const foreignStop = await cli('--stop', '--port', String(port), '--repo', other.dir)
     assert.equal(foreignStop.status, 0, foreignStop.stderr)
     assert.equal(foreignStop.stdout.trim(), `No board for this repo on port ${port}.`)
     assert.equal(cardOf(await getState(url), '001').title, 'Served')
 
-    const stop = cli('--stop', '--port', String(port), '--repo', own.dir)
+    const stop = await cli('--stop', '--port', String(port), '--repo', own.dir)
     assert.equal(stop.status, 0, stop.stderr)
     assert.match(stop.stdout, new RegExp(`Stopped the board at ${url.replaceAll('.', '\\.')} \\(pid ${board.child.pid}\\)`, 'u'))
     assert.deepEqual(await board.exited, { code: 0, signal: null })
-    assert.equal(cli('--stop', '--port', String(port), '--repo', own.dir).stdout.trim(), `No board for this repo on port ${port}.`)
+    assert.equal((await cli('--stop', '--port', String(port), '--repo', own.dir)).stdout.trim(), `No board for this repo on port ${port}.`)
 
     for (const repo of [own, other]) assert.equal(existsSync(join(repo.dir, '.git', 'flow')), false, 'nothing written under .git')
   } finally {
@@ -734,9 +753,9 @@ test('--serve and --stop find this repo\'s board by port probe, never another re
   }
 })
 
-test('--serve rejects bad ports and mixed modes', () => {
+test('--serve rejects bad ports and mixed modes', async () => {
   for (const args of [['--serve', '--port', 'x'], ['--serve', '--port', '70000'], ['--serve', '--once'], ['--stop', '--serve']]) {
-    assert.equal(cli(...args).status, 2, args.join(' '))
+    assert.equal((await usageExit(args)).code, 2, args.join(' '))
   }
 })
 
@@ -756,8 +775,8 @@ test('parseGithubRemote accepts github.com remotes only', () => {
   for (const [url, expected] of cases) assert.equal(parseGithubRemote(url), expected, url)
 })
 
-test('fetchGithub: host aliases resolve through gh repo view; other hosts get their own note', () => withRepo(({ dir, git }) => {
-  git('remote', 'add', 'origin', 'git@github.com-work:o/r.git')
+test('fetchGithub: host aliases resolve through gh repo view; other hosts get their own note', () => withRepo(async ({ dir, git }) => {
+  await git('remote', 'add', 'origin', 'git@github.com-work:o/r.git')
   const calls = []
   const runAs = (url) => (args) => { calls.push(args.slice(0, 2).join(' ')); return args[0] === 'repo' ? JSON.stringify({ nameWithOwner: 'o/r', url }) : '[]' }
   assert.equal(fetchGithub(dir, { run: runAs('https://github.com/o/r') }).available, true)
@@ -766,10 +785,10 @@ test('fetchGithub: host aliases resolve through gh repo view; other hosts get th
   assert.equal(fetchGithub(dir, { run: () => { throw Object.assign(new Error('x'), { code: 'ENOENT' }) } }).reason, 'no GitHub remote')
 }))
 
-test('GitHub note: list limits and stale data after a failed refresh', () => withRepo(({ dir, git }) => {
+test('GitHub note: list limits and stale data after a failed refresh', () => withRepo(async ({ dir, git }) => {
   const full = { available: true, prs: [], issues: [], truncated: { prs: true, issues: true } }
   assert.match(deriveBoard({ ...snapshot({}), github: full }).githubNote, /latest 200 pull requests.*latest 500 issues/u)
-  git('remote', 'add', 'origin', 'https://github.com/o/r.git')
+  await git('remote', 'add', 'origin', 'https://github.com/o/r.git')
   let fail = false
   const reader = githubReader({ run: (args) => { if (fail) throw Object.assign(new Error('x'), { stderr: 'HTTP 502' }); return args[0] === 'issue' ? '[{"number":45,"state":"OPEN","url":"https://github.com/o/r/issues/45"}]' : '[]' } })
   assert.equal(reader(dir).issues.length, 1)
@@ -786,20 +805,20 @@ test('readDelivery agrees with the flow skill on Flow block inputs', () => {
   for (const text of inputs) assert.equal(readDelivery([text]), flowReadDelivery(text), text)
 })
 
-test('readSnapshot: merged pull requests stage only into the default branch, with a local merge commit, after the spec', () => withRepo(({ dir, git, write, commit }) => {
-  git('remote', 'add', 'origin', 'https://github.com/example/fixture.git')
+test('readSnapshot: merged pull requests stage only into the default branch, with a local merge commit, after the spec', () => withRepo(async ({ dir, git, write, commit }) => {
+  await git('remote', 'add', 'origin', 'https://github.com/example/fixture.git')
   write('020-widget.md', spec('020: Widget', 'draft'))
-  commit('spec')
-  const specDate = git('log', '-1', '--format=%cI').trim()
-  git('switch', '--quiet', '-c', 'feat/widget')
+  await commit('spec')
+  const specDate = (await git('log', '-1', '--format=%cI')).trim()
+  await git('switch', '--quiet', '-c', 'feat/widget')
   touch(dir, 'widget.txt')
-  commit('widget')
-  git('switch', '--quiet', 'main')
-  git('merge', '--quiet', '--squash', 'feat/widget')
-  commit('squash widget')
-  const squash = git('rev-parse', 'HEAD').trim()
+  await commit('widget')
+  await git('switch', '--quiet', 'main')
+  await git('merge', '--quiet', '--squash', 'feat/widget')
+  await commit('squash widget')
+  const squash = (await git('rev-parse', 'HEAD')).trim()
   writeFileSync(join(dir, 'widget.txt'), 'edited later\n')
-  commit('edit widget')
+  await commit('edit widget')
   const later = new Date(Date.parse(specDate) + 3_600_000).toISOString()
   const pr = (fields) => ({ number: 7, state: 'MERGED', headRefName: 'feat/widget', baseRefName: 'main', url: 'https://github.com/o/r/pull/7', body: '', mergedAt: later, mergeCommit: { oid: squash }, ...fields })
   const stage = (fields) => stageOf(deriveBoard(readSnapshot(dir, { github: () => github([pr(fields)], []) })), '020')
@@ -812,28 +831,28 @@ test('readSnapshot: merged pull requests stage only into the default branch, wit
   assert.equal(cardOf(board, '020').pr.number, 7, 'links keep the looser match')
 }))
 
-test('--no-github never runs gh', () => withRepo(({ dir, git, write, commit }) => {
+test('--no-github never runs gh', () => withRepo(async ({ dir, git, write, commit }) => {
   write('001-a.md', spec('001: A', 'draft'))
   writeFileSync(join(dir, 'AGENTS.md'), '<!-- BEGIN FLOW -->\nDelivery: pull-request\n<!-- END FLOW -->\n')
-  commit('spec')
-  git('remote', 'add', 'origin', 'https://github.com/o/r.git')
+  await commit('spec')
+  await git('remote', 'add', 'origin', 'https://github.com/o/r.git')
   const bin = join(dir, '.git', 'fake-bin')
   const marker = join(dir, '.git', 'gh-ran')
   mkdirSync(bin)
   writeFileSync(join(bin, 'gh'), `#!/bin/sh\ntouch '${marker}'\nexit 1\n`, { mode: 0o755 })
   const env = { ...process.env, PATH: `${bin}:${process.env.PATH}` }
-  const run = (...args) => JSON.parse(spawnSync(process.execPath, [script, '--json', '--repo', dir, ...args], { encoding: 'utf8', env }).stdout)
-  assert.equal(run('--no-github').githubNote, null)
+  const json = async (...args) => JSON.parse((await cliIn({ env }, '--json', '--repo', dir, ...args)).stdout)
+  assert.equal((await json('--no-github')).githubNote, null)
   assert.equal(existsSync(marker), false)
-  assert.equal(run().githubNote, 'GitHub links unavailable: gh request failed')
+  assert.equal((await json()).githubNote, 'GitHub links unavailable: gh request failed')
   assert.equal(existsSync(marker), true, 'fake gh is on PATH')
 }))
 
 test('live server never waits on a slow gh; links appear after the refresh resolves', { timeout: 10_000 }, async () => {
-  const { dir, git, write, commit } = makeRepo()
+  const { dir, git, write, commit } = await makeRepo()
   write('020-widget.md', spec('020: Widget', 'draft', '\n## Tasks\n\n### 01: One (#45)\n- [ ] a\n'))
-  commit('spec')
-  git('remote', 'add', 'origin', 'https://github.com/o/r.git')
+  await commit('spec')
+  await git('remote', 'add', 'origin', 'https://github.com/o/r.git')
   // gh stays pending until released: a server that waited on it would never answer before the release.
   let release
   const gate = new Promise((done) => { release = done })
@@ -936,9 +955,9 @@ test('run overlay: ended or abandoned runs are ignored; only an abandoned run on
   assert.equal(stageOf(board(at(minutesBefore(1)), { endedAt: minutesBefore(1) }, null), '012'), 'ready', 'endedAt still does')
 })
 
-test('run overlay: invalid or foreign overlays become a header note, never a crash', () => withRepo(({ dir, write, commit }) => {
+test('run overlay: invalid or foreign overlays become a header note, never a crash', () => withRepo(async ({ dir, write, commit }) => {
   write('012-progress-board.md', runSpec)
-  commit('spec')
+  await commit('spec')
   const path = overlayPath(dir)
   assert.equal(path, join(realpathSync(dir), '.git', 'flow', 'board.json'))
   assert.equal(deriveBoard(readSnapshot(dir)).overlayNote, null, 'missing overlay is silent')
@@ -979,23 +998,23 @@ test('recorder: pure updates set states, rounds, notes, and timestamps', () => {
   assert.throws(() => recordRunStart({ spec: '012', branch: 'b', mode: 'pr', tasks: ['01'] }), /--mode/u)
 })
 
-test('recorder CLI: round trip from a linked worktree lands in the common git dir', () => withRepo(({ dir, git, write, commit }) => {
+test('recorder CLI: round trip from a linked worktree lands in the common git dir', () => withRepo(async ({ dir, git, write, commit }) => {
   write('012-progress-board.md', runSpec)
-  commit('spec')
+  await commit('spec')
   const worktree = join(dir, '.git', 'wt-task')
-  git('worktree', 'add', '--quiet', '-b', 'feat/run-branch', worktree)
-  const rec = (...args) => spawnSync(process.execPath, [script, '--record', ...args], { cwd: worktree, encoding: 'utf8' })
-  const before = rec('task', '--task', '02', '--state', 'working')
+  await git('worktree', 'add', '--quiet', '-b', 'feat/run-branch', worktree)
+  const rec = (...args) => cliIn({ cwd: worktree }, '--record', ...args)
+  const before = await rec('task', '--task', '02', '--state', 'working')
   assert.equal(before.status, 1)
   assert.match(before.stderr, /record run-start first/u)
-  const start = rec('run-start', '--spec', '012', '--branch', 'feat/run-branch', '--mode', 'local', '--tasks', '01,02,03')
+  const start = await rec('run-start', '--spec', '012', '--branch', 'feat/run-branch', '--mode', 'local', '--tasks', '01,02,03')
   assert.equal(start.status, 0, start.stderr)
   const flowDir = join(realpathSync(dir), '.git', 'flow')
   const path = join(flowDir, 'board.json')
   assert.match(start.stdout, /Recorded run start for spec 012/u)
   assert.equal(existsSync(join(worktree, '.git', 'flow')), false, 'not in the worktree')
-  assert.equal(rec('task', '--task', '02', '--state', 'reviewing', '--round', '2', '--note', '--flaky test').status, 0)
-  const bad = rec('task', '--task', '03', '--state', 'done')
+  assert.equal((await rec('task', '--task', '02', '--state', 'reviewing', '--round', '2', '--note', '--flaky test')).status, 0)
+  const bad = await rec('task', '--task', '03', '--state', 'done')
   assert.equal(bad.status, 1)
   assert.match(bad.stderr, /--state must be one of/u)
   const overlay = JSON.parse(readFileSync(path, 'utf8'))
@@ -1007,40 +1026,33 @@ test('recorder CLI: round trip from a linked worktree lands in the common git di
   assert.equal(stageOf(live, '012'), 'building')
   assert.deepEqual(runTasksOf(live).map(([id, , state]) => [id, state]), [['01', 'integrated'], ['02', 'reviewing'], ['03', 'queued']])
 
-  assert.equal(rec('run-end').status, 0)
+  assert.equal((await rec('run-end')).status, 0)
   assert.equal(typeof JSON.parse(readFileSync(path, 'utf8')).run.endedAt, 'string')
   const afterEnd = deriveBoard(readSnapshot(dir))
   assert.equal(cardOf(afterEnd, '012').run, null)
   assert.equal(cardOf(afterEnd, '012').marker, null)
-  assert.equal(cli('--record', 'bogus', '--repo', dir).status, 1)
-  assert.equal(cli('--json', '--state', 'working', '--repo', dir).status, 2, 'record fields need --record')
+  assert.equal((await cli('--record', 'bogus', '--repo', dir)).status, 1)
+  assert.equal((await usageExit(['--json', '--state', 'working', '--repo', dir])).code, 2, 'record fields need --record')
 }))
 
-const runCli = (args) => new Promise((done) => {
-  const child = spawn(process.execPath, [script, ...args], { stdio: ['ignore', 'pipe', 'pipe'] })
-  let stderr = ''
-  child.stderr.on('data', (chunk) => { stderr += chunk })
-  child.on('exit', (code) => done({ code, stderr }))
-})
-
 test('recorder: parallel records all land; a held lock times out; a stale lock is taken over', { timeout: 30_000 }, async () => {
-  const { dir, write, commit } = makeRepo()
+  const { dir, write, commit } = await makeRepo()
   try {
     write('012-progress-board.md', runSpec)
-    commit('spec')
+    await commit('spec')
     const path = overlayPath(dir)
-    assert.equal(cli('--record', 'run-start', '--spec', '012', '--branch', 'feat/x', '--mode', 'local', '--tasks', '01,02,03,04,05,06', '--repo', dir).status, 0)
+    assert.equal((await cli('--record', 'run-start', '--spec', '012', '--branch', 'feat/x', '--mode', 'local', '--tasks', '01,02,03,04,05,06', '--repo', dir)).status, 0)
     const ids = ['01', '02', '03', '04', '05', '06']
-    const results = await Promise.all(ids.map((id) => runCli(['--record', 'task', '--task', id, '--state', 'working', '--note', `n${id}`, '--repo', dir])))
-    for (const result of results) assert.equal(result.code, 0, result.stderr)
+    const results = await Promise.all(ids.map((id) => cli('--record', 'task', '--task', id, '--state', 'working', '--note', `n${id}`, '--repo', dir)))
+    for (const result of results) assert.equal(result.status, 0, result.stderr)
     const overlay = JSON.parse(readFileSync(path, 'utf8'))
     assert.deepEqual(ids.map((id) => [overlay.tasks[id].state, overlay.tasks[id].note]), ids.map((id) => ['working', `n${id}`]))
     assert.deepEqual(readdirSync(join(dir, '.git', 'flow')), ['board.json'], 'lock and temp files removed')
 
     writeFileSync(`${path}.lock`, '')
-    assert.throws(() => record(dir, 'task', { task: '01', state: 'failed' }, { waitMs: 100 }), /locked by another record/u)
+    assert.throws(() => record(dir, 'task', { task: '01', state: 'failed' }, { waitMs: 0 }), /locked by another record/u)
     const errors = []
-    assert.equal(await main(['--record', 'task', '--task', '01', '--state', 'failed', '--repo', dir], { lockWaitMs: 50, error: (message) => errors.push(message) }), 1, 'CLI timeout exits 1')
+    assert.equal(await main(['--record', 'task', '--task', '01', '--state', 'failed', '--repo', dir], { lockWaitMs: 0, error: (message) => errors.push(message) }), 1, 'CLI timeout exits 1')
     assert.match(errors.join('\n'), /locked by another record/u, 'CLI timeout reports the lock')
     assert.equal(JSON.parse(readFileSync(path, 'utf8')).tasks['01'].state, 'working', 'nothing written on timeout')
     const old = new Date(Date.now() - 60_000)
@@ -1053,21 +1065,21 @@ test('recorder: parallel records all land; a held lock times out; a stale lock i
 })
 
 test('live server shows an overlay change on the next /state after the memo window', { timeout: 30_000 }, async () => {
-  const { dir, write, commit } = makeRepo()
+  const { dir, write, commit } = await makeRepo()
   write('012-progress-board.md', runSpec)
-  commit('spec')
+  await commit('spec')
   // A fake clock holds the 3 s memo window open across the CLI records and steps past it without sleeping.
   let clock = Date.now()
   const live = await startServer({ repoRoot: dir, port: 0, memoMs: 3000, now: () => clock })
   try {
     assert.equal(cardOf(await getState(live.url), '012').run, null)
-    const rec = (...args) => { const run = cli('--record', ...args, '--repo', dir); assert.equal(run.status, 0, run.stderr) }
-    rec('run-start', '--spec', '012', '--branch', 'feat/run-branch', '--mode', 'local', '--tasks', '02,03')
-    rec('task', '--task', '03', '--state', 'working')
+    const rec = async (...args) => { const result = await cli('--record', ...args, '--repo', dir); assert.equal(result.status, 0, result.stderr) }
+    await rec('run-start', '--spec', '012', '--branch', 'feat/run-branch', '--mode', 'local', '--tasks', '02,03')
+    await rec('task', '--task', '03', '--state', 'working')
     clock += 3100
     const state = await getState(live.url)
     assert.deepEqual(cardOf(state, '012').run.tasks.map((t) => [t.id, t.state]), [['02', 'queued'], ['03', 'working']])
-    rec('task', '--task', '03', '--state', 'blocked', '--note', 'needs a decision')
+    await rec('task', '--task', '03', '--state', 'blocked', '--note', 'needs a decision')
     assert.equal(cardOf(await getState(live.url), '012').run.tasks[1].state, 'working', 'inside the memo window')
     clock += 3100
     assert.deepEqual(cardOf(await getState(live.url), '012').run.tasks[1], { id: '03', title: 'Run overlay', state: 'blocked', round: 1, note: 'needs a decision' })
@@ -1108,43 +1120,43 @@ test('pull-request mode: an open branch alone is not Building; code, a ticked ta
   assert.equal(stageOf(deriveBoard({ ...snapshot(specs, branches), delivery: 'local', github: github() }), '020'), 'building', 'local mode is unchanged with GitHub data')
 })
 
-test('readSnapshot: in pull-request mode open spec branches carry implementation from git', () => withRepo(({ dir, git, write, commit }) => {
-  git('remote', 'add', 'origin', 'https://github.com/example/fixture.git')
+test('readSnapshot: in pull-request mode open spec branches carry implementation from git', () => withRepo(async ({ dir, git, write, commit }) => {
+  await git('remote', 'add', 'origin', 'https://github.com/example/fixture.git')
   write('020-widget.md', spec('020: Widget', 'draft'))
   write('021-gadget.md', spec('021: Gadget', 'draft'))
-  commit('specs')
-  git('switch', '--quiet', '-c', 'feat/020-widget')
+  await commit('specs')
+  await git('switch', '--quiet', '-c', 'feat/020-widget')
   write('020-widget.md', spec('020: Widget', 'draft', '\nMore.\n'))
-  commit('docs only')
-  git('switch', '--quiet', '-c', 'feat/021-gadget', 'main')
+  await commit('docs only')
+  await git('switch', '--quiet', '-c', 'feat/021-gadget', 'main')
   touch(dir, 'gadget.txt')
-  commit('code')
-  git('switch', '--quiet', 'main')
+  await commit('code')
+  await git('switch', '--quiet', 'main')
   const withGh = readSnapshot(dir, { github: () => github() })
   assert.deepEqual(withGh.branches.map((b) => [b.name, b.implementation]), [['feat/020-widget', false], ['feat/021-gadget', true]])
   const board = deriveBoard(withGh)
   assert.equal(stageOf(board, '020'), 'specced')
   assert.equal(stageOf(board, '021'), 'building')
   // No GitHub source (warm-up, --no-github): unset delivery still applies the rule, also to a pushed branch.
-  git('update-ref', 'refs/remotes/origin/feat/020-widget', 'feat/020-widget')
-  git('branch', '--quiet', '-D', 'feat/020-widget')
+  await git('update-ref', 'refs/remotes/origin/feat/020-widget', 'feat/020-widget')
+  await git('branch', '--quiet', '-D', 'feat/020-widget')
   const noGh = readSnapshot(dir)
   assert.deepEqual(noGh.branches.map((b) => [b.name, b.implementation]), [['feat/021-gadget', true], ['origin/feat/020-widget', false]])
   assert.equal(stageOf(deriveBoard(noGh), '020'), 'specced', 'a docs-only pushed branch stays Specced without GitHub')
   assert.equal(stageOf(deriveBoard(readSnapshot(dir, { github: () => null })), '020'), 'specced', 'a null GitHub source changes nothing')
   writeFileSync(join(dir, 'AGENTS.md'), '<!-- BEGIN FLOW -->\nDelivery: pull-request\n<!-- END FLOW -->\n')
-  commit('pull-request delivery')
+  await commit('pull-request delivery')
   assert.equal(stageOf(deriveBoard(readSnapshot(dir)), '020'), 'specced', 'Delivery: pull-request without GitHub')
   writeFileSync(join(dir, 'AGENTS.md'), '<!-- BEGIN FLOW -->\nDelivery: local\n<!-- END FLOW -->\n')
-  commit('local delivery')
+  await commit('local delivery')
   const local = readSnapshot(dir)
   assert.equal(local.branches.find((b) => b.name === 'origin/feat/020-widget').implementation, undefined, 'local reads skip the check')
   assert.equal(stageOf(deriveBoard(local), '020'), 'building', 'local mode: any open branch counts')
   writeFileSync(join(dir, 'AGENTS.md'), '# Agents\n')
-  commit('unset delivery')
-  const tip = git('rev-parse', 'refs/remotes/origin/feat/020-widget').trim()
-  git('remote', 'remove', 'origin')
-  git('branch', '--quiet', 'feat/020-widget', tip)
+  await commit('unset delivery')
+  const tip = (await git('rev-parse', 'refs/remotes/origin/feat/020-widget')).trim()
+  await git('remote', 'remove', 'origin')
+  await git('branch', '--quiet', 'feat/020-widget', tip)
   assert.equal(readSnapshot(dir).delivery, 'local', 'unset delivery without a remote reads as local')
   assert.equal(stageOf(deriveBoard(readSnapshot(dir)), '020'), 'building', 'no remote: any open branch counts')
 }))
@@ -1232,8 +1244,8 @@ test('run overlay: frontier task states, no wave numbers', () => {
   assert.equal(recordTask(started, { task: '01', state: 'running', now: NOW }).tasks['01'].round, 1)
 })
 
-test('fetchGithub asks for issue labels and close reasons', () => withRepo(({ dir, git }) => {
-  git('remote', 'add', 'origin', 'https://github.com/o/r.git')
+test('fetchGithub asks for issue labels and close reasons', () => withRepo(async ({ dir, git }) => {
+  await git('remote', 'add', 'origin', 'https://github.com/o/r.git')
   const calls = []
   fetchGithub(dir, { run: (args) => { calls.push(args); return '[]' } })
   const fields = calls.find((args) => args[0] === 'issue').at(-1).split(',')

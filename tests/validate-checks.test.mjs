@@ -9,6 +9,7 @@ import {
   collectBareFilenameErrors,
   collectCheckTableErrors,
   collectRecordNumberErrors,
+  stripFencedCode,
 } from '../scripts/validate.mjs'
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
@@ -29,17 +30,22 @@ test('every catalog adapter passes the adapter check', () => {
   for (const name of skillNames) assert.deepEqual(collectAdapterErrors(read(join(skillsRoot, name, 'agents', 'openai.yaml'))), [], name)
 })
 
-test('bare filename check catches a missing script and ignores project files', () => {
-  const errors = collectBareFilenameErrors(read(join(fixtures, 'skills', 'demo', 'SKILL.md')), join(fixtures, 'skills'))
-  assert.deepEqual(errors, ['bare filename `find-polluter.sh` not found in any skill directory'])
+test('bare filename check resolves against the citing skill only and ignores project files and fences', () => {
+  const demo = join(fixtures, 'skills', 'demo')
+  const errors = collectBareFilenameErrors(stripFencedCode(read(join(demo, 'SKILL.md'))), demo)
+  assert.deepEqual(errors, [
+    "bare filename `find-polluter.sh` not found in this skill's directory",
+    "bare filename `shared.sh` not found in this skill's directory",
+  ])
 })
 
-test('every catalog skill file passes the bare filename check', () => {
+test('every catalog skill file passes the bare filename check against its own skill', () => {
   const walk = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
     entry.isDirectory() ? walk(join(dir, entry.name)) : entry.name.endsWith('.md') ? [join(dir, entry.name)] : [])
-  for (const file of walk(skillsRoot)) {
-    const text = read(file).replace(/^```[^\n]*\n[\s\S]*?^```\s*$/gmu, '')
-    assert.deepEqual(collectBareFilenameErrors(text, skillsRoot), [], file)
+  for (const name of skillNames) {
+    for (const file of walk(join(skillsRoot, name))) {
+      assert.deepEqual(collectBareFilenameErrors(stripFencedCode(read(file)), join(skillsRoot, name)), [], file)
+    }
   }
 })
 
