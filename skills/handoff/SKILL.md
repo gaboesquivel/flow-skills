@@ -19,4 +19,8 @@ Include:
 
 Redact secrets, credentials, and personal data.
 
+## Completion
+
+Report the document's absolute path. If the temporary directory is not writable, return the handoff inline in the reply and say it was not saved.
+
 Writing the handoff does not authorize implementation, commits, or edits in the workspace.
