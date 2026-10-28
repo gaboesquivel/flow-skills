@@ -696,8 +696,10 @@ function startCli(dir, port) {
   const exited = new Promise((done) => child.on('exit', (code, signal) => done({ code, signal })))
   const url = new Promise((done, fail) => {
     let out = ''
+    let err = ''
     child.stdout.on('data', (chunk) => { out += chunk; const match = /http:\/\/127\.0\.0\.1:\d+\//u.exec(out); if (match) done(match[0]) })
-    child.on('exit', () => fail(new Error(`server exited early: ${out}`)))
+    child.stderr.on('data', (chunk) => { err += chunk })
+    child.on('exit', () => fail(new Error(`server exited early: ${out}${err}`)))
   })
   return { child, exited, url }
 }
