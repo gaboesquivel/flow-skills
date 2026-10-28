@@ -10,11 +10,11 @@ disable-model-invocation: false
 
 Complete the current authorized work (one task or a related group; see Preflight) with evidence: test, fix, commit, push, deploy, verify. Given a spec's task set, orchestrate it instead (see Task set).
 
-Asking to ship authorizes ordinary commits and pushes of that work, subject to repository permissions, existing release safeguards, and the confirmation below. Requests often arrive by voice, so confirm what you heard before anything leaves the machine.
+Asking to ship authorizes ordinary commits and pushes of that work, subject to repository permissions, existing release safeguards, and the gates under Push. Requests often arrive by voice, so confirm what you heard before anything leaves the machine.
 
 It does not authorize destructive Git operations, security bypasses, or unrelated changes.
 
-Before a multi-step run, suggest the host's autonomous permission mode when it has one (for example Claude Code auto mode) so file writes, issues, and pushes do not stop for each permission prompt. Elsewhere, continue with ordinary prompts. The skill's own confirmations still apply.
+Before a multi-step run, suggest the host's autonomous permission mode when it has one (for example Claude Code auto mode) so file writes, issues, and pushes do not stop for each permission prompt. Skill gates still apply.
 
 ## Preflight
 
@@ -32,13 +32,11 @@ Inspect:
 
 Do not assume every push creates a deployment.
 
-Do not mix unrelated work into the commit.
-
 If the working tree contains changes with unclear ownership, preserve them and avoid staging them blindly.
 
 ## Delivery mode
 
-Read the `Delivery:` line in the project's Flow block (`AGENTS.md` or `CLAUDE.md`). When it is missing or `unset`, infer: pull-request mode if `main` requires pull requests (for example branch protection or rulesets visible through `gh`), local mode only when you can confirm it does not. When protection cannot be determined (no access, unauthenticated CLI), pick pull-request mode or ask; never fall through to local mode. State the pick and ask the user to confirm the inferred delivery mode; once confirmed, record it on that line without touching anything outside the block's markers. Without a Flow block, use the pick for this run only. "Ship it local" or "ship it with a PR" overrides only the finish for one run; task records stay where they are. A `main` that requires pull requests always uses pull-request mode.
+Read the `Delivery:` line in the project's Flow block (`AGENTS.md` or `CLAUDE.md`). When it is missing or `unset`, infer: pull-request mode if `main` requires pull requests (for example branch protection or rulesets visible through `gh`), local mode only when you can confirm it does not. When protection cannot be determined (no access, unauthenticated CLI), pick pull-request mode or ask; never fall through to local mode. Include the pick in the plan confirmation; once confirmed, record it on that line, touching nothing outside the block's markers, in its own commit on the branch being shipped. Without a Flow block, use the pick for this run only. "Ship it local" or "ship it with a PR" overrides only the finish for one run; task records stay where they are. A `main` that requires pull requests always uses pull-request mode.
 
 - **Pull-request mode:** tasks are GitHub issues; the work lands through one pull request (see Push).
 - **Local mode:** no pull requests or issues. Run a final `review` and the full local check suite on the spec branch, merge it into local `main` with `git merge --no-ff` and a pull-request-style message (summary, tasks, checks), then push `main`.
@@ -48,7 +46,7 @@ Read the `Delivery:` line in the project's Flow block (`AGENTS.md` or `CLAUDE.md
 "Ship it" on a spec's task set (issues in pull-request mode, the spec's Tasks section in local mode) makes this session the orchestrator on one spec branch. Without a task set, ship the current work as the rest of this skill describes.
 
 1. **Plan.** Read every task and its blocking edges. Stop before any work on a cycle or a blocker that does not exist. The **ready set** is the tasks whose blockers have all integrated.
-2. **Confirm once.** State the spec branch, the tasks, the delivery mode, the merge plan, and the limits: at most 3 concurrent workers and 2 fix rounds per task. One explicit yes covers the run, including its pushes on that branch and, in local mode, the merge into and push of `main`. A task that drifts from its stated scope stops for a new yes.
+2. **Confirm once.** Give the plan confirmation (see Push) with the tasks and the limits: at most 3 concurrent workers and 2 fix rounds per task. A task that drifts from its stated scope stops for a new yes.
 3. **Build.** Start one worker per ready task in an isolated worktree from the spec branch, up to the concurrency limit. Serialize tasks that touch overlapping areas; never let two workers edit the same files. Each worker implements its task with `implement` and runs its checks.
 4. **Review.** A separate worker reviews each task's change with `review`. Blocking findings go back to the implementing worker until the gates pass or the round limit is reached.
 5. **Integrate.** Merge each passing task into the spec branch and recompute the ready set. When tasks live in the spec (local mode), tick the task's checkboxes and set its **Status:** to `done` on the spec branch as it integrates. A conflict goes back to the later task's worker as a fix round. A failed or stuck task stops its dependents: report it with evidence and keep the rest of the set moving.
@@ -100,21 +98,21 @@ Do not amend or rewrite unrelated commits.
 
 ## Push
 
-Before the first push, state the branch, remote, commit SHA, a one-line summary, and the pull request and merge plan (in local mode, the merge into and push of `main`). Wait for an explicit yes. Silence or an ambiguous reply is not a yes. That yes covers the run's later pushes on the same branch.
+**Plan confirmation.** Before the first push, or before any task-set work, state the branch, remote, the work commit's SHA when one exists, a one-line summary, the delivery mode, the pull request and merge plan (in local mode, the merge into and push of `main`), and side effects: titles of task records to create, and the `Delivery:` line, recorded in its own commit on top. Wait for an explicit yes. Silence or an ambiguous reply is not a yes. One explicit yes covers the run's pushes on that branch, except `main` (see Main gate).
+
+**Main gate.** Before merging into or pushing `main`, show the diff summary, checks, and commit SHA, then wait for another explicit yes. A plan yes never authorizes a merge into `main`.
 
 Push the authorized current branch to its intended remote.
 
 Respect branch protection.
 
-Never force-push.
+Never force-push, or delete or rewrite remote branches.
 
-Never delete or rewrite remote branches.
-
-Do not promote to production through a separate manual operation unless explicitly authorized.
+Do not promote to production or roll back through a separate manual operation unless explicitly authorized.
 
 If the remote cannot be safely determined, stop and report the required decision.
 
-In pull-request mode, open one pull request with a Conventional Commits title and a `Closes #N` line per task issue. Merge only when checks pass and the user authorized merging; then fast-forward local `main` from the remote. Update the branch from `main` only when the pull request is behind or conflicts. Local mode finishes as described under Delivery mode.
+In pull-request mode, open one pull request with a Conventional Commits title and a `Closes #N` line per task issue. Merge only when checks pass and the main gate is passed; then fast-forward local `main` from the remote (no further yes). Update the branch from `main` only when the pull request is behind or conflicts. Local mode finishes as described under Delivery mode.
 
 ## Deploy
 
@@ -125,8 +123,6 @@ Defer to the platform's own deploy skill or configuration when one is present (f
 Deploy a preview, not production, unless the user explicitly asks for production.
 
 Identify the deployment associated with the actual commit SHA.
-
-Do not confuse a previous successful deployment with the new commit.
 
 Perform bounded status checks until success, failure, or a reasonable monitoring limit is reached.
 
@@ -148,7 +144,6 @@ On failure:
 
 - Preserve the current repository state.
 - Do not force deployment.
-- Do not perform destructive rollback operations without authorization.
 - Report the exact failing stage and evidence.
 - Suggest the smallest corrective action.
 
@@ -182,16 +177,4 @@ Only if something remains unresolved.
 
 ## Restrictions
 
-No force push.
-
-No destructive reset.
-
-No unapproved production promotion or rollback.
-
-No secret exposure.
-
-No fabricated deploy success.
-
-No unnecessary documentation ceremony.
-
-Never report Ship as complete when required verification failed.
+No destructive reset, secret exposure, or unnecessary documentation ceremony. Never report Ship as complete when required verification failed.

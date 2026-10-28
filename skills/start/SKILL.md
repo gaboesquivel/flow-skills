@@ -29,14 +29,14 @@ Derive identity with `deriveProjectIdentity` from `lib/identity.mjs`: slug, `pac
 
 ## Confirm before writing
 
-A spoken request can be misheard, so write nothing until the user agrees. State the template, project name (with slug and host), destination, and any GitHub repository to create with its visibility, then wait for an explicit yes. Anything else is not a yes; correct and restate.
+A spoken request can be misheard, so write nothing until the user agrees. State the template, project name (with slug and host), destination, any GitHub repository to create with its visibility, the Flow block it will write, and the hand-off to `explore` at Lite depth, then wait for an explicit yes. Anything else is not a yes; correct and restate.
 
 ## Run two lanes
 
 After the yes:
 
 - **Bootstrap lane.** A worker runs every section from "Obtain template" through "Initial commit" below, unchanged, and reports the completion facts.
-- **Explore lane.** The main session hands the conversation to `explore` as a new-product run at Full depth (unless the user picks another depth), using the user's description as its first input. Explore drafts in conversation and writes nothing until the bootstrap lane reports its initial commit.
+- **Explore lane.** The main session hands the conversation to `explore` as a new-product run at Lite depth unless the user asks for more, using the user's description as its first input. Explore drafts in conversation and writes nothing until the bootstrap lane reports its initial commit.
 
 When the host has no independent workers, run the bootstrap first, then `explore`, and say so. When `explore` is not installed, finish the bootstrap and suggest exploring next.
 
@@ -56,7 +56,7 @@ Otherwise clone the template into a temporary directory, then copy it into the d
 - Add the user's remote only when explicitly provided and authorized.
 - Use `assessDestination` and `assertNoTemplateOrigin` from `lib/git-safety.mjs` before writing files.
 
-**Bootstrapping in place.** A destination that holds only agent setup — `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, `.claude/`, `.agents/`, `.cursor/`, `skills-lock.json` — counts as empty. Bootstrap at that root, not in a nested folder. Keep those files as they are: when the template ships its own copy of a kept file, report it in `skipped` and leave the adopter's version. For other files (for example a prompt log), `assessDestination` names them; settle whether to keep them during Gather inputs, then pass them as `preserve`.
+**Bootstrapping in place.** A destination that holds only agent setup — `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, `.claude/`, `.agents/`, `.cursor/`, `skills-lock.json` — counts as empty. Bootstrap at that root, not in a nested folder. Keep those files, adding only the Flow block: when the template ships its own copy of a kept file, report it in `skipped` and leave the adopter's version. For other files (for example a prompt log), `assessDestination` names them; settle whether to keep them during Gather inputs, then pass them as `preserve`.
 
 **Stop** when the destination has unexpected files without authorization, or when the path already has Git commits. Never `reset`, `clean`, or delete history of an existing project.
 
@@ -115,7 +115,6 @@ Do not use `--no-verify`. Do not push or deploy unless explicitly authorized.
 ## Boundaries
 
 - Edit adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or equivalent instruction files only to write the Flow block.
-- Do not install or require flow-skills in the new project; keep an existing installation.
 - Do not automatically invoke `flow` or any delivery pipeline; `explore` is the only hand-off.
 - Do not bundle Flow Factory or a workflow router.
 
