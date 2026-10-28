@@ -28,7 +28,7 @@ Inspect:
 - Task records. In pull-request mode each spec task has an issue; in local mode, a checkbox in the spec's Tasks section. Create missing ones with `to-tasks` where the set is already recorded; a one-run override changes only the finish, never where tasks live. Ad-hoc changes need none.
 - Repository verification scripts in package.json, Makefile, or CI config.
 - Available Git remote.
-- Deployment configuration (Vercel, container platform, static host, or documented manual process).
+- Deploy target (see Deploy).
 
 Do not assume every push creates a deployment.
 
@@ -48,11 +48,12 @@ Read the `Delivery:` line in the project's Flow block (`AGENTS.md` or `CLAUDE.md
 "Ship it" on a spec's task set (issues in pull-request mode, the spec's Tasks section in local mode) makes this session the orchestrator on one spec branch. Without a task set, ship the current work as the rest of this skill describes.
 
 1. **Plan.** Read every task and its blocking edges. Stop before any work on a cycle or a blocker that does not exist. The **ready set** is the tasks whose blockers have all integrated.
-2. **Confirm once.** State the spec branch, the tasks, the delivery mode, the merge plan, and the limits: at most 3 concurrent workers and 2 fix rounds per task. One explicit yes covers the run, including its pushes on that branch and, in local mode, the merge into and push of `main`. A task that drifts from its stated scope stops for a new yes.
-3. **Build.** Start one worker per ready task in an isolated worktree from the spec branch, up to the concurrency limit. Serialize tasks that touch overlapping areas; never let two workers edit the same files. Each worker implements its task with `implement` and runs its checks.
+2. **Confirm once.** State the spec branch, the tasks, the delivery mode, the deploy target, whether to wait at checkpoints, the merge plan, and the limits: at most 3 concurrent workers and 2 fix rounds per task. One explicit yes covers the run, including its pushes on that branch (checkpoint pushes too) and, in local mode, the merge into and push of `main`. A task that drifts from its stated scope stops for a new yes.
+3. **Build** in **waves**: a wave is the ready set when it starts and ends when each of its tasks has integrated, failed, or been blocked. Start one worker per task in the wave in an isolated worktree from the spec branch, up to the concurrency limit. Serialize tasks that touch overlapping areas; never let two workers edit the same files. Each worker implements its task with `implement` and runs its checks.
 4. **Review.** A separate worker reviews each task's change with `review`. Blocking findings go back to the implementing worker until the gates pass or the round limit is reached.
-5. **Integrate.** Merge each passing task into the spec branch and recompute the ready set. When tasks live in the spec (local mode), tick the task's checkboxes and set its **Status:** to `done` on the spec branch as it integrates. A conflict goes back to the later task's worker as a fix round. A failed or stuck task stops its dependents: report it with evidence and keep the rest of the set moving.
-6. **Finish** by delivery mode once no runnable task remains. In pull-request mode, `review` checks the final pull request once before merging.
+5. **Integrate.** Merge each passing task into the spec branch. In pull-request mode, open a draft pull request after the first task integrates. When tasks live in the spec (local mode), tick the task's checkboxes and set its **Status:** to `done` on the spec branch as it integrates. A conflict goes back to the later task's worker as a fix round. A failed or stuck task stops its dependents: report it with evidence and keep the rest of the wave moving.
+6. **Checkpoint** after each wave. Push the spec branch, get the preview for that exact commit from the deploy target (see Deploy), and post: wave number; tasks integrated, failed, or blocked with one-line reasons; checks; commit SHA; preview URL; screenshots of changed screens when a browser tool is available, otherwise say there are none. Report a pending or failed preview as such. Pull-request mode posts the checkpoint as a pull request comment; local mode reports it in the conversation. The next wave is the ready set after the checkpoint; it waits for the user's go unless the run confirmation said not to wait.
+7. **Finish** by delivery mode once no runnable task remains. In pull-request mode, `review` checks the final pull request once, then mark the draft ready for review before merging.
 
 Gates: checks green, no blocking review findings, branch protection respected. Without independent workers, run the ready tasks sequentially in the same order on the spec branch, label reviews single-agent, and say so.
 
@@ -114,13 +115,13 @@ Do not promote to production through a separate manual operation unless explicit
 
 If the remote cannot be safely determined, stop and report the required decision.
 
-In pull-request mode, open one pull request with a Conventional Commits title and a `Closes #N` line per task issue. Merge only when checks pass and the user authorized merging; then fast-forward local `main` from the remote. Update the branch from `main` only when the pull request is behind or conflicts. Local mode finishes as described under Delivery mode.
+In pull-request mode, the work lands through one pull request with a Conventional Commits title and a `Closes #N` line per task issue; for a task set it is the draft opened after the first task integrates, marked ready at the end. Merge only when checks pass and the user authorized merging; then fast-forward local `main` from the remote. Update the branch from `main` only when the pull request is behind or conflicts. Local mode finishes as described under Delivery mode.
 
 ## Deploy
 
-Determine whether a deployment is expected for the pushed commit.
+Read the `Deploy:` line in the Flow block, beside `Delivery:`. When it is missing or `unset`, infer from repository configuration (for example `vercel.json` or a `.vercel` directory means `vercel`); without a recognizable configuration, propose `none`. State the pick with the delivery mode and, once confirmed, record it on that line without touching anything outside the block's markers. `Deploy: none` means no deployment: checkpoints carry no preview. In local mode, expect a preview only when the target builds one without a pull request.
 
-Defer to the platform's own deploy skill or configuration when one is present (for example `deploy-to-vercel`, GitHub Actions, or documented release scripts) rather than restating platform steps here.
+For the recorded target, defer to the platform's own deploy skill, CLI, or integration (for example `deploy-to-vercel`, GitHub Actions, or documented release scripts) rather than restating platform steps here.
 
 Deploy a preview, not production, unless the user explicitly asks for production.
 
@@ -166,7 +167,7 @@ Commands executed and observed results.
 Actual SHA, subject, and branch; for a task set, the pull request or local merge SHA.
 
 ### Tasks
-For a task set: tasks integrated, tasks blocked and why, and the limits used.
+For a task set: waves and checkpoints posted, tasks integrated, tasks blocked and why, and the limits used.
 
 ### Push
 Remote and branch confirmation.
