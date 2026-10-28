@@ -40,6 +40,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0034-no-ceremony-without-a-spec.md](0034-no-ceremony-without-a-spec.md) | Accepted | Unspecced work gets the local suite and one self-check, no spec gate or review workers; `build` owns the size guard |
 | [0035-spec-issue-on-acceptance.md](0035-spec-issue-on-acceptance.md) | Accepted | "Spec it" publishes nothing; the spec issue opens at "accept the spec", or early on "share the draft" |
 | [0036-one-explore-depth.md](0036-one-explore-depth.md) | Accepted | One `explore` depth with a pre-mortem; `competitors` and `jtbd` on request; setup asks only for delivery |
+| [0037-git-for-delivery-github-for-github-mode.md](0037-git-for-delivery-github-for-github-mode.md) | Proposed | Thinking skills need nothing, the delivery chain needs Git, GitHub mode needs GitHub; no repository offers `git init`; `Delivery: github` or `local` |
 
 ## Rules
 
