@@ -32,7 +32,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0026-process-depth.md](0026-process-depth.md) | Accepted | Lite or Full process recorded in the Flow block; `start` is Flow setup plus bootstrap; spec–decision boundary; "Flow Lite" label retired |
 | [0027-progress-board-skill.md](0027-progress-board-skill.md) | Accepted | Read-only `board` skill derived from git, with a `ship` run overlay |
 | [0028-build-and-ship.md](0028-build-and-ship.md) | Accepted | `build` opens a pull request with green checks; `ship` lands accepted specs and hotfixes with no confirmation; spec acceptance; `Deploy:` retired |
-| [0029-spec-issues.md](0029-spec-issues.md) | Proposed | One issue and one pull request per spec; the spec file is the source of truth and the issue a copy; `accepted` label gates in pull-request mode |
+| [0029-spec-issues.md](0029-spec-issues.md) | Proposed | One issue per spec with tasks as sub-issues and one pull request; the spec file is the source of truth; frontier builds, one review per spec, automatic merge, tests that never sleep |
 
 ## Rules
 
