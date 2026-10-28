@@ -14,7 +14,7 @@ Use the project's existing spec location when one exists. When the project has n
 
 Specs may cover product, research, marketing, engineering, operations, or cross-functional work. Use the sections below only when they fit the discipline; omit irrelevant headings. Keep small, understood changes brief.
 
-**Candidate specs.** A later slice that should not be specified yet gets a stub: status `candidate`, the problem, and the assumption the slice tests. Flesh it out into a full spec only when its turn comes; until then it has no tasks.
+**Candidate specs.** A later bet that should not be specified yet gets a stub: status `candidate`, the problem, and the assumption it tests. Flesh it out into a full spec only when its turn comes; until then it has no tasks.
 
 ## Process
 
