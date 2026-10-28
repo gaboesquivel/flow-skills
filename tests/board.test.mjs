@@ -75,7 +75,7 @@ test('unmerged branch whose last segment contains the slug is Building', () => {
 })
 
 test('merged spec branch is Shipped even when status is draft', () => {
-  const branches = [{ name: 'origin/spec/009-flow-mode', remote: true, merged: true }]
+  const branches = [{ name: 'origin/spec/009-flow-mode', remote: true, merged: true, implementation: true }]
   const board = deriveBoard(snapshot({ '009-flow-mode.md': spec('009: Flow mode', 'draft') }, branches))
   assert.equal(stageOf(board, '009'), 'shipped')
 })
@@ -205,6 +205,7 @@ test('merged branch ships only when tasks are done; card branch is the one the r
   git('merge', '--quiet', '--no-ff', '-m', 'merge tasked', 'feat/tasked')
   git('switch', '--quiet', '-c', 'feat/finished')
   write('002-finished.md', spec('002: Finished', 'draft', '\n## Tasks\n\n- [x] a\n- [x] b\n'))
+  touch(dir, 'feature.js')
   commit('finished')
   git('switch', '--quiet', 'main')
   git('merge', '--quiet', '--no-ff', '-m', 'merge finished', 'feat/finished')
@@ -292,6 +293,71 @@ test('default branch falls back to init.defaultBranch, else exits 1', () => {
     const found = spawnSync(process.execPath, [script, '--json', '--repo', dir], { encoding: 'utf8', env })
     assert.equal(found.status, 0, found.stderr)
     assert.equal(JSON.parse(found.stdout).defaultBranch, 'trunk')
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('merging a candidate spec branch does not ship it', () => withRepo(({ dir, git, write, commit }) => {
+  touch(dir, 'README.md')
+  commit('init')
+  git('switch', '--quiet', '-c', 'explore/payments-flow')
+  write('001-payments-flow.md', spec('001: Payments flow', 'candidate'))
+  touch(dir, 'notes.js')
+  commit('explore')
+  git('switch', '--quiet', 'main')
+  git('merge', '--quiet', '--no-ff', '-m', 'merge explore', 'explore/payments-flow')
+  const board = deriveBoard(readSnapshot(dir))
+  assert.equal(stageOf(board, '001'), 'candidate')
+  assert.equal(cardOf(board, '001').branch, null)
+}))
+
+test('docs-only squash merge of a draft without tasks is not shipped', () => withRepo(({ dir, git, write, commit }) => {
+  touch(dir, 'README.md')
+  commit('init')
+  git('switch', '--quiet', '-c', 'docs/006-search')
+  write('006-search.md', spec('006: Search', 'draft'))
+  commit('spec')
+  git('switch', '--quiet', 'main')
+  git('merge', '--quiet', '--squash', 'docs/006-search')
+  commit('squash spec')
+  const snap = readSnapshot(dir)
+  const branch = snap.branches.find((b) => b.name === 'docs/006-search')
+  assert.equal(branch.merged, true)
+  assert.equal(branch.implementation, false)
+  assert.equal(stageOf(deriveBoard(snap), '006'), 'specced')
+}))
+
+test('add-then-revert branch is not implementation work', () => withRepo(({ dir, git, write, commit }) => {
+  write('001-revert.md', spec('001: Revert', 'draft'))
+  commit('specs')
+  git('switch', '--quiet', '-c', 'feat/revert')
+  touch(dir, 'code.js')
+  commit('add')
+  git('rm', '--quiet', 'code.js')
+  commit('revert')
+  git('switch', '--quiet', 'main')
+  git('merge', '--quiet', '--no-ff', '-m', 'merge revert', 'feat/revert')
+  const board = deriveBoard(readSnapshot(dir))
+  assert.equal(stageOf(board, '001'), 'specced')
+}))
+
+test('status rule cards carry no fallback branch; implemented with open tasks is marked', () => {
+  const branches = [{ name: 'origin/feat/explore-redesign', remote: true, merged: true, implementation: true }]
+  const content = spec('010: Explore redesign', 'implemented', '\n## Tasks\n\n- [x] a\n- [ ] b\n')
+  const board = deriveBoard(snapshot({ '010-explore-redesign.md': content }, branches))
+  assert.equal(stageOf(board, '010'), 'shipped')
+  assert.equal(cardOf(board, '010').branch, null)
+  assert.equal(cardOf(board, '010').marker, 'status implemented, 1 task open')
+})
+
+test('repository without commits says so', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'board-unborn-'))
+  try {
+    execFileSync('git', ['init', '--quiet'], { cwd: dir })
+    const run = spawnSync(process.execPath, [script, '--json', '--repo', dir], { encoding: 'utf8' })
+    assert.equal(run.status, 1)
+    assert.match(run.stderr, /No commits yet/u)
   } finally {
     rmSync(dir, { recursive: true, force: true })
   }

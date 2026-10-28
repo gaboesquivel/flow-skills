@@ -32,4 +32,6 @@ A card shows the spec number, title, task progress (`done/total`), and the branc
 
 Report markers rather than fixing specs unasked.
 
+Limits: a merged branch ships a spec only when it changed something outside `docs/` and the spec's tasks are done. Fast-forward merges, and squash merges later edited on the default branch, may show as Building until the branch is deleted. Pull-request links come with GitHub enrichment, not yet available.
+
 The script exits nonzero with a message when it is not inside a git repository or finds no default branch (`main`, `origin/HEAD`, `master`, or `init.defaultBranch`); report that message and the command you ran.

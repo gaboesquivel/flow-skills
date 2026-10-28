@@ -65,28 +65,63 @@ function readBlobs(repoRoot, objects) {
   return contents
 }
 
+// Results keyed by (repo, default tip, branch tip) so a polling caller re-runs only what changed.
+const mergeCache = new Map()
+
+function cached(key, compute) {
+  if (!mergeCache.has(key)) mergeCache.set(key, compute())
+  return mergeCache.get(key)
+}
+
 /**
  * A branch counts as merged when its tip is not on the default branch's first-parent history (so empty
  * branches cut from the default branch never count) and either it is an ancestor of the default branch or
  * merging it would leave the default branch's tree unchanged (squash merges).
  */
-function isMerged(repoRoot, { ref, sha }, { defaultRef, defaultTree, firstParent, ancestors }) {
+function isMerged(repoRoot, { ref, sha }, { defaultRef, defaultSha, defaultTree, firstParent, ancestors }) {
   if (firstParent.has(sha)) return false
   if (ancestors.has(ref)) return true
-  const tree = tryGit(repoRoot, ['merge-tree', '--write-tree', defaultRef, ref])
-  return Boolean(tree) && tree.split('\n')[0] === defaultTree
+  return cached(`merged ${repoRoot} ${defaultSha} ${sha}`, () => {
+    const tree = tryGit(repoRoot, ['merge-tree', '--write-tree', defaultRef, sha])
+    return Boolean(tree) && tree.split('\n')[0] === defaultTree
+  })
+}
+
+/**
+ * Whether a merged branch carried implementation work: its own changes touch a path outside `docs/`.
+ * The branch's own changes are measured from where it forked: for a branch merged by a merge commit, the
+ * merge-base with that merge commit's first parent; otherwise the merge-base with the default branch.
+ */
+function hasImplementationWork(repoRoot, { sha }, { defaultRef, defaultSha, firstParent }) {
+  return cached(`impl ${repoRoot} ${defaultSha} ${sha}`, () => {
+    let base = null
+    const descendants = (tryGit(repoRoot, ['rev-list', '--ancestry-path', `${sha}..${defaultRef}`]) ?? '').split('\n').filter((c) => firstParent.has(c))
+    const mergeCommit = descendants.at(-1)
+    if (mergeCommit) base = tryGit(repoRoot, ['merge-base', `${mergeCommit}^1`, sha])
+    base ??= tryGit(repoRoot, ['merge-base', defaultRef, sha])
+    if (!base) return false
+    const out = tryGit(repoRoot, ['diff', '-z', '--name-only', base, sha]) ?? ''
+    return out.split('\0').filter(Boolean).some((path) => !path.startsWith('docs/'))
+  })
 }
 
 /**
  * Gathers raw facts from git. Specs come from the default branch; spec files that exist only on unmerged
  * branches are included once each (local before remote, then by name) with `onDefault: false`.
+ * Merged branches that match a spec slug carry `implementation`: whether they changed anything outside `docs/`.
  */
 export function readSnapshot(repoRoot) {
   const defaultBranch = resolveDefaultBranch(repoRoot)
-  if (!defaultBranch) throw new Error('No default branch found (tried main, origin/HEAD, master, init.defaultBranch).')
+  if (!defaultBranch) {
+    const hasCommits = tryGit(repoRoot, ['rev-parse', '--verify', '--quiet', 'HEAD^{commit}']) || tryGit(repoRoot, ['for-each-ref', '--count=1', 'refs/heads', 'refs/remotes'])
+    throw new Error(hasCommits
+      ? 'No default branch found (tried main, origin/HEAD, master, init.defaultBranch).'
+      : 'No commits yet: commit the specs first, then show the board.')
+  }
   const defaultRef = defaultBranch.ref
   const context = {
     defaultRef,
+    defaultSha: git(repoRoot, ['rev-parse', `${defaultRef}^{commit}`]).trim(),
     defaultTree: git(repoRoot, ['rev-parse', `${defaultRef}^{tree}`]).trim(),
     firstParent: new Set(git(repoRoot, ['rev-list', '--first-parent', defaultRef]).split('\n').filter(Boolean)),
     ancestors: new Set(git(repoRoot, ['for-each-ref', `--merged=${defaultRef}`, '--format=%(refname)', 'refs/heads', 'refs/remotes']).split('\n').filter(Boolean)),
@@ -99,7 +134,7 @@ export function readSnapshot(repoRoot) {
     const remote = ref.startsWith('refs/remotes/')
     const name = ref.replace(/^refs\/(?:heads|remotes)\//u, '')
     if (remote && name.split('/').slice(1).join('/') === defaultShort) continue
-    branches.push({ name, ref, remote, merged: isMerged(repoRoot, { ref, sha }, context) })
+    branches.push({ name, ref, sha, remote, merged: isMerged(repoRoot, { ref, sha }, context) })
   }
   branches.sort((a, b) => Number(a.remote) - Number(b.remote) || a.name.localeCompare(b.name))
 
@@ -118,9 +153,14 @@ export function readSnapshot(repoRoot) {
   }
   const contents = readBlobs(repoRoot, sources.map((s) => `${s.ref}:${SPEC_DIR}/${s.file}`))
   const specs = sources.map(({ ref, ...rest }, i) => ({ ...rest, content: contents[i] }))
+
+  // Only merged branches that some spec could claim need the (costlier) implementation check.
+  const slugs = specs.map((spec) => SPEC_FILE.exec(spec.file)[2])
+  for (const branch of branches) {
+    if (branch.merged && slugs.some((slug) => matchBranches(slug, [branch]).length)) branch.implementation = hasImplementationWork(repoRoot, branch, context)
+  }
   return { repoName: basename(repoRoot), defaultBranch: defaultBranch.name, branches, specs, generatedAt: new Date().toISOString() }
 }
-
 /** Status word from the spec header (`Status: draft` or `**Status:** draft`), lowercased; null when absent. */
 export function parseStatus(content) {
   const header = content.split(/^## /mu)[0]
@@ -173,8 +213,9 @@ export function matchBranches(slug, branches) {
 function stageFor({ status, tasks, branches }) {
   const tasksComplete = tasks.total === 0 || tasks.done === tasks.total
   if (status === 'implemented') return { stage: 'shipped', reason: 'status implemented', branch: null }
-  const merged = branches.find((b) => b.merged)
-  if (merged && tasksComplete) return { stage: 'shipped', reason: `branch ${merged.name} merged`, branch: merged }
+  // A merge ships only implementation work (`implementation`: changes outside docs/), never a candidate.
+  const merged = branches.find((b) => b.merged && b.implementation)
+  if (merged && tasksComplete && status !== 'candidate') return { stage: 'shipped', reason: `branch ${merged.name} merged`, branch: merged }
   const open = branches.find((b) => !b.merged)
   if (open) return { stage: 'building', reason: `branch ${open.name}`, branch: open }
   if (tasks.done > 0) return { stage: 'building', reason: 'tasks started', branch: null }
@@ -219,6 +260,8 @@ export function deriveBoard(snapshot) {
     if (!status) markers.push('no status line')
     else if (!['candidate', 'draft', 'implemented'].includes(status)) markers.push(`unknown status "${status}"`)
     if (!onDefault) markers.push(`on branch ${spec.source}`)
+    const open = tasks.total - tasks.done
+    if (stage === 'shipped' && status === 'implemented' && open > 0) markers.push(`status implemented, ${open} task${open === 1 ? '' : 's'} open`)
     for (const other of collisions) markers.push(`number ${number} also used by ${other.file}${other.onDefault === false ? ` on ${other.source}` : ''}`)
     byId.get(stage).cards.push({
       number,
@@ -226,7 +269,7 @@ export function deriveBoard(snapshot) {
       title: parseTitle(spec.content, slug),
       status,
       tasks,
-      branch: branch?.name ?? branches[0]?.name ?? null,
+      branch: branch?.name ?? null,
       source: spec.source ?? null,
       reason,
       marker: markers.length ? markers.join('; ') : null,

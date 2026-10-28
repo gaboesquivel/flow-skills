@@ -35,7 +35,7 @@ A `board` skill. Saying "show the board" opens a local, read-only kanban page fo
 
 | Stage | Rule |
 | --- | --- |
-| Shipped | `Status: implemented`, or the spec branch is merged (including squash) into the default branch and the spec has no tasks or all tasks are done |
+| Shipped | `Status: implemented`, or the spec branch is merged (including squash) into the default branch with changes outside `docs/`, the spec has no tasks or all tasks are done, and it is not a candidate |
 | Building | An overlay run names this spec, a spec branch exists, or at least one task is done |
 | Ready | The spec has tasks (Tasks section or linked issues), none started |
 | Specced | `Status: draft` without tasks |
