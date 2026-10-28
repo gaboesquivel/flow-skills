@@ -16,34 +16,31 @@ Before a multi-step run, suggest the host's autonomous permission mode when it h
 
 ## Preflight
 
-Inspect the current branch and worktrees, Git status and diff, existing staged changes, the available remote, and the delivery mode as `build` describes under Delivery mode; these reads are independent, so run them in parallel (fan-out rule in `write-agents`). When the mode is still unset, ask it as `build` describes before the first step that depends on it (pushing or merging); a request that names a mode answers it. If the working tree contains changes with unclear ownership, preserve them and avoid staging them blindly. A one-run override ("ship it local", "ship it with a PR") changes only the finish, never where tasks live.
+Inspect the current branch and worktrees, Git status and diff, existing staged changes, the available remote, and the delivery mode as `build` describes under Delivery mode; these reads are independent, so issue them as parallel tool calls, not workers. Settle the mode before the spec gate: when it is unset, ask as `build` describes; a request that names a mode answers it. If the working tree contains changes with unclear ownership, preserve them and avoid staging them blindly. A one-run override ("ship it local", "ship it with a PR") changes only the finish, never where tasks live.
 
 Classify the work. Resolve its spec from (a) the branch name, (b) files under `docs/specs/` (or the project's spec location) that the change touches, and (c) the issues the work closes (`Closes #N`) and the spec each links.
 
 - **Spec work:** any source points at a spec, or classification is uncertain. Read the spec from the branch head, after updating from the default branch when it is not accepted there.
-  - **Pull-request mode with a spec issue** (the spec's `Issue:` line): the gate is the `accepted` label on that issue, or `implemented` on this unmerged branch from an earlier ship run. Ship never sets the `accepted` label itself. The file follows the label: when the label is set and the file still says draft, write `accepted` on its `Status:` line and promote each linked **Proposed** decision to **Accepted**, with the date, in one commit on the branch, as `to-spec` does for "accept the spec". A file that says `accepted` without the label does not pass. When GitHub cannot be reached, say so and stop; never fall back to the file status.
+  - **Pull-request mode, or an unset mode, with a spec issue** (the spec's `Issue:` line): the gate is the `accepted` label on that issue, or `implemented` on this unmerged branch from an earlier ship run. Ship never sets the `accepted` label itself. The file follows the label: when the label is set and the file still says draft, write `accepted` on its `Status:` line and promote each linked **Proposed** decision to **Accepted**, with the date, in one commit on the branch, as `to-spec` does for "accept the spec". A file that says `accepted` without the label does not pass. When GitHub cannot be reached, say so and stop; never fall back to the file status.
   - **Local mode, or a spec with no `Issue:` line:** its `Status:` must be `accepted`, or `implemented` on this unmerged branch from an earlier ship run.
   - Either way, no decision record it links may still be **Proposed** after that. Otherwise name each spec or linked decision that is not accepted, with its status or label, suggest "accept the spec", and stop before building, committing, or pushing anything. If the spec cannot be resolved, say so and stop the same way.
 - **Hotfix:** work with no spec link at all, including work that closes only issues belonging to no spec. It ships through the same cycle; the review also judges whether it is hotfix-sized (see Review).
 
 ## Build
 
-Run `build` first, passing this run's delivery mode, when no pull request exists for the work (pull-request mode), the pull request is still a draft, the spec's task set has runnable tasks left, the work has uncommitted or unpushed changes, or (local mode) the work sits on the default branch; it commits, pushes, opens or finishes the pull request, and waits for checks. On a spec's task set, `build` runs it (see its Task set), then ship lands the pull request it marked ready. Related work shares one branch and pull request; split only large, independently shippable work. In local mode, `build` delivers a branch with the local check suite passing.
+Run `build` first, passing this run's delivery mode, when no pull request exists for the work (pull-request mode), the pull request is still a draft, the spec's task set has runnable tasks left, the work has uncommitted or unpushed changes, or (local mode) the work sits on the default branch; unpushed changes count in pull-request mode only, since local spec branches are never pushed. `build` commits, pushes, opens or finishes the pull request, and waits for checks. On a spec's task set, `build` runs it (see its Task set), then ship lands the pull request it marked ready. Related work shares one branch and pull request; split only large, independently shippable work. In local mode, `build` delivers a branch with the local check suite passing.
 
 ## Prepare
 
 Make the branch final before the last review, so the merged head is the one reviewed and checked. Spec gate, `build`, Prepare, and Merge stay in order:
 
-1. For spec work, when every task of the spec has integrated, set the spec's `Status:` line to `implemented` on the branch, so the spec reads as done after the branch is deleted, and re-sync its spec issue as `to-spec` describes.
+1. For spec work, `build` sets the spec's `Status:` line to `implemented` in its last integration push once every task has integrated. When every task has integrated and the line is still missing that status, set it on the branch, so the spec reads as done after the branch is deleted, and re-sync its spec issue as `to-spec` describes.
 2. In pull-request mode, update the branch from the default branch only when the pull request is behind or conflicts; stop on conflicts that cannot be resolved within scope.
 3. After any push, wait for checks on the new head.
 
 ## Review
 
-Run the one independent review of the spec (or hotfix) here: an adversarial five-axis `review` covering every task's change together. `build` workers only self-check against their task; there are no per-task or per-wave reviews. Ship's request authorizes these workers and posting the result.
-
-- **Per axis.** Start one worker per axis the change can affect (correctness, readability, architecture, security, performance), alongside the wait for checks on the same head. One verifier then dedupes and ranks their findings before the gate.
-- **Without workers,** run the axes in order directly, label it single-agent on the pull request (or in the local report), and let it gate the same way.
+Run the one independent review of the spec (or hotfix) here: run `review` (per-axis workers plus verifier, as `review` describes) over every task's change together, alongside the wait for checks on the same head. `build` workers only self-check against their task; there are no per-task or per-wave reviews. Ship's request authorizes these workers and posting the result. A review run without workers gates the same way; label it single-agent on the pull request (or in the local report).
 - **Pull-request mode:** review the pull request and post the result as a comment or a COMMENT-type review, never an approval.
 - **Local mode:** review merge base to spec-branch head and report the review in the conversation.
 
@@ -53,7 +50,7 @@ Record the head SHA the review and checks covered.
 
 ## Fix rounds
 
-On blocking findings or failing checks, run fix rounds as `build` describes under Deliver, then review and check the new head again. Fixes to files no other fix touches go to parallel workers. A pending check is pending, never passing. Never hide, skip, disable, or weaken a failing check. If the gate still fails after the fix rounds, stop and report.
+On blocking findings or failing checks, run fix rounds as `build` describes under Deliver, then review and check the new head again. Fixes to files no other fix touches go to parallel workers (fan-out rule: `write-agents` Workers). A pending check is pending, never passing. Never hide, skip, disable, or weaken a failing check. If the gate still fails after the fix rounds, stop and report.
 
 ## Merge
 
@@ -67,18 +64,18 @@ On blocking findings or failing checks, run fix rounds as `build` describes unde
 
 **Local mode:** no remote is needed.
 
-1. After Prepare, Review, and Fix rounds, run the full local check suite on the branch (the commands `build` names) and report the exact commands. With no suite found, stop and report.
+1. After Prepare, Review, and Fix rounds, re-run the full local check suite on the branch (the commands `build` names) only when the head differs from the SHA `build` verified or fix-round commits landed, and report the exact commands. With no suite found, stop and report.
 2. Switch the primary checkout to the default branch when it is clean; a dirty checkout stops with a report. Fast-forward it from the remote only when one is configured.
-3. Merge only while the spec-branch head still equals the reviewed SHA, with `git merge --no-ff` and a pull-request-style message (summary, tasks, checks). Then delete the merged branch locally.
+3. Merge only while the spec-branch head still equals the reviewed SHA, with `git merge --no-ff` and a pull-request-style message (summary, tasks, checks). Then remove the spec-branch worktree, if the orchestrator used one, and delete the merged branch locally.
 4. Push the default branch, and delete the branch on the remote, only when the request asks ("ship it and push"). If that push is refused, report partial delivery with the unpushed merge.
 
-**Worktrees.** After the merge, either mode, run `git worktree prune`, remove each remaining worktree for the spec whose branch has merged, delete those branches, and report the worktrees removed. A failed task's worktree stays and is reported with its path.
+**Worktrees.** After the merge, either mode, run `git worktree prune`. Remove only worktrees on the orchestrator's recorded worker list for the spec, never ones the user created. Delete a task branch only when it is an ancestor of the reviewed spec-branch SHA, with `git branch -d` only, never `-D`. Report the worktrees and branches removed, and each one that does not qualify, with its path. A failed task's worktree stays and is reported with its path.
 
 Never force-push or rewrite remote branches. Delete a branch only after its work has merged, or when the user's request drops its spec. In pull-request mode, if the remote cannot be safely determined, stop and report.
 
 ## Abandoned specs
 
-Only the user's own request drops a spec ("drop the spec", naming it or with it clear from context); a failed gate or another skill never does. That request authorizes closing its spec issue and sub-issues as not planned, closing its pull request without merging, and deleting its unmerged branch, nothing else. On it, close its spec issue and open sub-issues as not planned (for example `gh issue close --reason "not planned"`), close its pull request without merging, and delete its branch on the remote and locally; nothing reaches the default branch, and the issue keeps the spec's text. In local mode, delete the branch only. Either way, remove the spec's task worktrees and delete their branches.
+Only the user's own request drops a spec ("drop the spec", naming it or with it clear from context); a failed gate or another skill never does. That request authorizes closing its spec issue and sub-issues as not planned, closing its pull request without merging, deleting its unmerged branch, and removing its task worktrees and branches, nothing else. On it, close its spec issue and open sub-issues as not planned (for example `gh issue close --reason "not planned"`), close its pull request without merging, and delete its branch on the remote and locally; nothing reaches the default branch, and the issue keeps the spec's text. In local mode, delete the branch only. Either way, remove the spec's clean task worktrees, never with `--force`, and delete their branches; report each dirty worktree with its path and leave it.
 
 ## Failure handling
 
