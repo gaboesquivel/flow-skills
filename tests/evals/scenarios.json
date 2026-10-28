@@ -431,14 +431,14 @@
     {
       "id": "E20",
       "skills": [
-        "ship",
+        "build",
         "to-tasks"
       ],
-      "behavior": "Task-set ship orchestrates ready tasks on one spec branch with one confirmation",
+      "behavior": "Task-set build orchestrates ready tasks on one spec branch and ends at a ready pull request, with no confirmation",
       "taskFile": "tests/evals/tasks/E20-task.md",
       "rubricFile": "tests/evals/rubrics/E20-rubric.md",
       "skillReferences": [
-        "skills/ship/SKILL.md",
+        "skills/build/SKILL.md",
         "skills/to-tasks/SKILL.md"
       ],
       "fixtureReferences": [],

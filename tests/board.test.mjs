@@ -868,7 +868,7 @@ test('run overlay: fresh run moves its spec to Building with task states, titles
     }),
   })
   assert.equal(stageOf(board, '012'), 'building')
-  assert.equal(cardOf(board, '012').reason, 'ship run')
+  assert.equal(cardOf(board, '012').reason, 'build run')
   assert.equal(cardOf(board, '012').branch, 'feat/run-branch')
   assert.equal(cardOf(board, '012').marker, null)
   assert.deepEqual(runTasksOf(board), [
@@ -909,7 +909,7 @@ test('run overlay: ended or abandoned runs are ignored; only an abandoned run on
   const aged = board(at(minutesBefore(31)), { startedAt: minutesBefore(40) })
   assert.equal(stageOf(aged, '012'), 'ready')
   assert.equal(cardOf(aged, '012').run, null)
-  assert.match(cardOf(aged, '012').marker, /ship run stopped updating 30\+ min ago/u)
+  assert.match(cardOf(aged, '012').marker, /build run stopped updating 30\+ min ago/u)
   const shipped = board(at(minutesBefore(31)), { startedAt: minutesBefore(40) }, NOW, { '012-progress-board.md': spec('012: Progress board', 'implemented') })
   assert.equal(stageOf(shipped, '012'), 'shipped')
   assert.equal(cardOf(shipped, '012').marker, null, 'no crash marker once git ships the spec')

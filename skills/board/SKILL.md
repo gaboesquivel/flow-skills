@@ -35,12 +35,12 @@ A card shows the spec number, title, task progress (`done/total`), and the branc
 - `no status line` or `unknown status "…"`: the card stays in Specced unless git shows more progress.
 - `on branch <name>`: the spec is not on the default branch yet, so it never shows past Building.
 - `number NNN also used by …`: two spec files share a number.
-- `ship run stopped updating…`: a `ship` run never recorded its end and has not updated for 30 minutes (likely a crash), so its task states are ignored.
+- `build run stopped updating…`: a `build` run never recorded its end and has not updated for 30 minutes (likely a crash), so its task states are ignored.
 
-During a `ship` task-set run, the run's card moves to Building and lists each task with its live state, fix round, and note, from `<git common dir>/flow/board.json`. Git wins: a task the spec marks done shows integrated, and a spec git shows as shipped stays Shipped. An ended run is ignored; an unreadable overlay is ignored with a header note. `--record` is for `ship`'s orchestrator; never use it to move cards or answer a request to change progress.
+During a `build` task-set run, the run's card moves to Building and lists each task with its live state, fix round, and note, from `<git common dir>/flow/board.json`. Git wins: a task the spec marks done shows integrated, and a spec git shows as shipped stays Shipped. An ended run is ignored; an unreadable overlay is ignored with a header note. `--record` is for `build`'s orchestrator; never use it to move cards or answer a request to change progress.
 
 Report markers rather than fixing specs unasked.
 
-Limits: a merged branch ships a spec only when it changed something outside `docs/` and the spec's tasks are done. With GitHub links, a merged pull request counts the same way when its merge commit is in the local clone; a rebase merge is judged by its last commit only. Without them, fast-forward merges, and squash merges later edited on the default branch, may show as Building; a spec reads as Shipped for good once its `Status:` line says `implemented`, which `ship` sets when every task has integrated. The board shows one `ship` run per repository at a time: a new run start replaces the previous overlay.
+Limits: a merged branch ships a spec only when it changed something outside `docs/` and the spec's tasks are done. With GitHub links, a merged pull request counts the same way when its merge commit is in the local clone; a rebase merge is judged by its last commit only. Without them, fast-forward merges, and squash merges later edited on the default branch, may show as Building; a spec reads as Shipped for good once its `Status:` line says `implemented`, which `ship` sets when it lands the spec. The board shows one `build` run per repository at a time: a new run start replaces the previous overlay.
 
 The script exits nonzero with a message when it is not inside a git repository or finds no default branch (`main`, `origin/HEAD`, `master`, or `init.defaultBranch`); report that message and the command you ran.

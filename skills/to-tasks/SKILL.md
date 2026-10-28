@@ -45,14 +45,14 @@ Show the proposed tasks, what each delivers, real dependencies, and where they w
 
 ### 5. Record
 
-Record tasks in exactly one place, chosen by the delivery mode: the `Delivery:` line in the project's Flow block, or when unset, the mode `ship` would infer (say which).
+Record tasks in exactly one place, chosen by the delivery mode: the `Delivery:` line in the project's Flow block, or when unset, the mode `build` would infer (say which).
 
 - **Pull-request mode:** publish GitHub issues using the issue template below, with blocking links. Use another tracker only when the project already uses one. Use native dependency links when available, or plain references otherwise.
 - **Local mode:** write the tasks into the spec's Tasks section using the local task template; no issues. Without a spec, write one with `to-spec` first, or return the tasks as a local draft and say so.
 
 Never record the same tasks in both places. Without GitHub access in pull-request mode, return a local draft and say so. Do not introduce a `.scratch/` task system or new labels.
 
-Tasks are not pull requests; `ship` owns how tasks group into pull requests.
+Tasks are not pull requests; `build` owns how tasks group into pull requests.
 
 Tasks that are **ready** have their blockers complete. In a purely linear chain, that means top to bottom.
 
@@ -70,7 +70,7 @@ End by naming where the tasks live and the ready set, then wait for "ship it". D
 
 **Blocked by:** the numbers or titles of tasks that gate this one, or "None (can start immediately)".
 
-**Status:** planned (`ship` sets `done` as the task integrates)
+**Status:** planned (`build` sets `done` as the task integrates)
 
 - [ ] Acceptance criterion 1
 - [ ] Acceptance criterion 2
