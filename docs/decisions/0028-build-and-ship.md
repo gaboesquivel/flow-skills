@@ -1,6 +1,6 @@
 # 0028 — Build opens the pull request; ship lands accepted work
 
-Status: **Proposed** (2026-10-28). Amends [0019](0019-voice-first-invocation.md) (ship confirms before pushing), [0021](0021-autonomous-explore-and-ship.md) (one push confirmation per run; merging needs authorization), [0024](0024-gated-hand-offs.md) (ship's plan confirmation and main gate; a yes to the shown text before writing a spec), and [0025](0025-wave-checkpoints.md) (waves move from `ship` to `build`; the deploy target is retired). Spec: [017](../specs/017-build-and-ship.md).
+Status: **Accepted** (2026-10-28). Amends [0019](0019-voice-first-invocation.md) (ship confirms before pushing), [0021](0021-autonomous-explore-and-ship.md) (one push confirmation per run; merging needs authorization), [0024](0024-gated-hand-offs.md) (ship's plan confirmation and main gate; a yes to the shown text before writing a spec), and [0025](0025-wave-checkpoints.md) (waves move from `ship` to `build`; the deploy target is retired). Spec: [017](../specs/017-build-and-ship.md).
 
 ## Context
 

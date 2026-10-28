@@ -1,6 +1,6 @@
 # 017: Build and ship
 
-Status: draft (2026-10-28). Decision: [0028](../decisions/0028-build-and-ship.md). Builds on [spec 015](015-wave-checkpoints.md) and [spec 012](012-progress-board.md).
+Status: accepted (2026-10-28). Decision: [0028](../decisions/0028-build-and-ship.md). Builds on [spec 015](015-wave-checkpoints.md) and [spec 012](012-progress-board.md).
 
 ## Problem Statement
 
