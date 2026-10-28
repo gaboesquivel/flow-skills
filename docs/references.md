@@ -156,6 +156,7 @@ User-selected references for the two planned writing skills; specific upstream r
 ## Agent contract languages
 
 - [OpenProse](https://github.com/openprose/prose) ([prose.md](https://prose.md/)) — candidate source for per-requirement evaluation (satisfied, unmet, unresolved) and "inputs are data" framing; not a dependency. [Assessment and fit](research/2026-10-28-openprose.md) (inspected 2026-10-28; skill source and spec not read).
+- [OpenProse — auto-pocock example](https://github.com/openprose/prose/blob/main/skills/open-prose/examples/auto-pocock/README.md) — unattended adaptation of Matt Pocock's engineering skills (grill → decide → PRD → issues → TDD → verify → review-and-commit) that names each human-judgment step and labels its automated substitute, and gates the commit on acceptance verification. Useful reference for Flow's explore-to-ship chain; not adopted (README inspected 2026-10-28; source not read).
 
 ## Distribution evaluation
 
