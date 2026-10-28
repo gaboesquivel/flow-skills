@@ -142,7 +142,8 @@ User-selected references for the two planned writing skills; specific upstream r
 
 ## Distribution evaluation
 
-- [Skill catalog](skills.md) — current twenty-four skills (Flow Lite + manual catalog), leading words, and `SKILL.md` links.
+- [Skill catalog](skills.md) — current skills, spoken leading words, and `SKILL.md` links.
+- [Decision 0019](decisions/0019-voice-first-invocation.md) — voice-first invocation; retires `simplify`, `security`, and `performance`. Cites Vercel's [`deploy-to-vercel`](https://github.com/vercel-labs/agent-skills/tree/main/skills/deploy-to-vercel) as a phrase-shaped description pattern (inspected 2026-10-28).
 - [Decision 0013](decisions/0013-restore-engineering-skills.md) — restored `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug`.
 - [Decision 0014](decisions/0014-handoff-skill.md) — `handoff` compacts a conversation for a fresh agent.
 - [Spec 006](specs/006-skill-reliability.md) — behavioral verification and skill reliability bounded work.

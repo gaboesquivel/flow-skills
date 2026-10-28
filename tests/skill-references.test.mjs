@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
-import { DISCOVERABLE_SKILL_NAMES, validateRepository, validateSkills } from '../scripts/validate.mjs'
+import { EXPLICIT_SKILL_NAMES, validateRepository, validateSkills } from '../scripts/validate.mjs'
 
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
 const skillsRoot = join(repoRoot, 'skills')
@@ -12,10 +12,10 @@ test('all shipped references and metadata validate', () => assert.deepEqual(vali
 
 test('documentation markdown links resolve', () => assert.deepEqual(validateRepository(repoRoot).filter((e) => e.includes(': missing target')), []))
 
-test('flow is the only discoverable skill', () => {
-  assert.deepEqual([...DISCOVERABLE_SKILL_NAMES], ['flow'])
-  const flowSkill = readFileSync(join(skillsRoot, 'flow/SKILL.md'), 'utf8')
-  assert.match(flowSkill, /disable-model-invocation: false/u)
+test('start is the only explicit-only skill', () => {
+  assert.deepEqual([...EXPLICIT_SKILL_NAMES], ['start'])
+  assert.match(readFileSync(join(skillsRoot, 'start/SKILL.md'), 'utf8'), /disable-model-invocation: true/u)
+  assert.match(readFileSync(join(skillsRoot, 'flow/SKILL.md'), 'utf8'), /disable-model-invocation: false/u)
 })
 
 test('validator catches missing supporting-file links and escaped dependency closure', (t) => {
@@ -34,7 +34,7 @@ test('validator rejects conflicting adapter activation and duplicate metadata', 
   t.after(() => rmSync(dir, { recursive: true, force: true }))
   cpSync(join(skillsRoot, 'write-agents'), join(dir, 'write-agents'), { recursive: true })
   const adapter = join(dir, 'write-agents/agents/openai.yaml')
-  writeFileSync(adapter, readFileSync(adapter, 'utf8').replace('allow_implicit_invocation: false', 'allow_implicit_invocation: true'))
+  writeFileSync(adapter, readFileSync(adapter, 'utf8').replace('allow_implicit_invocation: true', 'allow_implicit_invocation: false'))
   const path = join(dir, 'write-agents/SKILL.md')
   writeFileSync(path, readFileSync(path, 'utf8').replace('name: write-agents', 'name: write-agents\nname: wrong'))
   const errors = validateSkills(dir)

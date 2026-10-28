@@ -1,6 +1,6 @@
 # Flow Skills
 
-**From intent to verified software.** Portable [agent skills](https://agentskills.io) for [Flow](PRODUCT.md), a lightweight, human-led product engineering methodology. Flow Lite keeps product context aligned; the remaining skills are optional and independently invoked, including `start` for new projects. No mandatory workflow, agent router, or required changes to adopter instruction files.
+**From intent to verified software.** Portable [agent skills](https://agentskills.io) for [Flow](PRODUCT.md), a lightweight, human-led product engineering methodology. Talk to your agent, typed or dictated: "interview me", "spec it", "ship it". Flow Lite keeps product context aligned; the remaining skills are optional and independent, including `start` for new projects. No mandatory workflow, agent router, or required changes to adopter instruction files.
 
 [Flow identity and catalog scope](PRODUCT.md) · **[Skill catalog](docs/skills.md)** · [Methodology](docs/methodology.md) · [Documentation guide](docs/README.md)
 
@@ -30,11 +30,11 @@ flowchart TB
 ```
 
 - **`flow` (Flow Lite)** — align the current project's root context after meaningful changes. Hosts may surface it when supported; it is not a pipeline and not initialization.
-- **Other skills** — invoke explicitly (`/explore`, `/to-spec`, `/implement`, …). Each is independent; no mandatory sequence.
+- **Other skills** — say what you want; each skill's leading word reaches it ("grill me", "break it down", "build it"). Slash commands work too. Only `start` must be named. Each is independent; no mandatory sequence.
 
 Details and links to every `SKILL.md`: **[docs/skills.md](docs/skills.md)**.
 
-## Catalog (24)
+## Catalog
 
 | Group | Skills |
 | --- | --- |
@@ -42,7 +42,8 @@ Details and links to every `SKILL.md`: **[docs/skills.md](docs/skills.md)**.
 | Delivery | `explore`, `interview`, `grill`, `to-spec`, `to-tasks`, `implement`, `review`, `ship`, `retro` |
 | Advisory | `council` |
 | Prototype | `prototype` |
-| Quality | `simplify`, `security`, `performance`, `debug` |
+| Shared language | `domain-modeling` |
+| Quality | `debug` |
 | Product discovery | `jtbd`, `competitors` |
 | Writing | `write-agents`, `write-humans` |
 | Project start | `start` |

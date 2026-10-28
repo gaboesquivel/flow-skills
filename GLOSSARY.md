@@ -20,11 +20,11 @@ An adopter project's own product identity, normally in that project's `PRODUCT.m
 
 ## Flow Lite
 
-The [`flow`](skills/flow/SKILL.md) skill: keep the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` aligned with meaningful changes. Not a workflow router and not project initialization. Hosts may surface it when supported; that is not an always-on guarantee. Other Flow skills stay manually invoked.
+The [`flow`](skills/flow/SKILL.md) skill: keep the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` aligned with meaningful changes. Not a workflow router and not project initialization. Model-invocable like most Flow skills ("update the docs"); that is not an always-on guarantee.
 
 ## Flow skill
 
-A portable `skills/<name>/SKILL.md` package in the Flow Skills distribution. Except Flow Lite (`flow`), skills run only when the user explicitly invokes them. Skills may read local supporting files without imposing a mandatory workflow. The [skill catalog](docs/skills.md) groups skills for navigation; groups do not enforce invocation order.
+A portable `skills/<name>/SKILL.md` package in the Flow Skills distribution. Users reach skills by talking: an agent matches the skill's [leading word](#leading-word). Slash commands are optional shortcuts. Only `start` must be named explicitly ([decision 0019](docs/decisions/0019-voice-first-invocation.md)). Skills may read local supporting files without imposing a mandatory workflow. The [skill catalog](docs/skills.md) groups skills for navigation; groups do not enforce invocation order.
 
 ## Human summary
 
@@ -32,7 +32,7 @@ A visual presentation for a person. Prefer generative UI (GenUI) when the host a
 
 ## Leading word
 
-A compact, familiar concept that recruits existing model associations to guide behavior. Following Matt Pocock's terminology in [writing-for-agents](https://github.com/mattpocock/skills/blob/main/skills/productivity/writing-for-agents/SKILL.md), a leading word anchors both how an agent executes instructions and how it recognizes relevant instructions. Prefer established concepts over invented vocabulary. The [skill catalog](docs/skills.md) records one leading word per Flow skill, and that word appears in the skill. `flow start` is not a leading word and not a skill. The optional skill **`start`** initializes from flow-next or flow-mono when explicitly invoked ([decision 0010](docs/decisions/0010-optional-start-skill.md)); it is not Flow Lite. Source limits: [writing research](docs/research/2026-10-19-writing.md#matt-pocock-writing-for-agents). [Decision 0008](docs/decisions/0008-leading-words-and-visual-summaries.md).
+The short phrase a user says, typed or dictated, to reach a Flow skill, such as "interview me" or "ship it". Each skill's description names it with two or three dictation-safe variants, and the [skill catalog](docs/skills.md) lists the first. Following Matt Pocock's terminology in [writing-for-agents](https://github.com/mattpocock/skills/blob/main/skills/productivity/writing-for-agents/SKILL.md), the phrase also anchors how the agent recognizes and carries out the skill, so prefer familiar words over invented vocabulary. Avoid generic host verbs such as "plan" or "review the code". [Decision 0019](docs/decisions/0019-voice-first-invocation.md) redefines the term from [0008](docs/decisions/0008-leading-words-and-visual-summaries.md). `flow start` is not a leading word and not a skill. The optional skill **`start`** initializes from flow-next or flow-mono when explicitly invoked ([decision 0010](docs/decisions/0010-optional-start-skill.md)); it is not Flow Lite. Source limits: [writing research](docs/research/2026-10-19-writing.md#matt-pocock-writing-for-agents).
 
 ## Decision record
 

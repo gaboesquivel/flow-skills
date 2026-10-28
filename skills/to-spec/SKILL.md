@@ -1,7 +1,7 @@
 ---
 name: to-spec
-description: Turn the current conversation into a numbered specification using project conventions; save only when requested.
-disable-model-invocation: true
+description: Turn the current conversation into a numbered specification using project conventions; save only when requested. Use when the user says "spec it", "write a spec", or "turn this into a spec".
+disable-model-invocation: false
 ---
 
 # To Spec

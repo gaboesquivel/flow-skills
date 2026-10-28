@@ -7,7 +7,7 @@ Structural contracts live in [smoke-contracts.test.mjs](../smoke-contracts.test.
 | Ordinary small coding request | `/implement` on a clear task without prior `/to-spec` |
 | Spec from conversation | `/to-spec` produces `docs/specs/NNN-*.md` when saved |
 | Review working tree | `/review` reads untracked files |
-| Explicit activation | Skills include `disable-model-invocation: true` and adapter metadata |
+| Voice-first activation | Every skill except `start` is model-invocable, and descriptions name spoken trigger phrases |
 | Install without adopter edits | `npx skills add` does not require changing `AGENTS.md` |
 | Adopter product context | Align root docs without copying Flow's identity; do not treat `flow start` as initialization |
 | Review untracked pricing fix | `review` on the checkout fixture, including untracked work |

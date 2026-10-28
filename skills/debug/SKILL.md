@@ -1,7 +1,7 @@
 ---
 name: debug
-description: Investigate and fix a reproducible failure using evidence and bounded hypotheses.
-disable-model-invocation: true
+description: Investigate and fix a reproducible failure using evidence and bounded hypotheses. Use when the user says "debug this", "why is this failing", or "find the root cause".
+disable-model-invocation: false
 ---
 
 # Debug
