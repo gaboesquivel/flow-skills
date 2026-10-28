@@ -4,3 +4,4 @@ node_modules/
 .flow-skills/
 !tests/fixtures/**/.flow-skills/
 *.tsbuildinfo
+.claude/worktrees/
