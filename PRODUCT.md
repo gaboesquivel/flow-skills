@@ -105,7 +105,7 @@ Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Say a skil
 
 ### Flow mode
 
-Opt-in conversational delivery ([decision 0020](docs/decisions/0020-flow-mode.md), [spec 009](docs/specs/009-flow-mode.md)). Saying "set up Flow here" has `flow` write one removable Flow block into the project's `AGENTS.md` (or `CLAUDE.md`): `Delivery:`, `Deploy:`, and `Process:` lines and the phrases that reach each skill. When the project has no goals yet, `flow` names `explore` next. After "break it down", `to-tasks` reports the ready set; "ship it" has `ship` land the whole task set on one spec branch, with a worker and an independent review per task when the host supports workers, and sequentially otherwise. The [delivery mode](GLOSSARY.md#delivery-mode) decides the finish; [`ship`](skills/ship/SKILL.md#delivery-mode) owns the rule.
+Opt-in conversational delivery ([decision 0020](docs/decisions/0020-flow-mode.md), [spec 009](docs/specs/009-flow-mode.md)). Saying "set up Flow here" has `flow` write one removable Flow block into the project's `AGENTS.md` (or `CLAUDE.md`): `Delivery:` and `Process:` lines and the phrases that reach each skill. When the project has no goals yet, `flow` names `explore` next. After "break it down", `to-tasks` reports the ready set; "ship it" has `ship` land the whole task set on one spec branch, with a worker and an independent review per task when the host supports workers, and sequentially otherwise. The [delivery mode](GLOSSARY.md#delivery-mode) decides the finish; [`ship`](skills/ship/SKILL.md#delivery-mode) owns the rule.
 
 ### Catalog alignment (evaluate before adding skills)
 
