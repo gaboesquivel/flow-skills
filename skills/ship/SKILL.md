@@ -70,6 +70,8 @@ Exclude credentials, local logs, generated secrets, and unrelated changes.
 
 Use a meaningful commit message following repository conventions.
 
+Ship related work as one branch and pull request: an exploration's research, spec, and root-context changes together, and a spec's tasks together. Open separate pull requests only for large, independently shippable work.
+
 Verify the resulting commit SHA.
 
 Do not amend or rewrite unrelated commits.

@@ -47,6 +47,8 @@ Show the proposed tasks, what each delivers, and real dependencies. Resolve only
 
 Use the requested output or the project's canonical tracker. Publish issues only when requested or already authorized. Otherwise return a draft or update an existing local plan. Do not introduce a `.scratch/` task system or new labels. Use native dependency links when available, or plain references otherwise.
 
+Tasks are not pull requests. A spec's tasks ship together on one branch and pull request; split only work that is large and independently shippable or needs separate review.
+
 Tasks that are **ready** have their blockers complete. In a purely linear chain, that means top to bottom.
 
 Do not close or modify any parent issue.

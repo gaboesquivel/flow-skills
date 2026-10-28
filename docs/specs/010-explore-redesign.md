@@ -1,6 +1,6 @@
 # 010: Explore redesign
 
-Status: draft (2026-10-28). Research: [explore discovery entry points](../research/2026-10-28-explore-discovery-entry-points.md). Number 009 is reserved by the Flow mode draft on another branch.
+Status: implemented (2026-10-28). Research: [explore discovery entry points](../research/2026-10-28-explore-discovery-entry-points.md). Number 009 is reserved by the Flow mode draft on another branch.
 
 ## Problem Statement
 
@@ -63,3 +63,5 @@ Brief shape in `PRODUCT.md`: problem, who, why now, riskiest assumptions with co
 - **Kill criterion (assumption):** if two of the next three explorations end with the user skipping to building, cut Lite back.
 
 Dogfood observations from the session that produced this spec: twelve of twelve marked guesses were accepted, including one pitched against the expected answer; the first four-question form was skipped while later three-question forms were answered.
+
+**Implementation notes.** Lite's main metric may be "unknown, measure first", following the [research](../research/2026-10-28-explore-discovery-entry-points.md) recommendation. The tier suggestion for build requests lives in `implement`, not `flow`: Flow Lite only aligns root docs and is not loaded by build requests. Shipping this spec as five pull requests for small, coupled edits was unnecessary; `to-tasks` and `ship` now default to one pull request per exploration and one per spec's tasks.
