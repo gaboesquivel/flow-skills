@@ -124,5 +124,5 @@ test('every shipped skill matches the expected catalog', () => {
     const adapter = readFileSync(join(skillsRoot, name, 'agents/openai.yaml'), 'utf8')
     assert.match(adapter, /allow_implicit_invocation:\s*true/u, name)
   }
-  assert.equal(names.length, 21)
+  assert.equal(names.length, 22)
 })

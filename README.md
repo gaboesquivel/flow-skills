@@ -48,7 +48,7 @@ Details and links to every `SKILL.md`: **[docs/skills.md](docs/skills.md)**.
 | Product discovery | `jtbd`, `competitors` |
 | Writing | `write-agents`, `write-humans` |
 | Project start | `start` |
-| Misc | `tldr`, `handoff` |
+| Misc | `tldr`, `handoff`, `board` |
 
 Default durable docs in adopter projects: `docs/specs/NNN-short-name.md`, `docs/decisions/NNN-short-name.md` (or existing conventions).
 
