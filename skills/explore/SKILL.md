@@ -43,7 +43,7 @@ At Full depth, or whenever real web research happened, save findings with source
 
 Report spec-ready when intent is confirmed, the riskiest assumption and kill criterion are named, and the brief or diff is written or waiting for the bootstrap commit; a clearer outcome is spec-ready once its sharpened intent is restated. A declined brief is not spec-ready for writing specs. Otherwise say what is missing. Close with known facts, open assumptions, how many marked guesses were accepted unchanged, and the next activity. Missing optional skills must not block exploration.
 
-Once spec-ready with a brief, name the next steps and wait for the user: `to-spec` for `docs/specs/NNN-short-name.md`, then `to-tasks`.
+Once spec-ready with a brief, name the next steps and wait for the user: `to-spec` for `docs/specs/NNN-short-name.md`, "accept the spec", then `to-tasks`.
 
 **New product specs.** At any depth, write only spec 001 in full: the first bet, with its tasks as the slices inside it (decision 0026). Spec 001 must test the riskiest assumption, ship the instrumentation for the main metric, and define its capability contract-first as `to-spec` describes, including an MCP tool when the brief names agent users. Write later bets as `candidate` stubs with `to-spec`; flesh them out only after spec 001 ships. In a new product, the brief, research, and specs ship with spec 001's implementation.
 

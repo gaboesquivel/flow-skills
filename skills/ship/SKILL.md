@@ -20,7 +20,7 @@ Inspect the current branch and worktree, Git status and diff, existing staged ch
 
 Classify the work. Resolve its spec from (a) the branch name, (b) files under `docs/specs/` (or the project's spec location) that the change touches, and (c) the issues the work closes (`Closes #N`) and the spec each links.
 
-- **Spec work:** any source points at a spec, or classification is uncertain. The spec's `Status:` must be `accepted`, and every decision record it links must be **Accepted**. Otherwise name each spec or linked decision that is not accepted, with its status, suggest "accept the spec", and stop before building, committing, or pushing anything. If the spec cannot be resolved, say so and stop the same way.
+- **Spec work:** any source points at a spec, or classification is uncertain. Read the spec from the branch head, after updating from the default branch when it is not accepted there. Its `Status:` must be `accepted`, or `implemented` on this unmerged branch from an earlier ship run, and no decision record it links may still be **Proposed**. Otherwise name each spec or linked decision that is not accepted, with its status, suggest "accept the spec", and stop before building, committing, or pushing anything. If the spec cannot be resolved, say so and stop the same way.
 - **Hotfix:** work with no spec link at all, including work that closes only issues belonging to no spec. It ships through the same cycle; the review also judges whether it is hotfix-sized (see Review).
 
 ## Build

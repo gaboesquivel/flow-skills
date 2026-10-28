@@ -28,7 +28,7 @@ A developer who says "ship it" is asked to confirm twice after deciding. A devel
 ## Implementation Decisions
 
 - `skills/implement/` moves to `skills/build/` with its ATTRIBUTION, LICENSE, and `agents/openai.yaml`; `EXPECTED_SKILL_NAMES` and `PHRASES` follow.
-- `build` owns Delivery mode and Task set (waves, notes, worker limits, checkpoints, board recording); `ship` links to them and owns acceptance checks, the hotfix guard, review, merge, and sync. `ship` drops its Push confirmation, Main gate, and Deploy sections.
+- `build` owns Delivery mode and Task set (waves, notes, worker limits, checkpoints, board recording); `ship` refers to them by name and owns acceptance checks, the hotfix guard, review, merge, and sync. `ship` drops its Push confirmation, Main gate, and Deploy sections.
 - `to-spec` owns spec statuses and acceptance. It writes specs as `draft` and decisions it proposes as **Proposed** without asking, and reports links rather than inline text; its description gains "accept the spec". The "save only after an explicit yes to the shown text" rule is removed.
 - `review` accepts `ship`'s authorization to use an independent worker and post on the pull request.
 - `flow-block.mjs` drops `Deploy:`, `--deploy`, `normalizeDeploy`, and `readDeploy`; rewriting a block drops an existing `Deploy:` line.
