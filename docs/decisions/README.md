@@ -19,6 +19,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0013-restore-engineering-skills.md](0013-restore-engineering-skills.md) | Accepted (`handoff` added by 0014) | Restore `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug` |
 | [0014-handoff-skill.md](0014-handoff-skill.md) | Accepted | Explicit `handoff` skill for a fresh agent |
 | [0015-tasks-and-domain-modeling.md](0015-tasks-and-domain-modeling.md) | Accepted | `to-tasks` rename; restore `domain-modeling` for glossary practice |
+| [0016-start-in-place.md](0016-start-in-place.md) | Accepted | `start` bootstraps at a root holding only agent setup and infers the template |
 
 ## Rules
 

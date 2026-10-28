@@ -12,12 +12,16 @@ Deterministic rename, destination safety, baseline docs, and commit-gating rules
 
 ## Gather inputs
 
-Ask only for:
+Take what the invocation already says before asking. `inferTemplateFromRequest` from `lib/identity.mjs` maps "Next.js", "next", or a flow-next URL to **flow-next**, and "mono", "monorepo", "Turborepo", or a flow-mono URL to **flow-mono**. A project name in the request, or the current directory's name, is the proposed name.
+
+Ask only for what is still missing, in one question round:
 
 1. **Project name** (product identity; drives package name and Portless host).
-2. **Local destination directory** (empty unless the user explicitly authorizes overwrite).
-3. **Template** — recommend **flow-next** for a single Next.js app, **flow-mono** for Turborepo (`apps/web`, `packages/ui`).
+2. **Local destination directory.** Default to the **current working directory** when `assessDestination` accepts it; propose a nested or sibling directory only when the user asks or the current one is refused.
+3. **Template** — only when not inferred. Recommend **flow-next** for a single Next.js app, **flow-mono** for Turborepo (`apps/web`, `packages/ui`).
 4. **Optional GitHub remote** — only when the user wants a new repository created or linked; never assume push access.
+
+If an answer does not arrive, ask again; do not substitute a destination the user did not confirm.
 
 Do not run product discovery, interviews, or specs during initialization.
 
@@ -31,13 +35,15 @@ Prefer GitHub **Use this template** when authorized:
 gh repo create <owner>/<repo> --template gaboesquivel/<template> --clone <destination>
 ```
 
-Otherwise clone the template, then **remove only that checkout's** `.git`, run `git init`, and leave **no remote** until the user authorizes one.
+Otherwise clone the template into a temporary directory, then copy it into the destination with `copyTemplateInto` from `lib/git-safety.mjs`. It skips the template's `.git` and never overwrites existing files. Run `git init` in the destination when it has no `.git`, and leave **no remote** until the user authorizes one.
 
 - Never keep `origin` pointing at `gaboesquivel/flow-next` or `gaboesquivel/flow-mono`.
 - Add the user's remote only when explicitly provided and authorized.
 - Use `assessDestination` and `assertNoTemplateOrigin` from `lib/git-safety.mjs` before writing files.
 
-**Stop** when the destination is nonempty without authorization, or when the path already has Git commits. Never `reset`, `clean`, or delete history of an existing project.
+**Bootstrapping in place.** A destination that holds only agent setup — `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, `.claude/`, `.agents/`, `.cursor/`, `skills-lock.json` — counts as empty. Bootstrap at that root, not in a nested folder. Keep those files as they are: when the template ships its own copy of a kept file, report it in `skipped` and leave the adopter's version. For other files (for example a prompt log), `assessDestination` names them; ask once whether to keep them and bootstrap here, then pass them as `preserve`.
+
+**Stop** when the destination has unexpected files without authorization, or when the path already has Git commits. Never `reset`, `clean`, or delete history of an existing project.
 
 ## Rename template identifiers
 
@@ -45,13 +51,13 @@ Use `renameAllowlistForTemplate`, `applyRenamesInTree`, and `scanTreeForStaleIde
 
 **Preserve** upstream interoperability prose in `docs/INTEROP.md`, `.env.example` template comments, baseline root docs that record the template source, vendored `.agents` skills, package imports (`@repo/ui`, `web`), and legitimate references to the template repositories.
 
-After renames, identity verification **fails** while stale template identifiers remain outside preserved paths.
+After renames, identity verification **fails** while stale template identifiers remain outside preserved paths. The scan skips `.claude/`, `.cursor/`, and `.agents/`, where installed skills legitimately name the templates.
 
 Do not create or edit adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or equivalent instruction files.
 
 ## Dependencies and setup
 
-In the new project root, run the template's `pnpm setup` (installs curated **technical** skills from `.agents`). Do not install flow-skills into the new repo. Do not set `FLOW_SETUP_SKIP_SKILLS` unless the user asks. Never commit secrets; keep `.env.local` and build artifacts out of Git.
+In the new project root, run the template's `pnpm setup` (installs curated **technical** skills from `.agents`). Do not install flow-skills into the new repo; when the user already installed them at this root, keep them. Do not set `FLOW_SETUP_SKIP_SKILLS` unless the user asks. Never commit secrets; keep `.env.local` and build artifacts out of Git.
 
 ## Baseline product documentation
 
@@ -92,12 +98,12 @@ Do not use `--no-verify`. Do not push or deploy unless explicitly authorized.
 ## Boundaries
 
 - Do not edit adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or equivalent instruction files.
-- Do not install or require flow-skills in the new project.
+- Do not install or require flow-skills in the new project; keep an existing installation.
 - Do not automatically invoke `flow`, `explore`, or any delivery pipeline.
 - Do not bundle Flow Factory or a workflow router.
 
 ## Completion
 
-Report template and template commit SHA, destination path, renamed slug and Portless host, files created or updated, each verification check, initial commit SHA (if created), and blockers.
+Report template and template commit SHA, destination path, preserved and skipped files, renamed slug and Portless host, files created or updated, each verification check, initial commit SHA (if created), and blockers.
 
 Recommended **example** sequence for new projects (not mandatory): install Flow Skills → invoke `start` → invoke `flow` to align product context → invoke `explore` when discovery is needed → use other skills independently.

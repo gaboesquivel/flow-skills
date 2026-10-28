@@ -1,7 +1,7 @@
-import { existsSync, readdirSync } from 'node:fs'
+import { cpSync, existsSync, mkdirSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { execSync } from 'node:child_process'
-import { TEMPLATE_GITHUB } from './constants.mjs'
+import { AGENT_SETUP_ENTRY_NAMES, TEMPLATE_GITHUB } from './constants.mjs'
 
 const templateRemotePatterns = Object.values(TEMPLATE_GITHUB).flatMap((repo) => [
   `https://github.com/${repo}.git`,
@@ -14,27 +14,70 @@ export const isTemplateRemoteUrl = (url) => {
   return templateRemotePatterns.some((pattern) => normalized === pattern.replace(/\/$/u, ''))
 }
 
-export const assessDestination = ({ destinationPath, allowNonempty = false }) => {
+// Agent-setup entries (see AGENT_SETUP_ENTRY_NAMES) plus any user-confirmed `preserve`
+// names do not make a destination "nonempty": the template is copied around them.
+export const assessDestination = ({ destinationPath, allowNonempty = false, preserve = [] }) => {
   if (!destinationPath?.trim()) return { ok: false, reason: 'Destination path is required.' }
 
-  if (!existsSync(destinationPath)) return { ok: true }
+  if (!existsSync(destinationPath)) return { ok: true, preserved: [] }
 
-  const entries = readdirSync(destinationPath)
-  if (entries.length > 0 && !allowNonempty)
-    return { ok: false, reason: 'Destination is not empty. Obtain explicit authorization before overwriting.' }
+  const keep = new Set([...AGENT_SETUP_ENTRY_NAMES, ...preserve])
+  const entries = readdirSync(destinationPath).filter((name) => name !== '.git')
+  const preserved = entries.filter((name) => keep.has(name))
+  const unexpected = entries.filter((name) => !keep.has(name))
+  if (unexpected.length > 0 && !allowNonempty)
+    return {
+      ok: false,
+      reason: `Destination is not empty (${unexpected.join(', ')}). Ask whether to keep these files and bootstrap here, or choose another directory.`,
+      unexpected,
+    }
 
   const gitDir = join(destinationPath, '.git')
-  if (!existsSync(gitDir)) return { ok: true }
+  if (!existsSync(gitDir)) return { ok: true, preserved }
 
   try {
-    const count = execSync('git rev-list --count HEAD', { cwd: destinationPath, encoding: 'utf8' }).trim()
+    const count = execSync('git rev-list --count HEAD', { cwd: destinationPath, encoding: 'utf8', stdio: 'pipe' }).trim()
     if (Number(count) > 0)
       return { ok: false, reason: 'Destination already has Git history. Never reset or delete an existing project.' }
   } catch {
-    return { ok: true }
+    return { ok: true, preserved }
   }
 
-  return { ok: true }
+  return { ok: true, preserved }
+}
+
+// Copies a template checkout into the destination without overwriting anything already
+// there, so adopter instruction files and installed skills survive. Skips the template's `.git`.
+export const copyTemplateInto = ({ templateDir, destinationPath }) => {
+  const copied = []
+  const skipped = []
+
+  const walk = (rel) => {
+    for (const entry of readdirSync(join(templateDir, rel), { withFileTypes: true })) {
+      const childRel = rel ? `${rel}/${entry.name}` : entry.name
+      if (!rel && entry.name === '.git') continue
+      const target = join(destinationPath, childRel)
+      if (entry.isDirectory()) {
+        if (existsSync(target) && !statSync(target).isDirectory()) {
+          skipped.push(childRel)
+          continue
+        }
+        mkdirSync(target, { recursive: true })
+        walk(childRel)
+        continue
+      }
+      if (existsSync(target)) {
+        skipped.push(childRel)
+        continue
+      }
+      cpSync(join(templateDir, childRel), target)
+      copied.push(childRel)
+    }
+  }
+
+  mkdirSync(destinationPath, { recursive: true })
+  walk('')
+  return { copied, skipped }
 }
 
 export const assertNoTemplateOrigin = ({ remotes }) => {
