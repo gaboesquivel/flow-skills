@@ -1,6 +1,6 @@
 # 021: A clean run from start to ship
 
-Status: draft (2026-10-28). Issue: [#111](https://github.com/gaboesquivel/flow-skills/issues/111). Decisions: [0033](../decisions/0033-shared-files-and-reviewed-head.md) (Proposed), [0034](../decisions/0034-no-ceremony-without-a-spec.md) (Proposed). Builds on [spec 020](020-ship-verifies.md), which lands first.
+Status: draft (2026-10-28). Issue: [#111](https://github.com/gaboesquivel/flow-skills/issues/111). Decisions: [0033](../decisions/0033-shared-files-and-reviewed-head.md) (Proposed), [0034](../decisions/0034-no-ceremony-without-a-spec.md) (Proposed), [0035](../decisions/0035-spec-issue-on-acceptance.md) (Proposed). Builds on [spec 020](020-ship-verifies.md), which lands first.
 
 ## Problem Statement
 
@@ -16,6 +16,7 @@ A rehearsal on 2026-10-28 took a new product (Signal) from "start a Next.js proj
 Two maintainer requests from the same review:
 
 - **A ticked task does not say which commit delivered it.** The spec's checklist reads `- [x] 01: …` with nothing to follow back to the change.
+- **Drafts are published before anyone reads them.** In pull-request mode, "spec it" pushes the branch and opens a public spec issue for an unreviewed draft, and every revision is another public sync.
 - **Unspecced work carries spec ceremony.** Spec 020 lands ad-hoc local work through the spec gate and the full per-axis review. A hotfix or a one-line change does not deserve that.
 
 Four smaller frictions also showed up:
@@ -37,7 +38,8 @@ Four smaller frictions also showed up:
 8. **A spec-issue helper.** `to-spec` ships `lib/spec-issue.mjs` to build the issue body with its hash marker and to check a body for hand edits.
 9. **Ticked tasks link their commit.** When `build` ticks a task, the checklist line ends with the short SHA of the commit that integrated it, linked when a remote exists: `- [x] 01: Title (#N) — a1b2c3d`.
 10. **No ceremony without a spec** ([0034](../decisions/0034-no-ceremony-without-a-spec.md)). "Build it" on work with no spec or task skips the spec gate and the per-axis review workers. It runs the full local suite and one self-check against the request, then lands as the mode delivers. In local mode it merges into local `main`; in pull-request mode it opens a ready pull request. The size guard still applies: new product behavior, a data-shape or public API change, or a migration stops and suggests `to-spec`.
-11. **Small `explore` rules.** Skip background readers that have nothing to read. Lite keeps one main metric, plus supporting metrics when the user names them.
+11. **The spec issue opens at acceptance** ([0035](../decisions/0035-spec-issue-on-acceptance.md)). "Spec it" writes and commits the draft locally on the spec branch and publishes nothing. "Accept the spec" pushes the branch and opens the spec issue labelled `accepted`. "Share the draft" opens it early, labelled `draft`, for team review. `to-spec` opens a `candidate` issue only when asked.
+12. **Small `explore` rules.** Skip background readers that have nothing to read. Lite keeps one main metric, plus supporting metrics when the user names them.
 
 ## User Stories
 
@@ -51,7 +53,9 @@ Four smaller frictions also showed up:
 8. As a developer, I open spec 001 after the build and follow each ticked task to the commit that delivered it.
 9. As a developer, I say "build it" on a one-line fix with no spec: the suite runs, the change lands with a self-check, and no review workers start.
 10. As a developer, I say "build it" on unspecced work that adds an API: `build` stops and suggests `to-spec`.
-11. As a maintainer, I sync a spec issue with one helper command, and a hand-edited body is reported instead of overwritten.
+11. As a developer, I say "spec it" and review the draft file locally; nothing is pushed or public until I say "accept the spec".
+12. As a maintainer who wants comments first, I say "share the draft" and get a `draft` issue my teammates can read.
+13. As a maintainer, I sync a spec issue with one helper command, and a hand-edited body is reported instead of overwritten.
 
 ## Implementation Decisions
 
@@ -72,6 +76,8 @@ Four smaller frictions also showed up:
   - The skill text points to the helper instead of describing the hash steps.
 - **`build`, Task set › Integrate:** ticking a task appends ` — <short-sha>` for the integration merge commit (a link to the commit page when a remote exists). This applies in both delivery modes, and in local mode also on the task's **Status:** `done` line.
 - **`build`, Deliver ([0034](../decisions/0034-no-ceremony-without-a-spec.md)):** work that resolves to no spec or task is unspecced. It gets the full local suite and a single-agent self-check against the request and `review`'s axes; there are no review workers and no spec gate. The size guard (today `ship`'s hotfix guard) moves to `build` as the one home and applies before landing. Local mode merges into local `main` with a `Reviewed: <sha>` trailer naming the self-checked head; pull-request mode opens a ready pull request. `ship` runs no further review on unspecced work and keeps Verify (a smoke of the changed behavior).
+- **`to-spec`, Spec issue ([0035](../decisions/0035-spec-issue-on-acceptance.md)):** Open moves from "spec it" to "accept the spec": push the branch, open (or reuse and relabel) the issue with `accepted`, write `Issue: #N`, commit, push, sync. "Share the draft" is the opt-in early path with `draft`; a shared draft is relabelled `accepted` on acceptance. Sync and hand-edit rules are unchanged once an issue exists. A `candidate` issue opens only on request. `to-tasks` in pull-request mode needs the spec issue, so it follows acceptance as today.
+- **`ship` and `build`:** the label gate is unchanged (`accepted` on the spec issue). A spec in pull-request mode with no `Issue:` line yet is not accepted; `ship` suggests "accept the spec".
 - **`explore`:**
   - Reader rule: launch only readers whose sources exist; in a run handed over by `start`, the bootstrap report replaces the status reader.
   - Lite bullet: "one main metric, plus supporting metrics the user names".
@@ -84,7 +90,8 @@ Four smaller frictions also showed up:
   - review workers never check out in a checkout they did not create;
   - 0033's "only declared shared files after the reviewed SHA";
   - a refused merge is never retried with another method;
-  - unspecced work that is not small stops for `to-spec`.
+  - unspecced work that is not small stops for `to-spec`;
+  - "spec it" publishes nothing; the spec issue opens at acceptance or on "share the draft".
 - Evals: one for `explore` committing on `explore/`, and one for `build` creating worktrees from the spec head.
 - `pnpm validate` and `pnpm test` pass; `pnpm test` stays under 8 seconds.
 
@@ -94,7 +101,7 @@ Actor: a developer with Claude Code and these skills. Starting state: an empty `
 
 1. Say "Let's start a Next.js project" with a one-line idea; answer Lite and local. → The initial commit contains the Flow block (`git show HEAD --stat` lists its file; `git check-ignore` on it fails). *(writes; local only)*
 2. Finish a Lite `explore` with a yes to the brief. → `git branch` shows `explore/<slug>` holding a commit with `PRODUCT.md`; `main` has no new commit and a clean tree. *(writes; local only)*
-3. Say "spec it", "accept the spec", "break it down". → The explore branch is renamed to `feat/001-<slug>`, holding the brief, spec, and tasks. The spec has an Exposure line. *(writes; local only)*
+3. Say "spec it". → The explore branch is renamed to `feat/001-<slug>`, holding the brief and the draft spec, which has an Exposure line; in a pull-request-mode copy of the project nothing is pushed and no issue exists. Say "accept the spec", then "break it down". → The spec reads `accepted` and has its tasks; in the pull-request-mode copy the branch is pushed and the spec issue opens labelled `accepted`. *(writes; local, plus one issue in a scratch repository)*
 4. Say "build it" on two or more tasks. → `git worktree list` shows one sibling worktree per task, each starting at the spec-branch head, and no worker reports resetting. The primary checkout's branch is unchanged after the review. *(writes; local only)*
 5. After the review, the orchestrator appends to `prompts.txt`. → The landing merge on `main` carries `Reviewed: <sha>` equal to the reviewed commit. `git log <sha>..<merged-head>` before the merge lists only `prompts.txt` commits. No commit sits directly on `main`. *(writes; local only)*
 6. Open the spec. → Each ticked task line ends with the short SHA of its integration merge, and `git show <sha>` shows that task's merge. *(read-only)*
@@ -117,6 +124,7 @@ Source: the Signal demo rehearsal on 2026-10-28 in `/tmp/flow-demo`, on `feat/02
 
 - Writing the block into `CLAUDE.md` is preferable to changing the template's `.gitignore` (`start` must not edit it).
 - `explore/<slug>` uses the brief's product slug for a new product, or the feature's slug otherwise.
+- Issues already opened for drafts (#104, #111) stay as they are; the new rule applies from the next spec.
 - "Lite flow" in the maintainer's request reads as any run without issues, so commit links apply in both delivery modes.
 - A self-check is enough for unspecced work because the size guard keeps anything consequential out of that path.
 - Declared shared files are the ones the project's instruction files tell every session to append to; `build` already names them in worker briefs.
