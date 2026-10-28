@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import { existsSync, linkSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
-import { BEGIN, END, buildFlowBlock, describeLayout, ensureImport, instructionFile, readDelivery, upsertFlowBlock, writeFlowBlock } from '../skills/flow/lib/flow-block.mjs'
+import { BEGIN, END, buildFlowBlock, describeLayout, ensureImport, instructionFile, readDelivery, upsertFlowBlock, removeFlowBlock, writeFlowBlock } from '../skills/flow/lib/flow-block.mjs'
 
 const skillsRoot = join(dirname(fileURLToPath(import.meta.url)), '..', 'skills')
 
@@ -146,6 +146,82 @@ test('with no instruction file the block goes in a new CLAUDE.md', (t) => {
   assert.equal(ensureImport(dir).changed, false)
   assert.equal(existsSync(join(dir, 'AGENTS.md')), false)
   assert.deepEqual(describeLayout(dir), { blockFile: 'CLAUDE.md', tracked: true, imports: [] })
+})
+
+test('a stale block in an ignored AGENTS.md moves to CLAUDE.md with its delivery', (t) => {
+  const adopter = 'Append each prompt to prompts.txt.\n'
+  const stale = upsertFlowBlock('', { delivery: 'local' }).replace('Delivery: local', 'Delivery: local\nProcess: lite')
+  const agentsBefore = `# Generated\n\nKeep this.\n\n${stale}\n## After\n`
+  const dir = repo(t, { '.gitignore': 'AGENTS.md\n', 'AGENTS.md': agentsBefore, 'CLAUDE.md': adopter })
+  const result = writeFlowBlock(dir)
+  assert.equal(result.file, join(dir, 'CLAUDE.md'))
+  assert.equal(result.migrated, join(dir, 'AGENTS.md'))
+  assert.equal(ensureImport(dir).changed, true)
+  const claude = readFileSync(join(dir, 'CLAUDE.md'), 'utf8')
+  assert.ok(claude.startsWith(`@AGENTS.md\n${adopter}`))
+  assert.equal(claude.split(BEGIN).length, 2)
+  assert.equal(readDelivery(claude), 'local')
+  assert.doesNotMatch(claude, /^Process:/mu)
+  const agents = readFileSync(join(dir, 'AGENTS.md'), 'utf8')
+  assert.equal(agents, '# Generated\n\nKeep this.\n\n\n## After\n')
+  assert.equal(writeFlowBlock(dir).migrated, null)
+  assert.equal(writeFlowBlock(dir, { delivery: 'pull-request' }).changed, true)
+})
+
+test('a named delivery wins over the migrated one', (t) => {
+  const dir = repo(t, { '.gitignore': 'AGENTS.md\n', 'AGENTS.md': upsertFlowBlock('', { delivery: 'local' }) })
+  writeFlowBlock(dir, { delivery: 'pull-request' })
+  assert.equal(readDelivery(readFileSync(join(dir, 'CLAUDE.md'), 'utf8')), 'pull-request')
+  assert.equal(readFileSync(join(dir, 'AGENTS.md'), 'utf8'), '')
+})
+
+test('removeFlowBlock keeps text outside the markers', () => {
+  const block = buildFlowBlock({ delivery: 'local', eol: '\r\n' })
+  assert.equal(removeFlowBlock(`a\r\n${block}\r\nb\r\n`), 'a\r\nb\r\n')
+  assert.equal(removeFlowBlock('no block\n'), 'no block\n')
+})
+
+test('symlinked or shared instruction files are not written', (t) => {
+  const outside = mkdtempSync(join(tmpdir(), 'flow-block-outside-'))
+  t.after(() => rmSync(outside, { recursive: true, force: true }))
+  writeFileSync(join(outside, 'target.md'), '# Outside\n')
+
+  const linked = repo(t, { '.gitignore': 'AGENTS.md\n' })
+  symlinkSync(join(outside, 'target.md'), join(linked, 'CLAUDE.md'))
+  assert.match(writeFlowBlock(linked).refused, /symlink/u)
+  assert.match(ensureImport(linked).refused, /symlink/u)
+  assert.equal(readFileSync(join(outside, 'target.md'), 'utf8'), '# Outside\n')
+
+  const shared = repo(t, { '.gitignore': 'AGENTS.md\n', 'AGENTS.md': '# Agents\n' })
+  linkSync(join(shared, 'AGENTS.md'), join(shared, 'CLAUDE.md'))
+  assert.match(writeFlowBlock(shared).refused, /same file/u)
+  assert.match(ensureImport(shared).refused, /same file/u)
+  assert.equal(readFileSync(join(shared, 'AGENTS.md'), 'utf8'), '# Agents\n')
+
+  const staleLink = repo(t, { '.gitignore': 'AGENTS.md\n', 'CLAUDE.md': '# Claude\n' })
+  writeFileSync(join(outside, 'agents.md'), upsertFlowBlock('', { delivery: 'local' }))
+  symlinkSync(join(outside, 'agents.md'), join(staleLink, 'AGENTS.md'))
+  assert.match(writeFlowBlock(staleLink).refused, /AGENTS\.md is a symlink/u)
+  assert.equal(readFileSync(join(staleLink, 'CLAUDE.md'), 'utf8'), '# Claude\n')
+
+  const run = spawnSync(process.execPath, [join(skillsRoot, 'flow', 'lib', 'flow-block.mjs'), linked, 'local'], { encoding: 'utf8' })
+  assert.equal(run.status, 1)
+  assert.match(run.stderr, /Refused: CLAUDE\.md is a symlink/u)
+})
+
+test('tracked AGENTS.md still gets the block when CLAUDE.md links to it', (t) => {
+  const dir = repo(t, { 'AGENTS.md': '# Agents\n' })
+  git(dir, 'add', 'AGENTS.md')
+  symlinkSync('AGENTS.md', join(dir, 'CLAUDE.md'))
+  assert.equal(writeFlowBlock(dir, { delivery: 'local' }).changed, true)
+  assert.match(ensureImport(dir).refused, /symlink/u)
+  assert.equal(readFileSync(join(dir, 'AGENTS.md'), 'utf8').split(BEGIN).length, 2)
+})
+
+test('import detection matches the exact path only', (t) => {
+  const dir = repo(t, { '.gitignore': 'AGENTS.md\n', 'CLAUDE.md': '@AGENTS.md.bak\n' })
+  assert.equal(ensureImport(dir).changed, true)
+  assert.deepEqual(describeLayout(dir).imports, ['@AGENTS.md', '@AGENTS.md.bak'])
 })
 
 test('layout reports an ignored block file as untracked', (t) => {
