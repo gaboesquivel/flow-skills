@@ -41,7 +41,7 @@ Give each task its **blocking edges**: other tasks that must finish before it ca
 
 ### 4. Check the breakdown
 
-Show the proposed tasks, what each delivers, and real dependencies. Resolve only consequential scope or sequencing uncertainty. Reuse existing approval of the work; do not require a second approval for routine decomposition.
+Show the proposed tasks, what each delivers, real dependencies, and where they will be recorded. Resolve only consequential scope or sequencing uncertainty. Publishing issues or writing the spec's Tasks section needs an explicit yes to the shown list; approval of the work is not that yes.
 
 ### 5. Record
 
