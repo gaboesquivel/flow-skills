@@ -9,7 +9,7 @@
 - Bounded work and rationale: `docs/specs/`, `docs/decisions/`.
 - Source evidence (maintainer): `docs/references.md` and `docs/research/`.
 - Experience or technical changes: root `DESIGN.md` or `ARCHITECTURE.md` when present; create only when useful.
-- Root context alignment: `skills/flow/SKILL.md` (Flow Lite).
+- Root context alignment and Flow setup: `skills/flow/SKILL.md`.
 
 Load only what the task needs. `docs/archive/` is historical evidence, never current instructions or authority.
 

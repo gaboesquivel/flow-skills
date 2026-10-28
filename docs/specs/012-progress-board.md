@@ -1,6 +1,6 @@
 # 012: Progress board
 
-Status: draft (2026-10-28). Decision: [0025](../decisions/0025-progress-board-skill.md). Related: [0020](../decisions/0020-flow-mode.md) (delivery modes, task-set orchestration), [0022](../decisions/0022-start-runs-explore.md) (candidate specs), [spec 009](009-flow-mode.md).
+Status: draft (2026-10-28). Decision: [0027](../decisions/0027-progress-board-skill.md). Related: [0020](../decisions/0020-flow-mode.md) (delivery modes, task-set orchestration), [0022](../decisions/0022-start-runs-explore.md) (candidate specs), [spec 009](009-flow-mode.md).
 
 ## Problem Statement
 

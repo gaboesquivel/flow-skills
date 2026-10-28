@@ -27,7 +27,10 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0021-autonomous-explore-and-ship.md](0021-autonomous-explore-and-ship.md) | Accepted | Explore and ship create docs files and GitHub issues, group pull requests, and suggest the host's autonomous mode |
 | [0022-start-runs-explore.md](0022-start-runs-explore.md) | Accepted | Speakable `start` runs `explore` beside the bootstrap; spec 001 full, later slices as candidates |
 | [0023-agent-first.md](0023-agent-first.md) | Accepted | Agent-first, API-first becomes an official principle; explore and to-spec apply it |
-| [0025-progress-board-skill.md](0025-progress-board-skill.md) | Accepted | Read-only `board` skill derived from git, with a `ship` run overlay |
+| [0024-gated-hand-offs.md](0024-gated-hand-offs.md) | Accepted | Named hand-offs; explicit yes before spec writes, task publishing, and merging or pushing `main`; `start` explores at Lite (depth amended by 0026) |
+| [0025-wave-checkpoints.md](0025-wave-checkpoints.md) | Accepted | `ship` runs task sets in waves with a draft pull request, preview checkpoints, and a `Deploy:` target |
+| [0026-process-depth.md](0026-process-depth.md) | Accepted | Lite or Full process recorded in the Flow block; `start` is Flow setup plus bootstrap; spec–decision boundary; "Flow Lite" label retired |
+| [0027-progress-board-skill.md](0027-progress-board-skill.md) | Accepted | Read-only `board` skill derived from git, with a `ship` run overlay |
 
 ## Rules
 

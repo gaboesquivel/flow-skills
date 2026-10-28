@@ -1,10 +1,10 @@
 # Skill catalog
 
-Skills live in [`skills/`](../skills/); `scripts/validate.mjs` holds the authoritative list. Install with `npx skills add gaboesquivel/flow-skills`. No workflow router and no mandatory sequence.
+Skills live in [`skills/`](../skills/); `scripts/validate.mjs` holds the authoritative list. Install with `npx skills add gaboesquivel/flow-skills`. No mandatory sequence. Skills may name the next skill and wait; the only automatic hand-offs are `start` → `explore` and explore's `interview` and `grill` phases, each behind the user's yes ([decision 0024](decisions/0024-gated-hand-offs.md)).
 
 [Agent compatibility](agent-compatibility.md) · [Decision 0006](decisions/0006-flow-lite-and-flat-docs.md) · [Decision 0009](decisions/0009-adopter-product-context.md) · [Decision 0015](decisions/0015-tasks-and-domain-modeling.md) · [Decision 0018](decisions/0018-interview-extracts-intent.md) · [Decision 0019](decisions/0019-voice-first-invocation.md) · [Spec 002](specs/002-flow-lite-and-flat-docs.md) · [Spec 008](specs/008-tasks-and-domain-modeling.md)
 
-Talk to your agent, by typing or dictation. Each skill has a [leading word](../GLOSSARY.md#leading-word): the phrase you say to reach it. The first phrase is listed below; each skill's description carries two or three variants. Slash commands (`/interview`, `/ship`, …) remain optional shortcuts. No skill must be named explicitly.
+Talk to your agent, by typing or dictation. Each skill has a [leading word](../GLOSSARY.md#leading-word): the phrase you say to reach it. The first phrase is listed below; each skill's description carries two or three variants. The Flow block's phrase table lives in [`flow-block.mjs`](../skills/flow/lib/flow-block.mjs) (`PHRASES`), and a test checks each phrase against its skill's description. Slash commands (`/interview`, `/ship`, …) remain optional shortcuts. No skill must be named explicitly.
 
 ## Process
 
@@ -25,24 +25,24 @@ flowchart LR
 
 Product discovery, writing, advisory, prototype, quality, and misc skills are optional and do not block delivery.
 
-## Flow Lite
+## Context alignment
 
 | Skill | Say | When to use |
 | --- | --- | --- |
-| [flow](../skills/flow/SKILL.md) | "update the docs" | Align the current project's root docs after meaningful changes; "set up Flow here" writes the opt-in Flow block ([decision 0020](decisions/0020-flow-mode.md)). Not a pipeline and not initialization. |
+| [flow](../skills/flow/SKILL.md) | "update the docs" | Align the current project's root docs after meaningful changes; "set up Flow here" asks Lite or Full process, writes the opt-in Flow block, and names `explore` when the project has no goals yet ([decision 0020](decisions/0020-flow-mode.md), [decision 0026](decisions/0026-process-depth.md)). Not a pipeline and not template initialization. |
 
 ## Delivery
 
 | Skill | Say | When to use |
 | --- | --- | --- |
-| [explore](../skills/explore/SKILL.md) | "explore this" | Propose a depth (Skip, Lite, Full); extract intent, then challenge it; end in a confirmed brief, clearer intent, or a killed idea. Every brief asks who the agent users are. A new product gets spec 001 in full and later slices as candidate stubs. |
+| [explore](../skills/explore/SKILL.md) | "explore this" | Propose a depth (Skip, Lite, Full), defaulting to the project's recorded process depth; extract intent, then challenge it; end in a confirmed brief, clearer intent, or a killed idea. Every brief asks who the agent users are. A new product gets spec 001 in full and later slices as candidate stubs; Full also proposes a decision record per choice among alternatives. |
 | [interview](../skills/interview/SKILL.md) | "interview me" | Extract what you actually want, with a guess attached to each question, before any plan or spec exists. |
 | [grill](../skills/grill/SKILL.md) | "grill me" | Stress-test an idea or plan with focused questions and evidence. |
 | [to-spec](../skills/to-spec/SKILL.md) | "spec it" | Turn conversation into a numbered spec with contract-first interfaces; label assumptions; write candidate stubs for later slices; save only when requested. |
 | [to-tasks](../skills/to-tasks/SKILL.md) | "break it down" | Vertical-slice tasks with blockers, recorded as GitHub issues (pull-request mode) or in the spec's Tasks section (local mode); reports the ready set and waits for "ship it". |
 | [implement](../skills/implement/SKILL.md) | "build it" | Implement an authorized change; no spec required for small clear work. |
 | [review](../skills/review/SKILL.md) | "check it against the spec" | Review against intent and root context on five axes: correctness, readability, architecture, security, performance. |
-| [ship](../skills/ship/SKILL.md) | "ship it" | Verify, commit, confirm, push, and check the deployment this repo configures, deferring to the platform's deploy skill. On a spec's task set, orchestrates every task on one branch and finishes by [delivery mode](../GLOSSARY.md#delivery-mode). |
+| [ship](../skills/ship/SKILL.md) | "ship it" | Verify, commit, confirm, push, and check the deployment this repo configures, deferring to the platform's deploy skill. On a spec's task set, runs tasks in [waves](../GLOSSARY.md#wave) on one branch, opens a draft pull request early in pull-request mode, posts a [checkpoint](../GLOSSARY.md#checkpoint) with a preview after each wave ([decision 0025](decisions/0025-wave-checkpoints.md)), and finishes by [delivery mode](../skills/ship/SKILL.md#delivery-mode). |
 | [retro](../skills/retro/SKILL.md) | "let's do a retro" | Retrospective on the agent environment after a session. |
 
 ## Shared language
@@ -89,7 +89,7 @@ Code simplification, security audits, and performance work belong to host tools 
 
 | Skill | Say | When to use |
 | --- | --- | --- |
-| [start](../skills/start/SKILL.md) | "start a Next.js project" | Confirm template, name, and destination, then initialize from flow-next or flow-mono (rename identity, setup/QA/build/startup checks, baseline root docs, Flow block, one independent initial commit when verification passes) while `explore` shapes the product. Not Flow Lite. |
+| [start](../skills/start/SKILL.md) | "start a Next.js project" | Confirm template, name, and destination, then initialize from flow-next or flow-mono (rename identity, setup/QA/build/startup checks, baseline root docs, Flow block, one independent initial commit when verification passes) while `explore` shapes the product at the confirmed process depth. "Set up Flow here" plus a template bootstrap. |
 
 ## Misc
 

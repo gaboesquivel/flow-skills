@@ -1,4 +1,4 @@
-# 0025 — Progress board skill
+# 0027 — Progress board skill
 
 Status: **Accepted** (2026-10-28). Grows the catalog under the rule in `PRODUCT.md` that further catalog growth needs its own decision. Related: [0020](0020-flow-mode.md) (delivery modes, `ship` task-set orchestration), [0022](0022-start-runs-explore.md) (candidate specs). Spec: [012](../specs/012-progress-board.md).
 

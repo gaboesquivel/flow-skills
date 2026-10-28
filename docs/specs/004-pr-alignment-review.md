@@ -9,7 +9,7 @@ Flow treats every bounded change — product, design, engineering, marketing, or
 ## Solution
 
 1. **Contract** — [docs/pr-review-contract.md](../pr-review-contract.md): one checklist any agent or CI can follow.
-2. **Deterministic checker** — [scripts/check-pr-alignment.mjs](../../scripts/check-pr-alignment.mjs): path and documentation rules on this repository's pull requests. CI compares `merge-base(base, head)` through `head`. The `main` branch ruleset requires that check, plus the `validate` matrix and `context-review` when secrets are set, and rejects direct pushes.
+2. **Deterministic checker** — [scripts/check-pr-alignment.mjs](../../scripts/check-pr-alignment.mjs): path and documentation rules on this repository's pull requests. CI compares `merge-base(base, head)` through `head`. The `main` branch ruleset requires that check, plus `validate (ubuntu-latest, 22)` ([spec 014](014-faster-pr-ci.md)) and `context-review` when secrets are set, and rejects direct pushes.
 3. **Judgment layer** — GitHub Actions job calling an OpenAI-compatible API with the contract, PR title, body, labels, and diff. The job fails when the diff cannot be read or the response has no `pass` or `fail` verdict. It is a required check on `main` when `FLOW_REVIEW_API_KEY` is configured.
 4. **Portable adoption** — Copy the contract and script into an adopter repository; wire their own CI and API secrets. Flow skills do not install workflows into consumer projects.
 

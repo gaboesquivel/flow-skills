@@ -4,11 +4,11 @@ description: Align the current project's PRODUCT.md, DESIGN.md, GLOSSARY.md, and
 disable-model-invocation: false
 ---
 
-# Flow Lite
+# Flow
 
 **Preserve intent** for the project you are in. Align its root context when work changes what that product is, how it behaves, how it is built, or how the team names important concepts.
 
-This skill is **not** a workflow router: it does not run explore → spec → build sequences or authorize implementation by itself. It is **not** project initialization.
+This skill runs no other skill and authorizes no implementation (decision 0024). It is **not** project initialization.
 
 ## Whose product
 
@@ -17,7 +17,7 @@ This skill is **not** a workflow router: it does not run explore → spec → bu
 
 Do not replace a project's product identity with Flow's tagline, mission, principles, or strategic chain.
 
-`flow start` and "start project" are not this skill. The optional `start` skill (decision 0010) initializes from flow-next or flow-mono when installed, and confirms template, name, and destination before writing. If someone asks to scaffold a repository without `start`, stop and do not create starter trees, instruction-file snippets, or a Flow-branded `PRODUCT.md`.
+`flow start` and "start project" are not this skill. The optional `start` skill (decision 0010) is this setup plus a template bootstrap from flow-next or flow-mono (decision 0026), and confirms template, name, and destination before writing. If someone asks to scaffold a repository without `start`, stop and do not create starter trees, instruction-file snippets, or a Flow-branded `PRODUCT.md`.
 
 ## Invocation
 
@@ -31,12 +31,15 @@ Hosts may match this skill when the user asks to update or sync the docs. That i
 
 ## Flow block
 
-"Set up Flow here" opts the project into Flow mode (decision 0020). This section is the one definition of the block; `start` writes the same block after a bootstrap. Run this skill's `lib/flow-block.mjs` with Node, passing the project's absolute path and optionally `local` or `pull-request`, or apply the same rules by hand:
+"Set up Flow here" opts the project into Flow mode (decision 0020). This section is the one definition of the block; `start` writes the same block after a bootstrap. Run this skill's `lib/flow-block.mjs` with Node, passing the project's absolute path, optionally `local` or `pull-request`, optionally `--deploy <target>`, and optionally `--process <lite|full>`, or apply the same rules by hand:
 
 - Target `AGENTS.md`, or `CLAUDE.md` when that is the only instruction file.
-- One block between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->`: a `Delivery:` line (`pull-request`, `local`, or `unset`), a short phrase-to-skill table, and a pointer to this skill. Under about 25 lines.
-- Re-running replaces the block in place and keeps the recorded `Delivery:` unless the user names a mode. Never touch text outside the markers; stop and report when markers are unmatched or repeated.
-- Leave `Delivery:` unset unless the user names a mode; `ship` infers and records it. Deleting the block opts out.
+- One block between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->`: a `Delivery:` line (`pull-request`, `local`, or `unset`), a `Deploy:` line after it (a lowercase platform name such as `vercel`, `netlify`, or `fly`; `none`; or `unset`), a `Process:` line (`lite`, `full`, or `unset`), a short phrase-to-skill table (`PHRASES` in the helper is its one source), and a pointer to this skill. Under about 25 lines.
+- Re-running replaces the block in place and keeps the recorded `Delivery:`, `Deploy:`, and `Process:` unless the user names a new value. Never touch text outside the markers; stop and report when markers are unmatched or repeated.
+- Leave `Delivery:` unset unless the user names a mode, and `Deploy:` unset unless the user names a target; `ship` owns both rules and records the values. Deleting the block opts out.
+- **Process depth** (decision 0026) is how much process the project wants. When the request does not name it, ask once before writing: **Lite** (recommended: brief, the first slice's spec, decisions inside specs) or **Full** (deeper discovery and a decision record for each choice among alternatives). Record the answer on `Process:`. `explore` reads it as its default depth; `to-spec` owns the spec–decision boundary.
+
+**Goals.** Setup defines the same goals as `start`. After writing the block, when `PRODUCT.md` is missing or has no brief (problem, who, riskiest assumption, main metric and kill criterion, core journeys), name `explore` at the recorded depth as the next step and wait.
 
 Report which file was written and show the block. When both `AGENTS.md` and `CLAUDE.md` exist and `CLAUDE.md` does not import `AGENTS.md`, say the block may be invisible to Claude Code and suggest adding an `@AGENTS.md` line to `CLAUDE.md`.
 
@@ -46,7 +49,7 @@ Report which file was written and show the block. When both `AGENTS.md` and `CLA
 - Do not require installation, initialization, or a prior skill invocation.
 - Do not treat alignment edits as permission to implement unrelated code. For authorized implementation and tests, invoke the `implement` skill when installed.
 - Do not create `docs/specs/` or `docs/decisions/` records here; use `to-spec` or explicit decision work when durable bounded artifacts are justified.
-- Suggest other skills (`to-spec`, `domain-modeling`, `review`, …) only when the user asks; no mandatory chain.
+- Name another skill (`to-spec`, `domain-modeling`, `review`, …) only when the user asks or setup finds no goals (see Flow block), then wait.
 
 ## Completion
 
