@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -87,7 +87,34 @@ test('CLI body and check agree, and check exits 1 on a hand edit', () => {
     assert.equal(edited.status, 1)
     assert.match(edited.stderr, /Edited by hand/u)
     assert.equal(spawnSync(process.execPath, [helper, 'nope'], { encoding: 'utf8' }).status, 2)
+    const missing = spawnSync(process.execPath, [helper, 'check', join(root, 'missing.md')], { encoding: 'utf8' })
+    assert.equal(missing.status, 2)
+    assert.match(missing.stderr, /Cannot read/u)
+    const outside = spawnSync(process.execPath, [helper, 'body', '../escape.md', args.repo, args.ref], { cwd: root, encoding: 'utf8' })
+    assert.equal(outside.status, 2)
+    assert.match(outside.stderr, /inside the repository root/u)
   } finally {
     rmSync(root, { recursive: true, force: true })
+  }
+})
+
+test('body rejects paths outside root or not Markdown, and malformed repo or ref', () => {
+  const root = fixture()
+  const outside = mkdtempSync(join(tmpdir(), 'spec-issue-outside-'))
+  try {
+    writeFileSync(join(outside, 'secret.md'), 'secret')
+    writeFileSync(join(root, 'notes.txt'), 'text')
+    symlinkSync(join(outside, 'secret.md'), join(root, 'docs', 'specs', 'link.md'))
+    const build = (overrides) => () => buildSpecIssueBody({ root, ...args, ...overrides })
+    for (const specPath of ['../x.md', join(outside, 'secret.md'), 'docs/specs/link.md', 'docs/../../x.md']) {
+      assert.throws(build({ specPath }), /inside the repository root|ENOENT/u, specPath)
+    }
+    assert.throws(build({ specPath: 'notes.txt' }), /\.md file/u)
+    for (const repo of ['o', 'o/r/x', 'o/r x', 'o/r)', 'https://github.com/o/r']) assert.throws(build({ repo }), /owner\/name/u, repo)
+    for (const ref of ['a b', 'a..b', '../x', 'feat/x)', 'a:b', '/x', 'x/', 'x.lock', 'a//b']) assert.throws(build({ ref }), /git branch name/u, ref)
+    assert.doesNotThrow(build({ ref: 'feat/001-example.v2' }))
+  } finally {
+    rmSync(root, { recursive: true, force: true })
+    rmSync(outside, { recursive: true, force: true })
   }
 })

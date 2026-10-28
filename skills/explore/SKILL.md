@@ -57,6 +57,6 @@ Report spec-ready when intent is confirmed, the riskiest assumption and kill cri
 
 Once spec-ready with a brief, name the next steps and wait for the user: `to-spec` for `docs/specs/NNN-short-name.md`, "accept the spec", then `to-tasks`.
 
-**New product specs.** Write only spec 001 in full: the first bet, with its tasks as the slices inside it (decision 0026). Spec 001 must test the riskiest assumption, ship the instrumentation for the main metric, and define its capability contract-first as `to-spec` describes, including an MCP tool when the brief names agent users. Write later bets as `candidate` stubs with `to-spec`; flesh them out only after spec 001 ships. In a new product, the brief, research, and specs ship with spec 001's implementation.
+**New product specs.** Write only spec 001 in full: the first bet, with its tasks as the slices inside it (decision 0026). Spec 001 must test the riskiest assumption, ship the instrumentation for the main metric, and define its capability contract-first as `to-spec` describes, including an MCP tool when the brief names agent users. Write later bets as `candidate` stubs with `to-spec`: in local mode as files; in pull-request mode, offer to open them as `candidate` issues, opened only on a yes, and otherwise name them in the report. Flesh them out only after spec 001 ships. In a new product, the brief, research, and specs ship with spec 001's implementation.
 
 Discussion and exploration do not authorize implementation.

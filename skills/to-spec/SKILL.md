@@ -1,6 +1,6 @@
 ---
 name: to-spec
-description: Turn the current conversation into a numbered draft specification using project conventions, and accept it when approved. Use when the user says "spec it", "write a spec", "turn this into a spec", or "accept the spec".
+description: Turn the current conversation into a numbered draft specification using project conventions, and accept it when approved. Use when the user says "spec it", "write a spec", "turn this into a spec", "share the draft", or "accept the spec".
 disable-model-invocation: false
 ---
 
@@ -20,18 +20,18 @@ Specs may cover product, research, marketing, engineering, operations, or cross-
 
 A spec's `Status:` line follows `candidate → draft → accepted → implemented` (decision 0028). `to-spec` writes `candidate` and `draft`, and owns acceptance; `build` sets `implemented` on an accepted spec once its last task integrates, and `ship` sets it if still missing. In pull-request mode the spec issue's label (`candidate`, `draft`, `accepted`) carries the same state once the issue exists (decisions 0029, 0035).
 
-**Accept the spec.** When the user approves a spec for delivery ("accept the spec"), set its status to `accepted` with the date, and set the status of each decision record it links from **Proposed** to **Accepted** with the date, in the project's decision format, in the same step, and commit; in pull-request mode, also open the spec issue labelled `accepted`, or relabel a shared draft's issue, as Spec issue describes. Writing a draft, reaching spec-ready, or a request to write a spec is not acceptance. An `accepted` label a maintainer added is acceptance: when `to-spec` touches a spec whose label is ahead of its file, write the file status (and linked decisions) to match. A `candidate` must become a full draft before it can be accepted. A spec without an acceptance scenario (see Testing Decisions) is not accepted: name what is missing and leave it in `draft`. Changing an accepted spec's scope or a decision it links returns the spec to `draft`, and the label with it. Report the files changed.
+**Accept the spec.** When the user approves a spec for delivery ("accept the spec"), set its status to `accepted` with the date, and set the status of each decision record it links from **Proposed** to **Accepted** with the date, in the project's decision format, in the same step, and commit; in pull-request mode, also open the spec issue labelled `accepted`, or relabel a shared draft's issue, as Spec issue describes. Writing a draft, reaching spec-ready, or a request to write a spec is not acceptance. An `accepted` label a maintainer added is acceptance: when `to-spec` touches a spec whose label is ahead of its file, write the file status (and linked decisions) to match. A `candidate` must become a full draft before it can be accepted. A spec without an acceptance scenario (see Testing Decisions) or an **Exposure** line (see Implementation Decisions) is not accepted: name what is missing and leave it in `draft`. Changing an accepted spec's scope or a decision it links returns the spec to `draft`, and the label with it. Report the files changed.
 
 ## Spec issue
 
 Pull-request mode only (the `Delivery:` line in the project's Flow block); local mode keeps files only. When the mode is unset or there is no block, ask before opening any issue, as `build`'s Delivery mode section describes; a request that names a mode answers it.
 
 - **"Spec it" publishes nothing** (decision 0035). It writes and commits the draft on the spec branch; it does not push or open an issue.
-- **Open at acceptance.** "Accept the spec" pushes the branch, then opens the spec issue labelled `accepted`, or reuses the `candidate`, shared-draft, or feature-request issue the spec fleshes out and relabels it. Write `Issue: #N`, linked to the issue, beside `Status:`, commit and push, then sync the body. Acceptance is the yes; on a public repository, say the issue is public.
-- **Share the draft.** Only when the user asks ("share the draft"), push the branch and open the issue early, labelled `draft`, the same way; acceptance relabels it `accepted`.
+- **Open at acceptance.** "Accept the spec" pushes the branch, then opens the spec issue labelled `accepted`, or reuses the `candidate`, shared-draft, or feature-request issue the spec fleshes out and relabels it. Write `Issue: #N`, linked to the issue, beside `Status:`, commit and push, then sync the body. Acceptance is the yes; on a public repository, say that the branch (with the brief and any research) and the issue become public.
+- **Share the draft.** Only when the user asks ("share the draft"), push the branch and open the issue early, labelled `draft`, the same way, with the same public-repository notice; acceptance relabels it `accepted`.
 - **Labels.** Create `candidate`, `draft`, and `accepted` on first use. A spec carries exactly one.
 - **Body.** A one-way copy of the file with a hash marker, built by [`lib/spec-issue.mjs`](lib/spec-issue.mjs): from the repository root, `node <skill-dir>/lib/spec-issue.mjs body <spec-path> <owner/repo> <branch>` prints it. Never hand-build or hand-hash a body.
-- **Sync** after every change to the file. First save the issue's current body and run `node <skill-dir>/lib/spec-issue.mjs check <body-file>`; exit 1 means the body was edited by hand (a body this run did not just open with no marker counts too): stop, show the difference from the file's copy, and ask before overwriting. Carry wanted edits into the file instead. On exit 0, replace the body with fresh `body` output.
+- **Sync** after every change to the file. First save the issue's current body and run `node <skill-dir>/lib/spec-issue.mjs check <body-file>`; exit 1 means the body was edited by hand (a body with no marker counts as hand-edited unless this run just opened it): stop, show the difference from the file's copy, and ask before overwriting. Carry wanted edits into the file instead. On exit 0, replace the body with fresh `body` output.
 - Without GitHub access, write the file, say the issue was not opened, and stop there.
 
 ## Process
