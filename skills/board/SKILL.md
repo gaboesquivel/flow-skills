@@ -32,7 +32,7 @@ When the user wants progress in chat rather than a page, run `--json` and summar
 
 A card shows the spec number, title, task progress (`done/total`, from `- [x] NN: Title (#45)` checklist items or `### NN: Title (#45)` headings in the Tasks section), and the branch that set its stage.
 
-**Pull-request mode** is every project whose Flow block does not say `Delivery: local` (an unset `Delivery` counts as pull-request). In this mode an open spec branch alone is not Building: it counts only when it changes something outside `docs/`. Otherwise a ticked task or a live `build` run moves the card; a draft stays in Specced, an accepted spec with tasks in Ready. This rule follows the delivery mode alone, so it holds without GitHub data and with `--no-github`.
+**Pull-request mode** is every project whose Flow block does not say `Delivery: local` (an unset `Delivery` counts as pull-request, except in a repository with no remote, which counts as local). In this mode an open spec branch alone is not Building: it counts only when it changes something outside `docs/`. Otherwise a ticked task or a live `build` run moves the card; a draft stays in Specced, an accepted spec with tasks in Ready. This rule follows the delivery mode alone, so it holds without GitHub data and with `--no-github`.
 
 **GitHub links** (pull-request mode, when `gh` is installed and authenticated): cards also link the spec issue from the header's `Issue:` line, the task issues, and the pull request (head branch matches the slug, or its body closes the spec issue or a task issue), with each state in text. With GitHub data:
 

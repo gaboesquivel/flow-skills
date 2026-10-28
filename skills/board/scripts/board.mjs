@@ -165,7 +165,9 @@ export function readSnapshot(repoRoot, { github = null } = {}) {
   const { overlay, overlayError } = readOverlay(overlayPath(repoRoot))
   const runBranch = typeof overlay?.run?.branch === 'string' ? overlay.run.branch : null
   const claimed = (name) => slugs.some((slug) => matchBranches(slug, [{ name }]).length) || (runBranch !== null && branchNamed(name, runBranch))
+  // An unset Delivery line reads as pull-request mode, except in a repository with no remote, where nothing can open one.
   const delivery = readDelivery(readBlobs(repoRoot, ['AGENTS.md', 'CLAUDE.md'].map((file) => `${defaultRef}:${file}`)))
+    ?? (tryGit(repoRoot, ['remote']) ? null : 'local')
   let githubData = null
   if (github && delivery !== 'local') {
     githubData = github(repoRoot) ?? null
@@ -1127,27 +1129,27 @@ async function stopServer(repoRoot, port) {
 
 /**
  * Resolves to the exit code; with `--serve`, once the server stops on SIGINT or SIGTERM.
- * `lockWaitMs` overrides the record lock wait (tests); the CLI always uses LOCK_WAIT_MS.
+ * `lockWaitMs` overrides the record lock wait and `error` the error reporter (tests); the CLI uses LOCK_WAIT_MS and stderr.
  */
-export async function main(argv = process.argv.slice(2), { lockWaitMs } = {}) {
+export async function main(argv = process.argv.slice(2), { lockWaitMs, error: report = console.error } = {}) {
   const usage = 'Usage: board.mjs --serve [--port <n>] [--repo <path>] [--no-github] | --stop [--port <n>] [--repo <path>] | --once [--out <file>] [--repo <path>] [--no-github] | --json [--repo <path>] [--no-github]'
     + ' | --record run-start --spec <NNN> --branch <name> --mode local|pull-request --tasks <01,02> | --record task --task <NN[,NN…]> --state <state> [--round <n>] [--note <text>] | --record run-end'
   let args
-  try { args = parseArgs(argv) } catch (error) { console.error(`${error.message}\n${usage}`); return 2 }
-  if (!args.once && !args.json && !args.serve && !args.stop && args.record === null) { console.error(usage); return 2 }
+  try { args = parseArgs(argv) } catch (error) { report(`${error.message}\n${usage}`); return 2 }
+  if (!args.once && !args.json && !args.serve && !args.stop && args.record === null) { report(usage); return 2 }
   const repoRoot = tryGit(resolve(args.repo), ['rev-parse', '--show-toplevel'])
-  if (!repoRoot) { console.error(`Not inside a git repository: ${args.repo}`); return 1 }
+  if (!repoRoot) { report(`Not inside a git repository: ${args.repo}`); return 1 }
   if (args.record !== null) {
     const { tasks, ...fields } = args.fields
     try {
       console.log(record(repoRoot, args.record, { ...fields, ...(tasks === undefined ? {} : { tasks: tasks.split(',').map((t) => t.trim()).filter(Boolean) }) }, lockWaitMs === undefined ? undefined : { waitMs: lockWaitMs }))
       return 0
-    } catch (error) { console.error(error.message); return 1 }
+    } catch (error) { report(error.message); return 1 }
   }
   if (args.serve) return serve(repoRoot, args.port, args.github ? githubSource({ ttlMs: GITHUB_TTL_MS }) : null)
   if (args.stop) return stopServer(repoRoot, args.port)
   let board
-  try { board = deriveBoard(readSnapshot(repoRoot, { github: args.github ? githubReader() : null })) } catch (error) { console.error(error.message); return 1 }
+  try { board = deriveBoard(readSnapshot(repoRoot, { github: args.github ? githubReader() : null })) } catch (error) { report(error.message); return 1 }
   if (args.json) console.log(JSON.stringify(board, null, 2))
   if (args.once) {
     const out = args.out ? (isAbsolute(args.out) ? args.out : resolve(args.out)) : defaultOutPath(repoRoot)
