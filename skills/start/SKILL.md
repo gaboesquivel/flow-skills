@@ -31,14 +31,14 @@ Derive identity with `deriveProjectIdentity` from `lib/identity.mjs`: slug, `pac
 
 ## Confirm before writing
 
-A spoken request can be misheard, so write nothing until the user agrees. State the template, project name (with slug and host), destination, any GitHub repository to create with its visibility, the process depth, the delivery mode, the Flow block it will write, and the hand-off to `explore` at that depth, then wait for an explicit yes. Anything else is not a yes; correct and restate.
+A spoken request can be misheard, so write nothing until the user agrees. State the template, project name (with slug and host), destination, any GitHub repository to create with its visibility, the discovery depth, the delivery, the Flow block it will write, and the hand-off to `explore` at that depth, then wait for an explicit yes. Anything else is not a yes; correct and restate.
 
 ## Run two lanes
 
 After the yes:
 
 - **Bootstrap lane.** A worker runs every section from "Obtain template" through "Initial commit" below, in the order under "Bootstrap order", and reports the completion facts.
-- **Explore lane.** The main session hands the conversation to `explore` as a new-product run at the confirmed process depth, using the user's description as its first input. Explore drafts in conversation and writes nothing until the bootstrap lane reports its initial commit.
+- **Explore lane.** The main session hands the conversation to `explore` as a new-product run at the confirmed discovery depth, using the user's description as its first input. Explore drafts in conversation and writes nothing until the bootstrap lane reports its initial commit.
 
 When the host has no independent workers, run the bootstrap first, then `explore`, and say so. When `explore` is not installed, finish the bootstrap and suggest exploring next.
 
