@@ -50,11 +50,11 @@ A developer who says "ship it" is asked to confirm twice after deciding. A devel
 
 ## Tasks
 
-Proposed; published as issues with `to-tasks` after a yes:
+Recorded as GitHub issues (pull-request mode):
 
-1. Rename `implement` to `build`: skill directory, adapter, validate list, phrase table, tests, links.
-2. `build` delivers a pull request with green checks, and owns Delivery mode, Task set, and board recording moved from `ship` (blocked by 1).
-3. Spec drafts and acceptance: `to-spec` writes draft specs and Proposed decisions and links them, and sets `accepted`; the board recognizes `accepted`.
-4. Retire `Deploy:`: `flow-block.mjs`, the `flow` skill, tests, glossary (blocked by 2).
-5. `ship` full cycle: acceptance precondition, hotfix guard, adversarial review, merge, sync; gates removed; `review` accepts ship's authorization (blocked by 2, 3).
-6. `to-tasks` hand-off to "build it" and docs alignment: `docs/skills.md`, `PRODUCT.md`, `GLOSSARY.md`, the README diagram, methodology, agent compatibility, evals, the decisions and specs indexes, and status lines of amended decisions (blocked by 2–5).
+- [ ] [#72](https://github.com/gaboesquivel/flow-skills/issues/72) Rename `implement` to `build`.
+- [ ] [#74](https://github.com/gaboesquivel/flow-skills/issues/74) `build` delivers a pull request with green checks (blocked by #72).
+- [ ] [#73](https://github.com/gaboesquivel/flow-skills/issues/73) Spec drafts and acceptance.
+- [ ] [#75](https://github.com/gaboesquivel/flow-skills/issues/75) Retire the `Deploy:` line (blocked by #74).
+- [ ] [#76](https://github.com/gaboesquivel/flow-skills/issues/76) `ship` runs the full cycle (blocked by #74, #73).
+- [ ] [#77](https://github.com/gaboesquivel/flow-skills/issues/77) Hand-off and docs alignment (blocked by #73–#76).
