@@ -28,7 +28,19 @@ A portable `skills/<name>/SKILL.md` package in the Flow Skills distribution. Use
 
 ## Delivery mode
 
-How `ship` lands a spec's work in a project: **local** (a reviewed spec branch merged into local `main` with `--no-ff` and pushed, tasks as checkboxes in the spec) or **pull request** (one GitHub pull request closing the task issues). Recorded as a `Delivery:` line in the project's Flow block. Distinct from Flow Lite and from explore's depth tiers. [Decision 0020](docs/decisions/0020-flow-mode.md).
+How `ship` lands a spec's work in a project: **local** (a reviewed spec branch merged into local `main` with `--no-ff` and pushed, tasks as checkboxes in the spec) or **pull request** (one GitHub pull request closing the task issues). Recorded as a `Delivery:` line in the project's Flow block. Distinct from Flow Lite and from explore's depth tiers. The [deploy target](#deploy-target) sits beside it on a `Deploy:` line. [Decision 0020](docs/decisions/0020-flow-mode.md).
+
+## Deploy target
+
+The platform that builds previews and deployments for a project, such as `vercel`, or `none`. Recorded as a `Deploy:` line in the project's Flow block; `ship` infers it from repository configuration when unset and defers deploy steps to the platform's own skill or CLI. [Decision 0024](docs/decisions/0024-wave-checkpoints.md).
+
+## Wave
+
+The tasks of a spec's task set that are ready when `ship` starts them; a wave ends when each has integrated, failed, or been blocked. Its combined change gets one five-axis review and one [checkpoint](#checkpoint). [Decision 0024](docs/decisions/0024-wave-checkpoints.md).
+
+## Checkpoint
+
+The report `ship` posts after each [wave](#wave): what integrated or failed, checks, the commit, the preview from the [deploy target](#deploy-target), and screenshots when the host has a browser tool. A pull request comment in pull-request mode, a message in local mode; by default the next wave waits for the user's go. [Decision 0024](docs/decisions/0024-wave-checkpoints.md).
 
 ## Candidate spec
 
