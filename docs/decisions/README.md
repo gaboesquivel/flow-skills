@@ -41,7 +41,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0035-spec-issue-on-acceptance.md](0035-spec-issue-on-acceptance.md) | Accepted | "Spec it" publishes nothing; the spec issue opens at "accept the spec", or early on "share the draft" |
 | [0036-one-explore-depth.md](0036-one-explore-depth.md) | Accepted | One `explore` depth with a pre-mortem; `competitors` and `jtbd` on request; setup asks only for delivery |
 | [0037-git-for-delivery-github-for-github-mode.md](0037-git-for-delivery-github-for-github-mode.md) | Accepted | Thinking skills need nothing, the delivery chain needs Git, GitHub mode needs GitHub; no repository offers `git init`; `Delivery: github` or `local` |
-| [0038-direction-changes-are-confirmed-and-recorded.md](0038-direction-changes-are-confirmed-and-recorded.md) | Proposed | A goal that contradicts an accepted decision, spec, or `PRODUCT.md` fact stops for a yes; new record on the yes, back-links on Status lines at acceptance |
+| [0038-direction-changes-are-confirmed-and-recorded.md](0038-direction-changes-are-confirmed-and-recorded.md) | Accepted | A goal that contradicts an accepted decision, spec, or `PRODUCT.md` fact stops for a yes; new record on the yes, back-links on Status lines at acceptance |
 
 ## Rules
 

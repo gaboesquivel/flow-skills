@@ -1,6 +1,6 @@
 # 024: Direction-change gate
 
-Status: draft (2026-10-28). Decisions: [0038](../decisions/0038-direction-changes-are-confirmed-and-recorded.md) (Proposed). Builds on [decision 0036](../decisions/0036-one-explore-depth.md) (explore's background readers).
+Status: accepted (2026-10-28). Decisions: [0038](../decisions/0038-direction-changes-are-confirmed-and-recorded.md) (Accepted). Builds on [decision 0036](../decisions/0036-one-explore-depth.md) (explore's background readers).
 
 ## Problem Statement
 
