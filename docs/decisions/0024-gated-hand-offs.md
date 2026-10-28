@@ -9,7 +9,7 @@ Status: **Accepted** (2026-10-28). Amends [0019](0019-voice-first-invocation.md)
 ## Decision
 
 - A skill may name the next skill and wait. The only automatic hand-offs are `start` → `explore` and, inside `explore`, its `interview` and `grill` phases. Each runs behind the user's own yes.
-- Writing a spec, publishing task records, and merging into or pushing `main` each require an explicit yes to the shown content. A plan yes never authorizes a merge.
+- Writing a spec, publishing task records, and merging into or pushing `main` each require an explicit yes to the shown content. A plan yes never authorizes a merge into `main`.
 - `ship` keeps one confirmation for the run plan and adds a final gate before merging into or pushing `main`, showing the diff summary, checks, and commit SHA.
 - `start` hands off to `explore` at Lite depth unless the user asks for more.
 

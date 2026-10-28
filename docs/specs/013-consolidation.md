@@ -1,6 +1,6 @@
 # 013: Consolidation after Flow mode
 
-Status: draft (2026-10-28). Decision: [0024](../decisions/0024-gated-hand-offs.md). Evidence: [adversarial review and live runs](../../tests/smoke/2026-10-28-flow-mode-live.md).
+Status: implemented (2026-10-28). Decision: [0024](../decisions/0024-gated-hand-offs.md). Evidence: [adversarial review and live runs](../../tests/smoke/2026-10-28-flow-mode-live.md).
 
 ## Problem Statement
 
@@ -12,7 +12,7 @@ Specs 009–011 shipped in one day and made every skill speakable. An adversaria
 2. **Name the hand-offs.** Skills may hand off to the next skill only by naming it and waiting for the user, except the documented hand-offs (`start` → `explore`, `explore` → `interview` → `grill`), each behind its own yes. Docs that say skills never chain say this instead.
 3. **One home per rule.** The delivery-mode rule lives in `ship`; the phrase table lives in the `flow` block helper and is checked against skill descriptions by a test; the autonomous-mode note lives in `ship` and `explore` points to it. Other documents link.
 4. **Lighter defaults.** `start` hands off to explore at Lite depth unless the user asks for more. Skill text shrinks where rules were duplicated.
-5. **Honest evidence.** Record today's live runs. Spec 009's task-set dogfood is this spec's own delivery. Smoke contracts cover safety gates and defining behavior, not every sentence.
+5. **Honest evidence.** Record today's live runs. Spec 009's task-set dogfood is this spec's own delivery. Every gate sentence has a smoke contract, confirmed by mutation checks; trimming contracts for non-gate wording is deferred.
 6. **Template fix.** flow-next tracks `AGENTS.md` (Next.js upserts its own block and keeps other content), so the Flow block is committed.
 
 ## Testing Decisions
@@ -29,4 +29,4 @@ Specs 009–011 shipped in one day and made every skill speakable. An adversaria
 
 ## Tasks
 
-Recorded as GitHub issues (pull-request mode; this repository's `main` requires pull requests).
+Recorded as GitHub issues (pull-request mode; this repository's `main` requires pull requests): #56 gates in skills, #57 one home per rule and named hand-offs, #58 contracts and statuses (blocked by #56 and #57). Template fix: gaboesquivel/flow-next#5.

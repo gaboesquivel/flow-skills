@@ -98,9 +98,9 @@ Do not amend or rewrite unrelated commits.
 
 ## Push
 
-**Plan confirmation.** Before the first push, or before any task-set work, state the branch, remote, commit SHA when one exists, a one-line summary, the delivery mode, the merge plan (in local mode, the merge into and push of `main`), and side effects: task records to create, and the `Delivery:` line to record with the commit that carries it. Wait for an explicit yes. Silence or an ambiguous reply is not a yes. One explicit yes covers the run's pushes on that branch.
+**Plan confirmation.** Before the first push, or before any task-set work, state the branch, remote, the work commit's SHA when one exists, a one-line summary, the delivery mode, the pull request and merge plan (in local mode, the merge into and push of `main`), and side effects: titles of task records to create, and the `Delivery:` line, recorded in its own commit on top. Wait for an explicit yes. Silence or an ambiguous reply is not a yes. One explicit yes covers the run's pushes on that branch, except `main` (see Main gate).
 
-**Main gate.** Before merging into or pushing `main`, show the diff summary, checks, and commit SHA, then wait for another explicit yes. A plan yes never authorizes a merge.
+**Main gate.** Before merging into or pushing `main`, show the diff summary, checks, and commit SHA, then wait for another explicit yes. A plan yes never authorizes a merge into `main`.
 
 Push the authorized current branch to its intended remote.
 
@@ -108,11 +108,11 @@ Respect branch protection.
 
 Never force-push, or delete or rewrite remote branches.
 
-Do not promote to production through a separate manual operation unless explicitly authorized.
+Do not promote to production or roll back through a separate manual operation unless explicitly authorized.
 
 If the remote cannot be safely determined, stop and report the required decision.
 
-In pull-request mode, open one pull request with a Conventional Commits title and a `Closes #N` line per task issue. Merge only when checks pass and the main gate is passed; then fast-forward local `main` from the remote. Update the branch from `main` only when the pull request is behind or conflicts. Local mode finishes as described under Delivery mode.
+In pull-request mode, open one pull request with a Conventional Commits title and a `Closes #N` line per task issue. Merge only when checks pass and the main gate is passed; then fast-forward local `main` from the remote (no further yes). Update the branch from `main` only when the pull request is behind or conflicts. Local mode finishes as described under Delivery mode.
 
 ## Deploy
 

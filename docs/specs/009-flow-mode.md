@@ -58,7 +58,7 @@ Slash commands keep working unchanged. `/ship` without a task set ships the curr
 **Blocked by:** None (speakable skills landed in 0019).
 - [x] Ready-set computation, cycle check, concurrency limit, bounded fix rounds, sequential fallback.
 - [x] Gates, merge authority, and push confirmation as decided in 0021.
-- [ ] Dogfood run on a three-task set with one blocking edge in this repository.
+- [x] Dogfood run on a three-task set with blocking edges in this repository: [spec 013](013-consolidation.md) (#56 and #57 in parallel worktrees, #58 blocked by both), pull-request mode.
 
 ### 07: Local delivery mode
 **What to build:** "ship it" in local mode lands a spec's tasks through a reviewed spec branch merged into local `main` and pushed, with tasks ticked in the spec.
