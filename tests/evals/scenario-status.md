@@ -30,5 +30,6 @@
 | E26 | ship | passed | not_executed | not_executed | not_executed |
 | E27 | ship | passed | not_executed | not_executed | not_executed |
 | E28 | ship | passed | not_executed | not_executed | not_executed |
+| E29 | to-spec | not_executed | not_executed | not_executed | not_executed |
 
 Live column: [2026-10-27-cursor-live.md](records/2026-10-27-cursor-live.md) (E03, E07, E08). Structural and fixture columns reflect `pnpm test` and `pnpm eval:check`. Second host still open.

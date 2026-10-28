@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict'
 import { execFileSync, spawn, spawnSync } from 'node:child_process'
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, realpathSync, renameSync, rmSync, utimesSync, writeFileSync } from 'node:fs'
+import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, realpathSync, renameSync, rmSync, utimesSync, writeFileSync } from 'node:fs'
 import http from 'node:http'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import test from 'node:test'
+import test, { describe } from 'node:test'
 import vm from 'node:vm'
 import { readDelivery as flowReadDelivery } from '../skills/flow/lib/flow-block.mjs'
-import { countTasks, deriveBoard, escapeHtml, fetchGithub, githubReader, githubSource, LIVE_SCRIPT, overlayPath, parseGithubRemote, parseTasks, readDelivery, parseStatus, readSnapshot, record, recordRunEnd, recordRunStart, recordTask, renderHtml, startServer } from '../skills/board/scripts/board.mjs'
+import { countTasks, deriveBoard, main, escapeHtml, fetchGithub, githubReader, githubSource, LIVE_SCRIPT, overlayPath, parseGithubRemote, parseTasks, readDelivery, parseStatus, readSnapshot, record, recordRunEnd, recordRunStart, recordTask, renderHtml, startServer } from '../skills/board/scripts/board.mjs'
 
 const script = join(import.meta.dirname, '../skills/board/scripts/board.mjs')
 
@@ -19,6 +19,8 @@ const NOW = '2026-10-28T12:00:00.000Z'
 const minutesBefore = (minutes) => new Date(Date.parse(NOW) - minutes * 60_000).toISOString()
 const overlayOf = (specNumber, tasks, run = {}) => ({ version: 1, run: { spec: specNumber, branch: 'feat/run-branch', mode: 'local', startedAt: minutesBefore(5), endedAt: null, ...run }, tasks })
 
+// Every test uses its own temporary repository, port, and stubs, so async tests (servers, spawned CLIs) overlap.
+describe('board', { concurrency: true }, () => {
 test('board has five columns in stage order', () => {
   const board = deriveBoard(snapshot({}))
   assert.deepEqual(board.columns.map((column) => column.title), ['Candidate', 'Specced', 'Ready', 'Building', 'Shipped'])
@@ -81,9 +83,9 @@ test('task counting: checkboxes, or ### headings with Status done or all boxes c
   assert.deepEqual(countTasks('# X\n\nno tasks\n'), { done: 0, total: 0 })
 })
 
-test('unmerged branch whose last segment contains the slug is Building', () => {
+test('local mode: unmerged branch whose last segment contains the slug is Building', () => {
   const branches = [{ name: 'feat/progress-board', remote: false, merged: false }, { name: 'feat/other', remote: false, merged: false }]
-  const board = deriveBoard(snapshot({ '012-progress-board.md': spec('012: Progress board', 'draft') }, branches))
+  const board = deriveBoard({ ...snapshot({ '012-progress-board.md': spec('012: Progress board', 'draft') }, branches), delivery: 'local' })
   assert.equal(stageOf(board, '012'), 'building')
   assert.equal(cardOf(board, '012').branch, 'feat/progress-board')
 })
@@ -104,9 +106,8 @@ function makeRepo() {
   const dir = mkdtempSync(join(tmpdir(), 'board-git-'))
   const git = (...args) => execFileSync('git', args, { cwd: dir, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
   git('init', '--quiet', '--initial-branch=main')
-  git('config', 'user.email', 'board@test.invalid')
-  git('config', 'user.name', 'Board Test')
-  git('config', 'commit.gpgsign', 'false')
+  // Written directly: three fewer git processes per fixture repository.
+  appendFileSync(join(dir, '.git', 'config'), '[user]\n\temail = board@test.invalid\n\tname = Board Test\n[commit]\n\tgpgsign = false\n')
   const write = (file, content) => { mkdirSync(join(dir, 'docs/specs'), { recursive: true }); writeFileSync(join(dir, 'docs/specs', file), content) }
   const commit = (message) => { git('add', '-A'); git('commit', '--quiet', '-m', message) }
   return { dir, git, write, commit }
@@ -206,7 +207,8 @@ test('empty branch cut from an older default commit is not merged', () => withRe
   commit('main moves on')
   const snap = readSnapshot(dir)
   assert.equal(snap.branches.find((b) => b.name === 'feat/old-branch').merged, false)
-  assert.equal(stageOf(deriveBoard(snap), '001'), 'building')
+  assert.equal(stageOf(deriveBoard({ ...snap, delivery: 'local' }), '001'), 'building', 'local mode counts the open branch')
+  assert.equal(stageOf(deriveBoard(snap), '001'), 'specced', 'unset delivery is pull-request mode: no implementation work')
 }))
 
 test('merged branch ships only when tasks are done; card branch is the one the rule used', () => withRepo(({ dir, git, write, commit }) => {
@@ -410,7 +412,7 @@ test('live server: /state JSON, page, memo window, new commits, git failure, hos
     const board = await res.json()
     assert.deepEqual(board.columns.map((column) => column.id), ['candidate', 'specced', 'ready', 'building', 'shipped'])
     assert.equal(board.defaultBranch, 'main')
-    assert.deepEqual(Object.keys(cardOf(board, '001')).sort(), ['branch', 'issues', 'marker', 'number', 'pr', 'reason', 'run', 'slug', 'source', 'status', 'tasks', 'title'])
+    assert.deepEqual(Object.keys(cardOf(board, '001')).sort(), ['branch', 'issue', 'issues', 'marker', 'number', 'pr', 'reason', 'run', 'slug', 'source', 'status', 'tasks', 'title'])
 
     const html = await (await fetch(memoized.url)).text()
     assert.match(html, /<h2>Specced <span class="count">1<\/span>/u)
@@ -484,14 +486,14 @@ test('live client renders the same columns and cards as renderHtml', async () =>
   const branches = [{ name: 'feat/building', remote: false, merged: false }]
   const board = deriveBoard({
     ...snapshot({
-      '001-building.md': spec('001: Building <&"\'>', 'draft', '\n## Tasks\n\n### 01: A (#4)\n- [x] a\n\n### 02: B <i> (#5)\n- [ ] b\n'),
+      '001-building.md': spec('001: Building <&"\'>', 'draft', '\n## Tasks\n\n### 01: A (#4)\n- [x] a\n\n### 02: B <i> (#5)\n- [ ] b\n').replace('(2026-10-28).', '(2026-10-28). Issue: [#3](https://github.com/o/r/issues/3).'),
       '002-odd.md': spec('002: Odd', 'proposed'),
       '003-done.md': spec('003: Done', 'implemented'),
     }, branches),
     github: {
       available: true,
       prs: [{ number: 9, state: 'OPEN', headRefName: 'feat/building', baseRefName: 'main', url: 'https://github.com/o/r/pull/9?a=1&b="2"', body: '' }],
-      issues: [{ number: 4, state: 'CLOSED', url: 'https://github.com/o/r/issues/4' }, { number: 5, state: 'OPEN', url: 'javascript:alert(1)' }],
+      issues: [{ number: 3, state: 'OPEN', url: 'https://github.com/o/r/issues/3' }, { number: 4, state: 'CLOSED', url: 'https://github.com/o/r/issues/4' }, { number: 5, state: 'OPEN', url: 'javascript:alert(1)' }, { number: 7, title: 'Idea <b>', state: 'OPEN', labels: [{ name: 'candidate' }], url: 'https://github.com/o/r/issues/7' }],
     },
     overlay: overlayOf('001', {
       '01': { state: 'working', round: 1, note: '', updatedAt: NOW },
@@ -502,6 +504,8 @@ test('live client renders the same columns and cards as renderHtml', async () =>
     generatedAt: NOW,
   })
   assert.equal(cardOf(board, '001').issues.length, 2, 'fixture exercises links')
+  assert.equal(cardOf(board, '001').issue.number, 3, 'fixture exercises the spec issue link')
+  assert.equal(cardOf(board, '#7').title, 'Idea <b>', 'fixture exercises a candidate issue card')
   assert.deepEqual(cardOf(board, '001').run.tasks.map((t) => [t.state, t.title, t.round, t.note]), [['integrated', 'A', 1, ''], ['fixing', 'B <i>', 2, 'tests <fail> & "retry"'], ['unknown', null, null, '']], 'fixture exercises the run list')
   const { main, sub, note, banner } = await runClient(jsonResponse(board))
   assert.equal(main.innerHTML, /<main>([\s\S]*)<\/main>/u.exec(renderHtml(board))[1])
@@ -542,7 +546,7 @@ test('GitHub data: task heading issues and the matching pull request become card
 })
 
 test('GitHub data: a merged pull request ships a done spec git still shows as unmerged, never a candidate or open tasks', () => {
-  const branches = [{ name: 'feat/widget', remote: false, merged: false }, { name: 'feat/idea', remote: false, merged: false }, { name: 'feat/half', remote: false, merged: false }]
+  const branches = ['feat/widget', 'feat/idea', 'feat/half'].map((name) => ({ name, remote: false, merged: false, implementation: true }))
   const merged = (number, head, implementation = true, base = 'main') => ({ number, state: 'MERGED', headRefName: head, baseRefName: base, url: `https://github.com/o/r/pull/${number}`, body: '', implementation })
   const board = deriveBoard({
     ...snapshot({
@@ -822,22 +826,27 @@ test('--no-github never runs gh', () => withRepo(({ dir, git, write, commit }) =
   assert.equal(existsSync(marker), true, 'fake gh is on PATH')
 }))
 
-test('live server never waits on a slow gh; links appear after the refresh resolves', async () => {
+test('live server never waits on a slow gh; links appear after the refresh resolves', { timeout: 10_000 }, async () => {
   const { dir, git, write, commit } = makeRepo()
   write('020-widget.md', spec('020: Widget', 'draft', '\n## Tasks\n\n### 01: One (#45)\n- [ ] a\n'))
   commit('spec')
   git('remote', 'add', 'origin', 'https://github.com/o/r.git')
+  // gh stays pending until released: a server that waited on it would never answer before the release.
+  let release
+  const gate = new Promise((done) => { release = done })
+  let pendingCalls = 0
   const run = async (args) => {
-    await new Promise((done) => setTimeout(done, 1500))
+    pendingCalls++
+    await gate
     return args[0] === 'issue' ? '[{"number":45,"state":"OPEN","url":"https://github.com/o/r/issues/45"}]' : '[]'
   }
   const source = githubSource({ run, ttlMs: 60_000 })
-  const started = Date.now()
   const live = await startServer({ repoRoot: dir, port: 0, memoMs: 0, github: source })
   try {
     const before = await getState(live.url)
-    assert.ok(Date.now() - started < 1000, `state answered in ${Date.now() - started} ms`)
+    assert.ok(pendingCalls > 0, 'gh refresh started and is still pending')
     assert.deepEqual(cardOf(before, '020').issues, [])
+    release()
     await source.refresh(dir)
     assert.deepEqual(cardOf(await getState(live.url), '020').issues.map((issue) => issue.number), [45])
   } finally {
@@ -1027,9 +1036,7 @@ test('recorder: parallel records all land; a held lock times out; a stale lock i
 
     writeFileSync(`${path}.lock`, '')
     assert.throws(() => record(dir, 'task', { task: '01', state: 'failed' }, { waitMs: 100 }), /locked by another record/u)
-    const timedOut = spawnSync(process.execPath, [script, '--record', 'task', '--task', '01', '--state', 'failed', '--repo', dir], { encoding: 'utf8' })
-    assert.equal(timedOut.status, 1, 'CLI timeout exits 1')
-    assert.match(timedOut.stderr, /locked by another record/u)
+    assert.equal(await main(['--record', 'task', '--task', '01', '--state', 'failed', '--repo', dir], { lockWaitMs: 50 }), 1, 'CLI timeout exits 1')
     assert.equal(JSON.parse(readFileSync(path, 'utf8')).tasks['01'].state, 'working', 'nothing written on timeout')
     const old = new Date(Date.now() - 60_000)
     utimesSync(`${path}.lock`, old, old)
@@ -1044,22 +1051,179 @@ test('live server shows an overlay change on the next /state after the memo wind
   const { dir, write, commit } = makeRepo()
   write('012-progress-board.md', runSpec)
   commit('spec')
-  // A 3 s memo leaves ample margin for the CLI records between reads inside one window.
-  const live = await startServer({ repoRoot: dir, port: 0, memoMs: 3000 })
+  // A fake clock holds the 3 s memo window open across the CLI records and steps past it without sleeping.
+  let clock = Date.now()
+  const live = await startServer({ repoRoot: dir, port: 0, memoMs: 3000, now: () => clock })
   try {
     assert.equal(cardOf(await getState(live.url), '012').run, null)
     const rec = (...args) => { const run = cli('--record', ...args, '--repo', dir); assert.equal(run.status, 0, run.stderr) }
     rec('run-start', '--spec', '012', '--branch', 'feat/run-branch', '--mode', 'local', '--tasks', '02,03')
     rec('task', '--task', '03', '--state', 'working')
-    await new Promise((done) => setTimeout(done, 3100))
+    clock += 3100
     const state = await getState(live.url)
     assert.deepEqual(cardOf(state, '012').run.tasks.map((t) => [t.id, t.state]), [['02', 'queued'], ['03', 'working']])
     rec('task', '--task', '03', '--state', 'blocked', '--note', 'needs a decision')
     assert.equal(cardOf(await getState(live.url), '012').run.tasks[1].state, 'working', 'inside the memo window')
-    await new Promise((done) => setTimeout(done, 3100))
+    clock += 3100
     assert.deepEqual(cardOf(await getState(live.url), '012').run.tasks[1], { id: '03', title: 'Run overlay', state: 'blocked', round: 1, note: 'needs a decision' })
   } finally {
     await live.close()
     rmSync(dir, { recursive: true, force: true })
   }
+})
+
+// Spec 018: spec issues, checklist tasks, candidate issues, labels, and dropped specs (pull-request mode).
+const withIssue = (content, number) => content.replace('(2026-10-28).', `(2026-10-28). Issue: [#${number}](https://github.com/o/r/issues/${number}).`)
+const ghIssue = (number, fields = {}) => ({ number, title: `Issue ${number}`, state: 'OPEN', labels: [], url: `https://github.com/o/r/issues/${number}`, ...fields })
+
+test('pull-request mode: an open branch alone is not Building; code, a ticked task, or a live run is', () => {
+  const specs = {
+    '020-widget.md': spec('020: Widget', 'draft'),
+    '021-gadget.md': spec('021: Gadget', 'accepted', '\n## Tasks\n\n- [ ] 01: One (#45)\n'),
+    '022-coded.md': spec('022: Coded', 'draft'),
+    '023-ticked.md': spec('023: Ticked', 'accepted', '\n## Tasks\n\n- [x] 01: One\n- [ ] 02: Two\n'),
+    '012-progress-board.md': spec('012: Progress board', 'draft'),
+  }
+  const branches = [
+    { name: 'feat/020-widget', remote: false, merged: false, implementation: false },
+    { name: 'feat/021-gadget', remote: false, merged: false, implementation: false },
+    { name: 'feat/022-coded', remote: false, merged: false, implementation: true },
+    { name: 'feat/023-ticked', remote: false, merged: false, implementation: false },
+  ]
+  const overlay = overlayOf('012', { '01': { state: 'running', round: 1, note: '', updatedAt: NOW } })
+  const board = deriveBoard({ ...snapshot(specs, branches), github: github(), generatedAt: NOW, overlay })
+  assert.deepEqual(['020', '021', '022', '023', '012'].map((n) => stageOf(board, n)), ['specced', 'ready', 'building', 'building', 'building'])
+  assert.equal(cardOf(board, '020').branch, null, 'an uncounted branch is not the card branch')
+  assert.equal(cardOf(board, '022').branch, 'feat/022-coded')
+  const stages = (extra) => ['020', '021', '022', '023', '012'].map((n) => stageOf(deriveBoard({ ...snapshot(specs, branches), generatedAt: NOW, overlay, ...extra }), n))
+  for (const extra of [{}, { github: null }, { github: { available: false, reason: 'gh not authenticated' } }, { delivery: 'pull-request', github: null }]) {
+    assert.deepEqual(stages(extra), ['specced', 'ready', 'building', 'building', 'building'], `delivery decides, not GitHub data: ${JSON.stringify(extra)}`)
+  }
+  assert.equal(stageOf(deriveBoard({ ...snapshot(specs, branches), delivery: 'local' }), '020'), 'building', 'local mode: any open branch counts')
+  assert.equal(stageOf(deriveBoard({ ...snapshot(specs, branches), delivery: 'local', github: github() }), '020'), 'building', 'local mode is unchanged with GitHub data')
+})
+
+test('readSnapshot: in pull-request mode open spec branches carry implementation from git', () => withRepo(({ dir, git, write, commit }) => {
+  write('020-widget.md', spec('020: Widget', 'draft'))
+  write('021-gadget.md', spec('021: Gadget', 'draft'))
+  commit('specs')
+  git('switch', '--quiet', '-c', 'feat/020-widget')
+  write('020-widget.md', spec('020: Widget', 'draft', '\nMore.\n'))
+  commit('docs only')
+  git('switch', '--quiet', '-c', 'feat/021-gadget', 'main')
+  touch(dir, 'gadget.txt')
+  commit('code')
+  git('switch', '--quiet', 'main')
+  const withGh = readSnapshot(dir, { github: () => github() })
+  assert.deepEqual(withGh.branches.map((b) => [b.name, b.implementation]), [['feat/020-widget', false], ['feat/021-gadget', true]])
+  const board = deriveBoard(withGh)
+  assert.equal(stageOf(board, '020'), 'specced')
+  assert.equal(stageOf(board, '021'), 'building')
+  // No GitHub source (warm-up, --no-github): unset delivery still applies the rule, also to a pushed branch.
+  git('update-ref', 'refs/remotes/origin/feat/020-widget', 'feat/020-widget')
+  git('branch', '--quiet', '-D', 'feat/020-widget')
+  const noGh = readSnapshot(dir)
+  assert.deepEqual(noGh.branches.map((b) => [b.name, b.implementation]), [['feat/021-gadget', true], ['origin/feat/020-widget', false]])
+  assert.equal(stageOf(deriveBoard(noGh), '020'), 'specced', 'a docs-only pushed branch stays Specced without GitHub')
+  assert.equal(stageOf(deriveBoard(readSnapshot(dir, { github: () => null })), '020'), 'specced', 'a null GitHub source changes nothing')
+  writeFileSync(join(dir, 'AGENTS.md'), '<!-- BEGIN FLOW -->\nDelivery: pull-request\n<!-- END FLOW -->\n')
+  commit('pull-request delivery')
+  assert.equal(stageOf(deriveBoard(readSnapshot(dir)), '020'), 'specced', 'Delivery: pull-request without GitHub')
+  writeFileSync(join(dir, 'AGENTS.md'), '<!-- BEGIN FLOW -->\nDelivery: local\n<!-- END FLOW -->\n')
+  commit('local delivery')
+  const local = readSnapshot(dir)
+  assert.equal(local.branches.find((b) => b.name === 'origin/feat/020-widget').implementation, undefined, 'local reads skip the check')
+  assert.equal(stageOf(deriveBoard(local), '020'), 'building', 'local mode: any open branch counts')
+}))
+
+test('spec issue line and task checklist link issues, count progress, and match pull requests', () => {
+  const content = withIssue(spec('030: Spec issues', 'accepted', '\n## Tasks\n\n- [x] 01: `to-spec`: open the issue (#80).\n- [ ] 02: Board (#81, blocked by 01)\n- [ ] 03: Local only\n'), 79)
+  const sub = withIssue(spec('031: Nested', 'accepted', '\n## Decisions\n\n### Tasks\n\nIntro.\n\n- [x] 01: A (#90)\n- [x] 02: B (#91)\n\n### Other\n\n- [ ] not a task\n'), 89)
+  assert.deepEqual(parseTasks(content), [{ id: '01', title: '`to-spec`: open the issue', done: true }, { id: '02', title: 'Board', done: false }, { id: '03', title: 'Local only', done: false }])
+  assert.deepEqual(countTasks(sub), { done: 2, total: 2 }, 'a ### Tasks subsection ends at the next ### heading')
+  const merged = spec('032: Merged', 'draft', '\n## Tasks\n\n- [x] 01: One (#95)\n- [ ] 02: Two (#96)\n\n### 02: Two\n**Status:** done\n')
+  assert.deepEqual(countTasks(merged), { done: 2, total: 2 }, 'a checklist item and its heading are one task')
+  const issues = [ghIssue(79, { labels: [{ name: 'accepted' }] }), ghIssue(80, { state: 'CLOSED' }), ghIssue(81), ghIssue(89)]
+  const prs = [{ number: 99, state: 'OPEN', headRefName: 'feat/unrelated', baseRefName: 'main', url: 'https://github.com/o/r/pull/99', body: 'Closes #79' }]
+  const board = deriveBoard({ ...snapshot({ '030-spec-issues.md': content, '031-nested.md': sub }), github: github(prs, issues) })
+  const card = cardOf(board, '030')
+  assert.deepEqual(card.issue, { number: 79, state: 'open', url: 'https://github.com/o/r/issues/79' })
+  assert.deepEqual(card.issues.map((i) => [i.number, i.state]), [[80, 'closed'], [81, 'open']])
+  assert.deepEqual(card.tasks, { done: 1, total: 3 })
+  assert.equal(stageOf(board, '030'), 'building', 'a ticked checklist item is progress')
+  assert.equal(card.pr.number, 99, 'Closes #<spec issue> links the pull request')
+  assert.match(renderHtml(board), />spec #79 open<\/a><a class="gh" href="https:\/\/github.com\/o\/r\/pull\/99"[^>]*>PR #99 open<\/a>/u)
+  assert.equal(cardOf(deriveBoard(snapshot({ '030-spec-issues.md': content })), '030').issue, null, 'no GitHub, no spec issue link')
+})
+
+test('open candidate issues no spec names become Candidate cards', () => {
+  const issues = [
+    ghIssue(79, { labels: [{ name: 'candidate' }] }),
+    ghIssue(90, { title: 'Later bet', labels: [{ name: 'Candidate' }] }),
+    ghIssue(91, { state: 'CLOSED', labels: [{ name: 'candidate' }] }),
+    ghIssue(92, { labels: [{ name: 'bug' }] }),
+    ghIssue(93, { labels: ['candidate'] }),
+  ]
+  const specs = { '030-spec-issues.md': withIssue(spec('030: Spec issues', 'draft'), 79) }
+  const board = deriveBoard({ ...snapshot(specs), github: github([], issues) })
+  const candidates = board.columns.find((c) => c.id === 'candidate').cards
+  assert.deepEqual(candidates.map((c) => [c.number, c.title, c.status, c.branch, c.tasks.total]), [['#90', 'Later bet', 'candidate', null, 0], ['#93', 'Issue 93', 'candidate', null, 0]])
+  assert.deepEqual(cardOf(board, '#90').issue, { number: 90, state: 'open', url: 'https://github.com/o/r/issues/90' })
+  assert.equal(stageOf(board, '030'), 'specced', 'the named issue stays on its spec card')
+  assert.match(renderHtml(board), /data-spec="#90"><p class="num">#90<\/p><h3>Later bet<\/h3>/u)
+  assert.equal(deriveBoard({ ...snapshot(specs), delivery: 'local', github: github([], issues) }).columns[0].cards.length, 0, 'local mode has no candidate issues')
+  assert.equal(deriveBoard(snapshot(specs)).columns[0].cards.length, 0)
+})
+
+test('an accepted label reads as status accepted; label and file disagreeing is marked', () => {
+  const tasks = '\n## Tasks\n\n- [ ] 01: One (#45)\n'
+  const specs = {
+    '040-a.md': withIssue(spec('040: A', 'draft', tasks), 70),
+    '041-b.md': withIssue(spec('041: B', 'accepted'), 71),
+    '042-c.md': withIssue(spec('042: C', 'implemented'), 72),
+    '043-d.md': withIssue(spec('043: D', 'accepted'), 73),
+  }
+  const label = (name) => [{ name }]
+  const issues = [ghIssue(70, { labels: label('accepted') }), ghIssue(71, { labels: label('accepted') }), ghIssue(72, { state: 'CLOSED', labels: label('accepted') }), ghIssue(73, { labels: label('draft') })]
+  const board = deriveBoard({ ...snapshot(specs), github: github([], issues) })
+  assert.deepEqual([cardOf(board, '040').status, stageOf(board, '040'), cardOf(board, '040').marker], ['accepted', 'ready', 'label accepted, file draft'])
+  assert.deepEqual([cardOf(board, '041').status, cardOf(board, '041').marker], ['accepted', null])
+  assert.deepEqual([cardOf(board, '042').status, stageOf(board, '042'), cardOf(board, '042').marker], ['implemented', 'shipped', null])
+  assert.deepEqual([cardOf(board, '043').status, stageOf(board, '043'), cardOf(board, '043').marker], ['accepted', 'specced', 'label draft, file accepted'], 'only accepted overrides the file')
+})
+
+test('a spec whose issue closed as not planned is dropped from the columns and kept in JSON', () => {
+  const specs = { '050-gone.md': withIssue(spec('050: Gone', 'draft'), 60), '051-done.md': withIssue(spec('051: Done', 'implemented'), 61) }
+  const issues = [ghIssue(60, { state: 'CLOSED', stateReason: 'NOT_PLANNED' }), ghIssue(61, { state: 'CLOSED', stateReason: 'COMPLETED' })]
+  const board = deriveBoard({ ...snapshot(specs), github: github([], issues) })
+  assert.equal(stageOf(board, '050'), undefined)
+  assert.equal(stageOf(board, '051'), 'shipped')
+  assert.deepEqual(board.dropped.map((card) => [card.number, card.dropped, card.issue.state]), [['050', true, 'closed']])
+  assert.doesNotMatch(renderHtml(board), /Gone/u)
+  assert.deepEqual(deriveBoard(snapshot(specs)).dropped, [], 'without GitHub nothing is dropped')
+})
+
+test('run overlay: frontier task states, no wave numbers', () => {
+  const content = spec('012: Progress board', 'draft', '\n## Tasks\n\n- [x] 01: Board (#45)\n- [ ] 02: Live (#46)\n- [ ] 03: Overlay\n- [ ] 04: Docs\n')
+  const tasks = {
+    '01': { state: 'running', round: 1, note: '', wave: 1, updatedAt: NOW },
+    '02': { state: 'running', round: 1, note: '', wave: 1, updatedAt: NOW },
+    '03': { state: 'waiting', round: 0, note: '', wave: 2, updatedAt: NOW },
+    '04': { state: 'blocked', round: 1, note: 'behind 02', wave: 2, updatedAt: NOW },
+  }
+  const board = deriveBoard({ ...snapshot({ '012-progress-board.md': content }), generatedAt: NOW, overlay: overlayOf('012', tasks) })
+  assert.deepEqual(runTasksOf(board), [['01', 'Board', 'integrated', 1, ''], ['02', 'Live', 'running', 1, ''], ['03', 'Overlay', 'waiting', null, ''], ['04', 'Docs', 'blocked', 1, 'behind 02']])
+  assert.doesNotMatch(renderHtml(board), /wave/iu)
+  const started = recordRunStart({ spec: '012', branch: 'feat/x', mode: 'pull-request', tasks: ['01'], now: NOW })
+  assert.equal(recordTask(started, { task: '01', state: 'waiting', now: NOW }).tasks['01'].round, 0)
+  assert.equal(recordTask(started, { task: '01', state: 'running', now: NOW }).tasks['01'].round, 1)
+})
+
+test('fetchGithub asks for issue labels and close reasons', () => withRepo(({ dir, git }) => {
+  git('remote', 'add', 'origin', 'https://github.com/o/r.git')
+  const calls = []
+  fetchGithub(dir, { run: (args) => { calls.push(args); return '[]' } })
+  const fields = calls.find((args) => args[0] === 'issue').at(-1).split(',')
+  for (const field of ['labels', 'stateReason', 'title', 'state', 'url']) assert.ok(fields.includes(field), field)
+}))
 })

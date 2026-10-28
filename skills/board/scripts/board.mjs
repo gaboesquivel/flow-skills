@@ -165,15 +165,18 @@ export function readSnapshot(repoRoot, { github = null } = {}) {
   const { overlay, overlayError } = readOverlay(overlayPath(repoRoot))
   const runBranch = typeof overlay?.run?.branch === 'string' ? overlay.run.branch : null
   const claimed = (name) => slugs.some((slug) => matchBranches(slug, [{ name }]).length) || (runBranch !== null && branchNamed(name, runBranch))
-  for (const branch of branches) {
-    if (branch.merged && claimed(branch.name)) branch.implementation = hasImplementationWork(repoRoot, branch, context)
-  }
   const delivery = readDelivery(readBlobs(repoRoot, ['AGENTS.md', 'CLAUDE.md'].map((file) => `${defaultRef}:${file}`)))
   let githubData = null
   if (github && delivery !== 'local') {
     githubData = github(repoRoot) ?? null
     // Without a GitHub remote, enrichment is only worth a note when the project says it uses pull requests.
     if (githubData?.reason === 'no GitHub remote' && delivery !== 'pull-request') githubData = null
+  }
+  // Pull-request mode comes from delivery (unset counts as pull-request, like build), never from GitHub
+  // availability: there an open branch counts as Building only with implementation work.
+  const prMode = delivery !== 'local'
+  for (const branch of branches) {
+    if ((branch.merged || prMode) && claimed(branch.name)) branch.implementation = hasImplementationWork(repoRoot, branch, context)
   }
   if (githubData?.available) {
     githubData = {
@@ -191,7 +194,8 @@ export function readSnapshot(repoRoot, { github = null } = {}) {
 /** Whether a branch name (local, or remote with its remote prefix) is the branch `wanted`. */
 const branchNamed = (name, wanted) => name === wanted || name.split('/').slice(1).join('/') === wanted
 
-export const TASK_STATES = ['queued', 'working', 'reviewing', 'fixing', 'integrated', 'failed', 'blocked']
+// Frontier states from `build` (running, waiting, integrated, blocked), plus older ones still read.
+export const TASK_STATES = ['queued', 'waiting', 'running', 'working', 'reviewing', 'fixing', 'integrated', 'failed', 'blocked']
 export const OVERLAY_STALE_MS = 30 * 60_000
 export const OVERLAY_FUTURE_MS = 5 * 60_000
 
@@ -263,7 +267,7 @@ export function recordTask(overlay, { task, state, round, note, now = new Date()
   const tasks = { ...overlay.tasks }
   for (const id of ids) {
     const previous = tasks[id]
-    const nextRound = givenRound ?? Math.max(Number(previous?.round) || 0, state === 'queued' ? 0 : 1)
+    const nextRound = givenRound ?? Math.max(Number(previous?.round) || 0, state === 'queued' || state === 'waiting' ? 0 : 1)
     const nextNote = note ?? (previous?.state === state && typeof previous.note === 'string' ? previous.note : '')
     tasks[id] = { state, round: nextRound, note: String(nextNote), updatedAt: now }
   }
@@ -434,7 +438,7 @@ function* githubSteps(repoRoot) {
   }
   try {
     const prs = JSON.parse(yield ['pr', 'list', '--repo', repo, '--state', 'all', '--limit', String(PR_LIMIT), '--json', 'number,title,state,headRefName,baseRefName,url,mergedAt,mergeCommit,body'])
-    const issues = JSON.parse(yield ['issue', 'list', '--repo', repo, '--state', 'all', '--limit', String(ISSUE_LIMIT), '--json', 'number,title,state,url'])
+    const issues = JSON.parse(yield ['issue', 'list', '--repo', repo, '--state', 'all', '--limit', String(ISSUE_LIMIT), '--json', 'number,title,state,stateReason,labels,url'])
     if (!Array.isArray(prs) || !Array.isArray(issues)) return { available: false, reason: 'unexpected gh output' }
     return { available: true, prs, issues, truncated: { prs: prs.length >= PR_LIMIT, issues: issues.length >= ISSUE_LIMIT } }
   } catch (error) {
@@ -520,44 +524,76 @@ export function parseTitle(content, fallback) {
   return match ? match[1].trim() : fallback
 }
 
-/**
- * Counts tasks in the `## Tasks` section.
- * With `### NN:` task headings, each heading is one task; it is done when its `**Status:**` starts with
- * "done", or when it has checkboxes and all are checked. Without headings, each `- [ ]`/`- [x]` is one task.
- */
-export function countTasks(content) {
-  const section = /^## Tasks[^\n]*\n([\s\S]*?)(?=^## |(?![\s\S]))/mu.exec(content)
-  if (!section) return { done: 0, total: 0 }
-  const headed = parseTasks(content)
-  if (headed.length) return { done: headed.filter((task) => task.done).length, total: headed.length }
-  const boxes = [...section[1].matchAll(/^\s*[-*] \[([ xX])\]/gmu)]
-  return { done: boxes.filter((box) => box[1] !== ' ').length, total: boxes.length }
+/** The `## Tasks` section (or a `### Tasks` subsection) up to the next heading of the same or a higher level; null when absent. */
+function tasksSection(content) {
+  const match = /^## Tasks[^\n]*\n/mu.exec(content) ?? /^### Tasks[^\n]*\n/mu.exec(content)
+  if (!match) return null
+  const rest = content.slice(match.index + match[0].length)
+  const level = match[0].indexOf(' ')
+  const end = new RegExp(`^#{1,${level}} `, 'mu').exec(rest)
+  return end ? rest.slice(0, end.index) : rest
 }
 
+/** Issue numbers in parenthesized groups that start with `#N`, as in `(#45)` or `(#85, blocked by 06)`. */
+const parenRefs = (text) => [...text.matchAll(/\((#\d+[^()]*)\)/gu)].flatMap(([, group]) => [...group.matchAll(/(?<![\w&])#(\d+)\b/gu)].map(([, n]) => Number(n)))
+
 /**
- * `### NN: Title (#45)` task headings in the `## Tasks` section: `{ id, title, done }`, with issue refs
- * stripped from the title. Done: `**Status:**` starts with "done", or it has checkboxes and all are checked.
+ * Tasks in the Tasks section, merged by number: checklist items `- [ ] NN: Title (#45)` above any task heading,
+ * and `### NN: Title (#45)` headings. A heading is done when its `**Status:**` starts with "done" or it has
+ * checkboxes and all are checked; a task is done when its checklist item is ticked or its heading is done.
  */
-export function parseTasks(content) {
-  const section = /^## Tasks[^\n]*\n([\s\S]*?)(?=^## |(?![\s\S]))/mu.exec(content)
-  if (!section) return []
-  return [...section[1].matchAll(/^### +(\d+)([^\n]*)\n([\s\S]*?)(?=^### |(?![\s\S]))/gmu)].map(([, id, rest, block]) => {
+function readTasks(content) {
+  const section = tasksSection(content)
+  if (section === null) return []
+  const firstHeading = section.search(/^### +\d+/mu)
+  const list = firstHeading === -1 ? section : section.slice(0, firstHeading)
+  const byId = new Map()
+  const add = (task) => {
+    const key = Number(task.id)
+    const previous = byId.get(key)
+    if (!previous) { byId.set(key, task); return }
+    byId.set(key, { id: previous.id, title: task.title ?? previous.title, done: previous.done || task.done, refs: [...new Set([...previous.refs, ...task.refs])] })
+  }
+  for (const [, box, id, rest] of list.matchAll(/^[ \t]*[-*] \[([ xX])\][ \t]+(\d+)[ \t]*[:.)-][ \t]*([^\n]*)$/gmu)) {
+    const title = rest.replace(/\s*\(#\d+[^()]*\)\s*\.?\s*$/u, '').trim()
+    add({ id, title: title || null, done: box !== ' ', refs: parenRefs(rest) })
+  }
+  for (const [, id, rest, block] of section.matchAll(/^### +(\d+)([^\n]*)\n([\s\S]*?)(?=^### |(?![\s\S]))/gmu)) {
     const status = /^\*\*Status:?\*\*:?\s*(\S+)/imu.exec(block)?.[1]?.toLowerCase() ?? ''
     const boxes = [...block.matchAll(/^\s*[-*] \[([ xX])\]/gmu)]
     const title = rest.replace(/^\s*[:.)-]?\s*/u, '').replace(/\s*\((?:#\d+[\s,]*)+\)\s*$/u, '').trim()
-    return { id, title: title || null, done: status.startsWith('done') || (boxes.length > 0 && boxes.every((box) => box[1] !== ' ')) }
-  })
+    const refs = [...rest.matchAll(/(?<![\w&])#(\d+)\b/gu)].map(([, n]) => Number(n))
+    add({ id, title: title || null, done: status.startsWith('done') || (boxes.length > 0 && boxes.every((b) => b[1] !== ' ')), refs })
+  }
+  return [...byId.values()].sort((a, b) => Number(a.id) - Number(b.id))
 }
 
-/** Issue numbers referenced as `#N` on `### NN:` task headings in the `## Tasks` section, in order, unique. */
+/**
+ * Counts tasks in the Tasks section: numbered checklist items and `### NN:` headings (see readTasks).
+ * Without either, each `- [ ]`/`- [x]` is one task.
+ */
+export function countTasks(content) {
+  const tasks = readTasks(content)
+  if (tasks.length) return { done: tasks.filter((task) => task.done).length, total: tasks.length }
+  const boxes = [...(tasksSection(content) ?? '').matchAll(/^\s*[-*] \[([ xX])\]/gmu)]
+  return { done: boxes.filter((box) => box[1] !== ' ').length, total: boxes.length }
+}
+
+/** Tasks from checklist items and `### NN:` headings: `{ id, title, done }`, with issue refs stripped from the title. */
+export function parseTasks(content) {
+  return readTasks(content).map(({ id, title, done }) => ({ id, title, done }))
+}
+
+/** Issue numbers referenced as `#N` on task checklist items and `### NN:` task headings, in order, unique. */
 export function taskIssueRefs(content) {
-  const section = /^## Tasks[^\n]*\n([\s\S]*?)(?=^## |(?![\s\S]))/mu.exec(content)
-  if (!section) return []
-  const refs = new Set()
-  for (const [heading] of section[1].matchAll(/^### +\d+[^\n]*/gmu)) {
-    for (const [, number] of heading.matchAll(/(?<![\w&])#(\d+)\b/gu)) refs.add(Number(number))
-  }
-  return [...refs]
+  return [...new Set(readTasks(content).flatMap((task) => task.refs))]
+}
+
+/** The spec issue number from the header's `Issue:` line (`Issue: [#79](url)`, beside `Status:`); null when absent. */
+export function parseSpecIssue(content) {
+  const header = content.split(/^## /mu)[0]
+  const match = /(?:^|[\s.;,·|(])\*{0,2}Issue\*{0,2}:\*{0,2}\s*\[?#(\d+)/imu.exec(header)
+  return match ? Number(match[1]) : null
 }
 
 /** Only http(s) github.com URLs become links; anything else is dropped. */
@@ -570,15 +606,18 @@ const CLOSES = /\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s*:?\s+#(\d+)\b/giu
  * open or merged pull requests whose head branch matches the slug or whose body closes one of the card's issues.
  * `mergedPrs`: merged pull requests from a slug-matched head into the default branch, shaped like merged branches.
  */
-function githubLinks(slug, refs, github, addedAt) {
-  if (!github?.available) return { issues: [], pr: null, mergedPrs: [] }
+function githubLinks(slug, refs, specIssueNumber, github, addedAt) {
+  if (!github?.available) return { issue: null, issues: [], pr: null, mergedPrs: [] }
   const headMatches = (pr) => Boolean(pr.headRefName) && matchBranches(slug, [{ name: pr.headRefName }]).length > 0
   const byNumber = new Map(github.issues.map((issue) => [issue.number, issue]))
-  const issues = refs.filter((n) => byNumber.has(n)).map((n) => {
+  const link = (n) => {
     const issue = byNumber.get(n)
     return { number: n, state: String(issue.state ?? '').toLowerCase() || null, url: safeGithubUrl(issue.url) }
-  })
-  const own = new Set(issues.map((issue) => issue.number))
+  }
+  const specIssue = specIssueNumber !== null && byNumber.has(specIssueNumber) ? byNumber.get(specIssueNumber) : null
+  const issue = specIssue ? { ...link(specIssueNumber), labels: issueLabels(specIssue), stateReason: String(specIssue.stateReason ?? '').toLowerCase() || null } : null
+  const issues = refs.filter((n) => byNumber.has(n) && n !== specIssueNumber).map(link)
+  const own = new Set([...issues.map((i) => i.number), ...(issue ? [issue.number] : [])])
   const linked = github.prs.filter((pr) => (pr.state === 'OPEN' || pr.state === 'MERGED')
     && (headMatches(pr) || [...String(pr.body ?? '').matchAll(CLOSES)].some(([, n]) => own.has(Number(n)))))
   linked.sort((a, b) => Number(b.state === 'OPEN') - Number(a.state === 'OPEN') || b.number - a.number)
@@ -594,8 +633,14 @@ function githubLinks(slug, refs, github, addedAt) {
     .filter((p) => p.state === 'MERGED' && typeof p.implementation === 'boolean' && startsWithSlug.test(String(p.headRefName ?? '').split('/').pop()) && afterSpec(p))
     .sort((a, b) => b.number - a.number)
     .map((p) => ({ name: p.headRefName, remote: false, merged: true, implementation: p.implementation, pr: p.number }))
-  return { issues, pr, mergedPrs }
+  return { issue, issues, pr, mergedPrs }
 }
+
+/** Label names on a `gh` issue (`labels: [{ name }]`, or plain strings), lowercased. */
+const issueLabels = (issue) => (Array.isArray(issue?.labels) ? issue.labels : [])
+  .map((label) => String(typeof label === 'string' ? label : label?.name ?? '').toLowerCase()).filter(Boolean)
+
+const LABEL_STATUSES = ['accepted', 'draft', 'candidate']
 
 const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')
 
@@ -610,13 +655,14 @@ export function matchBranches(slug, branches) {
     .sort((a, b) => Number(a.merged) - Number(b.merged) || Number(a.remote) - Number(b.remote) || a.name.localeCompare(b.name))
 }
 
-function stageFor({ status, tasks, branches, liveRun }) {
+function stageFor({ status, tasks, branches, liveRun, prMode }) {
   const tasksComplete = tasks.total === 0 || tasks.done === tasks.total
   if (status === 'implemented') return { stage: 'shipped', reason: 'status implemented', branch: null }
   // A merge ships only implementation work (`implementation`: changes outside docs/), never a candidate.
   const merged = branches.find((b) => b.merged && b.implementation)
   if (merged && tasksComplete && status !== 'candidate') return { stage: 'shipped', reason: merged.pr ? `pull request #${merged.pr} merged` : `branch ${merged.name} merged`, branch: merged }
-  const open = branches.find((b) => !b.merged)
+  // In pull-request mode a pushed spec branch alone is not Building: it needs implementation work.
+  const open = branches.find((b) => !b.merged && (!prMode || b.implementation))
   if (liveRun) return { stage: 'building', reason: 'build run', branch: liveRun.branch ? { name: liveRun.branch } : open ?? null }
   if (open) return { stage: 'building', reason: `branch ${open.name}`, branch: open }
   if (tasks.done > 0) return { stage: 'building', reason: 'tasks started', branch: null }
@@ -696,12 +742,19 @@ export function deriveBoard(snapshot) {
     if (!byNumber.has(number)) byNumber.set(number, { spec, collisions: [] })
     else byNumber.get(number).collisions.push(spec)
   }
+  // Pull-request mode follows delivery alone (unset counts as pull-request); GitHub data only adds links,
+  // labels, and candidate issues, so warm-up, unauthenticated gh, and --no-github stage the same way.
+  const prMode = snapshot.delivery !== 'local'
+  const dropped = []
   for (const [number, { spec, collisions }] of [...byNumber].sort(([a], [b]) => a.localeCompare(b))) {
     const slug = SPEC_FILE.exec(spec.file)[2]
     const onDefault = spec.onDefault ?? true
-    const status = parseStatus(spec.content)
+    const fileStatus = parseStatus(spec.content)
     const tasks = countTasks(spec.content)
-    const links = githubLinks(slug, taskIssueRefs(spec.content), snapshot.github, spec.addedAt)
+    const links = githubLinks(slug, taskIssueRefs(spec.content), prMode ? parseSpecIssue(spec.content) : null, snapshot.github, spec.addedAt)
+    // The spec issue's label is the status when the file lags (a maintainer added `accepted`); `implemented` stays.
+    const label = LABEL_STATUSES.find((name) => links.issue?.labels.includes(name)) ?? null
+    const status = label === 'accepted' && fileStatus !== 'implemented' ? 'accepted' : fileStatus
     const ownRun = run?.spec === number ? run : null
     if (ownRun) runMatched = true
     const liveRun = ownRun && !ownRun.stale ? ownRun : null
@@ -712,21 +765,22 @@ export function deriveBoard(snapshot) {
       for (const b of snapshot.branches ?? []) if (branchNamed(b.name, liveRun.branch) && !matched.includes(b)) matched.push(b)
     }
     const branches = [...matched.filter((b) => b.merged), ...links.mergedPrs, ...matched.filter((b) => !b.merged)]
-    let { stage, reason, branch } = stageFor({ status, tasks, branches, liveRun })
+    let { stage, reason, branch } = stageFor({ status, tasks, branches, liveRun, prMode })
     if (!onDefault && stage === 'shipped') {
       stage = 'building'
       reason = `on branch ${spec.source}`
       branch = { name: spec.source }
     }
     const markers = []
-    if (!status) markers.push('no status line')
-    else if (!['candidate', 'draft', 'accepted', 'implemented'].includes(status)) markers.push(`unknown status "${status}"`)
+    if (!fileStatus) markers.push('no status line')
+    else if (!['candidate', 'draft', 'accepted', 'implemented'].includes(fileStatus)) markers.push(`unknown status "${fileStatus}"`)
+    if (label && fileStatus && fileStatus !== 'implemented' && label !== fileStatus) markers.push(`label ${label}, file ${fileStatus}`)
     if (!onDefault) markers.push(`on branch ${spec.source}`)
     const open = tasks.total - tasks.done
     if (stage === 'shipped' && status === 'implemented' && open > 0) markers.push(`status implemented, ${open} task${open === 1 ? '' : 's'} open`)
     for (const other of collisions) markers.push(`number ${number} also used by ${other.file}${other.onDefault === false ? ` on ${other.source}` : ''}`)
     if (ownRun?.staleReason && stage !== 'shipped') markers.push(ownRun.staleReason)
-    byId.get(stage).cards.push({
+    const card = {
       number,
       slug,
       title: parseTitle(spec.content, slug),
@@ -736,10 +790,39 @@ export function deriveBoard(snapshot) {
       source: spec.source ?? null,
       reason,
       marker: markers.length ? markers.join('; ') : null,
+      issue: links.issue ? { number: links.issue.number, state: links.issue.state, url: links.issue.url } : null,
       issues: links.issues,
       pr: links.pr,
       run: liveRun ? { branch: liveRun.branch, mode: liveRun.mode, tasks: runTasks(liveRun, parseTasks(spec.content)) } : null,
-    })
+    }
+    // A spec whose issue closed as not planned is dropped: off the columns, kept in the JSON.
+    if (links.issue?.state === 'closed' && links.issue.stateReason === 'not_planned') dropped.push({ ...card, dropped: true })
+    else byId.get(stage).cards.push(card)
+  }
+  // Open `candidate` issues that no spec file names on its `Issue:` line are candidate cards of their own.
+  if (prMode && snapshot.github?.available) {
+    const named = new Set(snapshot.specs.map((spec) => parseSpecIssue(spec.content)).filter((n) => n !== null))
+    const candidates = snapshot.github.issues
+      .filter((issue) => Number.isInteger(issue.number) && String(issue.state ?? '').toUpperCase() === 'OPEN' && issueLabels(issue).includes('candidate') && !named.has(issue.number))
+      .sort((a, b) => a.number - b.number)
+    for (const issue of candidates) {
+      const number = `#${issue.number}`
+      byId.get('candidate').cards.push({
+        number,
+        slug: null,
+        title: String(issue.title ?? '').trim() || number,
+        status: 'candidate',
+        tasks: { done: 0, total: 0 },
+        branch: null,
+        source: null,
+        reason: 'candidate issue',
+        marker: null,
+        issue: { number: issue.number, state: 'open', url: safeGithubUrl(issue.url) },
+        issues: [],
+        pr: null,
+        run: null,
+      })
+    }
   }
   let overlayNote = null
   if (snapshot.overlayError) overlayNote = `Run overlay ignored: ${snapshot.overlayError}`
@@ -751,7 +834,7 @@ export function deriveBoard(snapshot) {
   if (github?.available && github.truncated?.prs) notes.push(`GitHub links may be incomplete: read only the latest ${PR_LIMIT} pull requests`)
   if (github?.available && github.truncated?.issues) notes.push(`GitHub links may be incomplete: read only the latest ${ISSUE_LIMIT} issues`)
   const githubNote = notes.length ? notes.join('; ') : null
-  return { repoName: snapshot.repoName ?? null, defaultBranch: snapshot.defaultBranch ?? null, generatedAt: snapshot.generatedAt ?? null, githubNote, overlayNote, columns }
+  return { repoName: snapshot.repoName ?? null, defaultBranch: snapshot.defaultBranch ?? null, generatedAt: snapshot.generatedAt ?? null, githubNote, overlayNote, columns, dropped }
 }
 
 export function escapeHtml(value) {
@@ -764,6 +847,7 @@ function renderCard(card) {
   if (card.branch) meta.push(`<span class="branch">${escapeHtml(card.branch)}</span>`)
   const marker = card.marker ? `<p class="marker">${escapeHtml(card.marker)}</p>` : ''
   const links = [
+    ...(card.issue ? [{ text: `spec #${card.issue.number}`, ...card.issue }] : []),
     ...(card.pr ? [{ text: `PR #${card.pr.number}`, ...card.pr }] : []),
     ...(card.issues ?? []).map((issue) => ({ text: `#${issue.number}`, ...issue })),
   ].map(({ text, state, url }) => {
@@ -792,7 +876,7 @@ const card = (c) => {
   if (c.tasks.total) meta.push(el('span', 'progress', c.tasks.done + '/' + c.tasks.total))
   if (c.branch) meta.push(el('span', 'branch', c.branch))
   if (meta.length) { const p = el('p', 'meta'); p.append(...meta); li.append(p) }
-  const links = (c.pr ? [Object.assign({ text: 'PR #' + c.pr.number }, c.pr)] : []).concat((c.issues || []).map((i) => Object.assign({ text: '#' + i.number }, i)))
+  const links = (c.issue ? [Object.assign({ text: 'spec #' + c.issue.number }, c.issue)] : []).concat(c.pr ? [Object.assign({ text: 'PR #' + c.pr.number }, c.pr)] : [], (c.issues || []).map((i) => Object.assign({ text: '#' + i.number }, i)))
   if (links.length) {
     const p = el('p', 'links')
     for (const l of links) {
@@ -923,14 +1007,14 @@ const firstLines = (message) => String(message).split('\n').slice(0, 2).join(' '
  * carries `server: { repoRoot, pid }` so `--serve` and `--stop` can recognize this repository's board.
  * `github` (a githubSource, or null) adds GitHub links. It refreshes in the background on its own longer
  * cache, so a request never waits on `gh` and polling stays off the GitHub API; links fill in once it resolves.
- * Throws when the first derivation fails; rejects when the port cannot be bound.
+ * Throws when the first derivation fails; rejects when the port cannot be bound. `now` is the memo clock (tests).
  */
-export async function startServer({ repoRoot, port = 0, memoMs = 1000, github = null }) {
+export async function startServer({ repoRoot, port = 0, memoMs = 1000, github = null, now = Date.now }) {
   const identity = { repoRoot: realRoot(repoRoot), pid: process.pid }
   let lastGood = deriveBoard(readSnapshot(repoRoot, { github }))
-  let memo = { at: Date.now(), value: { status: 200, body: { ...lastGood, server: identity } } }
+  let memo = { at: now(), value: { status: 200, body: { ...lastGood, server: identity } } }
   const state = () => {
-    if (Date.now() - memo.at < memoMs) return memo.value
+    if (now() - memo.at < memoMs) return memo.value
     let value
     try {
       lastGood = deriveBoard(readSnapshot(repoRoot, { github }))
@@ -938,7 +1022,7 @@ export async function startServer({ repoRoot, port = 0, memoMs = 1000, github = 
     } catch (error) {
       value = { status: 500, body: { error: firstLines(error.message), server: identity } }
     }
-    memo = { at: Date.now(), value }
+    memo = { at: now(), value }
     return value
   }
   let allowedHosts = []
@@ -1041,8 +1125,11 @@ async function stopServer(repoRoot, port) {
   return 0
 }
 
-/** Resolves to the exit code; with `--serve`, once the server stops on SIGINT or SIGTERM. */
-export async function main(argv = process.argv.slice(2)) {
+/**
+ * Resolves to the exit code; with `--serve`, once the server stops on SIGINT or SIGTERM.
+ * `lockWaitMs` overrides the record lock wait (tests); the CLI always uses LOCK_WAIT_MS.
+ */
+export async function main(argv = process.argv.slice(2), { lockWaitMs } = {}) {
   const usage = 'Usage: board.mjs --serve [--port <n>] [--repo <path>] [--no-github] | --stop [--port <n>] [--repo <path>] | --once [--out <file>] [--repo <path>] [--no-github] | --json [--repo <path>] [--no-github]'
     + ' | --record run-start --spec <NNN> --branch <name> --mode local|pull-request --tasks <01,02> | --record task --task <NN[,NN…]> --state <state> [--round <n>] [--note <text>] | --record run-end'
   let args
@@ -1053,7 +1140,7 @@ export async function main(argv = process.argv.slice(2)) {
   if (args.record !== null) {
     const { tasks, ...fields } = args.fields
     try {
-      console.log(record(repoRoot, args.record, { ...fields, ...(tasks === undefined ? {} : { tasks: tasks.split(',').map((t) => t.trim()).filter(Boolean) }) }))
+      console.log(record(repoRoot, args.record, { ...fields, ...(tasks === undefined ? {} : { tasks: tasks.split(',').map((t) => t.trim()).filter(Boolean) }) }, lockWaitMs === undefined ? undefined : { waitMs: lockWaitMs }))
       return 0
     } catch (error) { console.error(error.message); return 1 }
   }
