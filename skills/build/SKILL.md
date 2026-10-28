@@ -38,7 +38,7 @@ Then deliver (see Deliver). Report the result, files, checks, limitations, and r
 
 1. **Gate.** Check the gate `ship` defines under [Preflight](../ship/SKILL.md#preflight), and stop as it says when the gate fails. For spec work, the spec's `Status:` then reads `implemented` on the branch (Task set step 3 sets it; set it here otherwise).
 2. **Review.** Run the one independent review from merge base to branch head the way `ship`'s [Review](../ship/SKILL.md#review) runs it (per-axis `review` workers plus verifier, hotfix guard included), with fix rounds as above, then re-run the full local check suite on the new head.
-3. **Merge.** `git merge --no-ff` the branch into local `main` from a checkout of `main`. Stop and report when that checkout has changes the merge would touch or the merge conflicts; never discard changes to get through.
+3. **Merge.** `git merge --no-ff` the branch into local `main` from a checkout of `main`. Merge only the reviewed head; if the branch moved after the review, review and re-run the full local check suite on the new head first. Stop and report when that checkout has changes the merge would touch or the merge conflicts; never discard changes to get through.
 4. **Clean up.** Delete the merged branch with `git branch -d` and remove the remaining clean worktrees on the worker list (Task set Cleanup rules apply).
 
 A failed task, a failed gate, or a blocking review after the fix rounds leaves local `main` untouched: stop with the branch kept and report. Report the branch, the merge commit SHA on `main`, the review result, the exact commands run, and their results. No push and no pull request; no remote is needed.

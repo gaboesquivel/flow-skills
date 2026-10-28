@@ -746,6 +746,49 @@
         "verified_second_host": "not_executed"
       },
       "claimsLiveRun": false
+    },
+    {
+      "id": "E34",
+      "skills": [
+        "ship"
+      ],
+      "behavior": "Local ship pushes main, finds the commit's deployment, and runs the acceptance scenario; with none it reports deployment unverified, and a failed step after the push is shipped, verification failed with no rollback",
+      "taskFile": "tests/evals/tasks/E34-task.md",
+      "rubricFile": "tests/evals/rubrics/E34-rubric.md",
+      "skillReferences": [
+        "skills/ship/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "not_executed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E35",
+      "skills": [
+        "build"
+      ],
+      "behavior": "Local build lands the reviewed spec branch on local main after the gate and review; a blocking review leaves main untouched; nothing is pushed",
+      "taskFile": "tests/evals/tasks/E35-task.md",
+      "rubricFile": "tests/evals/rubrics/E35-rubric.md",
+      "skillReferences": [
+        "skills/build/SKILL.md",
+        "skills/ship/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "not_executed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
     }
   ]
 }
