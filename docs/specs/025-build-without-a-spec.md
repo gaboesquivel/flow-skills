@@ -1,6 +1,6 @@
 # 025: Build without a spec
 
-Status: draft (2026-10-28). Decisions: [0039](../decisions/0039-build-never-requires-a-spec.md) (Proposed). Amends [decision 0034](../decisions/0034-no-ceremony-without-a-spec.md) and [decision 0022](../decisions/0022-start-runs-explore.md).
+Status: accepted (2026-10-28). Decisions: [0039](../decisions/0039-build-never-requires-a-spec.md) (Accepted). Amends [decision 0034](../decisions/0034-no-ceremony-without-a-spec.md) and [decision 0022](../decisions/0022-start-runs-explore.md).
 
 ## Problem Statement
 

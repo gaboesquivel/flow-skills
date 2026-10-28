@@ -1,6 +1,6 @@
 # 0039 — Build never requires a spec
 
-Status: **Proposed** (2026-10-28). Amends [0034](0034-no-ceremony-without-a-spec.md) (the size guard stops unspecced work) and [0022](0022-start-runs-explore.md) (`explore` writes spec 001). Spec: [025](../specs/025-build-without-a-spec.md).
+Status: **Accepted** (2026-10-28). Amends [0034](0034-no-ceremony-without-a-spec.md) (the size guard stops unspecced work) and [0022](0022-start-runs-explore.md) (`explore` writes spec 001). Spec: [025](../specs/025-build-without-a-spec.md).
 
 ## Context
 
