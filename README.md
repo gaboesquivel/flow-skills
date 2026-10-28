@@ -81,7 +81,7 @@ flowchart TB
 | Group | Skills |
 | --- | --- |
 | Context alignment | `flow` |
-| Delivery | `explore`, `interview`, `grill`, `to-spec`, `to-tasks`, `implement`, `review`, `ship`, `retro` |
+| Delivery | `explore`, `interview`, `grill`, `to-spec`, `to-tasks`, `build`, `review`, `ship`, `retro` |
 | Advisory | `council` |
 | Prototype | `prototype` |
 | Shared language | `domain-modeling` |

@@ -3,13 +3,13 @@
     {
       "id": "E01",
       "skills": [
-        "implement"
+        "build"
       ],
       "behavior": "Small fix proceeds without mandatory discovery or spec",
       "taskFile": "tests/evals/tasks/E01-task.md",
       "rubricFile": "tests/evals/rubrics/E01-rubric.md",
       "skillReferences": [
-        "skills/implement/SKILL.md"
+        "skills/build/SKILL.md"
       ],
       "fixtureReferences": [],
       "evidence": {
@@ -223,7 +223,7 @@
       "rubricFile": "tests/evals/rubrics/E10-rubric.md",
       "skillReferences": [
         "skills/flow/SKILL.md",
-        "skills/implement/SKILL.md"
+        "skills/build/SKILL.md"
       ],
       "fixtureReferences": [],
       "evidence": {

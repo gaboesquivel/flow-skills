@@ -16,7 +16,7 @@ export const PHRASES = [
   ['"grill this"', 'grill'],
   ['"spec it"', 'to-spec'],
   ['"break it down"', 'to-tasks'],
-  ['"build it"', 'implement'],
+  ['"build it"', 'build'],
   ['"check it against the spec"', 'review'],
   ['"ship it" (add "local" or "with a PR" for one run)', 'ship'],
   ['"update the docs"', 'flow'],

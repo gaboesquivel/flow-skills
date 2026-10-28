@@ -37,7 +37,7 @@ These are incomplete copies and faulty adaptations. Preserve or rewrite useful s
 
 ### 3. High — manual activation and composition contradict each other
 
-Sources: `bootstrap/AGENTS.snippet.md`, [implement](../../../skills/implement/SKILL.md), `skills/grill-with-docs/SKILL.md`, [retro](../../../skills/retro/SKILL.md), `skills/write-for-agents/SKILL-MECHANICS.md` (bootstrap and removed skills), `skills/*/agents/openai.yaml`.
+Sources: `bootstrap/AGENTS.snippet.md`, [implement](../../../skills/build/SKILL.md), `skills/grill-with-docs/SKILL.md`, [retro](../../../skills/retro/SKILL.md), `skills/write-for-agents/SKILL-MECHANICS.md` (bootstrap and removed skills), `skills/*/agents/openai.yaml`.
 
 Every entrypoint disables model invocation and the bootstrap promises manual specialized skills. Implement nevertheless calls TDD and code-review; grill-with-docs calls two other skills; retro calls writing-for-agents. The bundled skill-mechanics document itself says user-only skills cannot invoke one another. Adapter policy is also inconsistent: only some OpenAI metadata files explicitly disable implicit invocation.
 
@@ -91,7 +91,7 @@ Recommendation: discover existing project conventions, keep small tasks direct, 
 
 ### 9. Medium — delivery authority is inconsistent
 
-Sources: [implement](../../../skills/implement/SKILL.md), `skills/ship/SKILL.md`, `skills/prototype/SKILL.md` (removed).
+Sources: [implement](../../../skills/build/SKILL.md), `skills/ship/SKILL.md`, `skills/prototype/SKILL.md` (removed).
 
 Implement always commits; prototype mandates a throwaway branch and folding validated decisions into production code; ship defines explicit authority for delivery but treats absence of deployment as partial delivery even for a library. These are differing assumptions about what the original request authorizes.
 

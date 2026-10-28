@@ -1,10 +1,10 @@
 ---
-name: implement
+name: build
 description: Implement an authorized change from a request, specification, or task, keeping root context aligned. Use when the user says "build it", "implement this", or "make the change".
 disable-model-invocation: false
 ---
 
-# Implement
+# Build
 
 Read the relevant request, repository instructions, current context, and code. If the user supplies a task reference, retrieve it with available tools and resolve consequential ambiguity. A tracker, setup step, or formal spec is not a prerequisite for a clear small change.
 

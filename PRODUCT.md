@@ -78,7 +78,7 @@ AI makes it easy to ship faster than teams establish what matters. Disparate ski
 
 flow-skills offers a small catalog: **context alignment** (`flow`) for root context and Flow setup, plus optional skills you reach by talking to your agent, typed or dictated. Optional template initialization is the [`start`](skills/start/SKILL.md) skill only — Flow setup plus a template bootstrap, not `flow start`, and not mandatory; it confirms template, name, destination, and process depth before writing. Templates work without Flow Skills. Skills may name the next skill and wait; the only automatic hand-offs are `start` → `explore` and explore's `interview` and `grill` phases, each behind the user's yes ([0024](docs/decisions/0024-gated-hand-offs.md)). Adopter `AGENTS.md`, `CLAUDE.md`, or equivalent files change only when you opt into [Flow mode](#flow-mode).
 
-**Adopter product context.** In another repository, `PRODUCT.md` is that product. This file is Flow's identity only. `flow` and `implement` update an adopter's product docs when that product changes. They do not overwrite them with the mission, principles, or tagline above. [Decision 0009](docs/decisions/0009-adopter-product-context.md).
+**Adopter product context.** In another repository, `PRODUCT.md` is that product. This file is Flow's identity only. `flow` and `build` update an adopter's product docs when that product changes. They do not overwrite them with the mission, principles, or tagline above. [Decision 0009](docs/decisions/0009-adopter-product-context.md).
 
 ### Install and catalog
 
@@ -87,7 +87,7 @@ flow-skills offers a small catalog: **context alignment** (`flow`) for root cont
 | Layer | Skills |
 | --- | --- |
 | Context alignment | [`flow`](skills/flow/SKILL.md) — align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md` where hosts support discovery, and set up Flow: the opt-in Flow block with a Lite or Full [process depth](GLOSSARY.md#process-depth). Not always-on, and not template initialization. |
-| Delivery | `explore`, `interview`, `grill`, `to-spec`, `to-tasks`, `implement`, `review`, `ship`, `retro` |
+| Delivery | `explore`, `interview`, `grill`, `to-spec`, `to-tasks`, `build`, `review`, `ship`, `retro` |
 | Advisory | `council` |
 | Prototype | `prototype` |
 | Shared language | `domain-modeling` |
@@ -113,7 +113,7 @@ Opt-in conversational delivery ([decision 0020](docs/decisions/0020-flow-mode.md
 | --- | --- |
 | Product thinking | `explore`, `interview`, `grill`, `jtbd`, `competitors`, `council`; `flow` keeps product intent in root docs |
 | Engineering discipline | `to-spec`, `to-tasks`, `domain-modeling`, `write-agents`, `write-humans`, `prototype`, `debug`; specs and decisions as flat durable artifacts |
-| Agent execution | `implement`, `ship` (task-set orchestration in Flow mode); portable packages with no mandatory router |
+| Agent execution | `build`, `ship` (task-set orchestration in Flow mode); portable packages with no mandatory router |
 | Verified value | `review`, `ship`, `retro`, `tldr`, `board`; evidence, alignment, visual summaries, and a read-only progress view derived from git |
 
 Further catalog growth needs its own decision. [0013](docs/decisions/0013-restore-engineering-skills.md) restored `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug`. [0014](docs/decisions/0014-handoff-skill.md) adds `handoff`. [0015](docs/decisions/0015-tasks-and-domain-modeling.md) renames `to-tasks` and restores `domain-modeling`. [0019](docs/decisions/0019-voice-first-invocation.md) retires `simplify`, `security`, and `performance` in favor of host tools. [0027](docs/decisions/0027-progress-board-skill.md) adds `board`.

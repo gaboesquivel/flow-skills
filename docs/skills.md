@@ -19,7 +19,7 @@ flowchart LR
   subgraph delivery["Delivery skills — invoke any subset; no fixed order"]
     direction TB
     explore ~~~ interview ~~~ grill ~~~ toSpec[to-spec]
-    toTasks[to-tasks] ~~~ implement ~~~ review ~~~ ship ~~~ retro
+    toTasks[to-tasks] ~~~ build ~~~ review ~~~ ship ~~~ retro
   end
 ```
 
@@ -40,7 +40,7 @@ Product discovery, writing, advisory, prototype, quality, and misc skills are op
 | [grill](../skills/grill/SKILL.md) | "grill me" | Stress-test an idea or plan with focused questions and evidence. |
 | [to-spec](../skills/to-spec/SKILL.md) | "spec it" | Turn conversation into a numbered spec with contract-first interfaces; label assumptions; write candidate stubs for later bets; save only when requested. |
 | [to-tasks](../skills/to-tasks/SKILL.md) | "break it down" | Vertical-slice tasks with blockers, recorded as GitHub issues (pull-request mode) or in the spec's Tasks section (local mode); reports the ready set and waits for "ship it". |
-| [implement](../skills/implement/SKILL.md) | "build it" | Implement an authorized change; no spec required for small clear work. |
+| [build](../skills/build/SKILL.md) | "build it" | Implement an authorized change; no spec required for small clear work. |
 | [review](../skills/review/SKILL.md) | "check it against the spec" | Review against intent and root context on five axes: correctness, readability, architecture, security, performance. |
 | [ship](../skills/ship/SKILL.md) | "ship it" | Verify, commit, confirm, push, and check the deployment this repo configures, deferring to the platform's deploy skill. On a spec's task set, runs tasks in [waves](../GLOSSARY.md#wave) on one branch, opens a draft pull request early in pull-request mode, posts a [checkpoint](../GLOSSARY.md#checkpoint) with a preview after each wave ([decision 0025](decisions/0025-wave-checkpoints.md)), and finishes by [delivery mode](../skills/ship/SKILL.md#delivery-mode). |
 | [retro](../skills/retro/SKILL.md) | "let's do a retro" | Retrospective on the agent environment after a session. |

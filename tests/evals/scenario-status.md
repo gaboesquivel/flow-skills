@@ -2,7 +2,7 @@
 
 | ID | Skill | Structural | Fixture | Live (Cursor) | Second host |
 | --- | --- | --- | --- | --- | --- |
-| E01 | implement | passed | not_executed | not_executed | not_executed |
+| E01 | build | passed | not_executed | not_executed | not_executed |
 | E02 | flow | passed | not_executed | not_executed | not_executed |
 | E03 | review | passed | passed | passed | not_executed |
 | E04 | to-spec | passed | not_executed | not_executed | not_executed |
