@@ -699,7 +699,7 @@ function startCli(dir, port) {
     let err = ''
     child.stdout.on('data', (chunk) => { out += chunk; const match = /http:\/\/127\.0\.0\.1:\d+\//u.exec(out); if (match) done(match[0]) })
     child.stderr.on('data', (chunk) => { err += chunk })
-    child.on('exit', () => fail(new Error(`server exited early: ${out}${err}`)))
+    child.on('close', () => fail(new Error(`server exited early: ${out}${err}`)))
   })
   return { child, exited, url }
 }
