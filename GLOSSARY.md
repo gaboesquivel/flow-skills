@@ -40,11 +40,7 @@ A portable `skills/<name>/SKILL.md` package in the Flow Skills distribution. Use
 
 ## Delivery mode
 
-How `ship` lands a spec's work in a project: **local** or **pull request**. Distinct from [process depth](#process-depth). The rule lives in [`ship`](skills/ship/SKILL.md#delivery-mode); [decision 0020](docs/decisions/0020-flow-mode.md) records why. The [deploy target](#deploy-target) sits beside it on a `Deploy:` line.
-
-## Deploy target
-
-The platform that builds previews and deployments for a project, such as `vercel`, or `none`. Recorded as a `Deploy:` line in the project's Flow block; `ship` infers it from repository configuration when unset and defers deploy steps to the platform's own skill or CLI. [Decision 0025](docs/decisions/0025-wave-checkpoints.md).
+How `ship` lands a spec's work in a project: **local** or **pull request**. Distinct from [process depth](#process-depth). The rule lives in [`ship`](skills/ship/SKILL.md#delivery-mode); [decision 0020](docs/decisions/0020-flow-mode.md) records why.
 
 ## Wave
 
@@ -52,7 +48,7 @@ The tasks of a spec's task set that are ready when `ship` starts them; a wave en
 
 ## Checkpoint
 
-The report `ship` posts after each [wave](#wave): what integrated or failed, checks, the commit, the preview from the [deploy target](#deploy-target), and screenshots when the host has a browser tool. A pull request comment in pull-request mode, a message in local mode; by default the next wave waits for the user's go. [Decision 0025](docs/decisions/0025-wave-checkpoints.md).
+The report `ship` posts after each [wave](#wave): what integrated or failed, the commit, the pull request's checks and the links CI attached (deployments and previews the pull request shows), and screenshots when the host has a browser tool. A pull request comment in pull-request mode, a message in local mode; by default the next wave waits for the user's go. [Decision 0025](docs/decisions/0025-wave-checkpoints.md).
 
 ## Candidate spec
 
