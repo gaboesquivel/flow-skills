@@ -42,7 +42,7 @@ Parallel groups (fan-out rule: `write-agents` Workers):
 - **Review round:** launch every reviewer in one batch, each in its own context with the evidence packet and no access to the others' conclusions.
 - **Deep rebuttals:** after collecting findings, launch one rebuttal per material disagreement in parallel; each sees only the findings it answers. Stop after that round.
 
-Use model diversity only when it is actually available and useful, and never invent it. Without workers, run the reviews in order and label the result a single-agent multi-perspective analysis; never claim independence that did not happen.
+Use model diversity only when it is actually available and useful, and never invent it. Without workers, label the result a single-agent multi-perspective analysis; never claim independence that did not happen.
 
 ## Synthesis
 

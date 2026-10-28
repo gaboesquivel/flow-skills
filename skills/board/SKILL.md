@@ -50,7 +50,7 @@ Markers flag what needs a human look:
 - `label accepted, file draft` (any pair): the spec issue's label and the file's `Status:` disagree.
 - `build run stopped updating…`: a `build` run never recorded its end and has not updated for 30 minutes (likely a crash), so its task states are ignored.
 
-During a `build` task-set run, the run's card moves to Building and lists each task with its live state (`running`, `waiting`, `integrated`, `blocked`), fix round, and note, from `<git common dir>/flow/board.json`. Git wins: a task the spec marks done shows integrated, and a spec git shows as shipped stays Shipped. An ended run is ignored; an unreadable overlay is ignored with a header note. `--record` is for `build`'s orchestrator; never use it to move cards or answer a request to change progress.
+During a `build` task-set run, the run's card moves to Building and lists each task with its live state (`running`, `waiting`, `integrated`, `blocked`), fix round, and note, from `<git common dir>/flow/board.json`. Git wins: a task the spec marks done shows integrated, and a spec git shows as shipped stays Shipped. An ended run is ignored; an unreadable overlay is ignored with a header note. `--record` is for `build`: its orchestrator records `run-start` and `run-end`, and the orchestrator or a worker records its own task with `--record task`. Never use it to move cards or answer a request to change progress.
 
 Report markers rather than fixing specs unasked.
 

@@ -10,7 +10,7 @@ Stress-test the idea or plan. Read the relevant conversation, code, and accepted
 
 When intent is already confirmed (for example by `interview` or `explore`), do not re-extract it; challenge only the riskiest claims. Optionally offer a short pre-mortem: assume it failed six months from now and list the most plausible reasons. Use those reasons to name the riskiest assumptions and a kill criterion.
 
-Map the important uncertainty first. Then, as parallel groups (fan-out rule: `write-agents` Workers), launch one read-only evidence worker per risky claim, plus a pre-mortem worker when the pre-mortem is in play; the main thread verifies their findings. Without workers, check the claims in order and say so.
+Map the important uncertainty first. Then, as parallel groups (fan-out rule: `write-agents` Workers), launch one read-only evidence worker per risky claim, plus a pre-mortem worker when the pre-mortem is in play; the main thread verifies their findings.
 
 Ask a small round of independent questions in the main thread, each with a recommended answer and its tradeoff. Wait only for answers needed to proceed. Revise downstream questions when answers change their premise.
 
