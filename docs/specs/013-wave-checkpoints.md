@@ -40,7 +40,7 @@ The project's Flow block records the deploy target on a `Deploy:` line, so a Ver
 
 **Review.** Per task, a separate worker checks correctness and security against the task. Per wave and on the final pull request, `review` runs on all five axes over the combined change. Blocking findings go back as fix rounds (at most 2 per task).
 
-**Shared notes.** Before the first wave, when the set has more than one task, a worker writes notes on the spec, tasks, and relevant code to `<git common dir>/flow/notes/<spec>.md` (found with `git rev-parse --git-common-dir`). Task workers get a pointer, not a copy. Notes are never committed.
+**Shared notes.** Before the first wave, when the set has more than one task, a worker writes notes on the spec, tasks, and relevant code to `<git common dir>/flow/notes/<spec>.md` (found with `git rev-parse --path-format=absolute --git-common-dir`). Task workers get a pointer, not a copy. Notes are never committed.
 
 **Shared files.** Files the project's instructions tell every session to append to are written only by the orchestrator, on the spec branch. Workers leave them untouched.
 
