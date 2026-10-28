@@ -1,6 +1,6 @@
 # 019: Asked delivery, local mode, parallel skills, lighter tests
 
-Status: accepted (2026-10-28). Issue: [#89](https://github.com/gaboesquivel/flow-skills/issues/89). Decisions: [0030](../decisions/0030-asked-delivery-and-local-mode.md) (Accepted), [0031](../decisions/0031-fan-out-by-default.md) (Accepted). Builds on [spec 018](018-spec-issues.md).
+Status: implemented (2026-10-28). Issue: [#89](https://github.com/gaboesquivel/flow-skills/issues/89). Decisions: [0030](../decisions/0030-asked-delivery-and-local-mode.md) (Accepted), [0031](../decisions/0031-fan-out-by-default.md) (Accepted). Builds on [spec 018](018-spec-issues.md).
 
 ## Problem Statement
 
