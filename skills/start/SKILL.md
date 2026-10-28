@@ -75,17 +75,22 @@ In the new project root, run the template's `pnpm setup` (installs curated **tec
 
 ## Baseline product documentation
 
-Write `PRODUCT.md`, `DESIGN.md`, `ARCHITECTURE.md`, and `GLOSSARY.md` for **this product** using `buildBaselineDocs` from `lib/baseline-docs.mjs`. Record template name, commit SHA, derived slug/host, and the template route shell. Do not copy Flow's mission, tagline, or principles from flow-skills. If `pnpm qa` reports formatting issues on those files, run the project's formatter (for example `pnpm exec oxfmt --write` on the new root docs) before re-running checks.
+Write `PRODUCT.md`, `DESIGN.md`, `ARCHITECTURE.md`, and `GLOSSARY.md` for **this product** using `buildBaselineDocs` from `lib/baseline-docs.mjs`. Record template name, commit SHA, derived slug/host, and the template route shell. Do not copy Flow's mission, tagline, or principles from flow-skills.
+
+## Flow block
+
+Before the checks run, write the project's Flow block with the `flow` skill's `lib/flow-block.mjs`: pass the project's absolute path and the confirmed delivery (`local` or `github`). The `flow` skill's Flow block section and its helper own the instruction-file layout; keep the helper's output for the report, including any refusal. Touch nothing outside the block's markers and the import line. When `flow` is not installed, skip the block and say so.
 
 ## Bootstrap order
 
-Everything shares one tree, so run independent steps as concurrent processes, not workers, in five stages; each stage waits for the previous one:
+Everything shares one tree, so run independent steps as concurrent processes, not workers, in six stages; each stage waits for the previous one. The checks run after the last write, so they see the files the commit will hold:
 
 1. The identity renames.
 2. `pnpm setup` alongside the baseline docs.
-3. qa, eval, identity scan, and build.
-4. The dev server (portless_startup).
-5. The HTTP smoke checks and the Operator fail-closed check.
+3. The Flow block and the `@AGENTS.md` import.
+4. Format every file the bootstrap wrote or renamed with the project's formatter (for example `pnpm exec oxfmt --write <files>`).
+5. qa, eval, and the identity scan; then build, after them, not alongside.
+6. The dev server (portless_startup), then the HTTP smoke checks and the Operator fail-closed check.
 
 Run gitignore_artifacts in any stage after setup. When the host cannot run processes concurrently, run the same steps in this order and say so.
 
@@ -102,7 +107,7 @@ Record each check as **passed**, **failed**, or **unavailable**. A passing build
 | portless_startup | `pnpm setup:portless`, then `pnpm dev`; note the URL Portless prints |
 | http_home | HTTP GET `/` on the Portless origin |
 | http_genui | HTTP GET `/genui` |
-| http_mcp | HTTP GET `/api/mcp` or `/.well-known/mcp.json` |
+| http_mcp | HTTP GET `/.well-known/mcp.json`, or `/api/mcp` with header `Accept: application/json, text/event-stream` |
 | operator_fail_closed | Operator/MCP operator without `OPERATOR_SECRET` must fail closed |
 | identity_scan | `scanTreeForStaleIdentifiers` returns no issues |
 | gitignore_artifacts | `git check-ignore` for `.env.local`, `node_modules`, `.next` |
@@ -110,10 +115,6 @@ Record each check as **passed**, **failed**, or **unavailable**. A passing build
 Authenticated Operator behavior may be **unavailable** when no secret is configured; that is not a failure. Credential-dependent live model calls may be **unavailable**; distinguish from failed essential local behavior.
 
 If any **essential** check **failed**, report the blocker and do **not** claim a successful bootstrap or create a misleading success commit.
-
-## Flow block
-
-Once every essential check passes, write the project's Flow block with the `flow` skill's `lib/flow-block.mjs`: pass the project's absolute path and the confirmed delivery (`local` or `github`). The `flow` skill's Flow block section and its helper own the instruction-file layout; keep the helper's output for the report, including any refusal. Touch nothing outside the block's markers and the import line. When `flow` is not installed, skip the block and say so.
 
 ## Initial commit
 

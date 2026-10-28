@@ -35,7 +35,7 @@ Break the work into vertical-slice tasks.
 
 </vertical-slice-rules>
 
-Give each task an **area**: the package or directory it changes, coarse and never a file path. Overlapping areas need no blocking edge; `build` schedules by area.
+Give each task an **area**: every package or directory it changes, comma-separated (for example `lib/feedback/connect, app/opportunities`), coarse and never file paths. A vertical slice names every directory it touches, including pages or routes outside its main package, so disjoint areas mean disjoint changes. Overlapping areas need no blocking edge; `build` schedules by area.
 
 Give each task its **blocking edges**: other tasks that must finish before it can start. An edge needs a real data or file dependency: one task uses what the other builds, or both must change the same file in order. Topic order is not a reason; prefer a wide frontier, where tasks that share only the spec have no blockers. A task with no blockers can start immediately.
 
@@ -70,7 +70,7 @@ End by naming where the tasks live and the ready set, then wait for "build it". 
 
 **What to build:** the end-to-end behaviour this task makes work, from the user's perspective, not a layer-by-layer implementation list.
 
-**Area:** the package or directory this task changes, never a file path.
+**Area:** every package or directory this task changes, comma-separated, never file paths.
 
 **Blocked by:** the numbers or titles of tasks that gate this one, or "None (can start immediately)".
 
@@ -89,7 +89,7 @@ A link to the spec this task belongs to, so `ship` can resolve it (omit only whe
 
 ## What to build
 
-Area: the package or directory this task changes, never a file path.
+Area: every package or directory this task changes, comma-separated, never file paths.
 
 The end-to-end behaviour this task makes work, from the user's perspective, not layer-by-layer implementation.
 

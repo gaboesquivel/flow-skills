@@ -31,7 +31,7 @@ Hosts may match this skill when the user asks to update or sync the docs. That i
 
 ## Flow block
 
-"Set up Flow here" opts the project into Flow mode (decision 0020). This section is the one definition of the block; `start` writes the same block after a bootstrap. Deleting the block opts out.
+"Set up Flow here" opts the project into Flow mode (decision 0020). This section is the one definition of the block; `start` writes the same block during a bootstrap, before its checks. Deleting the block opts out.
 
 **Repository.** The block needs a Git repository: follow `write-agents` [Repository](../write-agents/SKILL.md#repository) before writing it. Aligning root files does not.
 
@@ -47,7 +47,7 @@ Report the helper's output: the block's file (`Wrote` or `Unchanged`), any stale
 
 ## Boundaries
 
-- Do not edit adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or similar instruction files outside the Flow block and the `@AGENTS.md` import, and write the block only when the user asks or `start` finishes a confirmed bootstrap (decision 0020).
+- Do not edit adopter `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or similar instruction files outside the Flow block and the `@AGENTS.md` import, and write the block only when the user asks or `start` runs a confirmed bootstrap (decision 0020).
 - Do not require installation, initialization, or a prior skill invocation.
 - Do not treat alignment edits as permission to implement unrelated code. For authorized implementation and tests, invoke the `build` skill when installed.
 - Do not create `docs/specs/` or `docs/decisions/` records here; use `to-spec` or explicit decision work when durable bounded artifacts are justified.
