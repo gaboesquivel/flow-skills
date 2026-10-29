@@ -20,7 +20,7 @@ E37 task set, copy fix, and API escalation; E26 draft stop; E34 verify reporting
 ## Results
 
 - **Structural:** smoke contracts and eval checker pass on the optimized skills.
-- **Live triple comparison:** `live_skill_execution: partial` — one cell complete (optimized Flow × E26). See [2026-10-28-spec-028-live-partial.md](2026-10-28-spec-028-live-partial.md) and [2026-10-28-spec-028-live-procedure.md](2026-10-28-spec-028-live-procedure.md). Conditions A (no skills) and B (pre-028) and prompts E34/E37 not executed yet.
+- **Live triple comparison:** `live_skill_execution: partial` — E26 row complete for conditions A, B, and C; E34/E37 live cells and executable fixture CI for E34/E37 added. See [2026-10-28-spec-028-live-partial.md](2026-10-28-spec-028-live-partial.md).
 - **Kill criterion:** no proof regression in the completed cell; pre-028 and no-skill baselines still open.
 
 ## Limitation
