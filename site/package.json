@@ -1,0 +1,46 @@
+{
+  "name": "flow-prism-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Flow Prism website: methodology, portable skills, starters, docs, Search + Ask, and agent interfaces",
+  "scripts": {
+    "content": "node scripts/build-content.mjs",
+    "predev": "pnpm content",
+    "dev": "next dev",
+    "prebuild": "pnpm content",
+    "build": "next build",
+    "start": "next start",
+    "lint": "oxlint .",
+    "check-types": "tsc --noEmit",
+    "test": "pnpm content && vitest run",
+    "qa": "pnpm lint && pnpm check-types && pnpm test",
+    "agentic:check": "sh -c 'if [ -z \"${AGENTIC_CHECK_URL:-}\" ]; then echo \"agentic:check requires AGENTIC_CHECK_URL (public host without scheme)\"; exit 1; fi; exec is-agentic \"$AGENTIC_CHECK_URL\"'"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.4.0",
+    "ai": "^7.0.152",
+    "lucide-react": "^1.61.0",
+    "minisearch": "^7.2.0",
+    "next": "16.4.3",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "is-agentic": "^1.0.1",
+    "marked": "^16.4.1",
+    "oxlint": "^1.89.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3",
+    "vitest": "3.2.4"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@12.14.0"
+}
