@@ -1,6 +1,6 @@
 # 023: Git for delivery, GitHub for GitHub mode
 
-Status: implemented (2026-10-28). Issue: [#123](https://github.com/gaboesquivel/flow-skills/issues/123). Decisions: [0037](../decisions/0037-git-for-delivery-github-for-github-mode.md) (Accepted). Builds on [spec 021](021-demo-findings.md) and [decision 0036](../decisions/0036-one-explore-depth.md).
+Status: implemented (2026-10-28). Issue: [#123](https://github.com/gaboesquivel/flow-skills/issues/123). Decisions: [0037](../decisions/0037-git-for-delivery-github-for-github-mode.md) (Accepted). Builds on [spec 021](021-demo-findings.md) and [decision 0036](../decisions/0036-one-explore-depth.md). Amended by [0044](../decisions/0044-fast-delivery.md) (delivery is inferred from the remote and `gh` access, never asked).
 
 ## Problem Statement
 

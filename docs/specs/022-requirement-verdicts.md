@@ -1,6 +1,6 @@
 # 022: Requirement verdicts and data-not-instructions briefs
 
-Status: implemented (2026-10-28). Issue: [#120](https://github.com/gaboesquivel/flow-skills/issues/120). Source: [OpenProse research](../research/2026-10-28-openprose.md), candidate ideas 1 and 2. The per-axis worker split amended by [decision 0042](../decisions/0042-outcome-build-and-ship.md) ([spec 028](028-outcome-build-and-ship.md)); verdicts stay.
+Status: implemented (2026-10-28). Issue: [#120](https://github.com/gaboesquivel/flow-skills/issues/120). Source: [OpenProse research](../research/2026-10-28-openprose.md), candidate ideas 1 and 2. The per-axis worker split amended by [decision 0042](../decisions/0042-outcome-build-and-ship.md) ([spec 028](028-outcome-build-and-ship.md)); verdicts stay. Narrowed by [spec 031](031-fast-delivery.md) ([0044](../decisions/0044-fast-delivery.md)): verdicts cover the acceptance scenario's steps only; other unmet requirements are findings.
 
 ## Problem Statement
 

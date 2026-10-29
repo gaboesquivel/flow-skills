@@ -1,6 +1,6 @@
 # 021: A clean run from start to ship
 
-Status: implemented (2026-10-28). Issue: [#111](https://github.com/gaboesquivel/flow-skills/issues/111). Decisions: [0033](../decisions/0033-shared-files-and-reviewed-head.md) (Accepted), [0034](../decisions/0034-no-ceremony-without-a-spec.md) (Accepted), [0035](../decisions/0035-spec-issue-on-acceptance.md) (Accepted), [0036](../decisions/0036-one-explore-depth.md) (Accepted). Builds on [spec 020](020-ship-verifies.md), which lands first.
+Status: implemented (2026-10-28). Issue: [#111](https://github.com/gaboesquivel/flow-skills/issues/111). Decisions: [0033](../decisions/0033-shared-files-and-reviewed-head.md) (Accepted), [0034](../decisions/0034-no-ceremony-without-a-spec.md) (Accepted), [0035](../decisions/0035-spec-issue-on-acceptance.md) (Accepted), [0036](../decisions/0036-one-explore-depth.md) (Accepted). Builds on [spec 020](020-ship-verifies.md), which lands first. Items 3, 8, and 11 superseded, and items 4, 10, and 12 amended, by [0044](../decisions/0044-fast-delivery.md) (no shared-file exception or spec issue; host worktrees move to the delivery head; checks once at pull request time; one `explore` confirmation).
 
 ## Problem Statement
 

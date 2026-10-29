@@ -1,6 +1,6 @@
 # 030: Adaptive explore
 
-Status: candidate (2026-10-28). Superseded by [031](031-fast-delivery.md) (one confirmation in `explore`).
+Status: dropped (2026-10-29). Superseded by [031](031-fast-delivery.md) (one confirmation in `explore`; grill and pre-mortem only for new products or on request).
 
 ## Problem Statement
 

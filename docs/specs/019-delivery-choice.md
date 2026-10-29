@@ -1,6 +1,6 @@
 # 019: Asked delivery, local mode, parallel skills, lighter tests
 
-Status: implemented (2026-10-28). Issue: [#89](https://github.com/gaboesquivel/flow-skills/issues/89). Decisions: [0030](../decisions/0030-asked-delivery-and-local-mode.md) (Accepted), [0031](../decisions/0031-fan-out-by-default.md) (Accepted). Builds on [spec 018](018-spec-issues.md). Fan-out and the per-axis review for `build`, `ship`, and `review` amended by [decision 0042](../decisions/0042-outcome-build-and-ship.md) ([spec 028](028-outcome-build-and-ship.md)).
+Status: implemented (2026-10-28). Issue: [#89](https://github.com/gaboesquivel/flow-skills/issues/89). Decisions: [0030](../decisions/0030-asked-delivery-and-local-mode.md) (Accepted), [0031](../decisions/0031-fan-out-by-default.md) (Accepted). Builds on [spec 018](018-spec-issues.md). Fan-out and the per-axis review for `build`, `ship`, and `review` amended by [decision 0042](../decisions/0042-outcome-build-and-ship.md) ([spec 028](028-outcome-build-and-ship.md)). Amended by [0044](../decisions/0044-fast-delivery.md) (delivery is inferred, never asked; independent work runs in parallel by default, the agent choosing how).
 
 ## Problem Statement
 

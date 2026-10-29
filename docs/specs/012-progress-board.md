@@ -1,6 +1,6 @@
 # 012: Progress board
 
-Status: draft (2026-10-28). Decision: [0027](../decisions/0027-progress-board-skill.md). Related: [0020](../decisions/0020-flow-mode.md) (delivery modes, task-set orchestration), [0022](../decisions/0022-start-runs-explore.md) (candidate specs), [spec 009](009-flow-mode.md).
+Status: implemented (2026-10-28; status set 2026-10-29). Tasks 01, 02, 04, and 05 shipped the git-only `board` skill in [#69](https://github.com/gaboesquivel/flow-skills/pull/69); the live-runs overlay (task 03) is retired by [0044](../decisions/0044-fast-delivery.md) (no board recording during builds), and the skill no longer reads or writes it. Decision: [0027](../decisions/0027-progress-board-skill.md). Related: [0020](../decisions/0020-flow-mode.md) (delivery modes, task-set orchestration), [0022](../decisions/0022-start-runs-explore.md) (candidate specs), [spec 009](009-flow-mode.md).
 
 ## Problem Statement
 
@@ -110,7 +110,7 @@ Specs that exist only on unmerged branches are shown too, marked with their bran
 ### 03: Run overlay (#49)
 **What to build:** during a `ship` task-set run, the Building card shows each task's live state.
 **Blocked by:** 02. (Spec 009's `ship` task-set orchestration landed in #44.)
-**Status:** in progress (dogfood pending)
+**Status:** retired by [0044](../decisions/0044-fast-delivery.md) (no board recording during builds); the overlay was removed from `ship` and `board`, so the dogfood run below will not happen.
 - [x] Overlay contract written by `ship` at run start, task state changes, and run end; best-effort.
 - [x] Board merges the overlay with git precedence and stale handling, covered by tests.
 - [ ] Dogfood run on a three-task set, checked against the kill criterion.

@@ -1,6 +1,6 @@
 # 005: Flow Templates — Interoperability and Release Contract
 
-**Status:** Proposed (canonical contract for migration)  
+**Status:** candidate (2026-10-29; was Proposed, 2026-10-27). A cross-repository contract whose work belongs to flow-next and flow-mono, not to this repository; each template's code and `docs/INTEROP.md` are authoritative day to day. "Proposed" is not a spec status since [0044](../decisions/0044-fast-delivery.md); candidate keeps this as the template interoperability target until a template repository takes it up in its own spec. Body unchanged as evidence.  
 **Repositories:** [gaboesquivel/flow-next](https://github.com/gaboesquivel/flow-next), [gaboesquivel/flow-mono](https://github.com/gaboesquivel/flow-mono)  
 **References:** [003-flow-templates-baseline-v2.md](003-flow-templates-baseline-v2.md) (historical baseline), [gaboesquivel/flow-starter](https://github.com/gaboesquivel/flow-starter), alignment decisions 02–33 (Flow ecosystem interview, 2026)
 

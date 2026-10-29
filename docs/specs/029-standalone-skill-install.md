@@ -1,6 +1,6 @@
 # 029: Standalone skill install
 
-Status: candidate (2026-10-28).
+Status: candidate (2026-10-28; problem rechecked 2026-10-29). Still true after [0044](../decisions/0044-fast-delivery.md), which moved shared delivery rules into `build` (Delivery mode, Size guard, Work in flight) so more skills now link there.
 
 ## Problem Statement
 

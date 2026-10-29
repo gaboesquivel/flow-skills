@@ -112,7 +112,7 @@ test('nested .git under tests/fixtures is rejected', (t) => {
   ])
 })
 
-test('eval check rejects duplicate ids, false live claims, and missing ids', (t) => {
+test('eval check rejects duplicate ids, false live claims, retirement without a reason, and missing ids',(t) => {
   const dir = tempDir(t, 'flow-eval-')
   const scenariosFile = join(dir, 'scenarios.json')
   const evidence = (live) => ({
@@ -131,6 +131,13 @@ test('eval check rejects duplicate ids, false live claims, and missing ids', (t)
   const errors = validateEvalScenarios({ root: repoRoot, scenariosFile })
   assert.ok(errors.some((e) => /duplicate/i.test(e)))
   assert.ok(errors.some((e) => /liveObservation/i.test(e)))
+  writeFileSync(scenariosFile, JSON.stringify({
+    scenarios: [
+      { id: 'E02', skills: ['flow'], behavior: 'x', evidence: evidence('not_executed'), retired: { by: 'docs/decisions/0044-fast-delivery.md', date: '2026-10-29' } },
+    ],
+  }))
+  const retired = validateEvalScenarios({ root: repoRoot, scenariosFile })
+  assert.ok(retired.some((e) => /E02: retired\.reason required/u.test(e)))
   writeFileSync(scenariosFile, JSON.stringify({ scenarios: [] }))
   const missing = validateEvalScenarios({ root: repoRoot, scenariosFile })
   for (const id of REQUIRED_SCENARIO_IDS) assert.ok(missing.some((e) => e.includes(id)))

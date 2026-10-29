@@ -9,7 +9,28 @@ const scenariosPath = join(repoRoot, 'tests/evals/scenarios.json')
 export const REQUIRED_SCENARIO_IDS = [
   'E01', 'E02', 'E03', 'E04', 'E05', 'E06', 'E07', 'E08', 'E09', 'E10', 'E11', 'E12', 'E13', 'E14', 'E15',
   'E16', 'E17', 'E18', 'E19', 'E20', 'E21', 'E22', 'E23', 'E24', 'E25', 'E26', 'E27', 'E28', 'E29', 'E30', 'E31', 'E32', 'E33', 'E34', 'E35', 'E36', 'E37', 'E38', 'E39',
+  'E40',
 ]
+
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/u
+
+// A retired scenario keeps its id, files, and recorded evidence as history.
+// It must say what retired it and why, and may not gain evidence dated after retirement.
+function retiredErrors(id, scenario) {
+  const retired = scenario.retired
+  if (retired === undefined) return []
+  if (!retired || typeof retired !== 'object') return [`${id}: retired must be an object with by, reason, and date`]
+  const errors = []
+  for (const key of ['by', 'reason']) {
+    if (typeof retired[key] !== 'string' || !retired[key].trim()) errors.push(`${id}: retired.${key} required`)
+  }
+  if (!ISO_DATE.test(retired.date ?? '')) errors.push(`${id}: retired.date must be YYYY-MM-DD`)
+  else for (const obsKey of observationRequired.values()) {
+    const date = scenario[obsKey]?.date
+    if (date && date > retired.date) errors.push(`${id}: ${obsKey} dated after retirement`)
+  }
+  return errors
+}
 
 export const EVIDENCE_KEYS = [
   'structural_contract',
@@ -51,6 +72,7 @@ export function validateEvalScenarios({ root = repoRoot, scenariosFile = scenari
     seen.add(id)
 
     if (!REQUIRED_SCENARIO_IDS.includes(id)) errors.push(`${id}: unexpected scenario id`)
+    errors.push(...retiredErrors(id, scenario))
 
     const skills = scenario.skills
     if (!Array.isArray(skills) || skills.length === 0) errors.push(`${id}: skills must be a non-empty array`)
@@ -67,6 +89,9 @@ export function validateEvalScenarios({ root = repoRoot, scenariosFile = scenari
 
     if (scenario.taskFile && !existsSync(join(root, scenario.taskFile))) errors.push(`${id}: missing task file ${scenario.taskFile}`)
     if (scenario.rubricFile && !existsSync(join(root, scenario.rubricFile))) errors.push(`${id}: missing rubric file ${scenario.rubricFile}`)
+    if (scenario.retired) for (const rel of [scenario.taskFile, scenario.rubricFile]) {
+      if (rel && existsSync(join(root, rel)) && !readFileSync(join(root, rel), 'utf8').includes('Retired')) errors.push(`${id}: ${rel} needs a Retired note`)
+    }
 
     const evidence = scenario.evidence
     if (!evidence || typeof evidence !== 'object') {
@@ -107,5 +132,6 @@ if (isMain) {
     for (const error of errors) console.error(error)
     process.exit(1)
   }
-  console.log(`Validated ${REQUIRED_SCENARIO_IDS.length} evaluation scenarios.`)
+  const retiredCount = JSON.parse(readFileSync(scenariosPath, 'utf8')).scenarios.filter((s) => s.retired).length
+  console.log(`Validated ${REQUIRED_SCENARIO_IDS.length} evaluation scenarios (${retiredCount} retired).`)
 }
