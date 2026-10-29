@@ -44,5 +44,6 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [036-agent-does-the-work.md](036-agent-does-the-work.md)
 - [038-throughline-identity.md](038-throughline-identity.md)
 - [039-design-skill.md](039-design-skill.md)
+- [041-drop-to-prefix.md](041-drop-to-prefix.md) (draft)
 
 Significant standalone decisions belong in `docs/decisions/`, not in a spec. See [decisions](../decisions/README.md).

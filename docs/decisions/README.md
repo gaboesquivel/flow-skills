@@ -55,6 +55,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0049-agent-does-the-work.md](0049-agent-does-the-work.md) | Accepted | The agent does the work: CLI, MCP, API, then browser; hands the user only sign-in, secrets, payment, consent, or permission changes, once |
 | [0050-github-governance-preset.md](0050-github-governance-preset.md) | Accepted | One GitHub governance preset: protected default branch, squash only, required checks, no bypass; `start` applies it |
 | [0051-design-skill.md](0051-design-skill.md) | Accepted | `design` compares rendered visual directions, the user chooses, and `DESIGN.md` records the approved one |
+| [0052-skill-names-without-to-prefix.md](0052-skill-names-without-to-prefix.md) | Proposed | Skills are one short action word; `to-spec` → `spec`, `to-tasks` → `tasks` |
 
 ## Rules
 
