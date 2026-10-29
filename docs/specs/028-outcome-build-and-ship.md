@@ -118,7 +118,7 @@ Confirmed with the decision above. Back-pointers are written when this spec is a
 
 ## Tasks
 
-- [ ] 01: State build, ship, and review as outcomes and proofs (#146)
-- [ ] 02: Score the evals against those proofs (#145)
-- [ ] 03: Record the three-condition comparison (#148)
-- [ ] 04: Update the catalog to the skills the comparison kept (#147)
+- [x] 01: State build, ship, and review as outcomes and proofs (#146) — 07a004f
+- [x] 02: Score the evals against those proofs (#145) — 07a004f
+- [x] 03: Record the three-condition comparison (#148) — 07a004f
+- [x] 04: Update the catalog to the skills the comparison kept (#147) — 07a004f
