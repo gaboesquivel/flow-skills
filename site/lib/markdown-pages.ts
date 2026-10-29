@@ -73,7 +73,7 @@ ${list([
   "[Skills](/skills): the full catalog with phrases and install commands",
   "[Starters](/starters): flow-next and flow-mono templates",
   "[Docs](/docs): guides and decision records",
-  "[Search and Ask](/search): source-grounded answers with citations",
+  "[Search](/search): ranked results; press ⌘K on any page to search or ask for a cited answer",
   "[For agents](/agents): llms.txt, Markdown, search API, MCP",
 ])}
 
@@ -181,7 +181,7 @@ const searchPage = (origin: string, query?: string | null) => {
   const q = query?.trim();
   const results = q ? search(q, { limit: 10 }) : [];
   return frame(
-    "Search and Ask",
+    "Search",
     "/search",
     origin,
     `
@@ -189,7 +189,7 @@ Lexical search over every skill, guide, decision, and starter README, plus Ask: 
 
 - Search API: \`GET ${origin}/api/search?q=<query>\`
 - Ask API: \`POST ${origin}/api/ask\` with \`{"question": "..."}\`
-- Ask in the browser: ${origin}/search?mode=ask
+- Ask in the browser: press ⌘K (Ctrl+K) on any page
 ${
   q
     ? `\n## Results for "${q}"\n\n${results.length ? results.map((r) => `- [${r.title}${r.heading ? ` › ${r.heading}` : ""}](${r.url}): ${r.excerpt}`).join("\n") : "No results."}`

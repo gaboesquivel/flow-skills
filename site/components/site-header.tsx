@@ -3,7 +3,7 @@ import Link from "next/link";
 import { MobileMenu } from "@/components/mobile-menu";
 import { SearchTrigger } from "@/components/search-trigger";
 import { Wordmark } from "@/components/logo";
-import { ArrowUpRight, Container } from "@/components/ui";
+import { Container } from "@/components/ui";
 import { NAV } from "@/lib/site";
 
 export function SiteHeader() {
@@ -25,13 +25,7 @@ export function SiteHeader() {
           </ul>
         </nav>
         <div className="flex items-center gap-2.5">
-          <SearchTrigger className="hidden md:inline-flex" />
-          <Link
-            href="/search?mode=ask"
-            className="inline-flex min-h-10 items-center gap-1.5 rounded-lg bg-lavender-soft px-4 text-sm font-semibold text-ink hover:bg-lavender"
-          >
-            Ask Flow <ArrowUpRight />
-          </Link>
+          <SearchTrigger />
           <MobileMenu />
         </div>
       </Container>

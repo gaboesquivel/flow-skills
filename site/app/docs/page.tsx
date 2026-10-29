@@ -3,7 +3,6 @@ import Link from "next/link";
 
 import { decisionStatus, decisionsNewestFirst, displayTitle, docHref } from "@/components/docs/doc-meta";
 import { StatusBadge } from "@/components/docs/status-badge";
-import { SearchAskPanel } from "@/components/search-ask-panel";
 import { ArrowUpRight, Eyebrow, Headline, Lede, TextLink } from "@/components/ui";
 import { guides } from "@/lib/content";
 
@@ -23,8 +22,6 @@ export default function DocsHub() {
       <Eyebrow>The Flow field guide</Eyebrow>
       <Headline lead="Build with" accent="intention." className="mt-6" />
       <Lede className="mt-7">{description}</Lede>
-
-      <SearchAskPanel className="mt-10" />
 
       <section aria-labelledby="guides-heading" className="mt-16">
         <h2 id="guides-heading" className="eyebrow">

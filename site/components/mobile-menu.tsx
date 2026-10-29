@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useState } from "react";
 
-import { OPEN_SEARCH_EVENT } from "@/lib/events";
 import { NAV } from "@/lib/site";
 
 export function MobileMenu() {
@@ -42,18 +41,6 @@ export function MobileMenu() {
                 </Link>
               </li>
             ))}
-            <li>
-              <button
-                type="button"
-                onClick={() => {
-                  setOpen(false);
-                  window.dispatchEvent(new CustomEvent(OPEN_SEARCH_EVENT));
-                }}
-                className="block w-full py-4 text-left text-lg font-semibold text-lavender"
-              >
-                Search
-              </button>
-            </li>
           </ul>
         </nav>
       ) : null}

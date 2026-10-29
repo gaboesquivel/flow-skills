@@ -46,8 +46,8 @@ const PILLARS: { n: string; title: string; text: string; href: string; cta: stri
     title: "Retrieve",
   },
   {
-    cta: "Ask Flow",
-    href: "/search?mode=ask",
+    cta: "See the ask example",
+    href: "#examples-heading",
     icon: (
       <svg {...iconProps}>
         <path d="M16 4c.9 6.4 5.6 11.1 12 12-6.4.9-11.1 5.6-12 12-.9-6.4-5.6-11.1-12-12 6.4-.9 11.1-5.6 12-12Z" />

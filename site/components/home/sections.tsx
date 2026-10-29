@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 
 import { CommandLine } from "@/components/command-line";
 import { HeroOrbit } from "@/components/home/hero-orbit";
-import { SearchAskPanel } from "@/components/search-ask-panel";
+import { PaletteLauncher } from "@/components/search/palette-launcher";
 import { ButtonLink, Container, Eyebrow, Lede, Section, TextLink } from "@/components/ui";
 import { installCommand, skills } from "@/lib/content";
 
@@ -245,8 +245,7 @@ export function FindSection() {
             Search skills, methodology, docs, and starter capabilities. Source-backed answers meet you where you work.
           </p>
         </div>
-        <SearchAskPanel className="mt-10" />
-        <p className="mt-4 text-sm text-fg-subtle">Ask answers link to the source. Search remains available without an LLM.</p>
+        <PaletteLauncher className="mt-10" />
       </Container>
     </Section>
   );

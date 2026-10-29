@@ -12,6 +12,13 @@ export const NAV = [
   { href: "/docs", label: "Docs" },
 ] as const;
 
+/** Example questions the palette and Home offer to Ask. */
+export const SUGGESTED_QUESTIONS = [
+  "How do I fix a small bug with Flow?",
+  "How does Flow keep PRODUCT.md aligned?",
+  "Should I start with flow-next or flow-mono?",
+] as const;
+
 /** Canonical origin: explicit env, then the request, then Vercel, then localhost. */
 export const resolveSiteOrigin = (request?: Request | HeaderLike) => {
   const fromEnv = process.env.NEXT_PUBLIC_SITE_URL?.trim();
