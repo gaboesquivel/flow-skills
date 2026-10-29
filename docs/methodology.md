@@ -12,7 +12,7 @@ Record bounded increments in `docs/specs/` when durable scope helps; record sign
 
 ## Observe and revisit
 
-Use One Metric That Matters (OMTM) when a measurable focus can guide the current product decision. Explain the uncertainty it addresses, define the population, calculation, time window, and data source, and establish a baseline or mark it unknown. Set a justified target and review point with the intended decision response; retain supporting evidence and guardrails. Early discovery may need qualitative evidence before a useful metric can be selected. [`measure`](../skills/measure/SKILL.md) evaluates evidence against these definitions and names collection, access, and sample gaps.
+Use One Metric That Matters (OMTM) when a measurable focus can guide the current product decision. Explain the uncertainty it addresses, define the population, calculation, time window, and data source, and establish a baseline or mark it unknown. Set a justified target and review point with the intended decision response; retain supporting evidence and guardrails. Early discovery may need qualitative evidence before a useful metric can be selected. [`measure`](../skills/measure/SKILL.md) evaluates evidence against these definitions and names what blocks a conclusion.
 
 Identify relevant product and system signals while planning the work. Assess findings against the intended outcome, record limitations, and decide whether to continue, change direction, or stop. Update affected context when a decision changes.
 

@@ -14,12 +14,12 @@ Read the definitions first: the main metric, supporting metrics, and core journe
 
 ## Report each metric
 
-- **Result:** baseline, current value, target, source, observation period, and sample size, with the calculation shown so it can be rechecked. Count each qualifying outcome once; an emitted event is not a successful outcome unless the definition says so.
+- **Result:** baseline, current value, target, source, observation period, sample size, and limitations, with the calculation shown so it can be rechecked. Count each qualifying outcome once; an emitted event is not a successful outcome unless the definition says so.
 - **Comparisons** only between compatible definitions and populations; label the rest incompatible. A before/after difference alone is not causation.
 - **Provenance:** say when evidence is a fixture, sample, or test data rather than production.
-- **Gap**, when there is no conclusion, as exactly one of:
+- **Gap**, when there is no conclusion, as one or more of, blocking one first:
   - **Not collected:** nothing records it.
-  - **Instrumentation missing or wrong:** collection exists but misses, double-counts, or misattributes outcomes (for example, human and agent traffic).
+  - **Instrumentation missing or wrong:** raw data exists but nothing computes the metric, or collection misses, double-counts, or misattributes outcomes (for example, human and agent traffic).
   - **No access:** the data likely exists but this session cannot reach it.
   - **Insufficient:** the data is reachable but too small, short, or noisy to conclude.
 

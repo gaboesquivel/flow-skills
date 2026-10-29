@@ -1,6 +1,6 @@
 # 034 — Measurement from intent to evidence
 
-Status: accepted (2026-10-29). Decision: [0046](../decisions/0046-measurement-assistance.md) (Accepted).
+Status: implemented (2026-10-29). Decision: [0046](../decisions/0046-measurement-assistance.md) (Accepted).
 
 ## Problem Statement
 
@@ -20,7 +20,7 @@ Measurement rides on the existing flow with no new stage: `explore` defines it, 
 
 ## Implementation Decisions
 
-- Catalog addition and product boundary: [decision 0046](../decisions/0046-measurement-assistance.md) (Proposed).
+- Catalog addition and product boundary: [decision 0046](../decisions/0046-measurement-assistance.md) (Accepted).
 - **Lean, outcome-first skills.** `measure` states outcomes and judgment rules, not steps or templates; target the size of `align`. Edits to `explore`, `to-spec`, and `align` are a few lines each, folded into existing sections, not new procedures. Apply `write-agents`.
 - One home for the gap taxonomy and reporting rules: `skills/measure/SKILL.md`. Other skills link to it by name; the methodology links rather than restates. Installed skills stay self-contained; nothing fetches this repository at run time.
 - Update together: catalog (`docs/skills.md`), packaging and validation expectations, `PRODUCT.md` boundary, glossary only if a term needs resolving, methodology pointer. Preserve source notices and in-flight website work.
@@ -49,3 +49,15 @@ Dogfood `measure` on Flow's own idea → prod, time to start, and time to close 
 ## Out of Scope
 
 Analytics backends, vendor adapters, dashboards, automated monitoring, mandatory metric templates, ship gates, tool installation, and redesigning `build`, `review`, `ship`, or `retro`.
+
+## Further Notes
+
+**Exercise evidence (2026-10-29), one run per step against the skill text.**
+
+- No source: reported **Not collected**, proposed a one-off export, gave no number.
+- Fixture of 100 eligible requests, 60 qualifying, one duplicate row: reported 60% (counting the duplicate would give 61/101). Labelled it a fixture, kept 20 pending rows as unknown, and claimed no trend.
+- No access: reported **No access**, connected nothing, and named no tool.
+- First 8 rows only: reported **Insufficient**, flagging the sample as small and biased, not 100%.
+- Dogfood on Flow's metrics: no maintainer join script exists, so idea → prod and time to close PR are **Instrumentation missing**, and time to start is **No access**. PR open → merge over the last 30 PRs (median 2.8 min) was labelled incompatible with time to close PR.
+- Steps 1, 2, and 6 were verified as instruction text by independent review, not live runs.
+- That run led to one change: raw data with no computation now counts as instrumentation missing.
