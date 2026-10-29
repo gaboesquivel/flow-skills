@@ -22,9 +22,9 @@ State a short design brief in conversation: the surface and its purpose (decide 
 
 ## Alternatives
 
-Produce two to four directions that differ in concept, not only in color; when they take real work, generate them in parallel ([`write-agents` Workers](../write-agents/SKILL.md#workers)). For each: a name, the idea in one line, how it serves the brief, and its risks.
+Produce two to four directions that differ in concept, not only in color; when they take real work, generate them in parallel (`write-agents` Workers). For each: a name, the idea in one line, how it serves the brief, and its risks.
 
-Render each so the user can judge it by eye, with whatever the host can produce: an image, an HTML or SVG page, or a design tool; for a page layout in the running app, `prototype`'s [UI guidance](../prototype/UI.md) shows variants on the real route. Show it in context at realistic sizes, never in a vacuum: an identity on the same real screen of the product for every direction, so the comparison is fair, plus the mark at 16 and 32 px and in a header, light and dark; a page at phone and desktop width with real content.
+Render each so the user can judge it by eye, with whatever the host can produce: an image, an HTML or SVG page, or a design tool; for a page layout in the running app, `prototype`'s UI guidance shows variants on the real route. Show it in context at realistic sizes, never in a vacuum: an identity on the same real screen of the product for every direction, so the comparison is fair, plus the mark at 16 and 32 px and in a header, light and dark; a page at phone and desktop width with real content.
 
 Look at each render before showing it (a screenshot or browser when the host has one; otherwise say it was not seen). Check contrast, small sizes, and that no mark reads as a well-known symbol or another brand.
 
