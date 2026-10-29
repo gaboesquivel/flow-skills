@@ -57,8 +57,8 @@ Once the destination holds the template, run `node <skill-dir>/lib/bootstrap.mjs
 - renames template identifiers through the allowlist in `lib/rename.mjs` (never a global replace; package imports such as `@repo/ui` and `web` stay);
 - runs the template's `pnpm setup` with `FLOW_PRESET`, which owns hosting and database provisioning and fails closed for `neon` without authorization. The template's skills lock already carries Flow; do not install flow-skills a second time;
 - writes `PRODUCT.md`, `DESIGN.md`, `ARCHITECTURE.md`, and `GLOSSARY.md` for this product, keeping any that exist, never Flow's mission or principles;
-- writes the Flow block with the `flow` skill's helper, or reports it skipped when `flow` is not installed;
-- formats, runs the checks below, and commits `chore: initialize <slug>` only when every check passed and the Flow block's file is not ignored.
+- writes the Flow block and the `@AGENTS.md` import with the `flow` skill's helpers (nothing outside the markers and that import line), or reports them skipped when `flow` is not installed;
+- formats, runs the checks below, and commits `chore: initialize <slug>` only when every check passed, the Flow block's file is tracked, and nothing staged is a secret or build output.
 
 Exit 0 means committed with a clean tree; otherwise `blockers` names what stopped it. Never commit around a blocker or with `--no-verify`.
 
