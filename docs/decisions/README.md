@@ -48,6 +48,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0042-outcome-build-and-ship.md](0042-outcome-build-and-ship.md) | Accepted (amended by 0044) | `build` and `ship` state outcomes, reasons, and proofs; workers, scheduling, and test order are choices |
 | [0043-workers-when-they-pay.md](0043-workers-when-they-pay.md) | Accepted (amended by 0044) | Workers only where they pay; one green run per head; re-review covers the fix |
 | [0044-fast-delivery.md](0044-fast-delivery.md) | Accepted | Checks once at PR time, review when it pays; one delivery shape, inferred mode, no spec issue, parallel by default, zero lost work, shipped means deployed |
+| [0046-measurement-assistance.md](0046-measurement-assistance.md) | Proposed | Read-only `measure` skill; measurement defined in `explore`, made actionable in `to-spec`; assistance, not analytics or a ship gate |
 
 ## Rules
 
