@@ -1,6 +1,6 @@
 # 018: Spec issues and fast parallel builds
 
-Status: implemented (2026-10-28). Issue: [#79](https://github.com/gaboesquivel/flow-skills/issues/79). Decision: [0029](../decisions/0029-spec-issues.md). Builds on [spec 017](017-build-and-ship.md), which lands first.
+Status: implemented (2026-10-28). Issue: [#79](https://github.com/gaboesquivel/flow-skills/issues/79). Decision: [0029](../decisions/0029-spec-issues.md). Builds on [spec 017](017-build-and-ship.md), which lands first. Frontier scheduling and who runs the suite amended by [decision 0042](../decisions/0042-outcome-build-and-ship.md) ([spec 028](028-outcome-build-and-ship.md)).
 
 ## Problem Statement
 

@@ -1,6 +1,6 @@
 # 015: Wave checkpoints
 
-Status: implemented (2026-10-28). Decision: [0025](../decisions/0025-wave-checkpoints.md). Builds on [spec 009](009-flow-mode.md).
+Status: implemented (2026-10-28). Decision: [0025](../decisions/0025-wave-checkpoints.md). Builds on [spec 009](009-flow-mode.md). Tests-first at named seams amended by [decision 0042](../decisions/0042-outcome-build-and-ship.md) ([spec 028](028-outcome-build-and-ship.md)).
 
 ## Problem Statement
 
