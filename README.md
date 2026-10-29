@@ -90,8 +90,8 @@ flowchart TB
   decision["Decision record<br/>When significant"]
   spec["Spec<br/>to-spec · candidate → draft → accepted"]
   tasks["Tasks<br/>to-tasks · sub-issues or spec checklist"]
-  frontier["Build the frontier<br/>build · every unblocked task, ready worktrees"]
-  checkpoint["Checkpoint<br/>Integrated, local suite, screenshots"]
+  build["Build · outcomes and proofs<br/>build · one branch per spec"]
+  progress["Progress · optional report"]
   ready["Ready PR<br/>One per spec · green checks"]
   land["Ship<br/>One review, merge, sync main"]
   verify["Verify<br/>Green checks, deployment live"]
@@ -99,13 +99,13 @@ flowchart TB
   explore --> spec
   explore -.-> decision
   decision -.-> spec
-  spec --> tasks --> frontier --> checkpoint
-  checkpoint -- unblocked tasks --> frontier
-  checkpoint -- all integrated --> sync --> ready --> land --> verify
+  spec --> tasks --> build --> progress
+  progress -- more tasks --> build
+  progress -- all integrated --> sync --> ready --> land --> verify
   classDef doc fill:#EEEDFE,stroke:#534AB7,color:#3C3489
   classDef run fill:#FAECE7,stroke:#993C1D,color:#712B13
   class decision,spec,tasks doc
-  class frontier,checkpoint,ready,land,verify run
+  class build,progress,ready,land,verify run
 ```
 
 ## Catalog

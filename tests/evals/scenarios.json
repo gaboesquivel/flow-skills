@@ -434,7 +434,7 @@
         "build",
         "to-tasks"
       ],
-      "behavior": "Task-set build runs the task frontier on one spec branch, serializes tasks whose areas intersect, removes each task's worktree as it integrates, waits on CI only for the final pull request, and ends at a ready pull request, with no confirmation",
+      "behavior": "Task-set build integrates every task on one spec branch with a green suite before landing, respects intersecting areas when running in parallel, waits on CI only for the final pull request, and ends at a ready pull request with no confirmation",
       "taskFile": "tests/evals/tasks/E20-task.md",
       "rubricFile": "tests/evals/rubrics/E20-rubric.md",
       "skillReferences": [
@@ -731,7 +731,7 @@
         "ship",
         "review"
       ],
-      "behavior": "Ship reviews per axis with parallel workers alongside the check wait, and one verifier merges findings before the gate",
+      "behavior": "Ship runs one independent review with requirement verdicts before merge, waits for green checks, and posts the review without approving the pull request",
       "taskFile": "tests/evals/tasks/E33-task.md",
       "rubricFile": "tests/evals/rubrics/E33-rubric.md",
       "skillReferences": [
@@ -817,7 +817,7 @@
       "skills": [
         "build"
       ],
-      "behavior": "Build creates task worktrees from the spec head with git worktree add, checks ancestry before integrating, and ticks tasks with a short SHA; an unspecced one-line fix lands after a self-check, and an unspecced API change stops for to-spec",
+      "behavior": "Build integrates tasks with ancestry and overlap checks when merging, ticks tasks with a short SHA, and an unspecced one-line fix lands after a self-check while an unspecced API change escalates to an independent review without writing a spec",
       "taskFile": "tests/evals/tasks/E37-task.md",
       "rubricFile": "tests/evals/rubrics/E37-rubric.md",
       "skillReferences": [
@@ -825,7 +825,7 @@
       ],
       "fixtureReferences": [],
       "evidence": {
-        "structural_contract": "not_executed",
+        "structural_contract": "passed",
         "executable_fixture": "not_executed",
         "live_skill_execution": "not_executed",
         "independently_reviewed": "not_executed",
@@ -838,7 +838,7 @@
       "skills": [
         "build"
       ],
-      "behavior": "Build runs the full local check suite on the spec head before the first frontier; a failing test stops it with a baseline failure report naming the test, with no workers started, no worktree created, and the spec branch unchanged",
+      "behavior": "Build runs the full local check suite on the spec head before integrating tasks; a failing test stops with a baseline failure report naming the test and leaves the spec branch unchanged",
       "taskFile": "tests/evals/tasks/E38-task.md",
       "rubricFile": "tests/evals/rubrics/E38-rubric.md",
       "skillReferences": [

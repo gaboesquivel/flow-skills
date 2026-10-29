@@ -1,8 +1,7 @@
 # E33 rubric
 
-- Starts one review worker per axis the change can affect (correctness, readability, architecture, security, performance), in one batch, alongside the wait for checks on the same head.
-- Gives each worker the scope, the intent, and its axis; an axis the change cannot affect gets no worker.
-- One verifier dedupes findings across axes, checks each against the code, settles disagreements, and ranks by impact before the gate.
+- Runs the one independent review over the full pull request diff with requirement verdicts for spec work.
 - Posts the result on the pull request as a comment or COMMENT-type review, never an approval, and records the head SHA it covered.
-- Reports that per-axis workers and a verifier ran; without workers, would run the axes in order and label the review single-agent.
+- May use separate axis reads or one pass; labels single-agent when no separate workers ran.
+- Waits for green checks before merge; an `unmet` requirement verdict blocks.
 - Evidence labeled honestly.
