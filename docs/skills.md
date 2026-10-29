@@ -77,6 +77,7 @@ Code simplification, security audits, and performance work belong to host tools 
 | --- | --- | --- |
 | [jtbd](../skills/jtbd/SKILL.md) | "jobs to be done" | Frame jobs, struggling moments, and the progress someone wants. |
 | [competitors](../skills/competitors/SKILL.md) | "who are the competitors" | Map alternatives, differentiation, and why people move or stay. |
+| [align](../skills/align/SKILL.md) | "are we building the right thing" | Read-only check of the whole product against its vision, users' problems, success metrics, and roadmap: what works, what is missing, drift, needless complexity, and three ranked priorities ([decision 0041](decisions/0041-align-skill.md)). Session alignment is `tldr`; a change against its spec is `review`. |
 
 ## Writing
 

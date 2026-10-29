@@ -18,7 +18,7 @@ Flow keeps its work in Git: specs, decision records, and the product brief are f
 
 | You use | You need |
 | --- | --- |
-| Thinking skills: `grill`, `interview`, `council`, `debug`, `tldr`, the writing skills, and the rest | Nothing. Any folder works, with or without Git. |
+| Thinking skills: `grill`, `interview`, `council`, `align`, `debug`, `tldr`, the writing skills, and the rest | Nothing. Any folder works, with or without Git. |
 | The delivery chain: `flow`'s setup, `start`, `explore`, `to-spec`, `to-tasks`, `build`, `review`, `ship`, `board` | A Git repository. Outside one, the skill offers `git init` and stops if you say no. |
 | GitHub mode | GitHub access as well: spec issues, sub-issues, pull requests, and preview deployments live there. |
 
@@ -118,7 +118,7 @@ flowchart TB
 | Prototype | `prototype` |
 | Shared language | `domain-modeling` |
 | Quality | `debug` |
-| Product discovery | `jtbd`, `competitors` |
+| Product discovery | `jtbd`, `competitors`, `align` |
 | Writing | `write-agents`, `write-humans` |
 | Project start | `start` |
 | Misc | `tldr`, `handoff`, `board` |

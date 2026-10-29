@@ -9,6 +9,7 @@ import { ESSENTIAL_CHECK_IDS } from '../skills/start/lib/commit-gate.mjs'
 export const EXPLICIT_SKILL_NAMES = new Set([])
 
 export const EXPECTED_SKILL_NAMES = [
+  'align',
   'board',
   'build',
   'competitors',
