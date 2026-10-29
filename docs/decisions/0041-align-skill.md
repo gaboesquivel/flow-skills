@@ -8,20 +8,22 @@ Flow checks alignment at three scopes already: `tldr` checks a session against i
 
 ## Decision
 
-Add an `align` skill (Product discovery group, thinking tier). Saying "are we building the right thing" compares the product's intent (`PRODUCT.md`, `DESIGN.md`, accepted specs and decisions, roadmap) with what the code actually implements.
+Add an `align` skill (Product discovery group, since its priorities feed the next discovery bet; thinking tier). On "are we building the right thing", `align` compares the product's intent (`PRODUCT.md`, `DESIGN.md`, accepted specs and decisions, roadmap) with what the code actually implements.
 
 - **Read-only.** It reports; `flow`, `explore`, `to-spec`, or `grill` act on what it finds, only when asked.
 - **What and why, not how.** Code quality stays with `review`.
 - **Evidence over documents.** Code decides what is implemented; documents decide what was intended; planned work is labelled as planned.
-- **Visual and short.** A journey-to-capability map, then working, missing, drift, and complexity, ending in three ranked priorities. No artifact is written.
+- **Visual and short.** A journey-to-capability map, then working, missing, drift, and complexity, ending in up to three ranked priorities. No artifact is written.
 
 ## Alternatives
 
 - **Extend `review`.** Rejected: review is scoped to a change and its spec, runs per-axis workers, and gates `ship`; a product-wide check would make it heavier and blur its scope.
 - **Extend `tldr`.** Rejected: `tldr` summarizes named material or a session; judging the product against its metrics needs reading code and intent, which would change what "tldr" means.
+- **Extend `explore`.** Rejected: `explore` looks forward, ends in a brief, and commits on an `explore/` branch; `align` judges what is already built against intent and writes nothing.
 - **Extend `flow`.** Rejected: `flow` edits root docs to match the product; `align` questions whether the product matches the docs, and must stay read-only.
 
 ## Consequences
 
 - The catalog grows by one skill: `scripts/validate.mjs`, `docs/skills.md`, `README.md`, and `PRODUCT.md` list `align`.
 - `align` needs no Git and writes nothing, so it joins the thinking tier.
+- `GLOSSARY.md` defines **product alignment** apart from context alignment (`flow`), session alignment (`tldr`), and alignment review (`review`).

@@ -95,13 +95,13 @@ flowchart TB
   ready["Ready PR<br/>One per spec · green checks"]
   land["Ship<br/>One review, merge, sync main"]
   verify["Verify<br/>Green checks, deployment live"]
-  align["flow aligns context<br/>Root docs current before review"]
+  sync["flow aligns context<br/>Root docs current before review"]
   explore --> spec
   explore -.-> decision
   decision -.-> spec
   spec --> tasks --> frontier --> checkpoint
   checkpoint -- unblocked tasks --> frontier
-  checkpoint -- all integrated --> align --> ready --> land --> verify
+  checkpoint -- all integrated --> sync --> ready --> land --> verify
   classDef doc fill:#EEEDFE,stroke:#534AB7,color:#3C3489
   classDef run fill:#FAECE7,stroke:#993C1D,color:#712B13
   class decision,spec,tasks doc
