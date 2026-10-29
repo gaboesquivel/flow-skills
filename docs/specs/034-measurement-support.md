@@ -1,6 +1,6 @@
 # 034 — Measurement from intent to evidence
 
-Status: draft (2026-10-29)
+Status: accepted (2026-10-29). Decision: [0046](../decisions/0046-measurement-assistance.md) (Accepted).
 
 ## Problem Statement
 

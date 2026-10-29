@@ -123,7 +123,7 @@ Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Say a skil
 
 **Default durable docs in adopter projects:** `docs/specs/NNN-short-name.md` and `docs/decisions/NNN-short-name.md`, plus root context files when useful. The spec file is the record in both modes; in GitHub mode the pull request links it, and issues open only on request ([decision 0044](docs/decisions/0044-fast-delivery.md), superseding the spec issue of [0029](docs/decisions/0029-spec-issues.md) and [0035](docs/decisions/0035-spec-issue-on-acceptance.md)).
 
-**Not shipped as skills:** validation-board UI (the read-only [`board`](skills/board/SKILL.md) is a [progress board](GLOSSARY.md#progress-board)), OMTM automation, commercial discovery pipelines, or hosted, issue-triggered orchestration (Flow Factory). Project initialization is the optional [`start`](skills/start/SKILL.md) skill only (not a router or mandatory pipeline). Optional judgment for measurement and validation lives in [methodology](docs/methodology.md) as practice, not product enforcement.
+**Not shipped as skills:** validation-board UI (the read-only [`board`](skills/board/SKILL.md) is a [progress board](GLOSSARY.md#progress-board)), OMTM automation or analytics services (read-only measurement assistance ships as `measure`, [decision 0046](docs/decisions/0046-measurement-assistance.md), [spec 034](docs/specs/034-measurement-support.md)), commercial discovery pipelines, or hosted, issue-triggered orchestration (Flow Factory). Project initialization is the optional [`start`](skills/start/SKILL.md) skill only (not a router or mandatory pipeline). Validation judgment lives in [methodology](docs/methodology.md) as practice; measurement never gates shipping.
 
 ### Flow mode
 

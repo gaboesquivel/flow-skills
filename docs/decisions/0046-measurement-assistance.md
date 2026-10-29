@@ -1,6 +1,6 @@
 # 0046 — Portable measurement assistance
 
-Status: **Proposed** (2026-10-29). Implemented by [spec 034](../specs/034-measurement-support.md).
+Status: **Accepted** (2026-10-29). Implemented by [spec 034](../specs/034-measurement-support.md).
 
 ## Context
 
