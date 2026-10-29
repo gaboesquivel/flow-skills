@@ -27,9 +27,9 @@ export type AskResult = {
   citations: Citation[];
 };
 
-/** Model id when generation is configured (gateway key or Vercel OIDC), else null. */
+/** Model id when generation is configured (gateway key, or running on Vercel where OIDC arrives per request), else null. */
 export const askModel = (env: Record<string, string | undefined> = process.env) =>
-  env.AI_GATEWAY_API_KEY?.trim() || env.VERCEL_OIDC_TOKEN?.trim() ? env.ASK_MODEL?.trim() || DEFAULT_ASK_MODEL : null;
+  env.AI_GATEWAY_API_KEY?.trim() || env.VERCEL_OIDC_TOKEN?.trim() || env.VERCEL === "1" ? env.ASK_MODEL?.trim() || DEFAULT_ASK_MODEL : null;
 
 export type AskValidation = { ok: true; question: string } | { ok: false; code: string; message: string; resolution: string };
 

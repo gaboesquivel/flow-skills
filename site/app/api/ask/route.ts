@@ -70,7 +70,7 @@ export async function POST(request: Request) {
         console.error("ask: generation failed, using extractive answer", error);
       }
     if (!result.answer) result.answer = extractiveAnswer(question, sources);
-    return Response.json(result, { headers: { "Cache-Control": "no-store" } });
+    return Response.json(result, { headers: { ...limited.headers(request), "Cache-Control": "no-store" } });
   }
 
   if (call) {
@@ -108,12 +108,12 @@ export async function POST(request: Request) {
             }
           },
         });
-        return new Response(body, { headers: streamHeaders(sources, "generated", model) });
+        return new Response(body, { headers: { ...streamHeaders(sources, "generated", model), ...limited.headers(request) } });
       }
     } catch (error) {
       if (request.signal.aborted) return new Response(null, { status: 499 });
       console.error("ask: generation failed, using extractive answer", error);
     }
   }
-  return new Response(extractiveAnswer(question, sources), { headers: streamHeaders(sources, "extractive", null) });
+  return new Response(extractiveAnswer(question, sources), { headers: { ...streamHeaders(sources, "extractive", null), ...limited.headers(request) } });
 }

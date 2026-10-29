@@ -50,6 +50,6 @@ export function GET(request: Request) {
   }));
   return Response.json(
     { query, results, total: results.length },
-    { headers: { ...CORS_HEADERS, "Cache-Control": "public, s-maxage=300" } },
+    { headers: { ...CORS_HEADERS, ...limited.headers(request), "Cache-Control": "public, s-maxage=300" } },
   );
 }
