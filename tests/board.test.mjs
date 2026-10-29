@@ -726,7 +726,9 @@ async function freePort() {
   return port
 }
 
-test('--serve and --stop find this repo\'s board by port probe, never another repo\'s', { timeout: 10_000 }, async () => {
+// Five CLI processes plus a live server. The assertions are the behavior; 30s is the hang budget.
+// On a loaded macOS runner the same work exceeds the old 10s cap while the suite runs in parallel.
+test('--serve and --stop find this repo\'s board by port probe, never another repo\'s', { timeout: 30_000 }, async () => {
   const own = await makeRepo()
   const other = await makeRepo()
   for (const repo of [own, other]) {
