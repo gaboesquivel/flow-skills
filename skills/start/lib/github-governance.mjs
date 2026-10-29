@@ -1,5 +1,6 @@
 // Flow's GitHub governance preset: one definition, applied idempotently and verified through `gh api`.
 // CLI: node github-governance.mjs <owner/repo> [--check <name>]... [--verify-only]; prints the report as JSON.
+// Without --check, the checks the Flow ruleset already requires are kept (the template's on a first run).
 // Exit 0 when the protected default branch, merge policy, and Actions permissions are verified.
 import { execFileSync } from 'node:child_process'
 import { realpathSync } from 'node:fs'
@@ -11,6 +12,8 @@ export const RULESET_NAME = 'Flow main'
 export const TEMPLATE_REQUIRED_CHECKS = ['verify', 'pr-title']
 
 const GITHUB_ACTIONS_APP_ID = 15368
+const VERCEL_APP_ID = 8329
+const PR_TITLE_WORKFLOW = '.github/workflows/pr-title.yml'
 
 // Squash-only with the PR title as the commit subject; merged branches are deleted.
 export const REPO_SETTINGS = {
@@ -26,8 +29,8 @@ export const REPO_SETTINGS = {
 // GITHUB_TOKEN reads by default and can never approve a pull request.
 export const WORKFLOW_PERMISSIONS = { default_workflow_permissions: 'read', can_approve_pull_request_reviews: false }
 
-// Checks named `Vercel` come from the Vercel app's commit status; everything else must come from GitHub Actions.
-const checkEntry = (context) => (context === 'Vercel' ? { context } : { context, integration_id: GITHUB_ACTIONS_APP_ID })
+// Each required check is pinned to the app that reports it, so no other actor can post a passing status.
+const checkEntry = (context) => ({ context, integration_id: context === 'Vercel' ? VERCEL_APP_ID : GITHUB_ACTIONS_APP_ID })
 
 // No bypass actors: admins and agents alike merge through a green pull request. Zero approvals keeps solo work moving.
 export const rulesetBody = ({ checks }) => ({
@@ -77,8 +80,9 @@ export const defaultGh = (path, { method = 'GET', body } = {}) => {
 }
 
 // 404 on an admin endpoint means the token cannot administer the repository; plan limits answer 403 or 422 with an upgrade hint.
+const UNSUPPORTED = /upgrade|GitHub Pro|not available|Advanced Security/iu
 const classify = (result) => {
-  if (/upgrade|GitHub Pro|not available|Advanced Security/iu.test(result.error ?? '')) return 'unsupported'
+  if (UNSUPPORTED.test(result.error ?? '')) return 'unsupported'
   if ([401, 403, 404].includes(result.status)) return 'missing-permission'
   return 'failed'
 }
@@ -105,8 +109,9 @@ export const verifyEffectiveRules = ({ rules, checks }) => {
   return problems
 }
 
-export const applyGovernance = ({ repo, checks = TEMPLATE_REQUIRED_CHECKS, verifyOnly = false, gh = defaultGh }) => {
-  const report = { repo, checks, settings: [], unsupported: [], missingPermissions: [], notes: [] }
+// Without `checks`, a rerun keeps the checks the Flow ruleset already requires; a new ruleset gets the template's.
+export const applyGovernance = ({ repo, checks: named, verifyOnly = false, gh = defaultGh }) => {
+  const report = { repo, settings: [], unsupported: [], missingPermissions: [], notes: [] }
   const record = (id, status, detail = '') => {
     report.settings.push({ id, status, detail })
     if (status === 'unsupported') report.unsupported.push(id)
@@ -118,7 +123,9 @@ export const applyGovernance = ({ repo, checks = TEMPLATE_REQUIRED_CHECKS, verif
       if (!result.ok) return record(id, classify(result), result.error)
     }
     const problems = verify()
-    record(id, problems.length ? (verifyOnly ? 'differs' : 'failed') : 'verified', problems.join('; '))
+    const detail = problems.join('; ')
+    if (!problems.length) record(id, 'verified')
+    else record(id, UNSUPPORTED.test(detail) ? 'unsupported' : verifyOnly ? 'differs' : 'failed', detail)
   }
 
   const meta = gh(`repos/${repo}`)
@@ -154,8 +161,11 @@ export const applyGovernance = ({ repo, checks = TEMPLATE_REQUIRED_CHECKS, verif
     'secret-scanning',
     () => gh(`repos/${repo}`, { method: 'PATCH', body: { security_and_analysis: scanning } }),
     () => {
+      // GitHub omits features the plan does not offer.
       const actual = gh(`repos/${repo}`).json?.security_and_analysis ?? {}
-      return Object.keys(scanning).filter((key) => actual[key]?.status !== 'enabled').map((key) => `${key} disabled`)
+      return Object.keys(scanning)
+        .filter((key) => actual[key]?.status !== 'enabled')
+        .map((key) => (actual[key] ? `${key} disabled` : `${key} not available on this plan`))
     },
   )
   if (isPublic)
@@ -167,6 +177,17 @@ export const applyGovernance = ({ repo, checks = TEMPLATE_REQUIRED_CHECKS, verif
 
   const listed = gh(`repos/${repo}/rulesets`)
   const existing = listed.ok ? listed.json.find((ruleset) => ruleset.name === RULESET_NAME) : undefined
+  const current = existing && gh(`repos/${repo}/rulesets/${existing.id}`).json
+  const kept = current?.rules
+    ?.find((rule) => rule.type === 'required_status_checks')
+    ?.parameters.required_status_checks.map((check) => check.context)
+  let checks = named?.length ? named : kept?.length ? kept : TEMPLATE_REQUIRED_CHECKS
+  // pr-title only reports where its workflow exists; requiring it elsewhere would block every pull request.
+  if (checks.includes('pr-title') && !gh(`repos/${repo}/contents/${PR_TITLE_WORKFLOW}?ref=${encodeURIComponent(branch)}`).ok) {
+    checks = checks.filter((check) => check !== 'pr-title')
+    record('pr-title-workflow', 'failed', `${PR_TITLE_WORKFLOW} is missing on ${branch}; pr-title is not required until it lands`)
+  }
+  report.checks = checks
   if (listed.ok)
     for (const other of listed.json.filter((ruleset) => ruleset.name !== RULESET_NAME))
       report.notes.push(`another ruleset is active: ${other.name} (#${other.id}); its rules add to ${RULESET_NAME}`)
@@ -220,12 +241,11 @@ if (isMain()) {
   const [repo, ...rest] = process.argv.slice(2)
   // Check names may hold commas (matrix jobs), so each one is its own --check.
   const named = rest.flatMap((arg, index) => (arg === '--check' && rest[index + 1] ? [rest[index + 1]] : []))
-  const checks = named.length ? named : TEMPLATE_REQUIRED_CHECKS
   if (!/^[\w.-]+\/[\w.-]+$/u.test(repo ?? '')) {
     console.error('usage: node github-governance.mjs <owner/repo> [--check <name>]... [--verify-only]')
     process.exit(2)
   }
-  const result = applyGovernance({ repo, checks, verifyOnly: rest.includes('--verify-only') })
+  const result = applyGovernance({ repo, checks: named, verifyOnly: rest.includes('--verify-only') })
   console.log(JSON.stringify(result, null, 2))
   process.exit(result.ok ? 0 : 1)
 }
