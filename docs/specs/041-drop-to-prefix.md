@@ -1,6 +1,6 @@
 # 041 — Drop the `to-` prefix from skill names
 
-Status: draft (2026-10-29). Decision: [0052](../decisions/0052-skill-names-without-to-prefix.md) (Proposed).
+Status: accepted (2026-10-29). Decision: [0052](../decisions/0052-skill-names-without-to-prefix.md).
 
 ## Problem Statement
 

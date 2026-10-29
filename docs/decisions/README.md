@@ -6,7 +6,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | --- | --- | --- |
 | [0001-curated-distribution.md](0001-curated-distribution.md) | Superseded (maintenance/install details) | Initial curated distribution shape |
 | [0002-local-skill-ownership.md](0002-local-skill-ownership.md) | Accepted (install path superseded by 0004) | Local source and composition policy |
-| [0003-skill-naming.md](0003-skill-naming.md) | Superseded by 0004 | Twenty-five-skill catalog (historical) |
+| [0003-skill-naming.md](0003-skill-naming.md) | Superseded by 0004; amended by 0052 | Twenty-five-skill catalog (historical) |
 | [0004-portable-skill-catalog.md](0004-portable-skill-catalog.md) | Accepted (parts superseded by 0006, 0013, and 0019) | Portable catalog and Agent Skills install |
 | [0005-misc-tldr-skill.md](0005-misc-tldr-skill.md) | Accepted | Misc group and `tldr` visual recap skill |
 | [0006-flow-lite-and-flat-docs.md](0006-flow-lite-and-flat-docs.md) | Accepted (invocation split superseded by 0019) | Flow Lite `flow` skill and flat specs/decisions docs |
@@ -18,7 +18,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0012-start-bootstrap-lib.md](0012-start-bootstrap-lib.md) | Accepted | `start` bootstrap helpers under `skills/start/lib/` with executable tests |
 | [0013-restore-engineering-skills.md](0013-restore-engineering-skills.md) | Accepted (`handoff` added by 0014; `simplify`, `security`, `performance` retired by 0019) | Restore `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug` |
 | [0014-handoff-skill.md](0014-handoff-skill.md) | Accepted | Explicit `handoff` skill for a fresh agent |
-| [0015-tasks-and-domain-modeling.md](0015-tasks-and-domain-modeling.md) | Accepted | `to-tasks` rename; restore `domain-modeling` for glossary practice |
+| [0015-tasks-and-domain-modeling.md](0015-tasks-and-domain-modeling.md) | Accepted; amended by 0052 | `to-tasks` rename; restore `domain-modeling` for glossary practice |
 | [0016-start-in-place.md](0016-start-in-place.md) | Accepted | `start` bootstraps at a root holding only agent setup and infers the template |
 | [0017-claude-code-skill-coexistence.md](0017-claude-code-skill-coexistence.md) | Accepted (`simplify` retired by 0019) | Coexist with Claude Code built-ins; keep `simplify` name and document overlaps |
 | [0018-interview-extracts-intent.md](0018-interview-extracts-intent.md) | Accepted | `interview` extracts the user's intent (adapted from `interview-me`), not customer discovery |
@@ -55,7 +55,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0049-agent-does-the-work.md](0049-agent-does-the-work.md) | Accepted | The agent does the work: CLI, MCP, API, then browser; hands the user only sign-in, secrets, payment, consent, or permission changes, once |
 | [0050-github-governance-preset.md](0050-github-governance-preset.md) | Accepted | One GitHub governance preset: protected default branch, squash only, required checks, no bypass; `start` applies it |
 | [0051-design-skill.md](0051-design-skill.md) | Accepted | `design` compares rendered visual directions, the user chooses, and `DESIGN.md` records the approved one |
-| [0052-skill-names-without-to-prefix.md](0052-skill-names-without-to-prefix.md) | Proposed | Skills are one short action word; `to-spec` → `spec`, `to-tasks` → `tasks` |
+| [0052-skill-names-without-to-prefix.md](0052-skill-names-without-to-prefix.md) | Accepted | Skills are one short action word; `to-spec` → `spec`, `to-tasks` → `tasks` |
 
 ## Rules
 

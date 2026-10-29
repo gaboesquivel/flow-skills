@@ -1,6 +1,6 @@
 # 0015 — Rename to-tasks and restore domain-modeling
 
-Status: **Accepted** (2026-10-27). Partially supersedes the leave-out list in [0013](0013-restore-engineering-skills.md) for `domain-modeling` only. Related: [0003](0003-skill-naming.md), [0014](0014-handoff-skill.md).
+Status: **Accepted** (2026-10-27). Partially supersedes the leave-out list in [0013](0013-restore-engineering-skills.md) for `domain-modeling` only. Related: [0003](0003-skill-naming.md), [0014](0014-handoff-skill.md). Amended by [0052](0052-skill-names-without-to-prefix.md) (`to-tasks` renamed `tasks`).
 
 ## Context
 

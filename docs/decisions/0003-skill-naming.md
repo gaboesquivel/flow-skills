@@ -1,6 +1,6 @@
 # 0003. Skill naming and catalog shape
 
-Status: superseded for catalog shape by [0004](0004-portable-skill-catalog.md) (2026-10-27). Naming patterns below remain historical context.
+Status: superseded for catalog shape by [0004](0004-portable-skill-catalog.md) (2026-10-27). Naming patterns below remain historical context. Amended by [0052](0052-skill-names-without-to-prefix.md) (`to-spec` renamed `spec`).
 
 ## Context
 

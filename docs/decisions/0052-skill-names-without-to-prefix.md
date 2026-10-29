@@ -1,6 +1,6 @@
 # 0052 — Skill names without the `to-` prefix
 
-Status: **Proposed** (2026-10-29). Spec: [041](../specs/041-drop-to-prefix.md). Amends [0003](0003-skill-naming.md) and [0015](0015-tasks-and-domain-modeling.md) (names `to-spec`, `to-tasks`).
+Status: **Accepted** (2026-10-29). Spec: [041](../specs/041-drop-to-prefix.md). Amends [0003](0003-skill-naming.md) and [0015](0015-tasks-and-domain-modeling.md) (names `to-spec`, `to-tasks`).
 
 ## Context
 
