@@ -1,4 +1,4 @@
-// Idempotent writer for the project Flow block (decision 0020) and the instruction-file layout (spec 021).
+// Idempotent writer for the project Flow block and the instruction-file layout.
 // Usage: node flow-block.mjs <project-dir> [local|github]
 import { spawnSync } from 'node:child_process'
 import { existsSync, lstatSync, readFileSync, realpathSync, statSync, writeFileSync } from 'node:fs'
@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url'
 export const BEGIN = '<!-- BEGIN FLOW -->'
 export const END = '<!-- END FLOW -->'
 export const DELIVERY_MODES = ['github', 'local']
-// Legacy values from before decision 0037 read as github; the next block write records github.
+// Legacy values read as github; the next block write records github.
 const LEGACY_GITHUB = ['pull-request', 'pull-requests', 'pullrequest', 'pr']
 
 // The one phrase table; docs link here and tests check each phrase against its skill's description.
@@ -57,7 +57,9 @@ export function canonicalBlock(block) {
     .join('\n')
 }
 
+// `Delivery:` is an optional override of the inferred mode, written only when a mode is given.
 export function buildFlowBlock({ delivery, eol = '\n' } = {}) {
+  const mode = normalizeDelivery(delivery)
   return [
     BEGIN,
     '',
@@ -65,8 +67,7 @@ export function buildFlowBlock({ delivery, eol = '\n' } = {}) {
     '',
     'This project uses Flow skills. Say a phrase to load its skill; the installed `flow` skill describes this block. Delete the block to opt out.',
     '',
-    `Delivery: ${normalizeDelivery(delivery) ?? 'unset'}`,
-    '',
+    ...(mode ? [`Delivery: ${mode}`, ''] : []),
     ...alignTable([['Say', 'Skill'], ...PHRASES.map(([say, skill]) => [say, `\`${skill}\``])]),
     '',
     END,
@@ -110,7 +111,7 @@ function readLine(text, name) {
 export const readDelivery = (text) => normalizeDelivery(readLine(text, 'Delivery'))
 
 // Replaces the block in place (unless only its spacing differs) or appends it; text outside the markers is preserved byte for byte.
-// Retired lines (`Deploy:`, decision 0028; `Process:`, decision 0036) are dropped because the block is rebuilt from its known lines.
+// Retired lines (`Deploy:`, `Process:`, `Delivery: unset`) are dropped because the block is rebuilt from its known lines.
 export function upsertFlowBlock(text, { delivery } = {}) {
   const eol = eolOf(text)
   const block = buildFlowBlock({ delivery: normalizeDelivery(delivery) ?? readDelivery(text), eol })

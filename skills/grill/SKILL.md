@@ -8,9 +8,9 @@ disable-model-invocation: false
 
 Stress-test the idea or plan. Read the relevant conversation, code, and accepted project decisions before asking questions. Find facts with available tools; ask the user only for consequential choices or missing information you cannot recover.
 
-When intent is already confirmed (for example by `interview` or `explore`), do not re-extract it; challenge only the riskiest claims. Optionally offer a short pre-mortem: assume it failed six months from now and list the most plausible reasons. Skip it when a pre-mortem already ran in this exploration (`explore` runs one) and reuse its failure modes. Use those reasons to name the riskiest assumptions and a kill criterion.
+When intent is already clear (for example from `interview` or `explore`), do not re-extract it; challenge only the riskiest claims. Run one pre-mortem unless `explore` already did (then reuse its failure modes): assume it failed six months from now and list the most plausible reasons. Use them to name the riskiest assumptions and a kill criterion.
 
-Map the important uncertainty first. Then, as parallel groups (fan-out rule: `write-agents` Workers), launch one read-only evidence worker per risky claim, plus a pre-mortem worker when the pre-mortem is in play; the main thread verifies their findings.
+Map the important uncertainty first, then gather evidence for each risky claim in parallel, as `write-agents` [Workers](../write-agents/SKILL.md#workers) describes; verify what workers return.
 
 Ask a small round of independent questions in the main thread, each with a recommended answer and its tradeoff. Wait only for answers needed to proceed. Revise downstream questions when answers change their premise.
 

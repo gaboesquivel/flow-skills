@@ -1,6 +1,6 @@
 ---
 name: to-tasks
-description: Break a plan, spec, or conversation into verifiable vertical-slice tasks with explicit blockers; list them in the spec's Tasks checklist and, in GitHub mode, open them as sub-issues of the spec issue. Use when the user says "break it down", "make tasks", or "split this into tasks".
+description: Break a plan, spec, or conversation into verifiable vertical-slice tasks with explicit blockers; list them in the spec's Tasks checklist. Use when the user says "break it down", "make tasks", or "split this into tasks".
 disable-model-invocation: false
 ---
 
@@ -8,13 +8,13 @@ disable-model-invocation: false
 
 Break a plan, spec, or conversation into **tasks**: independently verifiable vertical slices, each naming the tasks that **block** it.
 
-Discover how the project already tracks work. A tracker, label vocabulary, or setup skill is not required. Prefer the fewest tasks that each verify on their own. Keep a straightforward change as one task; split only when slices can proceed in parallel, need separate review, or would not fit one session. A task per layer, file, or step is too fine: every task costs a record, an integration, and a check.
+Prefer the fewest tasks that each verify on their own. Keep a straightforward change as one task; split only when slices can proceed in parallel, need separate review, or would not fit one session. A task per layer, file, or step is too fine: every task costs a record, an integration, and a check.
 
 ## Process
 
 ### 1. Gather context
 
-Work from the conversation. If the user passes a spec path, issue number, or URL, read the full body and comments.
+Work from the conversation. If the user passes a spec path, issue, or URL, read it in full, comments included.
 
 ### 2. Explore the codebase (optional)
 
@@ -41,30 +41,19 @@ Give each task its **blocking edges**: other tasks that must finish before it ca
 
 **Wide refactors are the exception to vertical slicing.** A **wide refactor** is one mechanical change (rename a column, retype a shared symbol) whose **affected scope** spans the codebase, so one edit breaks many call sites and no vertical slice can land green. Sequence it as **expand–contract**. Expand: add the new form beside the old so nothing breaks. Migrate call sites in batches sized by impact (per package or directory), each batch its own task blocked by the expand, keeping CI green because the old form still exists. Contract: remove the old form once no caller remains, in a task blocked by every migrate batch. When batches cannot stay green alone, they may share an integration branch and a final integrate-and-verify task; green is promised only there.
 
-### 4. Check the breakdown
+### 4. Record and report
 
-Show the proposed tasks, what each delivers, their areas, real dependencies, and where they will be recorded. Resolve only consequential scope or sequencing uncertainty. "Break it down" authorizes recording them; opening the sub-issues needs no separate yes.
+Resolve only consequential scope or sequencing uncertainty first; "break it down" authorizes recording, so do not show the tasks for approval before writing them.
 
-### 5. Record
+Outside a Git repository, offer `git init` and stop on a no. Tasks are the spec's checklist: write its Tasks section, one line per task (`- [ ] NN: Title`), and detail each task below it with the task template. Commit on the spec's branch. Without a spec, write one with `to-spec` first, or return the tasks as a local draft and say so. Do not introduce a `.scratch/` task system or labels.
 
-Outside a Git repository, follow `write-agents` [Repository](../write-agents/SKILL.md#repository) before recording. Choose by the delivery mode: the `Delivery:` line in the project's Flow block. When it is unset or there is no block, ask before recording anything, as `build`'s Delivery mode section describes; a request that names a mode answers it.
+**Task issues** open only when the user asks: one per task from the issue template (sub-issues of the issue the user names, if any), opened in parallel, with blockers linked once every number exists (native blocked-by links where supported, otherwise `Blocked by #a, #b` atop the body); append `(#N)` to each checklist line. On a public repository, say the issues are public. If publishing stops partway, report which issues exist; on a retry, match existing issues by title and open only the missing ones.
 
-- **GitHub mode:** a spec with no `Issue:` line is not accepted yet: suggest "accept the spec" (or "share the draft" for early comments) and stop, recording nothing. Otherwise open each task as a sub-issue of the spec issue (the spec's `Issue:` line names it) using the issue template below. Open them in parallel, since none needs another's number, then add each task's blocking links once every number exists, for example `gh issue create --parent <spec#>` followed by native blocked-by links. Without sub-issue or dependency support, start the body with plain `Part of #N` and `Blocked by #a, #b` lines. Use another tracker only when the project already uses one. On a public repository, the report says the issues are public. Without GitHub access, record the checklist without issue numbers and say so. If publishing stops partway, report which issues were created and which were not; on a retry, match existing sub-issues by title and open only the missing ones, never re-creating a task.
-- **Local mode:** no issues. Below the checklist, detail each task with the local task template.
+Tasks are not pull requests; `build` owns how tasks group into pull requests. A task is **ready** when its blockers are complete.
 
-In both modes, write the spec's Tasks section as a checklist, one line per task: `- [ ] NN: Title (#N)`, without the issue number in local mode. Without a spec, write one with `to-spec` first, or return the tasks as a local draft and say so. In GitHub mode, then re-sync the spec issue body as `to-spec` describes. Do not introduce a `.scratch/` task system or new labels.
+Report where the tasks live, each task with what it delivers and its area, and the ready set, then wait for "build it". Do not start implementation.
 
-Tasks are not pull requests; `build` owns how tasks group into pull requests.
-
-Tasks that are **ready** have their blockers complete. In a purely linear chain, that means top to bottom.
-
-Do not close any parent issue; change the spec issue only through that sync.
-
-### 6. Hand off
-
-End by naming where the tasks live and the ready set, then wait for "build it". Do not start implementation.
-
-<local-task-template>
+<task-template>
 
 ### <NN>: <Task title>
 
@@ -74,18 +63,16 @@ End by naming where the tasks live and the ready set, then wait for "build it". 
 
 **Blocked by:** the numbers or titles of tasks that gate this one, or "None (can start immediately)".
 
-**Status:** planned (`build` sets `done` as the task integrates)
-
 - [ ] Acceptance criterion 1
 - [ ] Acceptance criterion 2
 
-</local-task-template>
+</task-template>
 
 <issue-template>
 
 ## Spec
 
-A link to the spec this task belongs to, so `ship` can resolve it (omit only when the task belongs to no spec).
+A link to the spec file this task belongs to (omit only when the task belongs to no spec).
 
 ## What to build
 

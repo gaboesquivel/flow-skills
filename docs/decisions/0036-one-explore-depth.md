@@ -1,6 +1,6 @@
 # 0036 — One explore depth, deeper research on request
 
-Status: **Accepted** (2026-10-28). Supersedes the recorded process depth in [0026](0026-process-depth.md) and amends [0030](0030-asked-delivery-and-local-mode.md) (depth and delivery asked together). Spec: [021](../specs/021-demo-findings.md).
+Status: **Accepted** (2026-10-28). Supersedes the recorded process depth in [0026](0026-process-depth.md) and amends [0030](0030-asked-delivery-and-local-mode.md) (depth and delivery asked together). Spec: [021](../specs/021-demo-findings.md). Amended by [0044](0044-fast-delivery.md) (grill and pre-mortem only for new products or on request; one confirmation).
 
 ## Context
 

@@ -5,9 +5,9 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spawnSync } from 'node:child_process'
 import test from 'node:test'
-import { EXPECTED_SKILL_NAMES, validateSkills } from '../scripts/validate.mjs'
+import { EXPECTED_SKILL_NAMES, validateSkills } from '../../scripts/validate.mjs'
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..')
+const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
 
 test('packed release contains skills only and validates', (t) => {
   const dir = mkdtempSync(join(tmpdir(), 'flow-package-test-'))

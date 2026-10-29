@@ -14,19 +14,12 @@ function description(skill) {
   return match[1].toLowerCase()
 }
 
-test('PHRASES is non-empty', () => {
+test('every PHRASES entry names a skill whose description carries its phrase', () => {
   assert.ok(PHRASES.length > 0)
-})
-
-for (const [say, skill] of PHRASES) {
-  const phrase = /"([^"]+)"/u.exec(say)?.[1]
-
-  test(`PHRASES skill ${skill} exists`, () => {
+  for (const [say, skill] of PHRASES) {
     assert.ok(existsSync(join(root, 'skills', skill, 'SKILL.md')), `skills/${skill}/SKILL.md missing`)
-  })
-
-  test(`"${phrase}" appears in the ${skill} description`, () => {
+    const phrase = /"([^"]+)"/u.exec(say)?.[1]
     assert.ok(phrase, `no quoted phrase in ${say}`)
     assert.ok(description(skill).includes(phrase.toLowerCase()), `"${phrase}" not in ${skill} description`)
-  })
-}
+  }
+})

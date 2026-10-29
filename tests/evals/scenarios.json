@@ -771,14 +771,11 @@
       "fixtureReferences": [
         "tests/fixtures/e34-ship-verify/README.md",
         "tests/fixtures/e34-ship-verify/MOCK-GITHUB.md",
-        "tests/fixtures/e34-ship-verify/docs/specs/098-verify-ship-fixture.md",
-        "tests/fixtures-eval-smoke.test.mjs",
-        "tests/evals/lib/verify-report.mjs",
-        "tests/evals-verify-report.test.mjs"
+        "tests/fixtures/e34-ship-verify/docs/specs/098-verify-ship-fixture.md"
       ],
       "evidence": {
         "structural_contract": "not_executed",
-        "executable_fixture": "passed",
+        "executable_fixture": "not_executed",
         "live_skill_execution": "not_executed",
         "independently_reviewed": "not_executed",
         "verified_second_host": "not_executed"
@@ -842,12 +839,11 @@
       "fixtureReferences": [
         "tests/fixtures/e37-build-outcomes/README.md",
         "tests/fixtures/e37-build-outcomes/docs/specs/097-two-area-tasks.md",
-        "tests/fixtures/e37-build-outcomes/golden/task-set/api/version.mjs",
-        "tests/fixtures-eval-smoke.test.mjs"
+        "tests/fixtures/e37-build-outcomes/golden/task-set/api/version.mjs"
       ],
       "evidence": {
         "structural_contract": "passed",
-        "executable_fixture": "passed",
+        "executable_fixture": "not_executed",
         "live_skill_execution": "not_executed",
         "independently_reviewed": "not_executed",
         "verified_second_host": "not_executed"

@@ -12,7 +12,7 @@ disable-model-invocation: false
 
 Read what exists; a missing source is a finding, not a reason to stop or ask.
 
-- **Intent:** `PRODUCT.md` (vision, problem, users, core journeys, main metric and kill criterion, riskiest assumptions, non-goals), `DESIGN.md` for journey steps, accepted specs and decisions under `docs/`, and any roadmap or candidate specs (files, or `candidate` issues when GitHub is available). A record still Proposed or a draft spec is planned, not intended fact.
+- **Intent:** `PRODUCT.md` (vision, problem, users, core journeys, main metric and kill criterion, riskiest assumptions, non-goals), `DESIGN.md` for journey steps, accepted specs and decisions under `docs/`, and any roadmap or `candidate` spec stubs. A record still Proposed or a draft spec is planned, not intended fact.
 - **Reality:** the code, routes, commands, and tests (use `ARCHITECTURE.md` to find them) show what is implemented and what users can actually do. Git history shows where effort went recently.
 
 When both sides are large, read them as two parallel read-only workers (fan-out rule: `write-agents` Workers); otherwise read them directly. Code is the source of truth for what exists; documents are the source of truth for what was intended. Never count a capability as implemented on a document's word alone.

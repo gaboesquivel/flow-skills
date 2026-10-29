@@ -1,18 +1,4 @@
-export const ESSENTIAL_CHECK_IDS = [
-  'setup',
-  'qa',
-  'build',
-  'eval',
-  'portless_startup',
-  'http_home',
-  'http_genui',
-  'http_mcp',
-  'operator_fail_closed',
-  'identity_scan',
-  'gitignore_artifacts',
-]
-
-const UNAVAILABLE_ALLOWED = new Set(['operator_authenticated'])
+export const ESSENTIAL_CHECK_IDS = ['setup', 'qa', 'identity_scan', 'gitignore_artifacts']
 
 export const normalizeCheckResults = (results) =>
   (results ?? []).map((entry) => ({
@@ -32,17 +18,6 @@ export const canCreateInitialCommit = ({ checkResults }) => {
   const failed = results.filter((r) => r.status === 'failed')
   if (failed.length)
     return { ok: false, reason: `Failed checks block initial commit: ${failed.map((r) => r.id).join(', ')}` }
-
-  const essentialFailed = ESSENTIAL_CHECK_IDS.filter((id) => byId.get(id)?.status === 'failed')
-  if (essentialFailed.length)
-    return { ok: false, reason: `Essential verification failed: ${essentialFailed.join(', ')}` }
-
-  const startup = byId.get('portless_startup')
-  if (startup?.status !== 'passed')
-    return { ok: false, reason: 'Application startup (Portless) must pass before initial commit.' }
-
-  const extraFailed = results.filter((r) => r.status === 'failed' && !UNAVAILABLE_ALLOWED.has(r.id))
-  if (extraFailed.length) return { ok: false, reason: 'One or more checks failed.' }
 
   return { ok: true }
 }

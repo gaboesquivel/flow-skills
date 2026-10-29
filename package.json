@@ -13,9 +13,10 @@
     "ATTRIBUTION.md"
   ],
   "scripts": {
-    "validate": "node scripts/validate.mjs",
+    "validate": "node scripts/validate.mjs && node scripts/check-evals.mjs",
     "eval:check": "node scripts/check-evals.mjs",
-    "test": "node scripts/check-evals.mjs && node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "test:release": "node --test tests/release/*.test.mjs"
   },
   "engines": {
     "node": ">=22"

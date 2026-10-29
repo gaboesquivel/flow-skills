@@ -1,6 +1,6 @@
 # 0033 — Shared files do not move the reviewed head
 
-Status: **Accepted** (2026-10-28). Amends [0032](0032-local-build-lands-ship-verifies.md) (merge only the reviewed head). Spec: [021](../specs/021-demo-findings.md).
+Status: **Superseded** (2026-10-29). Was Accepted (2026-10-28). Amends [0032](0032-local-build-lands-ship-verifies.md) (merge only the reviewed head). Spec: [021](../specs/021-demo-findings.md). Superseded by [0044](0044-fast-delivery.md) (no shared-file exception).
 
 ## Context
 

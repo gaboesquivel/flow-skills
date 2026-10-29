@@ -6,7 +6,7 @@ Scenarios E01–E39 describe realistic skill behavior to verify over time. **Str
 
 | Status field | Meaning |
 | --- | --- |
-| `structural_contract` | Phrases and metadata enforced in `tests/smoke-contracts.test.mjs` or related contract tests. |
+| `structural_contract` | Safety keywords and metadata enforced in `tests/smoke-contracts.test.mjs` or related contract tests. Results recorded before spec 031 came from wording pins it removed. |
 | `executable_fixture` | Deterministic fixture or script in `tests/fixtures/`. |
 | `live_skill_execution` | A person or agent ran the skill in a host; requires `liveObservation` (host, date, observation). |
 | `independently_reviewed` | Separate execution reviewed the outcome; requires `independentReview` metadata when passed. |

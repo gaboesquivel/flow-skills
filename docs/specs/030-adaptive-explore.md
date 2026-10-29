@@ -1,6 +1,6 @@
 # 030: Adaptive explore
 
-Status: candidate (2026-10-28).
+Status: candidate (2026-10-28). Superseded by [031](031-fast-delivery.md) (one confirmation in `explore`).
 
 ## Problem Statement
 

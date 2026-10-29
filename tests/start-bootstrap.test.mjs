@@ -141,22 +141,22 @@ test('baseline docs include project name and reject Flow identity', () => {
   assert.equal(baselineDocsRejectFlowIdentity({ ...docs, 'PRODUCT.md': 'From intent to verified software' }).ok, false)
 })
 
-test('commit gate blocks failed startup and missing checks', () => {
+test('commit gate blocks a failed check and missing checks', () => {
   const passed = ESSENTIAL_CHECK_IDS.map((id) => ({ id, status: 'passed' }))
   assert.equal(canCreateInitialCommit({ checkResults: passed }).ok, true)
 
-  const noStartup = passed.map((c) => (c.id === 'portless_startup' ? { ...c, status: 'failed' } : c))
-  assert.equal(canCreateInitialCommit({ checkResults: noStartup }).ok, false)
+  const failedQa = passed.map((c) => (c.id === 'qa' ? { ...c, status: 'failed' } : c))
+  assert.equal(canCreateInitialCommit({ checkResults: failedQa }).ok, false)
 
   assert.equal(canCreateInitialCommit({ checkResults: [{ id: 'setup', status: 'passed' }] }).ok, false)
   assert.match(formatInitialCommitMessage({ slug: 'acme-radar' }), /chore: initialize acme-radar/u)
 })
 
-test('commit gate allows unavailable operator auth when fail-closed passed', () => {
-  const results = ESSENTIAL_CHECK_IDS.map((id) => ({
-    id,
-    status: id === 'operator_authenticated' ? 'unavailable' : 'passed',
-  }))
+test('commit gate treats an unavailable check as not failed', () => {
+  const results = [
+    ...ESSENTIAL_CHECK_IDS.map((id) => ({ id, status: 'passed' })),
+    { id: 'deployment', status: 'unavailable' },
+  ]
   assert.equal(canCreateInitialCommit({ checkResults: results }).ok, true)
 })
 

@@ -6,7 +6,7 @@
 | Spec numbering default | Pass (contract) | `to-spec` references `docs/specs/NNN-short-name.md` |
 | Review untracked work | Pass (contract) | `review` skill text |
 | Portable catalog (fixed skill list) | Pass (contract) | `validate.mjs` + `smoke-contracts.test.mjs` |
-| Agent Skills CLI discoverability | Pass (automated) | `distribution.test.mjs` — `skills add <repo> -l` lists all catalog skills |
+| Agent Skills CLI discoverability | Pass (automated) | `distribution.test.mjs` at the time, now `tests/release/skills-cli.test.mjs` (run by `pnpm test:release` on release tags) — `skills add <repo> -l` lists all catalog skills |
 | GitHub remote install listing | Pass (manual) | `npx skills add gaboesquivel/flow-skills -l` lists 15 skills on `main` at `54cdcc0` (2026-10-27) |
 | Ecosystem cleanup before product dogfood | Pass (structural + live deploy) | [Readiness record](2026-10-27-ecosystem-dogfood-readiness.md); starter workflow skills removed on `e63fb72` / `5055c2d` |
 | Adopter product context vs Flow identity | Recorded (one agent, this repo) | [Dogfood record](2026-10-27-dogfood-context-alignment.md) — skill text changed in Cursor on 2026-10-27. No adopter repository was edited |
