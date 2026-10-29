@@ -48,65 +48,57 @@ Specs are for bets worth tracking, not a toll on every change. In either mode, n
 - **Build locally where pull requests are required.** "Build it local" on a repository whose default branch requires pull requests commits the work on a branch and stops: no push, no pull request. "Ship it" opens the pull request when you are ready.
 - **Just ask your agent.** Flow skills run when your request matches their phrases. A plain request ("rename this prop") is handled as your agent would without Flow.
 
-## How it fits together
+## How it works
+
+Say a phrase and the matching skill runs. There is no required order: start anywhere, skip any step.
 
 ```mermaid
-flowchart TB
-  setup["Set up Flow: 'set up Flow here' or start"]
-  delivery{"Delivery: GitHub or local"}
-  goals["Goals: explore writes the brief in PRODUCT.md"]
-  spec["Spec: one bet, tasks are its slices"]
-  decision["Decision record: why X over Y"]
-  ship["ship it"]
-  direct["No spec: 'build it'"]
-  setup --> delivery --> goals --> spec --> ship
-  spec -.-> decision
-  delivery -.-> direct -.-> ship
+flowchart LR
+  start["start<br/>new project"] ==> explore
+  subgraph shapeGroup [Shape]
+    explore["explore<br/>+ interview, grill"]
+    spec["to-spec<br/>'spec it'"]
+    tasks["to-tasks<br/>'break it down'"]
+  end
+  subgraph deliverGroup [Deliver]
+    build["build<br/>'build it'"]
+    review["review<br/>independent"]
+    ship["ship<br/>'ship it'"]
+  end
+  explore -.-> spec -.-> tasks -.-> build
+  explore -.-> build
+  build -.-> review -.-> ship
+  classDef shapeNode fill:#EEEDFE,stroke:#534AB7,color:#3C3489
+  classDef deliverNode fill:#E1F5EE,stroke:#0F6E56,color:#085041
+  classDef startNode fill:#F1EFE8,stroke:#5F5E5A,color:#444441
+  class explore,spec,tasks shapeNode
+  class build,review,ship deliverNode
+  class start startNode
 ```
 
-- **Set up Flow.** Say "set up Flow here" in an existing project, or "start a Next.js project" for a new one. `start` is the same setup plus a verified template bootstrap. Both write the Flow block and ask only the delivery question ([decision 0030](docs/decisions/0030-asked-delivery-and-local-mode.md), [decision 0036](docs/decisions/0036-one-explore-depth.md)).
-- **Define the goals.** `explore` gives every Flow project the same goals at one default depth: the problem, who it serves (agents included), the riskiest assumption, a pre-mortem, one main metric with a kill criterion, core journeys, and alternatives. Ask for `competitors` or `jtbd` when you want deeper research. `explore` commits the brief on an `explore/<slug>` branch, which "spec it" turns into the spec branch. `start` hands off to `explore` automatically; `flow` names it when `PRODUCT.md` has no brief.
-- **Keep context aligned.** "Update the docs" has `flow` align `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` after meaningful changes.
-- **Deliver.** "Spec it" writes a draft spec with one acceptance scenario and publishes nothing; "accept the spec" approves it. "Break it down" makes its tasks. "Build it" runs every unblocked task at once on one branch and delivers the spec as your mode does. "Ship it" lands accepted work with no confirmation, then checks that the shipped commit is green and its deployment answers (decisions [0028](docs/decisions/0028-build-and-ship.md), [0029](docs/decisions/0029-spec-issues.md), [0032](docs/decisions/0032-local-build-lands-ship-verifies.md), and [0040](docs/decisions/0040-ship-verifies-liveness.md)).
-- **Other skills.** Say what you want; each skill's leading word reaches it ("grill me", "debug this"). Slash commands work too. There is no mandatory sequence.
+Thick arrow: an automatic hand-off, behind your yes. Dashed arrow: you say the next phrase.
 
-Skills may name the next skill and wait for you. The only automatic hand-offs are `start` → `explore`, explore's `interview` and `grill` phases (each behind your yes). `ship` lands work that includes the implementation and an independent review, and brings the work up to those proofs when they are missing ([decision 0042](docs/decisions/0042-outcome-build-and-ship.md), amending [0028](docs/decisions/0028-build-and-ship.md); [decision 0024](docs/decisions/0024-gated-hand-offs.md)).
+- **Skills suggest the next step and wait.** The only automatic hand-offs are `start` → `explore` and explore's `interview` and `grill` phases, each behind your yes ([decision 0024](docs/decisions/0024-gated-hand-offs.md)).
+- **No spec required.** "Build it" works on a plain request ([decision 0039](docs/decisions/0039-build-never-requires-a-spec.md)); see [work without a spec](#work-without-a-spec).
+- **`ship` brings the work up to its proofs.** It lands work that includes the implementation, an independent review, and green checks, doing what is missing first, then checks that the shipped commit is live ([decision 0042](docs/decisions/0042-outcome-build-and-ship.md), [decision 0040](docs/decisions/0040-ship-verifies-liveness.md)).
+- **Context stays aligned.** "Update the docs" has `flow` align `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md`.
+
+| Path | You say |
+| --- | --- |
+| Quick fix | "build it" → "ship it", or just "ship it" |
+| Shaped idea | "explore this" → "build it" → "ship it" |
+| Tracked bet | "explore this" → "spec it" → "accept the spec" → "break it down" → "build it" → "ship it" |
+| New project | "start a Next.js project" (hands off to `explore`) |
+
+Every other skill (`grill`, `debug`, `council`, `tldr`, …) can run at any time and never blocks delivery.
 
 ### Specs, tasks, and decisions
 
-- **Spec:** one bet. It tests one assumption and ships as one unit. A spec can be large.
-- **Tasks:** the slices inside a spec, each verifiable on its own. Work that only makes sense after seeing how another bet did is a new spec, not another task.
-- **Decision record:** written only when a choice picked among real alternatives *and* reaches beyond one spec or is costly to reverse. Everything else stays in the spec's Implementation Decisions.
+- **Spec:** one bet. It tests one assumption and ships as one unit. "Spec it" writes a draft; "accept the spec" approves it.
+- **Tasks:** the slices inside a spec, each verifiable on its own.
+- **Decision record:** written only when a choice picked among real alternatives *and* reaches beyond one spec or is costly to reverse.
 
 Details and links to every `SKILL.md`: **[docs/skills.md](docs/skills.md)**.
-
-### From idea to shipped work
-
-The full path for a spec. Decision records are optional, and every step can also run on its own.
-
-```mermaid
-flowchart TB
-  explore["Explore · interview · grill<br/>Shape the problem"]
-  decision["Decision record<br/>When significant"]
-  spec["Spec<br/>to-spec · candidate → draft → accepted"]
-  tasks["Tasks<br/>to-tasks · sub-issues or spec checklist"]
-  build["Build · outcomes and proofs<br/>build · one branch per spec"]
-  progress["Progress · optional report"]
-  ready["Ready PR<br/>One per spec · green checks"]
-  land["Ship<br/>One review, merge, sync main"]
-  verify["Verify<br/>Green checks, deployment live"]
-  sync["flow aligns context<br/>Root docs current before review"]
-  explore --> spec
-  explore -.-> decision
-  decision -.-> spec
-  spec --> tasks --> build --> progress
-  progress -- more tasks --> build
-  progress -- all integrated --> sync --> ready --> land --> verify
-  classDef doc fill:#EEEDFE,stroke:#534AB7,color:#3C3489
-  classDef run fill:#FAECE7,stroke:#993C1D,color:#712B13
-  class decision,spec,tasks doc
-  class build,progress,ready,land,verify run
-```
 
 ## Catalog
 

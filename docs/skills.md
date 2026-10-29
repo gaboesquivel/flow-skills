@@ -12,16 +12,7 @@ Talk to your agent, by typing or dictation. Each skill has a [leading word](../G
 2. **Work** — Build your product and say what you want; "update the docs" aligns root context with **`flow`**. Work needs no spec unless you want one: say "build it" for [unspecced work](../GLOSSARY.md#unspecced-work), or just ask your agent ([work without a spec](../README.md#work-without-a-spec)).
 3. **Document** — When saving artifacts, default to `docs/specs/NNN-short-name.md` and `docs/decisions/NNN-short-name.md` unless the project already uses something else.
 
-Optional skills (every step skippable; no required order):
-
-```mermaid
-flowchart LR
-  subgraph delivery["Delivery skills — invoke any subset; no fixed order"]
-    direction TB
-    explore ~~~ interview ~~~ grill ~~~ toSpec[to-spec]
-    toTasks[to-tasks] ~~~ build ~~~ review ~~~ ship ~~~ retro
-  end
-```
+The delivery skills and the paths between them are drawn in the README: [how it works](../README.md#how-it-works). Every step is skippable; there is no required order.
 
 Product discovery, writing, advisory, prototype, quality, and misc skills are optional and do not block delivery.
 
