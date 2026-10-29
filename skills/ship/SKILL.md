@@ -24,7 +24,7 @@ Outside a Git repository, offer `git init` and stop on a no. Fetch, then read br
 
 Classify the work:
 
-- **Spec work:** `accepted` or `implemented` passes; "ship it" on a `draft` accepts it (`to-spec`'s Status and acceptance). Any other status, or a spec that cannot be resolved, stops ship: say what is wrong. A complete spec still missing `Status: implemented` gets it in the landed change.
+- **Spec work:** `accepted` or `implemented` passes; "ship it" on a `draft` accepts it (`spec`'s Status and acceptance). Any other status, or a spec that cannot be resolved, stops ship: say what is wrong. A complete spec still missing `Status: implemented` gets it in the landed change.
 - **Unspecced work:** needs no spec; `build`'s Size guard sets its review.
 
 ## Build

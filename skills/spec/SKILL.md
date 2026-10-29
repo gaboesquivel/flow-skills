@@ -1,5 +1,5 @@
 ---
-name: to-spec
+name: spec
 description: Turn the current conversation into a numbered draft specification using project conventions, and accept it when approved. Use when the user says "spec it", "write a spec", "turn this into a spec", "share the draft", or "accept the spec".
 disable-model-invocation: false
 ---
@@ -20,7 +20,7 @@ Specs may cover product, research, marketing, engineering, operations, or cross-
 
 ## Status and acceptance
 
-A spec's `Status:` line reads `candidate`, `draft`, `accepted`, `implemented`, or `dropped`, with the date. `to-spec` writes `candidate` and `draft` and owns acceptance; `build` sets `implemented` once every task integrates, and `ship` sets it if still missing; `ship` drops a spec.
+A spec's `Status:` line reads `candidate`, `draft`, `accepted`, `implemented`, or `dropped`, with the date. `spec` writes `candidate` and `draft` and owns acceptance; `build` sets `implemented` once every task integrates, and `ship` sets it if still missing; `ship` drops a spec.
 
 **Acceptance** happens when the user says "accept the spec", or "build it" or "ship it" on a draft (`build` and `ship` apply these steps in their first commit). Writing a draft is not acceptance. In one commit:
 

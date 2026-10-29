@@ -34,7 +34,7 @@ Status: implemented (2026-10-28). Issue: [#104](https://github.com/gaboesquivel/
 
 ## Implementation Decisions
 
-**`to-spec`** ([skill](../../skills/to-spec/SKILL.md)): Testing Decisions gains a required **acceptance scenario**: actor, starting state and realistic data, numbered steps with the observable result of each, and the agent-interface variant when agent users are named. A spec without one is not ready to accept; "accept the spec" names what is missing.
+**`to-spec`** ([skill](../../skills/spec/SKILL.md)): Testing Decisions gains a required **acceptance scenario**: actor, starting state and realistic data, numbered steps with the observable result of each, and the agent-interface variant when agent users are named. A spec without one is not ready to accept; "accept the spec" names what is missing.
 
 **`build`** ([skill](../../skills/build/SKILL.md)):
 - Deliver › Local mode and Task set › Finish: after the last integration and a passing full suite, check the gate, run `review` as `ship` runs it today (per-axis workers plus verifier, fix rounds as Deliver defines), then `git merge --no-ff` the spec branch into local `main`, set the spec `implemented`, delete the spec branch, and remove remaining clean worktrees.

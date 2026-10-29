@@ -74,7 +74,7 @@ Keep quick-mode output concise.
 
 Read-only: do not modify product code, and do not write tasks or specifications unless asked. Do not fabricate findings or citations.
 
-When a recommended choice passes `to-spec`'s decision-record test, record it under `docs/decisions/` with status **Proposed** only; acceptance happens through `to-spec`. Council completion never implies approval.
+When a recommended choice passes `spec`'s decision-record test, record it under `docs/decisions/` with status **Proposed** only; acceptance happens through `spec`. Council completion never implies approval.
 
 ## Completion
 

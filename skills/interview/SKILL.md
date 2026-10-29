@@ -22,4 +22,4 @@ Stop asking when you can predict the user's reaction to the next three questions
 
 Restate intent in the user's words, one line each: outcome, user, why now, success, constraint, out of scope. Always include out of scope. Note how many of your guesses were accepted unchanged. Ask for confirmation. "Sounds good", "sure", or silence are not a yes; ask what they would refine. Fold corrections in and restate until the user gives an explicit yes.
 
-On an explicit yes, return the confirmed statement of intent, offer sensible next steps (for example `grill`, `to-spec`, or saving the intent when the user wants it), and end the turn. Do not save, plan, or start downstream work in the same turn. A confirmed intent does not authorize implementation.
+On an explicit yes, return the confirmed statement of intent, offer sensible next steps (for example `grill`, `spec`, or saving the intent when the user wants it), and end the turn. Do not save, plan, or start downstream work in the same turn. A confirmed intent does not authorize implementation.

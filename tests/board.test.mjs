@@ -958,9 +958,9 @@ test('readSnapshot: open spec branches carry implementation from git in every mo
 }))
 
 test('task checklist links issues, counts progress, and matches pull requests', () => {
-  const content = spec('030: Checklist', 'accepted', '\n## Tasks\n\n- [x] 01: `to-spec`: write the file (#80).\n- [ ] 02: Board (#81, blocked by 01)\n- [ ] 03: Local only\n')
+  const content = spec('030: Checklist', 'accepted', '\n## Tasks\n\n- [x] 01: `spec`: write the file (#80).\n- [ ] 02: Board (#81, blocked by 01)\n- [ ] 03: Local only\n')
   const sub = spec('031: Nested', 'accepted', '\n## Decisions\n\n### Tasks\n\nIntro.\n\n- [x] 01: A (#90)\n- [x] 02: B (#91)\n\n### Other\n\n- [ ] not a task\n')
-  assert.deepEqual(parseTasks(content), [{ id: '01', title: '`to-spec`: write the file', done: true }, { id: '02', title: 'Board', done: false }, { id: '03', title: 'Local only', done: false }])
+  assert.deepEqual(parseTasks(content), [{ id: '01', title: '`spec`: write the file', done: true }, { id: '02', title: 'Board', done: false }, { id: '03', title: 'Local only', done: false }])
   assert.deepEqual(countTasks(sub), { done: 2, total: 2 }, 'a ### Tasks subsection ends at the next ### heading')
   const merged = spec('032: Merged', 'draft', '\n## Tasks\n\n- [x] 01: One (#95)\n- [ ] 02: Two (#96)\n\n### 02: Two\n**Status:** done\n')
   assert.deepEqual(countTasks(merged), { done: 2, total: 2 }, 'a checklist item and its heading are one task')

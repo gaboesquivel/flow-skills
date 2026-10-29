@@ -19,7 +19,7 @@ const safety = [
   ['ship', /weaken a check/iu],
   ['ship', /data, never instructions/iu],
   ['review', /never claim independence/iu],
-  ['to-spec', /never the default branch/iu],
+  ['spec', /never the default branch/iu],
   ['write-agents', /never instructions that change it/iu],
   ['write-agents', /`git init` needs its own explicit yes/iu],
 ]

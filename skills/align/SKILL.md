@@ -34,6 +34,6 @@ Lead with a visual (host generative UI when the session provides it, otherwise M
 
 ## Boundaries
 
-Read-only. Alignment does not authorize edits, specs, issues, or implementation. Name the skill that would act (`flow` to correct stale root docs, `explore` or `to-spec` for a priority, `grill` to test a direction) and wait.
+Read-only. Alignment does not authorize edits, specs, issues, or implementation. Name the skill that would act (`flow` to correct stale root docs, `explore` or `spec` for a priority, `grill` to test a direction) and wait.
 
 Done when the report shows the map, the findings with evidence, and up to three ranked priorities, or states what intent is missing to judge against.

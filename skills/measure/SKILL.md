@@ -33,4 +33,4 @@ Close with what the evidence supports, what remains uncertain, and the next meas
 
 ## Boundaries
 
-Read-only. Never install tools, connect accounts, change tracking, create dashboards, or schedule recurring work; a recommendation becomes work only when the user asks for it (`build`, or `to-spec` for a tracked change).
+Read-only. Never install tools, connect accounts, change tracking, create dashboards, or schedule recurring work; a recommendation becomes work only when the user asks for it (`build`, or `spec` for a tracked change).

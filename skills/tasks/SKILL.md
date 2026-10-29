@@ -1,5 +1,5 @@
 ---
-name: to-tasks
+name: tasks
 description: Break a plan, spec, or conversation into verifiable vertical-slice tasks with explicit blockers; list them in the spec's Tasks checklist. Use when the user says "break it down", "make tasks", or "split this into tasks".
 disable-model-invocation: false
 ---
@@ -45,7 +45,7 @@ Give each task its **blocking edges**: other tasks that must finish before it ca
 
 Resolve only consequential scope or sequencing uncertainty first; "break it down" authorizes recording, so do not show the tasks for approval before writing them.
 
-Outside a Git repository, offer `git init` and stop on a no. Tasks are the spec's checklist: write its Tasks section, one line per task (`- [ ] NN: Title`), and detail each task below it with the task template. Commit on the spec's branch. Without a spec, write one with `to-spec` first, or return the tasks as a local draft and say so. Do not introduce a `.scratch/` task system or labels.
+Outside a Git repository, offer `git init` and stop on a no. Tasks are the spec's checklist: write its Tasks section, one line per task (`- [ ] NN: Title`), and detail each task below it with the task template. Commit on the spec's branch. Without a spec, write one with `spec` first, or return the tasks as a local draft and say so. Do not introduce a `.scratch/` task system or labels.
 
 **Task issues** open only when the user asks: one per task from the issue template (sub-issues of the issue the user names, if any), opened in parallel, with blockers linked once every number exists (native blocked-by links where supported, otherwise `Blocked by #a, #b` atop the body); append `(#N)` to each checklist line. On a public repository, say the issues are public. If publishing stops partway, report which issues exist; on a retry, match existing issues by title and open only the missing ones.
 

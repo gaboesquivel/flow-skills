@@ -5,9 +5,9 @@
 | E01 | build | current | passed | not_executed | not_executed | not_executed |
 | E02 | flow | current | passed | not_executed | not_executed | not_executed |
 | E03 | review | current | passed | passed | passed | not_executed |
-| E04 | to-spec | current | passed | not_executed | not_executed | not_executed |
+| E04 | spec | current | passed | not_executed | not_executed | not_executed |
 | E05 | grill | current | passed | not_executed | not_executed | not_executed |
-| E06 | to-tasks | current | passed | not_executed | not_executed | not_executed |
+| E06 | tasks | current | passed | not_executed | not_executed | not_executed |
 | E07 | retro | current | passed | passed | passed | not_executed |
 | E08 | review | current | passed | passed | passed | not_executed |
 | E09 | write-agents | current | passed | not_executed | not_executed | not_executed |
@@ -21,16 +21,16 @@
 | E17 | explore | rewritten | not_executed | not_executed | not_executed | not_executed |
 | E18 | explore | current | passed | not_executed | not_executed | not_executed |
 | E19 | explore | current | passed | not_executed | not_executed | not_executed |
-| E20 | build, to-tasks | rewritten | not_executed | not_executed | not_executed | not_executed |
-| E21 | build, ship, to-tasks | rewritten | not_executed | not_executed | not_executed | not_executed |
+| E20 | build, tasks | rewritten | not_executed | not_executed | not_executed | not_executed |
+| E21 | build, ship, tasks | rewritten | not_executed | not_executed | not_executed | not_executed |
 | E22 | flow | rewritten | not_executed | passed | not_executed | not_executed |
 | E23 | start, explore | rewritten | not_executed | not_executed | not_executed | not_executed |
 | E24 | start, explore | rewritten | not_executed | not_executed | not_executed | not_executed |
-| E25 | explore, to-spec | rewritten | not_executed | not_executed | not_executed | not_executed |
+| E25 | explore, spec | rewritten | not_executed | not_executed | not_executed | not_executed |
 | E26 | ship | retired | passed | not_executed | passed | not_executed |
 | E27 | ship | rewritten | not_executed | not_executed | not_executed | not_executed |
-| E28 | ship, to-spec | rewritten | not_executed | not_executed | not_executed | not_executed |
-| E29 | to-spec | retired | not_executed | not_executed | not_executed | not_executed |
+| E28 | ship, spec | rewritten | not_executed | not_executed | not_executed | not_executed |
+| E29 | spec | retired | not_executed | not_executed | not_executed | not_executed |
 | E30 | explore, build | rewritten | not_executed | not_executed | not_executed | not_executed |
 | E31 | ship, build | rewritten | not_executed | not_executed | not_executed | not_executed |
 | E32 | explore | current | not_executed | not_executed | not_executed | not_executed |

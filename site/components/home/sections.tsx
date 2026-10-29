@@ -79,7 +79,7 @@ const STAGES: Stage[] = [
     kicker: "Product thinking",
     title: "Intent",
     body: "Define who the product is for, why it matters, what success means, and which assumptions to test first.",
-    skills: ["explore", "design", "to-spec"],
+    skills: ["explore", "design", "spec"],
     dot: "#9ea6f8",
     example: {
       kicker: "Product direction",

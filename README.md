@@ -19,7 +19,7 @@ Flow keeps its work in Git: specs, decision records, and the product brief are f
 | You use | You need |
 | --- | --- |
 | Thinking skills: `grill`, `interview`, `council`, `align`, `measure`, `debug`, `tldr`, the writing skills, and the rest | Nothing. Any folder works, with or without Git. |
-| The delivery chain: `flow`'s setup, `start`, `explore`, `to-spec`, `to-tasks`, `build`, `review`, `ship`, `board` | A Git repository. Outside one, the skill offers `git init` and stops if you say no. |
+| The delivery chain: `flow`'s setup, `start`, `explore`, `spec`, `tasks`, `build`, `review`, `ship`, `board` | A Git repository. Outside one, the skill offers `git init` and stops if you say no. |
 | GitHub mode | GitHub access as well: pull requests and CI live there. |
 
 The rules Flow follows in a project live in Git too. "Set up Flow here" writes one [Flow block](GLOSSARY.md#flow-block) into the instruction file Git tracks: `AGENTS.md`, or `CLAUDE.md` with an `@AGENTS.md` import when `AGENTS.md` is ignored. The block holds the phrase table and, when you set one, a `Delivery:` override, and every agent and teammate who clones the repository reads the same rules. Delete the block to opt out.
@@ -57,8 +57,8 @@ flowchart LR
   start["start<br/>new project"] ==> explore
   subgraph shapeGroup [Shape]
     explore["explore<br/>+ interview, grill"]
-    spec["to-spec<br/>'spec it'"]
-    tasks["to-tasks<br/>'break it down'"]
+    spec["spec<br/>'spec it'"]
+    tasks["tasks<br/>'break it down'"]
   end
   subgraph deliverGroup [Deliver]
     build["build<br/>'build it'"]
@@ -105,7 +105,7 @@ Details and links to every `SKILL.md`: **[docs/skills.md](docs/skills.md)**.
 | Group | Skills |
 | --- | --- |
 | Context alignment | `flow` |
-| Delivery | `explore`, `interview`, `grill`, `to-spec`, `to-tasks`, `build`, `review`, `ship`, `retro` |
+| Delivery | `explore`, `interview`, `grill`, `spec`, `tasks`, `build`, `review`, `ship`, `retro` |
 | Advisory | `council` |
 | Design | `design` |
 | Prototype | `prototype` |

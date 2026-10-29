@@ -16,7 +16,7 @@ const STEPS = [
     kicker: "When useful",
     title: "Plan?",
     body: "Agree on the approach in conversation. Say “spec it” and “break it down” only for a bet worth tracking.",
-    skill: "to-spec",
+    skill: "spec",
   },
   {
     n: "03",

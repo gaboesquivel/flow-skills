@@ -83,7 +83,7 @@ Recommendation: validate the entire shipped dependency closure and package conte
 
 ### 8. Medium — upstream setup and ceremonies obstruct ordinary work
 
-Sources: [setup](../2026-10-27-distribution/setup-matt-pocock-skills/SKILL.md), [spec](../../../skills/to-spec/SKILL.md), [tasks](../../../skills/to-tasks/SKILL.md), `skills/tdd/SKILL.md`, `skills/grilling/SKILL.md` (removed).
+Sources: [setup](../2026-10-27-distribution/setup-matt-pocock-skills/SKILL.md), [spec](../../../skills/spec/SKILL.md), [tasks](../../../skills/tasks/SKILL.md), `skills/tdd/SKILL.md`, `skills/grilling/SKILL.md` (removed).
 
 Planning and review depend on `/setup-matt-pocock-skills`, extra `docs/agents/` configuration, triage labels, and a `.scratch/` task layout. Setup omits triage configuration when `triage` is absent, while spec/tickets still expect the vocabulary. Spec mandates an extremely extensive story list and publication; TDD requires user confirmation for every test seam and bans refactoring within its loop; grilling requires exhausting every branch and a final confirmation. These conflict with Flow's proportional process and reuse of established authorization.
 

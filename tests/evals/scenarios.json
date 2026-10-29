@@ -74,13 +74,13 @@
     {
       "id": "E04",
       "skills": [
-        "to-spec"
+        "spec"
       ],
       "behavior": "Synthesizes accepted decisions without repeated questions",
       "taskFile": "tests/evals/tasks/E04-task.md",
       "rubricFile": "tests/evals/rubrics/E04-rubric.md",
       "skillReferences": [
-        "skills/to-spec/SKILL.md"
+        "skills/spec/SKILL.md"
       ],
       "fixtureReferences": [],
       "evidence": {
@@ -116,13 +116,13 @@
     {
       "id": "E06",
       "skills": [
-        "to-tasks"
+        "tasks"
       ],
       "behavior": "Produces verifiable vertical slices and genuine blockers",
       "taskFile": "tests/evals/tasks/E06-task.md",
       "rubricFile": "tests/evals/rubrics/E06-rubric.md",
       "skillReferences": [
-        "skills/to-tasks/SKILL.md"
+        "skills/tasks/SKILL.md"
       ],
       "fixtureReferences": [],
       "evidence": {
@@ -432,14 +432,14 @@
       "id": "E20",
       "skills": [
         "build",
-        "to-tasks"
+        "tasks"
       ],
       "behavior": "GitHub-mode task set runs ready tasks in parallel respecting blockers and intersecting areas, integrates every task on one spec branch, and ends at a ready pull request without waiting on CI or merging",
       "taskFile": "tests/evals/tasks/E20-task.md",
       "rubricFile": "tests/evals/rubrics/E20-rubric.md",
       "skillReferences": [
         "skills/build/SKILL.md",
-        "skills/to-tasks/SKILL.md"
+        "skills/tasks/SKILL.md"
       ],
       "fixtureReferences": [],
       "evidence": {
@@ -456,7 +456,7 @@
       "skills": [
         "build",
         "ship",
-        "to-tasks"
+        "tasks"
       ],
       "behavior": "Local-mode ship runs build, checks the merge result once, merges into main with a merge commit, pushes without force, and verifies; \"with a PR\" overrides the mode for one run",
       "taskFile": "tests/evals/tasks/E21-task.md",
@@ -464,7 +464,7 @@
       "skillReferences": [
         "skills/build/SKILL.md",
         "skills/ship/SKILL.md",
-        "skills/to-tasks/SKILL.md"
+        "skills/tasks/SKILL.md"
       ],
       "fixtureReferences": [],
       "evidence": {
@@ -550,14 +550,14 @@
       "id": "E25",
       "skills": [
         "explore",
-        "to-spec"
+        "spec"
       ],
       "behavior": "Spec it after a new-product brief writes spec 001 in full, contract-first, testing the riskiest assumption, with later bets as candidate stubs",
       "taskFile": "tests/evals/tasks/E25-task.md",
       "rubricFile": "tests/evals/rubrics/E25-rubric.md",
       "skillReferences": [
         "skills/explore/SKILL.md",
-        "skills/to-spec/SKILL.md"
+        "skills/spec/SKILL.md"
       ],
       "fixtureReferences": [],
       "evidence": {
@@ -579,7 +579,7 @@
       "rubricFile": "tests/evals/rubrics/E26-rubric.md",
       "skillReferences": [
         "skills/ship/SKILL.md",
-        "skills/to-spec/SKILL.md"
+        "skills/spec/SKILL.md"
       ],
       "fixtureReferences": [
         "tests/fixtures/e26-ship-draft-gate/README.md",
@@ -615,7 +615,7 @@
       "rubricFile": "tests/evals/rubrics/E27-rubric.md",
       "skillReferences": [
         "skills/ship/SKILL.md",
-        "skills/to-spec/SKILL.md"
+        "skills/spec/SKILL.md"
       ],
       "fixtureReferences": [],
       "evidence": {
@@ -631,14 +631,14 @@
       "id": "E28",
       "skills": [
         "ship",
-        "to-spec"
+        "spec"
       ],
       "behavior": "Ship it on a draft spec branch classifies spec work, accepts an acceptable draft in its first commit, and stops on a draft that cannot be accepted",
       "taskFile": "tests/evals/tasks/E28-task.md",
       "rubricFile": "tests/evals/rubrics/E28-rubric.md",
       "skillReferences": [
         "skills/ship/SKILL.md",
-        "skills/to-spec/SKILL.md"
+        "skills/spec/SKILL.md"
       ],
       "fixtureReferences": [],
       "evidence": {
@@ -653,13 +653,13 @@
     {
       "id": "E29",
       "skills": [
-        "to-spec"
+        "spec"
       ],
       "behavior": "A hand-edited spec issue body stops the sync and asks before overwriting",
       "taskFile": "tests/evals/tasks/E29-task.md",
       "rubricFile": "tests/evals/rubrics/E29-rubric.md",
       "skillReferences": [
-        "skills/to-spec/SKILL.md"
+        "skills/spec/SKILL.md"
       ],
       "fixtureReferences": [],
       "evidence": {

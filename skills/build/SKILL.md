@@ -19,7 +19,7 @@ Build never merges. Run what the work needs while implementing; the full checks 
 
 Read the request, repository instructions, and code. Preserve unrelated working-tree changes. Do not add scope just because it is nearby. When the change touches what users see, follow `DESIGN.md` when present. When intent is unclear for a new product or substantial feature, suggest `explore` and wait; never start exploration unasked. When behavior or accepted context changes, update owning documentation; do not replace a project's product identity with Flow's methodology identity. Link to specs or decisions instead of duplicating rationale; do not open new spec or decision files unless the user asked or the work already uses that convention.
 
-"Build it" on a draft spec accepts it in the build's first commit (`to-spec`'s Status and acceptance).
+"Build it" on a draft spec accepts it in the build's first commit (`spec`'s Status and acceptance).
 
 ## Deliver
 
@@ -39,7 +39,7 @@ Stop on blocking findings or red checks after the fix rounds; report the branch 
 
 ### Unspecced work
 
-Work with no spec or task is unspecced. Write a spec or tasks only when the user asks. On a branch that holds a confirmed brief, keep building on it. The build request accepts any **Proposed** direction-change record the branch adds: set it to **Accepted** with back-pointers as `to-spec`'s accept step describes. Escalated unspecced work is reviewed against the request (and brief when there is one).
+Work with no spec or task is unspecced. Write a spec or tasks only when the user asks. On a branch that holds a confirmed brief, keep building on it. The build request accepts any **Proposed** direction-change record the branch adds: set it to **Accepted** with back-pointers as `spec`'s accept step describes. Escalated unspecced work is reviewed against the request (and brief when there is one).
 
 ### Size guard
 

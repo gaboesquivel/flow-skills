@@ -34,7 +34,7 @@ Retired. Earlier records call it **process depth**: a Lite or Full setting recor
 
 ## Spec
 
-One bet: a numbered document that tests one assumption and ships as one unit, with tasks as the slices inside it. A bet that depends on how another one does gets its own spec, stubbed as a [candidate](#candidate-spec) until its turn. The file is the record in both delivery modes; in GitHub mode the pull request links it, and an issue opens only on request. Its `Status:` line moves `candidate → draft → accepted → implemented`, or ends `dropped` only at the user's request. Acceptance is "accept the spec", or "build it" or "ship it" on a draft. The file is written on the work's branch and merges with the work. [`to-spec`](skills/to-spec/SKILL.md) owns the rules; decisions [0028](docs/decisions/0028-build-and-ship.md) and [0044](docs/decisions/0044-fast-delivery.md).
+One bet: a numbered document that tests one assumption and ships as one unit, with tasks as the slices inside it. A bet that depends on how another one does gets its own spec, stubbed as a [candidate](#candidate-spec) until its turn. The file is the record in both delivery modes; in GitHub mode the pull request links it, and an issue opens only on request. Its `Status:` line moves `candidate → draft → accepted → implemented`, or ends `dropped` only at the user's request. Acceptance is "accept the spec", or "build it" or "ship it" on a draft. The file is written on the work's branch and merges with the work. [`spec`](skills/spec/SKILL.md) owns the rules; decisions [0028](docs/decisions/0028-build-and-ship.md) and [0044](docs/decisions/0044-fast-delivery.md).
 
 ## Spec issue
 
@@ -42,7 +42,7 @@ Retired. Earlier records describe a GitHub issue per spec that linked the file a
 
 ## Exposure
 
-A spec's line under Implementation Decisions saying where the slice runs, who can reach it, and how writes behave when it is deployed without authentication; with authentication out of scope and a deployable slice, write paths fail closed on deployment. [`to-spec`](skills/to-spec/SKILL.md) owns the template; [spec 021](docs/specs/021-demo-findings.md).
+A spec's line under Implementation Decisions saying where the slice runs, who can reach it, and how writes behave when it is deployed without authentication; with authentication out of scope and a deployable slice, write paths fail closed on deployment. [`spec`](skills/spec/SKILL.md) owns the template; [spec 021](docs/specs/021-demo-findings.md).
 
 ## Decision record
 
@@ -66,7 +66,7 @@ Work that resolves to no spec or task, from a one-line fix to a feature built fr
 
 ## Area
 
-A task's `Area:` line: every package or directory it changes, comma-separated when there are several (such as `lib/feedback/connect, app/opportunities`), coarse and never a file path. [`to-tasks`](skills/to-tasks/SKILL.md) assigns it. [`build`](skills/build/SKILL.md#task-set) uses it to keep tasks that change the same files from landing as if they were independent. [Decision 0031](docs/decisions/0031-fan-out-by-default.md); [spec 026](docs/specs/026-clean-baseline-and-worktrees.md); amended by [decision 0042](docs/decisions/0042-outcome-build-and-ship.md) and [spec 028](docs/specs/028-outcome-build-and-ship.md).
+A task's `Area:` line: every package or directory it changes, comma-separated when there are several (such as `lib/feedback/connect, app/opportunities`), coarse and never a file path. [`tasks`](skills/tasks/SKILL.md) assigns it. [`build`](skills/build/SKILL.md#task-set) uses it to keep tasks that change the same files from landing as if they were independent. [Decision 0031](docs/decisions/0031-fan-out-by-default.md); [spec 026](docs/specs/026-clean-baseline-and-worktrees.md); amended by [decision 0042](docs/decisions/0042-outcome-build-and-ship.md) and [spec 028](docs/specs/028-outcome-build-and-ship.md).
 
 ## Frontier
 
@@ -78,7 +78,7 @@ Work started but not yet on the default branch: worktrees, task branches, and un
 
 ## Acceptance scenario
 
-The one representative end-to-end journey a spec names in its Testing Decisions: the actor, the starting state with realistic data, and numbered steps with the observable result of each, plus the same journey through the agent interface when the spec names agent users. A draft without one is not accepted: acceptance, and a "build it" or "ship it" on that draft, stops and names what is missing. [`to-spec`](skills/to-spec/SKILL.md) owns the rule; decisions [0032](docs/decisions/0032-local-build-lands-ship-verifies.md) and [0044](docs/decisions/0044-fast-delivery.md).
+The one representative end-to-end journey a spec names in its Testing Decisions: the actor, the starting state with realistic data, and numbered steps with the observable result of each, plus the same journey through the agent interface when the spec names agent users. A draft without one is not accepted: acceptance, and a "build it" or "ship it" on that draft, stops and names what is missing. [`spec`](skills/spec/SKILL.md) owns the rule; decisions [0032](docs/decisions/0032-local-build-lands-ship-verifies.md) and [0044](docs/decisions/0044-fast-delivery.md).
 
 ## Requirement verdict
 
@@ -94,7 +94,7 @@ Former name for [liveness](#liveness) after shipping.
 
 ## Candidate spec
 
-A stub for a later bet: the problem and the assumption it tests, written as a spec file with status `candidate` in both delivery modes. Fleshed out only when its turn comes, after the bet it depends on ships; `to-spec` then completes the same file. Decisions [0022](docs/decisions/0022-start-runs-explore.md), [0026](docs/decisions/0026-process-depth.md), and [0044](docs/decisions/0044-fast-delivery.md).
+A stub for a later bet: the problem and the assumption it tests, written as a spec file with status `candidate` in both delivery modes. Fleshed out only when its turn comes, after the bet it depends on ships; `spec` then completes the same file. Decisions [0022](docs/decisions/0022-start-runs-explore.md), [0026](docs/decisions/0026-process-depth.md), and [0044](docs/decisions/0044-fast-delivery.md).
 
 ## Human summary
 
