@@ -37,7 +37,7 @@ Methodology practices that elaborate these principles live in [docs/principles.m
 
 ## Success
 
-Reduce the time and effort between human intent and verified product value. Process should cost minutes, not rounds: checks run once at pull request time, and shipping verifies only that the change is live.
+Reduce the time and effort between human intent and verified product value. Process should cost minutes, not rounds: checks run once at pull request time, and shipping verifies only that the change is live. Remove ceremony, never the practice: keep good product, lean startup, and engineering practices, and cut any step that repeats them or records state no one reads.
 
 | Metric | From | To | Target (hypothesis, low confidence) |
 | --- | --- | --- | --- |
