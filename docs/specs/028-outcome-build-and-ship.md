@@ -1,6 +1,6 @@
 # 028: Outcome-first build and ship
 
-Status: accepted (2026-10-28). Decision: [0042](../decisions/0042-outcome-build-and-ship.md) (Accepted).
+Status: accepted (2026-10-28). Issue: [#144](https://github.com/gaboesquivel/flow-skills/issues/144). Decision: [0042](../decisions/0042-outcome-build-and-ship.md) (Accepted).
 
 ## Problem Statement
 
