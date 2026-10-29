@@ -23,6 +23,7 @@ export const EXPECTED_SKILL_NAMES = [
   'handoff',
   'interview',
   'jtbd',
+  'measure',
   'prototype',
   'retro',
   'review',
@@ -77,8 +78,9 @@ export function validateSkills(root) {
         if (/^(?:[a-z]+:|#)/iu.test(ref)) continue
         ref = ref.split('#')[0]
         const resolved = resolve(dirname(path), ref)
-        const rel = relative(resolve(root), resolved)
-        if (rel === '..' || rel.startsWith(`..${sep}`) || !existsSync(resolved)) errors.push(`${name}/${file}: missing or external local reference ${ref}`)
+        // A skill installed alone has only its own folder, so links stay inside it.
+        const rel = relative(folder, resolved)
+        if (rel === '..' || rel.startsWith(`..${sep}`) || !existsSync(resolved)) errors.push(`${name}/${file}: missing or outside-the-skill reference ${ref}`)
       }
       for (const forbidden of ['setup-matt-pocock-skills', 'using-superpowers', 'Skill tool', 'superpowers:', '/wayfinder', '/improve-codebase-architecture', 'upstreams.lock.json', 'sync-upstreams', 'flow-skills-init', 'scripts/init']) {
         if (text.includes(forbidden)) errors.push(`${name}/${file}: retired dependency ${forbidden}`)

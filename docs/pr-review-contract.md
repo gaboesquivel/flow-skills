@@ -68,7 +68,7 @@ The `context-review` workflow job runs on every pull request. When `FLOW_REVIEW_
 
 ## Trust boundary
 
-The CI job runs the reviewer script and this contract from the pull request's base commit and reads the head only as git data, so editing either has no effect on its own review; a change takes effect on the next pull request after it merges ([decision 0045](decisions/0045-trusted-review-and-local-record-checks.md)). The workflow file itself runs from the pull request, so getting around the reviewer takes a workflow change, which reviewers see in the diff. Only rate limits, timeouts, and server errors count as an outage: after one retry the job warns, comments that it skipped, and passes. Any other API error, a refusal, or a response that is not a verdict fails.
+The CI job runs the reviewer script and this contract from the pull request's base commit and reads the head only as git data, so editing either has no effect on its own review; a change takes effect on the next pull request after it merges ([decision 0047](decisions/0047-trusted-review-and-local-record-checks.md)). The workflow file itself runs from the pull request, so getting around the reviewer takes a workflow change, which reviewers see in the diff. Only rate limits, timeouts, and server errors count as an outage: after one retry the job warns, comments that it skipped, and passes. Any other API error, a refusal, or a response that is not a verdict fails.
 
 `main` requires a pull request and passing `validate (ubuntu-latest, 22)` and `context-review` checks. Direct pushes to `main` are rejected.
 

@@ -1,4 +1,4 @@
-# 0045 — Trusted LLM review, record checks in validate
+# 0047 — Trusted LLM review, record checks in validate
 
 Status: **Accepted** (2026-10-29). Amends [spec 004](../specs/004-pr-alignment-review.md) (the deterministic `alignment` check and its escape hatches) and [spec 014](../specs/014-faster-pr-ci.md) (the required checks).
 

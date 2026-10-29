@@ -10,7 +10,7 @@
 npx skills add gaboesquivel/flow-skills
 ```
 
-Choose your agent and install scope in the installer. [Agent compatibility](docs/agent-compatibility.md) covers other install paths and metadata limits. Flow needs no changes to your instruction files; setting up Flow mode adds one removable block, and only when you ask.
+To pin a release, install from its tag: `npx skills add https://github.com/gaboesquivel/flow-skills/tree/<tag>`. Choose your agent and install scope in the installer. [Agent compatibility](docs/agent-compatibility.md) covers other install paths and metadata limits. Flow needs no changes to your instruction files; setting up Flow mode adds one removable block, and only when you ask.
 
 ## Flow is Git-based
 
@@ -18,7 +18,7 @@ Flow keeps its work in Git: specs, decision records, and the product brief are f
 
 | You use | You need |
 | --- | --- |
-| Thinking skills: `grill`, `interview`, `council`, `align`, `debug`, `tldr`, the writing skills, and the rest | Nothing. Any folder works, with or without Git. |
+| Thinking skills: `grill`, `interview`, `council`, `align`, `measure`, `debug`, `tldr`, the writing skills, and the rest | Nothing. Any folder works, with or without Git. |
 | The delivery chain: `flow`'s setup, `start`, `explore`, `to-spec`, `to-tasks`, `build`, `review`, `ship`, `board` | A Git repository. Outside one, the skill offers `git init` and stops if you say no. |
 | GitHub mode | GitHub access as well: pull requests and CI live there. |
 
@@ -109,7 +109,7 @@ Details and links to every `SKILL.md`: **[docs/skills.md](docs/skills.md)**.
 | Prototype | `prototype` |
 | Shared language | `domain-modeling` |
 | Quality | `debug` |
-| Product discovery | `jtbd`, `competitors`, `align` |
+| Product discovery | `jtbd`, `competitors`, `align`, `measure` |
 | Writing | `write-agents`, `write-humans` |
 | Project start | `start` |
 | Misc | `tldr`, `handoff`, `board` |

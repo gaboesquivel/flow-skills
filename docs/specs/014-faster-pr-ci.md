@@ -1,6 +1,6 @@
 # 014: Faster PR CI
 
-Status: implemented (2026-10-28); required checks amended by [decision 0045](../decisions/0045-trusted-review-and-local-record-checks.md). Related: [spec 004](004-pr-alignment-review.md).
+Status: implemented (2026-10-28); required checks amended by [decision 0047](../decisions/0047-trusted-review-and-local-record-checks.md). Related: [spec 004](004-pr-alignment-review.md).
 
 ## Problem Statement
 

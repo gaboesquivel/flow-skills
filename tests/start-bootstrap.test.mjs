@@ -7,6 +7,7 @@ import test from 'node:test'
 import { deriveProjectIdentity, inferTemplateFromRequest, isForbiddenInstructionPath } from '../skills/start/lib/identity.mjs'
 import {
   assessDestination,
+  detectTemplateCheckout,
   assertNoTemplateOrigin,
   copyTemplateInto,
   isTemplateRemoteUrl,
@@ -124,6 +125,25 @@ test('fresh git repo can drop template origin', () => {
   execSync('git commit -m "template"', { cwd: dir })
   const remotes = execSync('git remote -v', { cwd: dir, encoding: 'utf8' })
   assert.doesNotMatch(remotes, /flow-next/u)
+  assert.equal(assessDestination({ destinationPath: dir }).ok, false)
+  rmSync(dir, { recursive: true })
+})
+
+test('a clean template checkout is initialized in place; a dirty one is refused', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'start-clone-'))
+  execSync('git init', { cwd: dir })
+  execSync('git config user.email "start-bootstrap@test.invalid"', { cwd: dir })
+  execSync('git config user.name "Start Bootstrap Test"', { cwd: dir })
+  writeFileSync(join(dir, 'package.json'), JSON.stringify({ name: 'flow-mono' }))
+  execSync('git add package.json', { cwd: dir })
+  execSync('git commit -m "template"', { cwd: dir })
+  assert.equal(detectTemplateCheckout({ destinationPath: dir }), 'flow-mono')
+  const result = assessDestination({ destinationPath: dir })
+  assert.equal(result.ok, true)
+  assert.equal(result.inPlace, true)
+  assert.equal(result.template, 'flow-mono')
+  writeFileSync(join(dir, 'notes.txt'), 'local work')
+  assert.equal(detectTemplateCheckout({ destinationPath: dir }), null)
   assert.equal(assessDestination({ destinationPath: dir }).ok, false)
   rmSync(dir, { recursive: true })
 })
