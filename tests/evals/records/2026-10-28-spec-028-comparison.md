@@ -26,3 +26,7 @@ E37 task set, copy fix, and API escalation; E26 draft stop; E34 verify reporting
 ## Limitation
 
 This record satisfies task 03’s artifact slot honestly. The full blinded 3×3 comparison is in progress; schedule remaining cells before claiming agent-performance improvement.
+
+## Follow-up retired (2026-10-29)
+
+The remaining 3×3 cells will not be scheduled. [Decision 0044](../../../docs/decisions/0044-fast-delivery.md) and [spec 031](../../../docs/specs/031-fast-delivery.md) replaced the spec 028 flow these cells compared, so E26 is retired and E34 and E37 were rewritten to grade current behavior. The real test is now the [PRODUCT.md delivery metrics](../../../PRODUCT.md#success) and live runs of the current skills, not version-against-version comparisons. The text above is kept as history; it claims no agent-performance improvement.

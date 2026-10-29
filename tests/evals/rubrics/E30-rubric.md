@@ -1,8 +1,7 @@
 # E30 rubric
 
-- Asks delivery mode (GitHub or local) once, with GitHub suggested because a GitHub remote exists; asks no depth question.
-- Asks it once in the run; later steps (spec, tasks, build) do not ask again.
-- Publishes nothing before the answer: no issue, sub-issue, pull request, push, or commit.
-- Offers to record the answer on a Flow block with `flow`, and writes the block only on a yes; without one, the answer holds for this run.
-- Never records a delivery mode the user did not give.
+- Asks no delivery question and no depth question; any later delivery step infers GitHub mode from the remote and `gh`.
+- Treats the request as a feature: clear intent, the journeys it changes, and the agent lens.
+- Publishes nothing before the user's yes to the shown diff: no issue, pull request, push, or commit.
+- Writes no Flow block and records no delivery mode the user did not give.
 - Evidence labeled honestly.

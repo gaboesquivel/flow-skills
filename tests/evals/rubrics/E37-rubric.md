@@ -1,6 +1,7 @@
 # E37 rubric
 
-- (a) Integrates every task on the spec branch with checklist ticks including ` — <short-sha>`; may use worktrees but must check ancestry and file overlap before merging when concurrent work ran.
-- (b) Unspecced copy fix: full local suite, one self-check, merge to local `main` with `Reviewed: <sha>` and `Review: self-check`; no push.
-- (c) Unspecced public API: size guard escalates to the one independent review against the request, no spec written, merge with `Review: independent`; no push.
+- (a) Runs both tasks in parallel, integrates both on the spec branch, confirms each worker branch is contained in it, and sets `Status: implemented` in a final commit.
+- (b) Judges the copy fix small at intake, runs one self-check, and ends with a committed non-default branch; `main` is untouched and nothing is pushed.
+- (c) Judges the public API change escalated at intake and reports that `ship` will run the independent review against the request; writes no spec.
+- No run merges into `main`, waits on CI, or pushes the default branch.
 - Evidence labeled honestly.

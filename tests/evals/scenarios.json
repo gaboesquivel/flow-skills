@@ -349,7 +349,7 @@
       "skills": [
         "explore"
       ],
-      "behavior": "Fix request proposes Skip with a one-line reason and writes nothing",
+      "behavior": "Fix request gets no questions and no writes and hands back to the requested work",
       "taskFile": "tests/evals/tasks/E16-task.md",
       "rubricFile": "tests/evals/rubrics/E16-rubric.md",
       "skillReferences": [
@@ -357,7 +357,7 @@
       ],
       "fixtureReferences": [],
       "evidence": {
-        "structural_contract": "passed",
+        "structural_contract": "not_executed",
         "executable_fixture": "not_executed",
         "live_skill_execution": "not_executed",
         "independently_reviewed": "not_executed",
@@ -370,7 +370,7 @@
       "skills": [
         "explore"
       ],
-      "behavior": "New product gets the one default depth with a pre-mortem, no depth question, and extracts intent before challenging",
+      "behavior": "New product gets the new-product proportion with grill and pre-mortem, no depth question, and one confirmation before writing",
       "taskFile": "tests/evals/tasks/E17-task.md",
       "rubricFile": "tests/evals/rubrics/E17-rubric.md",
       "skillReferences": [
@@ -378,7 +378,7 @@
       ],
       "fixtureReferences": [],
       "evidence": {
-        "structural_contract": "passed",
+        "structural_contract": "not_executed",
         "executable_fixture": "not_executed",
         "live_skill_execution": "not_executed",
         "independently_reviewed": "not_executed",
@@ -434,7 +434,7 @@
         "build",
         "to-tasks"
       ],
-      "behavior": "Task-set build integrates every task on one spec branch with a green suite before landing, respects intersecting areas when running in parallel, waits on CI only for the final pull request, and ends at a ready pull request with no confirmation",
+      "behavior": "GitHub-mode task set runs ready tasks in parallel respecting blockers and intersecting areas, integrates every task on one spec branch, and ends at a ready pull request without waiting on CI or merging",
       "taskFile": "tests/evals/tasks/E20-task.md",
       "rubricFile": "tests/evals/rubrics/E20-rubric.md",
       "skillReferences": [
@@ -443,7 +443,7 @@
       ],
       "fixtureReferences": [],
       "evidence": {
-        "structural_contract": "passed",
+        "structural_contract": "not_executed",
         "executable_fixture": "not_executed",
         "live_skill_execution": "not_executed",
         "independently_reviewed": "not_executed",
@@ -458,7 +458,7 @@
         "ship",
         "to-tasks"
       ],
-      "behavior": "Local delivery mode records tasks in the spec; build reviews and lands a --no-ff merge into main, and ship pushes it and runs Verify",
+      "behavior": "Local-mode ship runs build, checks the merge result once, merges into main with a merge commit, pushes without force, and verifies; \"with a PR\" overrides the mode for one run",
       "taskFile": "tests/evals/tasks/E21-task.md",
       "rubricFile": "tests/evals/rubrics/E21-rubric.md",
       "skillReferences": [
@@ -468,7 +468,7 @@
       ],
       "fixtureReferences": [],
       "evidence": {
-        "structural_contract": "passed",
+        "structural_contract": "not_executed",
         "executable_fixture": "not_executed",
         "live_skill_execution": "not_executed",
         "independently_reviewed": "not_executed",
@@ -481,7 +481,7 @@
       "skills": [
         "flow"
       ],
-      "behavior": "Set up Flow here writes one idempotent Flow block",
+      "behavior": "Set up Flow here writes one idempotent Flow block with no delivery question or unrequested Delivery line",
       "taskFile": "tests/evals/tasks/E22-task.md",
       "rubricFile": "tests/evals/rubrics/E22-rubric.md",
       "skillReferences": [
@@ -492,7 +492,7 @@
         "skills/flow/lib/flow-block.mjs"
       ],
       "evidence": {
-        "structural_contract": "passed",
+        "structural_contract": "not_executed",
         "executable_fixture": "passed",
         "live_skill_execution": "not_executed",
         "independently_reviewed": "not_executed",
@@ -506,7 +506,7 @@
         "start",
         "explore"
       ],
-      "behavior": "Start request with a description confirms, then runs the bootstrap and explore lanes",
+      "behavior": "Start request with a description and clear name starts without restatement, bootstraps and explores in two lanes, and treats the first green deployment as done",
       "taskFile": "tests/evals/tasks/E23-task.md",
       "rubricFile": "tests/evals/rubrics/E23-rubric.md",
       "skillReferences": [
@@ -515,7 +515,7 @@
       ],
       "fixtureReferences": [],
       "evidence": {
-        "structural_contract": "passed",
+        "structural_contract": "not_executed",
         "executable_fixture": "not_executed",
         "live_skill_execution": "not_executed",
         "independently_reviewed": "not_executed",
@@ -529,7 +529,7 @@
         "start",
         "explore"
       ],
-      "behavior": "A failed bootstrap keeps the exploration",
+      "behavior": "A failed bootstrap check keeps the exploration and creates no initial commit",
       "taskFile": "tests/evals/tasks/E24-task.md",
       "rubricFile": "tests/evals/rubrics/E24-rubric.md",
       "skillReferences": [
@@ -538,7 +538,7 @@
       ],
       "fixtureReferences": [],
       "evidence": {
-        "structural_contract": "passed",
+        "structural_contract": "not_executed",
         "executable_fixture": "not_executed",
         "live_skill_execution": "not_executed",
         "independently_reviewed": "not_executed",
@@ -552,7 +552,7 @@
         "explore",
         "to-spec"
       ],
-      "behavior": "New-product slice 1 tests the riskiest assumption and instruments the main metric",
+      "behavior": "Spec it after a new-product brief writes spec 001 in full, contract-first, testing the riskiest assumption, with later bets as candidate stubs",
       "taskFile": "tests/evals/tasks/E25-task.md",
       "rubricFile": "tests/evals/rubrics/E25-rubric.md",
       "skillReferences": [
@@ -561,7 +561,7 @@
       ],
       "fixtureReferences": [],
       "evidence": {
-        "structural_contract": "passed",
+        "structural_contract": "not_executed",
         "executable_fixture": "not_executed",
         "live_skill_execution": "not_executed",
         "independently_reviewed": "not_executed",
@@ -598,6 +598,11 @@
         "host": "Cursor",
         "date": "2026-10-28",
         "observation": "tests/evals/records/2026-10-28-spec-028-live-partial.md"
+      },
+      "retired": {
+        "by": "docs/decisions/0044-fast-delivery.md",
+        "reason": "Ship it on a draft now accepts the spec in its first commit instead of refusing; E28 covers the draft gate.",
+        "date": "2026-10-29"
       }
     },
     {
@@ -620,14 +625,20 @@
         "independently_reviewed": "not_executed",
         "verified_second_host": "not_executed"
       },
-      "claimsLiveRun": false
+      "claimsLiveRun": false,
+      "retired": {
+        "by": "docs/decisions/0044-fast-delivery.md",
+        "reason": "Acceptance sets linked decisions Accepted in the same commit, and ship no longer gates on a Proposed linked decision.",
+        "date": "2026-10-29"
+      }
     },
     {
       "id": "E28",
       "skills": [
-        "ship"
+        "ship",
+        "to-spec"
       ],
-      "behavior": "Ship it on a draft spec branch with no pull request or Closes line is classified as spec work and refused",
+      "behavior": "Ship it on a draft spec branch classifies spec work, accepts an acceptable draft in its first commit, and stops on a draft that cannot be accepted",
       "taskFile": "tests/evals/tasks/E28-task.md",
       "rubricFile": "tests/evals/rubrics/E28-rubric.md",
       "skillReferences": [
@@ -636,7 +647,7 @@
       ],
       "fixtureReferences": [],
       "evidence": {
-        "structural_contract": "passed",
+        "structural_contract": "not_executed",
         "executable_fixture": "not_executed",
         "live_skill_execution": "not_executed",
         "independently_reviewed": "not_executed",
@@ -663,20 +674,24 @@
         "independently_reviewed": "not_executed",
         "verified_second_host": "not_executed"
       },
-      "claimsLiveRun": false
+      "claimsLiveRun": false,
+      "retired": {
+        "by": "docs/decisions/0044-fast-delivery.md",
+        "reason": "No spec issue exists to sync: the spec file is the record and the pull request links it.",
+        "date": "2026-10-29"
+      }
     },
     {
       "id": "E30",
       "skills": [
         "explore",
-        "flow"
+        "build"
       ],
-      "behavior": "A feature request with no Flow block asks delivery once, asks no depth, and publishes nothing before the answer",
+      "behavior": "A feature request with no Flow block asks no delivery or depth question, infers the mode, and publishes nothing before the yes",
       "taskFile": "tests/evals/tasks/E30-task.md",
       "rubricFile": "tests/evals/rubrics/E30-rubric.md",
       "skillReferences": [
         "skills/explore/SKILL.md",
-        "skills/flow/SKILL.md",
         "skills/build/SKILL.md"
       ],
       "fixtureReferences": [],
@@ -692,10 +707,10 @@
     {
       "id": "E31",
       "skills": [
-        "build",
-        "ship"
+        "ship",
+        "build"
       ],
-      "behavior": "Local-mode ship with no remote has build review and merge the spec branch into the local default branch, then reports nothing was published, runs Verify, and leaves no integrated task worktrees",
+      "behavior": "Local-mode ship with no remote merges the checked spec branch into main, says nothing was published, reports liveness unverified, and removes only integrated worktrees",
       "taskFile": "tests/evals/tasks/E31-task.md",
       "rubricFile": "tests/evals/rubrics/E31-rubric.md",
       "skillReferences": [
@@ -740,7 +755,7 @@
         "ship",
         "review"
       ],
-      "behavior": "Ship runs one independent review with requirement verdicts before merge, waits for green checks, and posts the review without approving the pull request",
+      "behavior": "Ship runs the independent review only when the size guard escalated or the user asked, posts it without approving, and an unmet acceptance verdict or blocking finding blocks landing",
       "taskFile": "tests/evals/tasks/E33-task.md",
       "rubricFile": "tests/evals/rubrics/E33-rubric.md",
       "skillReferences": [
@@ -762,7 +777,7 @@
       "skills": [
         "ship"
       ],
-      "behavior": "Local ship pushes main, waits for the commit's checks and deployment, and checks its URL answers; with none it reports deployment unverified, and a dead URL after the push is shipped, verification failed with no rollback",
+      "behavior": "Local ship pushes main without force and reports liveness from the shipped commit's deployment: live, reachable commit unconfirmed, or not live with no rollback; a rejected push merges the remote once and retries once",
       "taskFile": "tests/evals/tasks/E34-task.md",
       "rubricFile": "tests/evals/rubrics/E34-rubric.md",
       "skillReferences": [
@@ -802,14 +817,19 @@
         "independently_reviewed": "not_executed",
         "verified_second_host": "not_executed"
       },
-      "claimsLiveRun": false
+      "claimsLiveRun": false,
+      "retired": {
+        "by": "docs/decisions/0044-fast-delivery.md",
+        "reason": "Build never merges or touches main; ship lands in both modes (E33 covers a blocking review, E21 and E31 local landing).",
+        "date": "2026-10-29"
+      }
     },
     {
       "id": "E36",
       "skills": [
         "explore"
       ],
-      "behavior": "Explore asks no depth, runs a pre-mortem, and commits the confirmed brief on an explore/<slug> branch while the default branch stays clean",
+      "behavior": "Feature exploration asks no depth, runs no grill or pre-mortem unasked, confirms once, and commits the diff on a feature branch while main stays clean",
       "taskFile": "tests/evals/tasks/E36-task.md",
       "rubricFile": "tests/evals/rubrics/E36-rubric.md",
       "skillReferences": [
@@ -830,7 +850,7 @@
       "skills": [
         "build"
       ],
-      "behavior": "Build integrates tasks with ancestry and overlap checks when merging, ticks tasks with a short SHA, and an unspecced one-line fix lands after a self-check while an unspecced API change escalates to an independent review without writing a spec",
+      "behavior": "Build integrates parallel tasks with containment checks, and unspecced work ends on a committed branch: a copy fix after a self-check, a public API change escalated to ship's review without a spec",
       "taskFile": "tests/evals/tasks/E37-task.md",
       "rubricFile": "tests/evals/rubrics/E37-rubric.md",
       "skillReferences": [
@@ -842,7 +862,7 @@
         "tests/fixtures/e37-build-outcomes/golden/task-set/api/version.mjs"
       ],
       "evidence": {
-        "structural_contract": "passed",
+        "structural_contract": "not_executed",
         "executable_fixture": "not_executed",
         "live_skill_execution": "not_executed",
         "independently_reviewed": "not_executed",
@@ -869,12 +889,18 @@
         "independently_reviewed": "not_executed",
         "verified_second_host": "not_executed"
       },
-      "claimsLiveRun": false
+      "claimsLiveRun": false,
+      "retired": {
+        "by": "docs/decisions/0044-fast-delivery.md",
+        "reason": "Build runs no baseline suite; checks run once, in ship, on the head it lands.",
+        "date": "2026-10-29"
+      }
     },
     {
       "id": "E39",
       "skills": [
-        "start"
+        "start",
+        "flow"
       ],
       "behavior": "Start formats every written and renamed file after the Flow block, so the initial commit passes the project's lint and format check, and re-running the Flow block helper after formatting reports Unchanged",
       "taskFile": "tests/evals/tasks/E39-task.md",
@@ -882,6 +908,31 @@
       "skillReferences": [
         "skills/start/SKILL.md",
         "skills/flow/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "not_executed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E40",
+      "skills": [
+        "build",
+        "ship",
+        "write-agents"
+      ],
+      "behavior": "Parallel-first task set: workers start from the delivery head and commit on their branches (or edit disjoint files in the shared checkout), every finished branch is merged and its containment confirmed before the pull request, an unfinished task is reported and kept, and the spec is not marked implemented partially",
+      "taskFile": "tests/evals/tasks/E40-task.md",
+      "rubricFile": "tests/evals/rubrics/E40-rubric.md",
+      "skillReferences": [
+        "skills/build/SKILL.md",
+        "skills/ship/SKILL.md",
+        "skills/write-agents/SKILL.md"
       ],
       "fixtureReferences": [],
       "evidence": {

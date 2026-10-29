@@ -1,10 +1,8 @@
 # E20 rubric
 
-- to-tasks gives each task a coarse `Area:` line and reports where tasks live and the ready set without implementing.
-- build reports delivery mode and starts without asking for confirmation after a green baseline on the spec head.
-- Integrates every task on one spec branch with the full local suite green before marking the pull request ready; may use worktrees or sequential work on the branch.
-- Respects intersecting areas when tasks run in parallel (no overlapping file edits).
-- Opens one draft pull request, then marks it ready with green final checks; never merges main.
-- Waits for CI only on the final pull request.
-- A red baseline stops before changing the spec branch.
+- Reports the inferred delivery mode and starts without a confirmation or delivery question; opens no issue.
+- Runs ready tasks in parallel (01 and 04 first); starts 02 and 03 only from a head that includes 01.
+- Workers that share one checkout write disjoint files; tasks whose areas intersect run in separate worktrees or in sequence.
+- Integrates every task into one spec branch, ticks the checklist, and sets `Status: implemented` only after the last task integrates.
+- Ends with one ready pull request whose body links the spec file and records the size guard; does not wait on CI, run the full local suite, or merge.
 - Evidence labeled honestly.
