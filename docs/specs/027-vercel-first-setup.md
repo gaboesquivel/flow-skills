@@ -1,6 +1,6 @@
 # 027: Vercel-first setup
 
-**Status:** accepted (2026-10-28)
+**Status:** implemented (2026-10-28)
 **Issue:** [#138](https://github.com/gaboesquivel/flow-skills/issues/138)
 
 **Repositories:** [flow-next](https://github.com/gaboesquivel/flow-next), [flow-mono](https://github.com/gaboesquivel/flow-mono), flow-skills
@@ -80,6 +80,6 @@ None. This spec does not change `PRODUCT.md`, accepted decision 0028, or accepte
 
 ## Tasks
 
-- [ ] 01: Preset confirmation (#139)
-- [ ] 02: flow-next Neon preset (#140)
-- [ ] 03: flow-mono Neon preset (#141)
+- [x] 01: Preset confirmation (#139) — [87c902d](https://github.com/gaboesquivel/flow-skills/commit/87c902d)
+- [x] 02: flow-next Neon preset (#140) — [c16d51b](https://github.com/gaboesquivel/flow-next/commit/c16d51b)
+- [x] 03: flow-mono Neon preset (#141) — [18ac106](https://github.com/gaboesquivel/flow-mono/commit/18ac106)
