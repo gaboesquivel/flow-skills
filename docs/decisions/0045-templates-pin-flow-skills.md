@@ -8,7 +8,7 @@ flow-next and flow-mono ship a `.agents/skills-lock.json` of technical skills th
 
 ## Decision
 
-1. Each template's `.agents/skills-lock.json` pins the Flow catalog from `gaboesquivel/flow-skills` at a released version, so a fresh clone plus `pnpm setup` gives the agent `/start` and the rest of Flow.
+1. Each template's `.agents/skills-lock.json` pins the Flow catalog from `gaboesquivel/flow-skills` by content hash (refreshed with `pnpm skills:update`), so a fresh clone plus `pnpm setup` gives the agent `/start` and the rest of Flow.
 2. Flow owns workflow (discovery, specs, delivery, debugging, domain language, prototyping). The lock drops third-party skills whose job a Flow skill already owns, and keeps one TDD skill. Technical skills (framework, library, platform, tooling) stay.
 3. `start` keeps whatever the template's lock installs and does not install flow-skills a second time.
 
