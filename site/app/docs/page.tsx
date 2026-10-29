@@ -7,7 +7,7 @@ import { ArrowUpRight, Eyebrow, Headline, Lede, TextLink } from "@/components/ui
 import { guides } from "@/lib/content";
 
 const description =
-  "Everything you need to understand the practice, choose a skill, or start a new product. Written for humans, accessible to agents.";
+  "Guides to the practice, the skills, and the starters, plus the decisions behind them. Every page is also available as Markdown.";
 
 export const metadata: Metadata = {
   title: "Field guide",

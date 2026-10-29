@@ -12,7 +12,7 @@ export function SiteFooter() {
           <LogoMark className="h-5 w-7" />
           <span className="headline text-xl">flow</span>
         </Link>
-        <p className="text-sm text-fg-muted">Product-first. Agent-agnostic. Built to ship.</p>
+        <p className="text-sm text-fg-muted">From intent to verified software.</p>
         <ul className="flex flex-wrap gap-x-6 gap-y-2 text-xs font-medium uppercase tracking-[0.12em] text-fg-muted">
           <li>
             <Link href="/agents" className="hover:text-fg">

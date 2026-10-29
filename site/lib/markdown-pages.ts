@@ -56,6 +56,8 @@ const home = (origin: string) =>
     `
 Flow is used by talking to your existing agent. Install the portable skills once, then say what you want: "explore this", "spec it", "build it", "ship it".
 
+Adoption is flexible: use one skill or all of them, in any order. The starters, flow-next and flow-mono, are deliberately opinionated: they fix the stack, tooling, and deployment so a new project deploys on day one.
+
 ## Install
 
 \`\`\`sh
