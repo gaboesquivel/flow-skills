@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
-import { BEGIN, END, alignTable, buildFlowBlock, describeLayout, ensureImport, instructionFile, readDelivery, upsertFlowBlock, removeFlowBlock, writeFlowBlock } from '../skills/flow/lib/flow-block.mjs'
+import { BEGIN, END, PHRASES, alignTable, buildFlowBlock, describeLayout, ensureImport, instructionFile, readDelivery, upsertFlowBlock, removeFlowBlock, writeFlowBlock } from '../skills/flow/lib/flow-block.mjs'
 
 const skillsRoot = join(dirname(fileURLToPath(import.meta.url)), '..', 'skills')
 
@@ -24,7 +24,7 @@ test('block has markers, the flow pointer, a Delivery line only when a mode is g
 test('the phrase table is aligned the way Markdown formatters write it', () => {
   assert.deepEqual(alignTable([['A', 'Long header'], ['wider cell', 'x']]), ['| A          | Long header |', '| ---------- | ----------- |', '| wider cell | x           |'])
   const rows = buildFlowBlock({ delivery: 'local' }).split('\n').filter((line) => line.startsWith('|'))
-  assert.equal(rows.length, 12)
+  assert.equal(rows.length, 2 + PHRASES.length)
   const pipes = (line) => [...line].flatMap((char, at) => (char === '|' ? [at] : []))
   for (const row of rows) assert.deepEqual(pipes(row), pipes(rows[0]))
   assert.match(rows[1], /^\| -+ \| -+ \|$/u)
