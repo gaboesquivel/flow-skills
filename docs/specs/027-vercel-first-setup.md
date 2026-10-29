@@ -1,6 +1,7 @@
 # 027: Vercel-first setup
 
 **Status:** accepted (2026-10-28)
+**Issue:** [#138](https://github.com/gaboesquivel/flow-skills/issues/138)
 
 **Repositories:** [flow-next](https://github.com/gaboesquivel/flow-next), [flow-mono](https://github.com/gaboesquivel/flow-mono), flow-skills
 
@@ -76,3 +77,9 @@ None. This spec does not change `PRODUCT.md`, accepted decision 0028, or accepte
 **Metric.** Wall-clock time from the confirmed `start` to a successful local query with the Vercel project linked, on an already authorized machine. Kill criterion: a clean authorized run that cannot finish acceptance steps 1 and 2 within 3 minutes. That result retires this preset approach.
 
 **Assumption.** Provider link and database provision can finish inside that window once authorization exists. Confidence is medium; it is unmeasured. The idempotent reuse path has the same confidence until step 3 is run on both templates.
+
+## Tasks
+
+- [ ] 01: Preset confirmation (#139)
+- [ ] 02: flow-next Neon preset (#140)
+- [ ] 03: flow-mono Neon preset (#141)
