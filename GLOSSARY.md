@@ -70,19 +70,19 @@ A file the project's instructions tell every session to append to, such as a pro
 
 ## Area
 
-A task's `Area:` line: every package or directory it changes, comma-separated when there are several (such as `lib/feedback/connect, app/opportunities`), coarse and never a file path. [`to-tasks`](skills/to-tasks/SKILL.md) assigns it; [`build`](skills/build/SKILL.md#task-set) schedules by it. [Decision 0031](docs/decisions/0031-fan-out-by-default.md); [spec 026](docs/specs/026-clean-baseline-and-worktrees.md).
+A task's `Area:` line: every package or directory it changes, comma-separated when there are several (such as `lib/feedback/connect, app/opportunities`), coarse and never a file path. [`to-tasks`](skills/to-tasks/SKILL.md) assigns it. [`build`](skills/build/SKILL.md#task-set) uses it to keep tasks that change the same files from landing as if they were independent. [Decision 0031](docs/decisions/0031-fan-out-by-default.md); [spec 026](docs/specs/026-clean-baseline-and-worktrees.md); amended by [decision 0042](docs/decisions/0042-outcome-build-and-ship.md) and [spec 028](docs/specs/028-outcome-build-and-ship.md).
 
 ## Baseline failure
 
-A check that already fails on a spec's head before any task runs, or a later batch failure that bisect traces to no task. [`build`](skills/build/SKILL.md#task-set) stops on it before starting workers. [Spec 026](docs/specs/026-clean-baseline-and-worktrees.md).
+A check that already fails on a spec's head before any task runs, or a later batch failure that bisect traces to no task. [`build`](skills/build/SKILL.md#task-set) stops on it before changing the spec branch. [Spec 026](docs/specs/026-clean-baseline-and-worktrees.md); amended by [decision 0042](docs/decisions/0042-outcome-build-and-ship.md) and [spec 028](docs/specs/028-outcome-build-and-ship.md).
 
 ## Frontier
 
-The tasks of a spec's task set whose blockers have all integrated. `build` starts every frontier task at once, up to the host's concurrency limit, and starts a task the moment its blockers integrate; there are no waves. Replaces the wave of [decision 0025](docs/decisions/0025-wave-checkpoints.md); [decision 0029](docs/decisions/0029-spec-issues.md).
+The tasks of a spec's task set whose blockers have all integrated. `build` may start them together, including one worktree per task, and may start a task when its blockers integrate. There are no waves. Replaces the wave of [decision 0025](docs/decisions/0025-wave-checkpoints.md); [decision 0029](docs/decisions/0029-spec-issues.md); amended by [decision 0042](docs/decisions/0042-outcome-build-and-ship.md) and [spec 028](docs/specs/028-outcome-build-and-ship.md).
 
 ## Checkpoint
 
-The report `build` posts after each integration batch: tasks integrated, running, and blocked, the local suite result, the commit, and screenshots when the host has a browser tool. A pull request comment in GitHub mode, a message in local mode. Checkpoints never wait for CI or the user unless the user asked to wait at checkpoints; CI is waited on only for the final pull request. Decisions [0025](docs/decisions/0025-wave-checkpoints.md) and [0029](docs/decisions/0029-spec-issues.md).
+A progress report `build` may post when it has something to report: tasks integrated, running, and blocked, the local suite result, the commit, and screenshots when the host has a browser tool. A pull request comment in GitHub mode, a message in local mode. A posted checkpoint waits for CI or the user only when the user asked; CI is waited on only for the final pull request. Decisions [0025](docs/decisions/0025-wave-checkpoints.md), [0029](docs/decisions/0029-spec-issues.md), and [0042](docs/decisions/0042-outcome-build-and-ship.md); [spec 028](docs/specs/028-outcome-build-and-ship.md).
 
 ## Acceptance scenario
 

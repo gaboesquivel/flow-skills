@@ -1,6 +1,6 @@
 # 028: Outcome-first build and ship
 
-Status: draft (2026-10-28). Decision: [0042](../decisions/0042-outcome-build-and-ship.md) (Proposed).
+Status: accepted (2026-10-28). Decision: [0042](../decisions/0042-outcome-build-and-ship.md) (Accepted).
 
 ## Problem Statement
 

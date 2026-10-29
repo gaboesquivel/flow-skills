@@ -1,6 +1,6 @@
 # 026: A clean baseline and ready worktrees
 
-Status: implemented (2026-10-28). Issue: [#130](https://github.com/gaboesquivel/flow-skills/issues/130). Builds on [spec 021](021-demo-findings.md). Related: [spec 025](025-build-without-a-spec.md) ( it stops `explore` writing specs and candidates unasked, so item 6 here applies only when a candidate is asked for). Items 9 and 10 superseded by [decision 0040](../decisions/0040-ship-verifies-liveness.md).
+Status: implemented (2026-10-28). Issue: [#130](https://github.com/gaboesquivel/flow-skills/issues/130). Builds on [spec 021](021-demo-findings.md). Related: [spec 025](025-build-without-a-spec.md) ( it stops `explore` writing specs and candidates unasked, so item 6 here applies only when a candidate is asked for). Items 9 and 10 superseded by [decision 0040](../decisions/0040-ship-verifies-liveness.md). Items 4 and 8 (worktree setup and area serialization) amended by [decision 0042](../decisions/0042-outcome-build-and-ship.md) ([spec 028](028-outcome-build-and-ship.md)).
 
 ## Problem Statement
 

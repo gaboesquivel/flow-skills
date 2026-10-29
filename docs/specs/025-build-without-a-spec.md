@@ -1,6 +1,6 @@
 # 025: Build without a spec
 
-Status: implemented (2026-10-28). Issue: [#127](https://github.com/gaboesquivel/flow-skills/issues/127). Decisions: [0039](../decisions/0039-build-never-requires-a-spec.md) (Accepted). Amends [decision 0034](../decisions/0034-no-ceremony-without-a-spec.md) and [decision 0022](../decisions/0022-start-runs-explore.md).
+Status: implemented (2026-10-28). Issue: [#127](https://github.com/gaboesquivel/flow-skills/issues/127). Decisions: [0039](../decisions/0039-build-never-requires-a-spec.md) (Accepted). Amends [decision 0034](../decisions/0034-no-ceremony-without-a-spec.md) and [decision 0022](../decisions/0022-start-runs-explore.md). The independent review's worker shape amended by [decision 0042](../decisions/0042-outcome-build-and-ship.md) ([spec 028](028-outcome-build-and-ship.md)).
 
 ## Problem Statement
 

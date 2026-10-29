@@ -1,6 +1,6 @@
 # 0039 — Build never requires a spec
 
-Status: **Accepted** (2026-10-28). Amends [0034](0034-no-ceremony-without-a-spec.md) (the size guard stops unspecced work), [0022](0022-start-runs-explore.md) (`explore` writes spec 001), and [0030](0030-asked-delivery-and-local-mode.md) (a default branch that requires pull requests forces GitHub mode). Spec: [025](../specs/025-build-without-a-spec.md).
+Status: **Accepted** (2026-10-28). Amends [0034](0034-no-ceremony-without-a-spec.md) (the size guard stops unspecced work), [0022](0022-start-runs-explore.md) (`explore` writes spec 001), and [0030](0030-asked-delivery-and-local-mode.md) (a default branch that requires pull requests forces GitHub mode). Spec: [025](../specs/025-build-without-a-spec.md). Amended by [0042](0042-outcome-build-and-ship.md) (the independent review need not be one worker per axis).
 
 ## Context
 
