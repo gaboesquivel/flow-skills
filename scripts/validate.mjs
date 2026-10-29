@@ -23,6 +23,7 @@ export const EXPECTED_SKILL_NAMES = [
   'handoff',
   'interview',
   'jtbd',
+  'measure',
   'prototype',
   'retro',
   'review',

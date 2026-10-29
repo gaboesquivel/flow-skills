@@ -18,7 +18,7 @@ Flow keeps its work in Git: specs, decision records, and the product brief are f
 
 | You use | You need |
 | --- | --- |
-| Thinking skills: `grill`, `interview`, `council`, `align`, `debug`, `tldr`, the writing skills, and the rest | Nothing. Any folder works, with or without Git. |
+| Thinking skills: `grill`, `interview`, `council`, `align`, `measure`, `debug`, `tldr`, the writing skills, and the rest | Nothing. Any folder works, with or without Git. |
 | The delivery chain: `flow`'s setup, `start`, `explore`, `to-spec`, `to-tasks`, `build`, `review`, `ship`, `board` | A Git repository. Outside one, the skill offers `git init` and stops if you say no. |
 | GitHub mode | GitHub access as well: pull requests and CI live there. |
 
@@ -109,7 +109,7 @@ Details and links to every `SKILL.md`: **[docs/skills.md](docs/skills.md)**.
 | Prototype | `prototype` |
 | Shared language | `domain-modeling` |
 | Quality | `debug` |
-| Product discovery | `jtbd`, `competitors`, `align` |
+| Product discovery | `jtbd`, `competitors`, `align`, `measure` |
 | Writing | `write-agents`, `write-humans` |
 | Project start | `start` |
 | Misc | `tldr`, `handoff`, `board` |
