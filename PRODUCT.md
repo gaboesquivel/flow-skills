@@ -37,7 +37,19 @@ Methodology practices that elaborate these principles live in [docs/principles.m
 
 ## Success
 
-Reduce the time and effort between human intent and verified product value.
+Reduce the time and effort between human intent and verified product value. Process should cost minutes, not rounds: checks run once at pull request time, and shipping verifies only that the change is live.
+
+| Metric | From | To | Target (hypothesis, low confidence) |
+| --- | --- | --- | --- |
+| **Idea → prod** (main) | First prompt of the session where the work begins | Live: production deploy answers (apps), or merged to `main` (flow-skills) | Small change < 15 min; feature < 2 h |
+| Time to start | First prompt to `start` | First green deploy | < 5 min; flow-next and flow-mono ship Vercel-ready so `start` deploys with no extra setup |
+| Time to close PR | First commit on the branch | Merge | Median < 10 min (baseline 7.4 min, p90 60 min) |
+
+Diagnostics explain where the time goes: user turns and confirmations, local check runs, CI waits and failures, agent workers, and skill words loaded.
+
+Measured only on the dogfood repositories (flow-skills, flow-next, flow-mono) by a maintainer script that joins host session logs, git, GitHub, and deployment data. Nothing ships to adopters.
+
+**Kill criterion:** if session logs cannot link at least 80% of merged changes to their starting prompt, idea → prod falls back to first commit → live.
 
 ## Strategic chain
 
@@ -130,7 +142,7 @@ Further catalog growth needs its own decision. [0013](docs/decisions/0013-restor
 
 ### Open choices
 
-Measurable learning may inform maintainer research. No OMTM is selected for Flow itself; broader demand remains unvalidated.
+Measurable learning may inform maintainer research. Idea → prod is Flow's main metric ([Success](#success)); broader demand remains unvalidated.
 
 **Starting a project.** Invoke the optional [`start`](skills/start/SKILL.md) skill when you want a verified new repository from flow-next or flow-mono. One lane bootstraps while `explore` shapes the product with you ([0022](docs/decisions/0022-start-runs-explore.md)). The bootstrap covers renamed identity, template setup and QA/build/eval, Portless startup smoke, baseline `PRODUCT.md` / `DESIGN.md` / `ARCHITECTURE.md`, and an independent initial commit when checks pass. There is no `flow start` command; discoverable `flow` must not be treated as initialization ([0010](docs/decisions/0010-optional-start-skill.md)).
 
