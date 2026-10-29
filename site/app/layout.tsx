@@ -16,10 +16,6 @@ export const metadata: Metadata = {
   title: { default: "Flow — Make ideas flow", template: "%s · Flow" },
   description: SITE_DESCRIPTION,
   applicationName: SITE_NAME,
-  alternates: {
-    canonical: "/",
-    types: { "text/markdown": "/index.md", "text/plain": "/llms.txt" },
-  },
   openGraph: { type: "website", siteName: SITE_NAME, title: "Flow — Make ideas flow", description: SITE_DESCRIPTION },
   twitter: { card: "summary_large_image" },
 };

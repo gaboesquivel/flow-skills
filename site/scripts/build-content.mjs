@@ -246,25 +246,31 @@ const docs = DOCS.map((d) => {
   return { ...d, section: 'guide', sourceTitle: titleOf(raw), html: rendered.html, markdown: rendered.markdown, headings: rendered.headings }
 })
 
+const STATUSES = ['Accepted', 'Proposed', 'Superseded', 'Amended', 'Deprecated', 'Rejected', 'Withdrawn', 'Dropped']
+
 const decisions = decisionFiles.map((file) => {
   const source = `docs/decisions/${file}`
-  const raw = read(source)
+  const { data, body } = stripFrontmatter(read(source))
   const slug = file.replace(/\.md$/u, '')
-  const heading = titleOf(raw)
-  const [, number = '', rest = heading] = heading.match(/^(\d{4})\s*[—:-]\s*(.+)$/u) ?? []
-  const statusLine = raw.match(/^Status:\s*(.+)$/mu)?.[1] ?? ''
-  const status = plain(statusLine).match(/^(Accepted|Proposed|Superseded|Amended|Deprecated|Rejected|Withdrawn)/iu)?.[1] ?? (plain(statusLine).split(/[.(]/u)[0] || 'Unknown')
-  const context = raw.match(/##\s+Context\s*\n+([\s\S]*?)(?:\n##\s|$)/u)?.[1] ?? ''
-  const rendered = render(raw, source, { dropH1: true })
+  const heading = titleOf(body)
+  const [, number = slug.slice(0, 4), rest = heading] = heading.match(/^(\d{4})\s*[.—:-]\s*(.+)$/u) ?? []
+  const statusLine = plain(body.match(/^Status:\s*(.+)$/mu)?.[1] ?? '')
+  const statusWord = (data.status ?? statusLine).match(/^[A-Za-z]+/u)?.[0]?.toLowerCase() ?? ''
+  const status = STATUSES.find((s) => s.toLowerCase() === statusWord) ?? 'Unknown'
+  const context = body.match(/##\s+Context\s*\n+([\s\S]*?)(?:\n##\s|$)/u)?.[1] ?? ''
+  const rendered = render(body, source, { dropH1: true })
   return {
     slug: `decisions/${slug}`,
-    number: number || slug.slice(0, 4),
+    number,
     source,
     title: rest,
     nav: rest,
     status,
+    statusNote: statusLine || null,
+    date: data.date ?? statusLine.match(/\d{4}-\d{2}-\d{2}/u)?.[0] ?? null,
+    supersededBy: data.superseded_by ? `/docs/decisions/${data.superseded_by.replace(/\.md$/u, '')}` : null,
     section: 'decision',
-    description: firstSentences(plain(context) || plain(statusLine), 200),
+    description: firstSentences(plain(context) || statusLine || plain(body.split('\n').slice(1).join(' ')), 200),
     html: rendered.html,
     markdown: rendered.markdown,
     headings: rendered.headings,

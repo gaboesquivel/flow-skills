@@ -13,10 +13,13 @@ export type SearchResult = {
 };
 
 const index = new MiniSearch<Chunk>({
-  fields: ["title", "heading", "text"],
+  // The page title boosts a page's lead section strongly and its other sections only lightly.
+  fields: ["leadTitle", "title", "heading", "text"],
+  extractField: (doc, field) =>
+    field === "leadTitle" ? (doc.heading ? "" : doc.title) : (doc[field as keyof Chunk] as string),
   storeFields: ["kind", "url", "title", "heading", "text"],
   searchOptions: {
-    boost: { title: 4, heading: 2 },
+    boost: { heading: 2, leadTitle: 4, title: 0.6 },
     combineWith: "OR",
     fuzzy: (term) => (term.length > 4 ? 0.2 : false),
     prefix: (term) => term.length > 2,

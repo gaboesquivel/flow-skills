@@ -22,11 +22,16 @@ export function SearchAskPanel({
   defaultMode = "search",
   defaultQuery = "",
   onSubmit,
+  onQueryChange,
+  onModeChange,
   className,
 }: {
   defaultMode?: SearchAskMode;
   defaultQuery?: string;
   onSubmit?: (query: string, mode: SearchAskMode) => void;
+  /** Called on every keystroke (live search). */
+  onQueryChange?: (query: string, mode: SearchAskMode) => void;
+  onModeChange?: (mode: SearchAskMode, query: string) => void;
   className?: string;
 }) {
   const router = useRouter();
@@ -62,7 +67,10 @@ export function SearchAskPanel({
               type="button"
               role="radio"
               aria-checked={mode === t.id}
-              onClick={() => setMode(t.id)}
+              onClick={() => {
+                setMode(t.id);
+                onModeChange?.(t.id, query);
+              }}
               className={cn(
                 "inline-flex min-h-9 items-center gap-1.5 rounded-lg px-3.5 text-sm font-medium",
                 mode === t.id ? "bg-[#3d3256] text-fg" : "text-fg-muted hover:text-fg",
@@ -77,6 +85,8 @@ export function SearchAskPanel({
       </div>
       <form
         role="search"
+        action="/search"
+        method="get"
         className="px-4 pb-5 pt-5 sm:px-5"
         onSubmit={(e) => {
           e.preventDefault();
@@ -94,12 +104,17 @@ export function SearchAskPanel({
             id={inputId}
             type="search"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            name="q"
+            onChange={(e) => {
+              setQuery(e.target.value);
+              onQueryChange?.(e.target.value, mode);
+            }}
             placeholder={mode === "ask" ? "How does Flow keep PRODUCT.md aligned?" : "Find skills, practices, or setup instructions…"}
             className="min-w-0 flex-1 bg-transparent py-2 text-base text-fg placeholder:text-fg-subtle focus:outline-none sm:text-lg"
             autoComplete="off"
             enterKeyHint={mode === "ask" ? "send" : "search"}
           />
+          <input type="hidden" name="mode" value={mode} />
           <button type="submit" className="inline-flex min-h-10 shrink-0 items-center gap-1 rounded-lg bg-lavender-soft px-4 text-sm font-semibold text-ink hover:bg-lavender">
             {mode === "ask" ? "Ask" : "Search"} <ArrowUpRight />
           </button>

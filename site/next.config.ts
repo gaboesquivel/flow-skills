@@ -10,7 +10,6 @@ const nextConfig: NextConfig = {
         headers: [
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          { key: "Link", value: '</llms.txt>; rel="describedby"; type="text/plain", </.well-known/mcp.json>; rel="mcp"' },
         ],
       },
     ];
