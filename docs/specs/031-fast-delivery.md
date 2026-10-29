@@ -1,6 +1,6 @@
 # 031: Fast delivery
 
-Status: accepted (2026-10-29; amended 2026-10-29). Issue: [#157](https://github.com/gaboesquivel/flow-skills/issues/157). Decision: [0044](../decisions/0044-fast-delivery.md) (Accepted).
+Status: implemented (2026-10-29; amended 2026-10-29). Landed in [#158](https://github.com/gaboesquivel/flow-skills/pull/158). Issue: [#157](https://github.com/gaboesquivel/flow-skills/issues/157). Decision: [0044](../decisions/0044-fast-delivery.md) (Accepted).
 
 ## Goal
 
@@ -58,6 +58,7 @@ A review of the first implementation against realistic runs led the maintainer t
 - **Base finding:** native isolation started both worktrees from `main`, not the delivery branch, so they were moved to the delivery head before editing. That is now a rule in Work in flight.
 - **Integration:** both branches merged and their containment was confirmed; the shared-checkout changes were committed by the main thread; validate passed and 130/130 tests passed; CI passed on #159.
 - **Squash-only repository:** this repository allows only squash or rebase merges, so worker commits are not ancestors after landing. Cleanup therefore relies on the pull request having merged, as Work in flight allows.
+- **Second run:** a [second live run](../../tests/evals/records/2026-10-29-parallel-workflow-live.md) delivered the post-merge reconciliation with three workers while #158 squash-landed mid-run; worker commits were cherry-picked onto the new base and containment confirmed by patch equivalence, which Work in flight now names.
 
 ## User Stories
 
