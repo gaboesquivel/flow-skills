@@ -1,6 +1,6 @@
 # 031: Fast delivery
 
-Status: accepted (2026-10-29). Decision: [0044](../decisions/0044-fast-delivery.md) (Accepted).
+Status: accepted (2026-10-29). Issue: [#157](https://github.com/gaboesquivel/flow-skills/issues/157). Decision: [0044](../decisions/0044-fast-delivery.md) (Accepted).
 
 ## Problem Statement
 
