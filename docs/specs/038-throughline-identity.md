@@ -1,6 +1,6 @@
 # 038 — Throughline identity
 
-Status: accepted (2026-10-29). Builds on [032](032-prism-website.md).
+Status: implemented (2026-10-29). Builds on [032](032-prism-website.md).
 
 ## Problem Statement
 
