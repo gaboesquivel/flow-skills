@@ -100,7 +100,7 @@ flow-skills offers a small catalog: **context alignment** (`flow`) for root cont
 
 | Tier | Skills or features | Needs |
 | --- | --- | --- |
-| Thinking | `grill`, `interview`, `council`, `jtbd`, `competitors`, `align`, `domain-modeling`, `debug`, `tldr`, `write-humans`, `write-agents`, `retro`, `handoff`, `prototype` | Nothing: any folder, or none |
+| Thinking | `grill`, `interview`, `council`, `jtbd`, `competitors`, `align`, `measure`, `domain-modeling`, `debug`, `tldr`, `write-humans`, `write-agents`, `retro`, `handoff`, `prototype` | Nothing: any folder, or none |
 | Delivery chain | `flow` (the Flow block), `start`, `explore`, `to-spec`, `to-tasks`, `build`, `review`, `ship`, `board` | A Git repository; outside one, the skill offers `git init` and stops on a no |
 | GitHub mode | Pull requests and CI; issues only on request | GitHub access (an authenticated `gh`), on top of Git |
 
@@ -114,7 +114,7 @@ Local delivery needs only Git, so the whole chain works with GitLab, Bitbucket, 
 | Prototype | `prototype` |
 | Shared language | `domain-modeling` |
 | Quality | `debug` |
-| Product discovery | `jtbd`, `competitors`, `align` |
+| Product discovery | `jtbd`, `competitors`, `align`, `measure` |
 | Writing | `write-agents`, `write-humans` |
 | Project start | [`start`](skills/start/SKILL.md) — Flow setup plus a verified bootstrap from flow-next or flow-mono in one lane while `explore` shapes the product in the other; asks only what the request leaves open, and the first green deployment is its done signal |
 | Misc | `tldr`, `handoff`, `board` |
@@ -136,9 +136,9 @@ Opt-in conversational delivery ([decision 0020](docs/decisions/0020-flow-mode.md
 | Product thinking | `explore`, `interview`, `grill`, `jtbd`, `competitors`, `council`; `flow` keeps product intent in root docs |
 | Engineering discipline | `to-spec`, `to-tasks`, `domain-modeling`, `write-agents`, `write-humans`, `prototype`, `debug`; specs and decisions as flat durable artifacts |
 | Agent execution | `build` (outcomes and proofs for an implementation, in either delivery mode), `ship`; portable packages with no mandatory router |
-| Verified value | `review`, `ship`, `retro`, `tldr`, `board`, `align`; evidence, alignment, visual summaries, a read-only progress view derived from git, and a product-wide check against vision and metrics |
+| Verified value | `review`, `ship`, `retro`, `tldr`, `board`, `align`, `measure`; evidence, alignment, visual summaries, a read-only progress view derived from git, and a product-wide check against vision and metrics |
 
-Further catalog growth needs its own decision. [0013](docs/decisions/0013-restore-engineering-skills.md) restored `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug`. [0014](docs/decisions/0014-handoff-skill.md) adds `handoff`. [0015](docs/decisions/0015-tasks-and-domain-modeling.md) renames `to-tasks` and restores `domain-modeling`. [0019](docs/decisions/0019-voice-first-invocation.md) retires `simplify`, `security`, and `performance` in favor of host tools. [0027](docs/decisions/0027-progress-board-skill.md) adds `board`. [0041](docs/decisions/0041-align-skill.md) adds `align`.
+Further catalog growth needs its own decision. [0013](docs/decisions/0013-restore-engineering-skills.md) restored `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug`. [0014](docs/decisions/0014-handoff-skill.md) adds `handoff`. [0015](docs/decisions/0015-tasks-and-domain-modeling.md) renames `to-tasks` and restores `domain-modeling`. [0019](docs/decisions/0019-voice-first-invocation.md) retires `simplify`, `security`, and `performance` in favor of host tools. [0027](docs/decisions/0027-progress-board-skill.md) adds `board`. [0041](docs/decisions/0041-align-skill.md) adds `align`. [0046](docs/decisions/0046-measurement-assistance.md) adds `measure`.
 
 ### Open choices
 
