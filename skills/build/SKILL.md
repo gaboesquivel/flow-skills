@@ -54,7 +54,7 @@ Either way, tasks stay a checklist in the spec.
 "Build it" on a spec's task set integrates every task on one spec branch.
 
 1. **Plan.** Read tasks, blockers, and `Area:` lines. Stop on a cycle or missing blocker. Report the delivery mode and start without confirmation. A task that drifts from its stated scope stops for the user's yes.
-2. **Run.** Run every ready task in parallel by default, as [Workers](../write-agents/SKILL.md#workers) describes, each in its own worktree or on disjoint files. A dependent task starts from a head that includes its blockers. Never commit env files copied into a worktree.
+2. **Run.** Run every ready task in parallel by default, as [Workers](../write-agents/SKILL.md#workers) describes, each in its own worktree or on disjoint files in the shared checkout. A dependent task starts from a head that includes its blockers. Never commit env files copied into a worktree.
 3. **Integrate.** Merge each finished task into the spec branch and tick its checklist line. Resolve conflicts by keeping both intents, or stop and report.
 4. **Finish.** When every task is integrated, set `Status: implemented` in a final commit on the spec branch. Either way, deliver the integrated work; when tasks remain, it claims no completion and Work in flight applies.
 
@@ -62,8 +62,8 @@ Either way, tasks stay a checklist in the spec.
 
 One home for keeping work from being lost or stranded; `ship` points here.
 
-- Every worktree has its own branch, never a detached head.
-- Finished work reaches the spec or work branch before the pull request or landing.
+- A worker in its own worktree, whether the host's isolation or one you created, commits on that worktree's branch before it finishes; never a detached head. A worker in the shared checkout edits disjoint files and leaves committing to the main thread.
+- Work counts as integrated only when it is in a commit on the delivery branch. Before the pull request or landing, merge every worker branch into it, commit every shared-checkout change, and confirm each worker branch is contained in the delivery branch.
 - An unfinished task is reported with its path and branch, never dropped. A spec becomes `implemented` only when every task is integrated; otherwise its status stays and the pull request claims no completion.
 - Remove a worktree or branch only when its commits are on the default branch, its pull request or the spec branch that integrated it was merged, or the user dropped the work, and never with uncommitted changes in it.
 - A new session finds work in flight from unmerged branches and their spec status before starting anything.
