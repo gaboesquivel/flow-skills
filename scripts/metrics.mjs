@@ -19,6 +19,14 @@ export function percentile(values, p) {
 }
 
 // prs: merged pull requests with commits; runs: CI workflow runs for pull_request events.
+// Earliest success among deployment statuses, or commit statuses for one context.
+export function firstSuccess(statuses, context) {
+  return statuses
+    .filter((status) => status.state === 'success' && (!context || status.context === context))
+    .map((status) => status.created_at)
+    .sort()[0]
+}
+
 export function summarize({ prs, runs }) {
   const closeTimes = prs.map((pr) => {
     const first = pr.commits.map((c) => c.committedDate).sort()[0] ?? pr.createdAt
@@ -132,13 +140,15 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   console.log(`  CI: ${s.ciRuns} runs, ${pct(s.ciFailureRate)} failed; ${pct(s.prsWithRedCi)} of PRs saw a red run`)
   console.log(`  CI wait (green run): median ${fmt(s.ciWaitMinutes.median)} min, p90 ${fmt(s.ciWaitMinutes.p90)} min`)
   const fullRepo = repo || execFileSync('gh', ['repo', 'view', '--json', 'nameWithOwner', '-q', '.nameWithOwner'], { encoding: 'utf8' }).trim()
-  // Production deployment time of the merge commit, when the host reports one through GitHub deployments.
+  // Production deployment time of the merge commit: a GitHub deployment when the host creates one, else Vercel's commit status.
   for (const pr of prs) {
     try {
       const api = (path) => JSON.parse(execFileSync('gh', ['api', path], { encoding: 'utf8' }))
-      const [deployment] = api(`repos/${fullRepo}/deployments?sha=${pr.mergeCommit?.oid}&environment=Production&per_page=1`)
-      const statuses = deployment ? api(`repos/${fullRepo}/deployments/${deployment.id}/statuses`) : []
-      pr.liveAt = statuses.filter((status) => status.state === 'success').map((status) => status.created_at).sort()[0]
+      const sha = pr.mergeCommit?.oid
+      const [deployment] = api(`repos/${fullRepo}/deployments?sha=${sha}&environment=Production&per_page=1`)
+      pr.liveAt = deployment
+        ? firstSuccess(api(`repos/${fullRepo}/deployments/${deployment.id}/statuses`))
+        : firstSuccess(api(`repos/${fullRepo}/commits/${sha}/statuses`), 'Vercel')
     } catch { pr.liveAt = undefined }
   }
   const idea = ideaToProd({ prs, sessions: readSessions(), repo: fullRepo })

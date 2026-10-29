@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { ideaToProd, parseSession, percentile, summarize } from '../scripts/metrics.mjs'
+import { firstSuccess, ideaToProd, parseSession, percentile, summarize } from '../scripts/metrics.mjs'
 
 test('percentile picks the nearest rank and handles empty input', () => {
   assert.equal(percentile([], 50), null)
@@ -60,4 +60,15 @@ test('idea → prod links sessions to merged pull requests and counts turns afte
   assert.equal(result.unlinked, 1)
   assert.equal(result.linkRate, 2 / 3)
   assert.equal(result.denials, 2)
+})
+
+test('production time is the first success, filtered to the Vercel commit status when there is no deployment', () => {
+  const statuses = [
+    { context: 'Vercel', state: 'pending', created_at: '2026-10-29T21:05:00Z' },
+    { context: 'Vercel', state: 'success', created_at: '2026-10-29T21:05:28Z' },
+    { context: 'other', state: 'success', created_at: '2026-10-29T21:01:00Z' },
+  ]
+  assert.equal(firstSuccess(statuses, 'Vercel'), '2026-10-29T21:05:28Z')
+  assert.equal(firstSuccess(statuses), '2026-10-29T21:01:00Z')
+  assert.equal(firstSuccess([], 'Vercel'), undefined)
 })
