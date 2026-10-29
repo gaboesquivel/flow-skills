@@ -1,0 +1,7 @@
+{
+  "name": "e34-ship-verify-fixture",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/smoke.test.mjs"
+  }
+}

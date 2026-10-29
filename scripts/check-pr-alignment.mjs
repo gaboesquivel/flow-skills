@@ -3,6 +3,7 @@
  * Adopters: adjust ROOT_CONTEXT_PATHS and path patterns at the top for your layout.
  */
 import { execSync } from 'node:child_process'
+import { collectCatalogPhraseErrors } from './check-catalog-phrases.mjs'
 import { existsSync, readFileSync } from 'node:fs'
 import { dirname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -120,6 +121,8 @@ export function evaluatePrAlignment({
   if (files.some((f) => f.startsWith('skills/')) && !files.includes('docs/skills.md') && skillSkillMd.length) {
     warnings.push('skills/ changed including SKILL.md; consider updating docs/skills.md if catalog descriptions changed.')
   }
+
+  if (!labelExempt) errors.push(...collectCatalogPhraseErrors(repoRoot))
 
   return { errors, warnings }
 }

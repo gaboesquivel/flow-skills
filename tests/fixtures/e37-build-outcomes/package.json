@@ -1,0 +1,8 @@
+{
+  "name": "e37-build-outcomes-fixture",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/smoke.test.mjs"
+  }
+}
