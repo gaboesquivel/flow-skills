@@ -39,7 +39,7 @@ This is the shared fan-out rule; other skills link here instead of restating it.
 
 ## Repository
 
-This is the shared repository rule (decision 0037); delivery-chain skills link here instead of restating it. Thinking skills need no repository: they may read Git when one exists but never require it or ask about delivery.
+This is the shared repository rule; delivery-chain skills link here instead of restating it. Thinking skills need no repository: they may read Git when one exists but never require it or ask about delivery.
 
 - Before its first Git operation, a delivery-chain skill checks `git rev-parse --is-inside-work-tree`, alongside its other first Git reads. Outside a repository it writes nothing, says the delivery chain needs Git, and offers to run `git init`. Inside one whose top level (`git rev-parse --show-toplevel`) is above the project folder, name that repository and ask before the first write.
 - `git init` needs its own explicit yes; a request to build, spec, or ship is not one. On a yes, run `git init`, then make an empty initial commit (`git commit --allow-empty -m "chore: initialize repository"`) so branches have a base. Leave existing files untracked and continue. If the commit fails (no identity, a hook, signing), stop and report; never retry with `--no-verify`.
