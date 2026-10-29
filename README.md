@@ -70,7 +70,7 @@ flowchart TB
 - **Deliver.** "Spec it" writes a draft spec with one acceptance scenario and publishes nothing; "accept the spec" approves it. "Break it down" makes its tasks. "Build it" runs every unblocked task at once on one branch and delivers the spec as your mode does. "Ship it" lands accepted work with no confirmation, then checks that the shipped commit is green and its deployment answers (decisions [0028](docs/decisions/0028-build-and-ship.md), [0029](docs/decisions/0029-spec-issues.md), [0032](docs/decisions/0032-local-build-lands-ship-verifies.md), and [0040](docs/decisions/0040-ship-verifies-liveness.md)).
 - **Other skills.** Say what you want; each skill's leading word reaches it ("grill me", "debug this"). Slash commands work too. There is no mandatory sequence.
 
-Skills may name the next skill and wait for you. The only automatic hand-offs are `start` → `explore`, explore's `interview` and `grill` phases (each behind your yes), and `ship` running `build` and `review` as part of landing ([decision 0024](docs/decisions/0024-gated-hand-offs.md), [decision 0028](docs/decisions/0028-build-and-ship.md)).
+Skills may name the next skill and wait for you. The only automatic hand-offs are `start` → `explore`, explore's `interview` and `grill` phases (each behind your yes). `ship` lands work that includes the implementation and an independent review, and brings the work up to those proofs when they are missing ([decision 0042](docs/decisions/0042-outcome-build-and-ship.md), amending [0028](docs/decisions/0028-build-and-ship.md); [decision 0024](docs/decisions/0024-gated-hand-offs.md)).
 
 ### Specs, tasks, and decisions
 

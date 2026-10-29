@@ -581,15 +581,24 @@
         "skills/ship/SKILL.md",
         "skills/to-spec/SKILL.md"
       ],
-      "fixtureReferences": [],
+      "fixtureReferences": [
+        "tests/fixtures/e26-ship-draft-gate/README.md",
+        "tests/fixtures/e26-ship-draft-gate/docs/specs/099-draft-ship-gate.md",
+        "tests/fixtures/e26-ship-draft-gate/docs/decisions/0099-draft-ship-gate.md"
+      ],
       "evidence": {
         "structural_contract": "passed",
         "executable_fixture": "not_executed",
-        "live_skill_execution": "not_executed",
+        "live_skill_execution": "passed",
         "independently_reviewed": "not_executed",
         "verified_second_host": "not_executed"
       },
-      "claimsLiveRun": false
+      "claimsLiveRun": true,
+      "liveObservation": {
+        "host": "Cursor",
+        "date": "2026-10-28",
+        "observation": "tests/evals/records/2026-10-28-spec-028-live-partial.md"
+      }
     },
     {
       "id": "E27",
