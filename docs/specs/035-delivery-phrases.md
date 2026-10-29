@@ -1,6 +1,6 @@
 # 035: Delivery phrases are approvals
 
-Status: draft (2026-10-29). Decision: [0047](../decisions/0047-delivery-phrases-are-approvals.md) (Proposed).
+Status: accepted (2026-10-29). Decision: [0047](../decisions/0047-delivery-phrases-are-approvals.md) (Accepted).
 
 ## Problem Statement
 

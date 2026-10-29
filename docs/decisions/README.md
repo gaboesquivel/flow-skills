@@ -22,7 +22,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0016-start-in-place.md](0016-start-in-place.md) | Accepted | `start` bootstraps at a root holding only agent setup and infers the template |
 | [0017-claude-code-skill-coexistence.md](0017-claude-code-skill-coexistence.md) | Accepted (`simplify` retired by 0019) | Coexist with Claude Code built-ins; keep `simplify` name and document overlaps |
 | [0018-interview-extracts-intent.md](0018-interview-extracts-intent.md) | Accepted | `interview` extracts the user's intent (adapted from `interview-me`), not customer discovery |
-| [0019-voice-first-invocation.md](0019-voice-first-invocation.md) | Accepted (amended by 0028) | Talking is the interface: model-invocable skills, spoken leading words, host coexistence |
+| [0019-voice-first-invocation.md](0019-voice-first-invocation.md) | Accepted (amended by 0028, 0047) | Talking is the interface: model-invocable skills, spoken leading words, host coexistence |
 | [0020-flow-mode.md](0020-flow-mode.md) | Accepted (amended by 0030) | Flow mode: project instruction block, `to-tasks` hand-off, `ship` task-set orchestration, local and pull-request delivery modes |
 | [0021-autonomous-explore-and-ship.md](0021-autonomous-explore-and-ship.md) | Accepted (amended by 0028) | Explore and ship create docs files and GitHub issues, group pull requests, and suggest the host's autonomous mode |
 | [0022-start-runs-explore.md](0022-start-runs-explore.md) | Accepted (amended by 0039, 0044) | Speakable `start` runs `explore` beside the bootstrap; spec 001 full, later slices as candidates |
@@ -43,14 +43,14 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0037-git-for-delivery-github-for-github-mode.md](0037-git-for-delivery-github-for-github-mode.md) | Accepted (amended by 0044) | Thinking skills need nothing, the delivery chain needs Git, GitHub mode needs GitHub; no repository offers `git init`; `Delivery: github` or `local` |
 | [0038-direction-changes-are-confirmed-and-recorded.md](0038-direction-changes-are-confirmed-and-recorded.md) | Accepted (amended by 0044) | A goal that contradicts an accepted decision, spec, or `PRODUCT.md` fact stops for a yes; new record on the yes, back-pointers on Status lines at acceptance |
 | [0039-build-never-requires-a-spec.md](0039-build-never-requires-a-spec.md) | Accepted (amended by 0042, 0044) | The size guard escalates review instead of stopping; specs only on request; "build it" after `explore` builds the brief; "build it local" on a protected repository stops at a branch commit |
-| [0040-ship-verifies-liveness.md](0040-ship-verifies-liveness.md) | Accepted (amended by 0044) | `ship` verifies only that the shipped commit's checks are green and its deployment answers; no scenario, browser, or preview run |
+| [0040-ship-verifies-liveness.md](0040-ship-verifies-liveness.md) | Accepted (amended by 0044, 0047) | `ship` verifies only that the shipped commit's checks are green and its deployment answers; no scenario, browser, or preview run |
 | [0041-align-skill.md](0041-align-skill.md) | Accepted | Read-only `align` skill checks the product against its vision, problems, metrics, and roadmap |
 | [0042-outcome-build-and-ship.md](0042-outcome-build-and-ship.md) | Accepted (amended by 0044) | `build` and `ship` state outcomes, reasons, and proofs; workers, scheduling, and test order are choices |
 | [0043-workers-when-they-pay.md](0043-workers-when-they-pay.md) | Accepted (amended by 0044) | Workers only where they pay; one green run per head; re-review covers the fix |
-| [0044-fast-delivery.md](0044-fast-delivery.md) | Accepted | Checks once at PR time, review when it pays; one delivery shape, inferred mode, no spec issue, parallel by default, zero lost work, shipped means deployed |
+| [0044-fast-delivery.md](0044-fast-delivery.md) | Accepted (amended by 0047) | Checks once at PR time, review when it pays; one delivery shape, inferred mode, no spec issue, parallel by default, zero lost work, shipped means deployed |
 | [0045-templates-pin-flow-skills.md](0045-templates-pin-flow-skills.md) | Accepted | Template skills locks pin flow-skills; Flow owns workflow, overlapping third-party workflow skills dropped |
 | [0046-measurement-assistance.md](0046-measurement-assistance.md) | Accepted | Read-only `measure` skill; measurement defined in `explore`, made actionable in `to-spec`; assistance, not analytics or a ship gate |
-| [0047-delivery-phrases-are-approvals.md](0047-delivery-phrases-are-approvals.md) | Proposed | "Push it", "build it", and "ship it" are approvals with narrow triggers; build reviews, checks, and verifies the branch; light liveness at every depth |
+| [0047-delivery-phrases-are-approvals.md](0047-delivery-phrases-are-approvals.md) | Accepted | "Push it", "build it", and "ship it" are approvals with narrow triggers; build reviews, checks, and verifies the branch; light liveness at every depth |
 
 ## Rules
 
