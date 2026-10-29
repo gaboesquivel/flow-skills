@@ -15,6 +15,7 @@ import {
   collectSkillsLinkErrors,
   stripFencedCode,
   validateSkills,
+  collectShadowedSkillWarnings,
 } from '../scripts/validate.mjs'
 
 // Negative cases only: `pnpm validate` already checks the real repository.
@@ -142,4 +143,12 @@ test('eval check rejects duplicate ids, false live claims, retirement without a 
   writeFileSync(scenariosFile, JSON.stringify({ scenarios: [] }))
   const missing = validateEvalScenarios({ root: repoRoot, scenariosFile })
   for (const id of REQUIRED_SCENARIO_IDS) assert.ok(missing.some((e) => e.includes(id)))
+})
+
+test('user-level skill copies that differ from skills/ are reported', () => {
+  const home = mkdtempSync(join(tmpdir(), 'skills-'))
+  mkdirSync(join(home, 'ship'))
+  writeFileSync(join(home, 'ship', 'SKILL.md'), 'old')
+  assert.match(collectShadowedSkillWarnings(repoRoot, home)[0], /ship/)
+  assert.deepEqual(collectShadowedSkillWarnings(repoRoot, join(home, 'missing')), [])
 })
