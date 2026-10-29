@@ -42,7 +42,7 @@ GitHub mode only (the `Delivery:` line in the project's Flow block); local mode 
 
 ## Process
 
-1. Explore the repository when needed. Gather evidence with parallel read-only workers (fan-out rule: `write-agents` Workers): existing specs and decisions, code seams and tests, and the glossary. Use the project's domain vocabulary and respect decision records in the area you are touching unless the gate below confirms a change. Before writing, check for contradictions with accepted decisions, specs, and `PRODUCT.md` through `explore`'s [Direction changes](../explore/SKILL.md#direction-changes) gate, asking only about conflicts not already confirmed in this conversation or in a Proposed record on the current branch.
+1. Explore the repository only for what the conversation does not already hold (fan-out rule: `write-agents` Workers): existing specs and decisions, code seams and tests, and the glossary. Use the project's domain vocabulary and respect decision records in the area you are touching unless the gate below confirms a change. Before writing, check for contradictions with accepted decisions, specs, and `PRODUCT.md` through `explore`'s [Direction changes](../explore/SKILL.md#direction-changes) gate, asking only about conflicts not already confirmed in this conversation or in a Proposed record on the current branch.
 
 2. Sketch test seams at the highest practical level. Prefer existing seams; propose new ones only when necessary and as high as possible.
 

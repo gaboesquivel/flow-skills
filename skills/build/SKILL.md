@@ -31,8 +31,6 @@ Outside a Git repository, follow `write-agents` [Repository](../write-agents/SKI
 
 **GitHub mode** (see Delivery mode): work on a branch that is not the default branch; **Commit** only this work (Exclude credentials, local logs, and generated secrets; Do not amend or rewrite unrelated commits; preserve unrelated working-tree changes); **Push**; **Open a pull request** or update the open one; **Wait for checks** (reported as pending, never as passing); **Fix rounds** at most 2 (Never skip, disable, or weaken a check); **Report** the pull request and checks.
 
-When this repository's delivery skills change, run `node --test tests/smoke-contracts.test.mjs` before each commit that touches `skills/build/SKILL.md`, `skills/ship/SKILL.md`, or `skills/review/SKILL.md`, then the full local check suite before push.
-
 **Local mode:** run the full local check suite with the same fix rounds, then:
 
 1. **Gate.** For spec work, check the gate `ship` defines under [Preflight](../ship/SKILL.md#preflight); stop when it fails. Unspecced work has no spec gate.
@@ -61,7 +59,7 @@ One home (decision 0033); `ship` links here. Read that declaration from the inst
 
 **Check.** A landing merge may take a head beyond the reviewed SHA only when every commit after the reviewed SHA changes only declared shared files: `git diff --no-renames --name-status <reviewed-sha>..<head>` lists only `M` or `A` entries on exact declared paths, and `git diff --no-renames --raw` shows new mode `100644` on each entry and old mode `100644` on each `M` (no symlinks, no mode changes). `Reviewed: <sha>` still names the reviewed SHA. Any other change after the review needs a new review. A clean-tree check tolerates uncommitted changes only when they pass the same exact-path rule.
 
-**Full local check suite:** documented check commands from the instruction file's command table, else package scripts for test, lint, typecheck, and build. When none are found, report that no suite exists instead of claiming checks passed.
+**Full local check suite:** documented check commands from the instruction file's command table, else package scripts for test, lint, typecheck, and build. When none are found, report that no suite exists instead of claiming checks passed. A green run on a head that has not changed stands: do not run the suite twice on the same head (for example after the last integration and again before the merge).
 
 ## Delivery mode
 
@@ -77,7 +75,7 @@ When the line is missing or `unset`, ask before the first push or step that depe
 "Build it" on a spec's task set integrates every task on one spec branch. You may run tasks in parallel with worktrees, run them one after another on the branch, or combine both; never let two workers edit the same files.
 
 1. **Plan.** Read tasks, blockers, and `Area:` lines. Stop on a cycle or missing blocker. **Baseline:** run the full local check suite once on the spec head. When red, stop with a baseline failure report: A baseline failure is never sent to a worker; leave the spec branch untouched. Report delivery mode and start without confirmation. A task that drifts from its stated scope stops for the user's yes.
-2. **Do the work.** Implement each runnable task. When using worktrees, create them from the spec head (`Do not rely on the host's worktree isolation`), record paths on the worker list, run setup, and env files copied into worktrees are never committed. Before integrating, check ancestry and file overlap; a task that fails the check is not merged. Integrate with `git merge --no-ff`, run the full local suite once per batch, tick checklist entries with short SHAs, and when every task has integrated set `Status: implemented` never on a spec that is not accepted. **Cleanup:** Remove only worktrees on the recorded worker list; delete task branches with `git branch -d` only, never `-D` or `--force`. A failed or stuck task keeps its worktree and branch.
+2. **Do the work.** Implement each runnable task. When using worktrees, create them from the spec head (`Do not rely on the host's worktree isolation`), record paths on the worker list, run setup, and env files copied into worktrees are never committed. Before integrating, check ancestry and file overlap; a task that fails the check is not merged. Integrate with `git merge --no-ff`; between integrations, run the checks that localize a failure (the full suite only when tasks touched shared code); tick checklist entries with short SHAs, and when every task has integrated set `Status: implemented` never on a spec that is not accepted. **Cleanup:** Remove only worktrees on the recorded worker list; delete task branches with `git branch -d` only, never `-D` or `--force`. A failed or stuck task keeps its worktree and branch.
 3. **GitHub finish.** After the first integration, open a draft pull request with `Closes`/`Refs` lines. Wait for the final pull request's checks with fix rounds, mark it ready, and stop; merging is `ship`'s job.
 4. **Local finish.** When every task integrated and the suite passes, land as Deliver › Local mode (gate, review, merge, cleanup).
 
