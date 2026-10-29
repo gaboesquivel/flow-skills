@@ -103,7 +103,7 @@ export function PathsSection() {
         <h2 id="paths-heading" className="headline mt-5 text-[clamp(2.2rem,4.6vw,3.4rem)] text-fg">
           Same practice.
           <br />
-          <span className="text-prism">Different needs.</span>
+          Different needs.
         </h2>
         <p className="mt-6 max-w-[40rem] leading-relaxed text-fg-muted">
           There is no required order: start anywhere, skip any step. Say a phrase and the matching skill runs.

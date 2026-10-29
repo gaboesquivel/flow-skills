@@ -1,7 +1,9 @@
-import { Command, LayoutList, Target, type LucideIcon } from "lucide-react";
+import { Command, LayoutList, Target, Undo2, type LucideIcon } from "lucide-react";
+import Link from "next/link";
+import type { ReactNode } from "react";
 
 import { CommandLine } from "@/components/command-line";
-import { PrismDiagram } from "@/components/home/prism-diagram";
+import { HeroOrbit } from "@/components/home/hero-orbit";
 import { SearchAskPanel } from "@/components/search-ask-panel";
 import { ButtonLink, Container, Eyebrow, Lede, Section, TextLink } from "@/components/ui";
 import { installCommand, skills } from "@/lib/content";
@@ -31,7 +33,7 @@ export function HomeHero() {
           </ButtonLink>
         </div>
       </div>
-      <PrismDiagram className="mx-auto max-w-[30rem]" />
+      <HeroOrbit className="mx-auto max-w-[30rem]" />
     </Container>
   );
 }
@@ -60,6 +62,172 @@ export function PrincipleStrip() {
   );
 }
 
+type Stage = {
+  n: string;
+  kicker: string;
+  title: string;
+  body: string;
+  skills: string[];
+  dot: string;
+  example: { kicker: string; title: string; body: ReactNode };
+};
+
+// One continuous, illustrative product journey: the examples describe intended evidence, not claimed results.
+const STAGES: Stage[] = [
+  {
+    n: "01",
+    kicker: "Product thinking",
+    title: "Intent",
+    body: "Define who the product is for, why it matters, what success means, and which assumptions to test first.",
+    skills: ["explore", "design", "to-spec"],
+    dot: "#9ea6f8",
+    example: {
+      kicker: "Product direction",
+      title: "A better way to find a home",
+      body: (
+        <>
+          <p>
+            <b>Identity &amp; goal:</b> Help renters quickly discover suitable homes.
+          </p>
+          <p>
+            <b>Success:</b> OMTM = successful shortlists; support with time-to-shortlist and return usage.
+          </p>
+          <p>
+            <b>First bet:</b> MVP search → results → shortlist, with a clear validation plan.
+          </p>
+        </>
+      ),
+    },
+  },
+  {
+    n: "02",
+    kicker: "Execution",
+    title: "Build",
+    body: "Implement the smallest useful vertical slice with thoughtful design, tests, and measurement built in.",
+    skills: ["build", "review", "debug"],
+    dot: "#b1a0f8",
+    example: {
+      kicker: "First useful slice",
+      title: "Search to shortlist",
+      body: <p>Renters can describe their needs, compare relevant homes and save a shortlist. The journey works end-to-end and records completion.</p>,
+    },
+  },
+  {
+    n: "03",
+    kicker: "Delivery",
+    title: "Ship",
+    body: "Get the product into real use. Verify deployment and the experience—not merely that a build passed.",
+    skills: ["ship", "push"],
+    dot: "#c6a8f6",
+    example: {
+      kicker: "Product in use",
+      title: "A renter completes the journey",
+      body: <p>The live product supports search, comparison and saving. The release and core user journey have been verified.</p>,
+    },
+  },
+  {
+    n: "04",
+    kicker: "Learning",
+    title: "Measure",
+    body: "Evaluate results against intent. Learn whether to improve, change direction, expand or stop.",
+    skills: ["measure", "align", "retro"],
+    dot: "#f0a6cf",
+    example: {
+      kicker: "Evidence & next decision",
+      title: "Are renters finding the right homes?",
+      body: <p>Compare shortlist completion with the baseline, check time-to-shortlist and return usage, then decide whether to improve relevance before expanding.</p>,
+    },
+  },
+];
+
+const skillNames = new Set(skills.map((s) => s.name));
+
+export function PracticeSection() {
+  return (
+    <Section aria-labelledby="practice-heading">
+      <Container>
+        <div className="max-w-[67rem]">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,37.5rem)_minmax(0,22.5rem)] lg:items-end lg:justify-between">
+            <div>
+              <Eyebrow>A product-first practice</Eyebrow>
+              <h2 id="practice-heading" className="headline mt-5 text-[clamp(2.2rem,4.6vw,3.4rem)] text-fg">
+                Build what matters.
+              </h2>
+              <Lede className="mt-8 leading-[1.8] sm:text-xl sm:leading-[1.8]">
+                Design thinking to find the right problem. Lean practices to test the smallest useful bet. Velocity measured by meaningful progress, not just code shipped.
+              </Lede>
+            </div>
+            <p className="leading-[1.8] text-fg-muted">
+              <strong className="block font-semibold text-fg">From intent to outcomes that matter.</strong>
+              Start anywhere. Use only the skills you need. What you learn informs what comes next.
+            </p>
+          </div>
+
+          <ol className="mt-14 sm:mt-20">
+            {STAGES.map((stage, i) => (
+              <li
+                key={stage.title}
+                className="relative grid grid-cols-[1.25rem_minmax(0,1fr)] gap-x-4 border-t border-line pb-12 pt-10 md:grid-cols-[2.5rem_minmax(0,1fr)_minmax(0,1.15fr)] md:gap-x-8 md:pb-18 md:pt-14 lg:grid-cols-[3.75rem_minmax(0,1fr)_33rem] lg:gap-x-10"
+              >
+                {/* Timeline axis: from this stage's dot to the next one. */}
+                {i < STAGES.length - 1 ? (
+                  <span aria-hidden="true" className="absolute bottom-[calc(-2.5rem-10px)] left-[9.5px] top-[calc(2.5rem+10px)] w-px bg-[#62527c] md:bottom-[calc(-3.5rem-10px)] md:top-[calc(3.5rem+10px)] lg:left-[29.5px]" />
+                ) : null}
+                <span
+                  aria-hidden="true"
+                  className="relative z-10 mt-0.5 size-4 justify-self-start rounded-full border-2 bg-canvas shadow-[0_0_11px_rgb(187_156_228/0.23)] max-lg:ml-[2px] lg:ml-[22px]"
+                  style={{ borderColor: stage.dot }}
+                />
+                <div className="min-w-0">
+                  <p className="font-mono text-[0.72rem] uppercase tracking-[0.14em]" style={{ color: stage.dot }}>
+                    {stage.n} / {stage.kicker}
+                  </p>
+                  <h3 className="mt-3 text-[1.75rem] font-medium leading-tight tracking-[-0.04em] text-fg sm:text-[2rem]">{stage.title}</h3>
+                  <p className="mt-4 max-w-[22rem] leading-[1.75] text-fg-muted">{stage.body}</p>
+                  <ul aria-label={`${stage.title} skills`} className="mt-6 flex flex-wrap gap-2">
+                    {stage.skills.map((name) => (
+                      <li key={name}>
+                        {skillNames.has(name) ? (
+                          <Link
+                            href={`/skills/${name}`}
+                            className="inline-flex min-h-8 items-center rounded-full border border-line-strong px-3 font-mono text-xs text-fg-muted transition-colors hover:border-lavender/50 hover:text-fg"
+                          >
+                            {name}
+                          </Link>
+                        ) : (
+                          <span className="inline-flex min-h-8 items-center rounded-full border border-line-strong px-3 font-mono text-xs text-fg-muted">{name}</span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div
+                  className={`col-start-2 mt-8 min-w-0 self-start p-6 sm:p-8 md:col-start-3 md:row-start-1 md:mt-0 ${
+                    i === 0 ? "card-prism border-lavender/35 bg-[linear-gradient(160deg,rgb(52_40_76/0.7)_0%,rgb(30_25_44/0.95)_60%,rgb(32_24_42/0.95)_100%)]" : "card-prism"
+                  }`}
+                >
+                  <p className="label-mono text-lavender/80">Example · {stage.example.kicker}</p>
+                  <h4 className="mt-3 text-xl font-medium leading-snug tracking-[-0.025em] text-fg sm:text-[1.375rem]">{stage.example.title}</h4>
+                  <div className="mt-4 leading-[1.75] text-fg-muted [&_b]:font-semibold [&_b]:text-fg">{stage.example.body}</div>
+                </div>
+              </li>
+            ))}
+          </ol>
+
+          <div className="pl-9 md:pl-[4.5rem] lg:pl-[6.25rem]">
+            <p className="flex items-center gap-3 font-mono text-sm text-lavender">
+              <Undo2 aria-hidden="true" className="size-4 shrink-0" strokeWidth={1.75} />
+              Learning shapes the next intent.
+              <span aria-hidden="true" className="h-px flex-1 bg-[linear-gradient(90deg,#8f6bb8,transparent)]" />
+            </p>
+            <p className="mt-4 text-sm text-fg-subtle">Illustrative product journey · Examples describe intended evidence, not claimed production results.</p>
+          </div>
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
 export function FindSection() {
   return (
     <Section aria-labelledby="find-heading">
@@ -70,7 +238,7 @@ export function FindSection() {
             <h2 id="find-heading" className="headline mt-5 text-[clamp(2.2rem,4.6vw,3.4rem)] text-fg">
               Find the skill.
               <br />
-              <span className="text-prism">Ask the question.</span>
+              Ask the question.
             </h2>
           </div>
           <p className="max-w-[24rem] text-base leading-relaxed text-fg-muted">

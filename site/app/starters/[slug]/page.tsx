@@ -91,7 +91,7 @@ export default async function StarterPage({ params }: Props) {
           <h2 id="why-defaults" className="headline mt-5 text-[clamp(2.4rem,5.2vw,3.6rem)] text-fg">
             Spend less time on setup.
             <br />
-            <span className="text-prism">More time on the product.</span>
+            More time on the product.
           </h2>
           <Lede className="mt-8">
             The starter supplies engineering conventions and agent-facing capabilities so you can focus on what your application does. Use only the parts you need, and

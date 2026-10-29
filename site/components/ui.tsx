@@ -11,7 +11,7 @@ export function Eyebrow({ children, className }: { children: ReactNode; classNam
   return <p className={cn("eyebrow", className)}>{children}</p>;
 }
 
-/** Two-line Prism headline: plain lead, gradient accent. */
+/** Two-line Prism headline: plain lead, accent line. Only h1 accents carry the gradient (DESIGN.md). */
 export function Headline({
   lead,
   accent,
@@ -34,7 +34,7 @@ export function Headline({
     <Tag className={cn("headline text-fg", sizes[size], className)}>
       {lead}
       {lead && accent ? <br /> : null}
-      {accent ? <span className="text-prism">{accent}</span> : null}
+      {accent ? <span className={Tag === "h1" ? "text-prism" : undefined}>{accent}</span> : null}
     </Tag>
   );
 }

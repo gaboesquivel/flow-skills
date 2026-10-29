@@ -8,7 +8,7 @@ export const MARK_SOURCE = 'site/components/logo.tsx'
 export function brandMarkSurfaces(repoRoot) {
   const brand = join(repoRoot, 'site', 'public', 'brand')
   const svgs = existsSync(brand)
-    ? readdirSync(brand).filter((f) => f.startsWith('throughline-') && f.endsWith('.svg')).sort().map((f) => `site/public/brand/${f}`)
+    ? readdirSync(brand).filter((f) => (f.startsWith('throughline-') || f === 'flow-hero-orbit.svg') && f.endsWith('.svg')).sort().map((f) => `site/public/brand/${f}`)
     : []
   return ['site/app/icon.svg', ...svgs]
 }
