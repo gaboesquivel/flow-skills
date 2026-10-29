@@ -63,7 +63,7 @@ Write `PRODUCT.md`, `DESIGN.md`, `ARCHITECTURE.md`, and `GLOSSARY.md` for **this
 
 ## Flow block
 
-Write the Flow block with the `flow` skill's `lib/flow-block.mjs`, passing the project's absolute path; `flow`'s [Flow block](../flow/SKILL.md#flow-block) section owns the layout. Keep the helper's output, including any refusal, for the report. Touch nothing outside the markers and the import line. Without `flow`, skip the block and say so.
+Write the Flow block with the `flow` skill's `lib/flow-block.mjs`, passing the project's absolute path; `flow`'s Flow block section owns the layout. Keep the helper's output, including any refusal, for the report. Touch nothing outside the markers and the import line. Without `flow`, skip the block and say so.
 
 ## Bootstrap order
 

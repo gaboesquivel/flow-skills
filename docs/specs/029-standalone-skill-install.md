@@ -1,6 +1,6 @@
 # 029: Standalone skill install
 
-Status: candidate (2026-10-28; problem rechecked 2026-10-29). Still true after [0044](../decisions/0044-fast-delivery.md), which moved shared delivery rules into `build` (Delivery mode, Size guard, Work in flight) so more skills now link there.
+Status: implemented (2026-10-29).
 
 ## Problem Statement
 
@@ -9,3 +9,10 @@ A person who installs one Flow skill, or who installs the catalog and gets a dif
 ## Assumption
 
 A skill installed on its own from the tagged catalog completes its own procedure without another skill's files, and the installed set matches that catalog version.
+
+## Resolution
+
+- Every skill's links stay inside its own folder; `pnpm validate` rejects a link to a sibling skill. Where a skill needed another's rule to proceed (delivery mode, work in flight, the size guard, workers, the direction-change gate), it states the clause it needs and names the owning skill without linking it. `start` already skips the Flow block when `flow` is absent.
+- The installed set matched the catalog on 2026-10-29: `skills@1.7.4` found 23 skills both from the working tree and from `gaboesquivel/flow-skills`. The earlier 24 and 21 counts no longer reproduce.
+- A release is pinned by installing from its tag's tree URL (README).
+- Verified by installing all 23 skills with `skills@1.7.4` into an empty repository: every relative link resolves inside its own installed folder.
