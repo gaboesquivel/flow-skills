@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { percentile, summarize } from '../scripts/metrics.mjs'
+import { ideaToProd, parseSession, percentile, summarize } from '../scripts/metrics.mjs'
 
 test('percentile picks the nearest rank and handles empty input', () => {
   assert.equal(percentile([], 50), null)
@@ -26,4 +26,34 @@ test('summary counts only runs on merged branches and ignores cancelled runs', (
   assert.equal(s.ciFailureRate, 0.5)
   assert.equal(s.prsWithRedCi, 0.5)
   assert.deepEqual(s.ciWaitMinutes, { median: 1, p90: 1 })
+})
+
+test('idea → prod links sessions to merged pull requests and counts turns after the delivery phrase', () => {
+  const log = (entries) => entries.map((entry) => JSON.stringify(entry)).join('\n')
+  const prompt = (timestamp, content, extra = {}) => ({ type: 'user', timestamp, cwd: '/code/flow-skills', gitBranch: 'feat', message: { content }, ...extra })
+  const linked = parseSession(log([
+    prompt('2026-10-29T00:00:00.000Z', 'add a button'),
+    prompt('2026-10-29T00:01:00.000Z', [{ type: 'tool_result', content: 'ok' }]),
+    prompt('2026-10-29T00:02:00.000Z', 'ignored', { isMeta: true }),
+    prompt('2026-10-29T00:05:00.000Z', 'ship it'),
+    prompt('2026-10-29T00:06:00.000Z', 'thanks'),
+    prompt('2026-10-29T02:00:00.000Z', 'after the merge'),
+  ]))
+  const viaLink = parseSession(log([
+    { type: 'pr-link', prRepository: 'o/flow-skills', prNumber: 2, timestamp: '2026-10-29T00:00:00.000Z' },
+    { ...prompt('2026-10-29T00:00:00.000Z', 'fix it'), gitBranch: 'other', cwd: '/elsewhere' },
+  ]))
+  const prs = [
+    { number: 1, headRefName: 'feat', mergedAt: '2026-10-29T00:10:00.000Z' },
+    { number: 2, headRefName: 'x', mergedAt: '2026-10-29T00:20:00.000Z', liveAt: '2026-10-29T00:30:00.000Z' },
+    { number: 3, headRefName: 'nobody', mergedAt: '2026-10-29T00:20:00.000Z' },
+  ]
+  const result = ideaToProd({ prs, sessions: [linked, viaLink], repo: 'o/flow-skills' })
+  assert.deepEqual(result.changes, [
+    { number: 1, linked: true, minutes: 10, turnsAfterPhrase: 1 },
+    { number: 2, linked: true, minutes: 30, turnsAfterPhrase: null },
+    { number: 3, linked: false },
+  ])
+  assert.equal(result.unlinked, 1)
+  assert.equal(result.linkRate, 2 / 3)
 })

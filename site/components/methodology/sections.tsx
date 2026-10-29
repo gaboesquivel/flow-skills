@@ -22,14 +22,14 @@ const STEPS = [
     n: "03",
     kicker: "Parallel",
     title: "Build",
-    body: "“Build it” implements the change, runs independent work in parallel, and ends with a ready branch.",
+    body: "“Build it” implements the change, reviews and checks it, and ends with a verified branch that is not merged yet.",
     skill: "build",
   },
   {
     n: "04",
     kicker: "Proof",
     title: "Ship",
-    body: "“Ship it” checks once, adds review when the change is large or you ask, lands, and confirms the shipped commit is deployed.",
+    body: "“Ship it” builds when the branch is not verified yet, lands it, and confirms the shipped commit is live.",
     skill: "ship",
   },
 ];
@@ -76,7 +76,7 @@ export function StepsSection() {
 }
 
 const PATH_NOTES: Record<string, string> = {
-  "Quick fix": "Start with the request. No spec, no questions: build, check once, and land it.",
+  "Quick fix": "Start with the request. No spec, no questions: build, check once, and ship it.",
   "Shaped idea": "Explore asks in proportion to the change; build the confirmed brief directly.",
   "Tracked bet": "A bet worth tracking gets a spec and verifiable tasks before the build.",
   "New project": "Start bootstraps from flow-next or flow-mono while explore shapes the product.",

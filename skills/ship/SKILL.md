@@ -12,7 +12,7 @@ disable-model-invocation: false
 
 **Proof.** Spec accepted; checks green on the landed head; no blocking findings; protection satisfied; when a remote exists, its default branch contains the shipped commit. Liveness is reported, never a gate.
 
-Asking to ship authorizes these steps with no confirmation. It does not authorize destructive Git, security bypasses, production promotion or rollback unless explicitly asked, or unrelated changes. Ship's landing is the only commit, push, or merge to the default branch, apart from [`push`](../push/SKILL.md) when the user names it. Never force-push or rewrite remote branches. Never push other people's work. Never approve your own pull request. Never skip, disable, or weaken a check.
+Asking to ship authorizes these steps with no confirmation. It does not authorize destructive Git, security bypasses, production promotion or rollback unless explicitly asked, or unrelated changes. Ship's landing is the only commit, push, or merge to the default branch, apart from `push` when the user names it. Never force-push or rewrite remote branches. Never push other people's work. Never approve your own pull request. Never skip, disable, or weaken a check.
 
 ## Preflight
 
@@ -24,12 +24,12 @@ Outside a Git repository, offer `git init` and stop on a no. Fetch, then read br
 
 Classify the work:
 
-- **Spec work:** `accepted` or `implemented` passes; "ship it" on a `draft` accepts it ([`to-spec` acceptance](../to-spec/SKILL.md#status-and-acceptance)). Any other status, or a spec that cannot be resolved, stops ship: say what is wrong. A complete spec still missing `Status: implemented` gets it in the landed change.
+- **Spec work:** `accepted` or `implemented` passes; "ship it" on a `draft` accepts it (`to-spec`'s Status and acceptance). Any other status, or a spec that cannot be resolved, stops ship: say what is wrong. A complete spec still missing `Status: implemented` gets it in the landed change.
 - **Unspecced work:** needs no spec; `build`'s Size guard sets its review.
 
 ## Build
 
-Run [`build`](../build/SKILL.md) unless the branch is verified: the review the size guard picked covered the head you will land, checks are green on it, and no blocking finding is open. Build owns review, fixes, and checks; ship never repeats them on the same head. An `unresolved` scenario step build listed does not block: "ship it" approves it; name it in the report.
+Run `build` unless the branch is verified: the review the size guard picked covered the head you will land, checks are green on it, and no blocking finding is open. Build owns review, fixes, and checks; ship never repeats them on the same head. An `unresolved` scenario step build listed does not block: "ship it" approves it; name it in the report.
 
 ## Merge
 

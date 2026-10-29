@@ -10,7 +10,7 @@ disable-model-invocation: false
 
 **"Push it"** (or "deploy it") is the approval: no confirmation after it. The current branch, or the branch the user names, holds this work's commit on the remote, and its liveness is reported. Pushing is the deploy: the host's Git integration (for example Vercel) builds the pushed branch. Push runs no deploy command of its own.
 
-**Proof.** The remote branch contains the pushed commit; liveness is reported as [`ship`'s Liveness](../ship/SKILL.md#liveness) describes.
+**Proof.** The remote branch contains the pushed commit; liveness is reported as `ship`'s Liveness describes.
 
 ## Push
 

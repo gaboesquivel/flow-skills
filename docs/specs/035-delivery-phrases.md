@@ -1,6 +1,6 @@
 # 035: Delivery phrases are approvals
 
-Status: accepted (2026-10-29). Decision: [0047](../decisions/0047-delivery-phrases-are-approvals.md) (Accepted).
+Status: implemented (2026-10-29). Decision: [0047](../decisions/0047-delivery-phrases-are-approvals.md) (Accepted).
 
 ## Problem Statement
 
@@ -91,5 +91,5 @@ Tests check behavior and contracts, not wording: phrase table against descriptio
 
 ## Further Notes
 
-- The user-level install at `~/.claude/skills` predates the 0044 amendment and loaded instead of this repository's `skills/` while this spec was written (it still describes spec issues). Dogfooding needs the working-tree copy to win. Note it in [agent-compatibility](../agent-compatibility.md).
+- The user-level install at `~/.claude/skills` predates the 0044 amendment and loaded instead of this repository's `skills/` while this spec was written (it still describes spec issues). `pnpm validate` already warns about shadowed copies; refresh with `npx skills update -g` after landing.
 - Source: a second-opinion review of the phrase proposal, summarized in the fixes above.

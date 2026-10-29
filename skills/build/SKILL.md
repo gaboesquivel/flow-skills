@@ -19,7 +19,7 @@ Build never merges. Run what the work needs while implementing; the full checks 
 
 Read the request, repository instructions, and code. Preserve unrelated working-tree changes. Do not add scope just because it is nearby. When intent is unclear for a new product or substantial feature, suggest `explore` and wait; never start exploration unasked. When behavior or accepted context changes, update owning documentation; do not replace a project's product identity with Flow's methodology identity. Link to specs or decisions instead of duplicating rationale; do not open new spec or decision files unless the user asked or the work already uses that convention.
 
-"Build it" on a draft spec accepts it in the build's first commit ([`to-spec` acceptance](../to-spec/SKILL.md#status-and-acceptance)).
+"Build it" on a draft spec accepts it in the build's first commit (`to-spec`'s Status and acceptance).
 
 ## Deliver
 
@@ -33,7 +33,7 @@ Work on a branch that is not the default branch. Commit only this work: no crede
 
 1. **Review.** Run the review the size guard picked on the head you will hand over. An `unmet` scenario step or a blocking finding is fixed on the branch, at most two fix rounds; re-review only what the fix touched. Try to resolve each `unresolved` step (run the test, read the preview); list the rest in the pull request body and the report. In GitHub mode, post the review on the pull request as a comment or COMMENT-type review, never an approval.
 2. **Checks.** Once, on the final head. **GitHub mode:** wait on CI; a pending check is pending, never passing. **Local mode:** run the suite on the branch: the documented check commands from the instruction file's command table, else package scripts for test, lint, typecheck, and build; when there is none, say so and never claim checks passed. On red, fix and check the new head, at most two fix rounds.
-3. **Liveness** of the branch's head, as [`ship`'s Liveness](../ship/SKILL.md#liveness) describes.
+3. **Liveness** of the branch's head, as `ship`'s Liveness describes.
 
 Stop on blocking findings or red checks after the fix rounds; report the branch as not ready.
 
@@ -46,7 +46,7 @@ Work with no spec or task is unspecced. Write a spec or tasks only when the user
 One home; `ship` points here. Judge once, at intake, before implementing; it never stops the work. Escalate for new product behavior, data shape or public API changes, migrations, or touches to authentication or permissions; secrets or credentials handling; dependencies or lockfiles; CI, workflow, or Git hook configuration; shell, exec, or filesystem-execution paths. When the size is uncertain, treat it as escalated.
 
 - **Small:** build runs one single-agent self-check with fix rounds.
-- **Escalated, or the user asked ("review it"):** the independent [`review`](../review/SKILL.md), run in Verify.
+- **Escalated, or the user asked ("review it"):** the independent `review`, run in Verify.
 
 ## Delivery mode
 
