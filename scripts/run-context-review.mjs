@@ -150,15 +150,24 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       const user = buildContextReviewPrompt({ contract, names, diff, title, body, labels })
 
       const run = async () => {
-        let parsed
-        for (let attempt = 0; attempt < 2; attempt++) {
+        // An unreachable API is an outage, not a finding: say so and pass. A response that cannot be
+        // read as a verdict still blocks, since pull request content could be steering it.
+        let content
+        for (let attempt = 0; attempt < 2 && content === undefined; attempt++) {
           try {
-            const content = await chatCompletion({ apiBase, apiKey, model, system, user })
-            parsed = extractJson(content)
-            break
+            content = await chatCompletion({ apiBase, apiKey, model, system, user })
           } catch (err) {
-            if (attempt === 1) throw err
+            if (attempt === 1) {
+              console.warn(`LLM context review unavailable; not blocking: ${err.message}`)
+              return
+            }
           }
+        }
+        let parsed = {}
+        try {
+          parsed = extractJson(content)
+        } catch {
+          console.error('LLM response is not JSON.')
         }
         const gate = gateContextReview({ verdict: parsed.verdict, findings: parsed.findings })
         const comment = formatComment({ verdict: gate.verdict, findings: gate.findings })

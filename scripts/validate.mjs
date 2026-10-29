@@ -187,17 +187,22 @@ function listMarkdownAndSupportFiles(folder) {
   return out
 }
 
-// Parallel sessions pick "next free number" independently; fail when two records claim one.
-export function collectRecordNumberErrors(docsDir) {
+// Specs and decisions: well-formed names, unique numbers (parallel sessions pick "next free number"
+// independently), and an index entry, so a missing link fails locally instead of in CI.
+export function collectRecordErrors(docsDir) {
   const errors = []
   for (const [folder, digits] of [['decisions', 4], ['specs', 3]]) {
     const path = join(docsDir, folder)
     if (!existsSync(path)) continue
+    const readme = join(path, 'README.md')
+    const index = existsSync(readme) ? readFileSync(readme, 'utf8') : null
     const seen = new Map()
-    for (const file of readdirSync(path).filter((file) => new RegExp(`^\\d{${digits}}-.+\\.md$`, 'u').test(file)).sort()) {
+    for (const file of readdirSync(path).filter((file) => file.endsWith('.md') && file !== 'README.md').sort()) {
+      if (!new RegExp(`^\\d{${digits}}-[a-z0-9-]+\\.md$`, 'u').test(file)) { errors.push(`docs/${folder}/${file}: name must match ${'N'.repeat(digits)}-short-name.md`); continue }
       const number = file.slice(0, digits)
       if (seen.has(number)) errors.push(`docs/${folder}/${file}: number ${number} already used by ${seen.get(number)}; renumber to the next free number`)
       else seen.set(number, file)
+      if (index !== null && !index.includes(file)) errors.push(`docs/${folder}/${file}: link it from docs/${folder}/README.md`)
     }
   }
   return errors
@@ -232,7 +237,7 @@ export function collectFixtureNestedGitErrors(repoRoot) {
 export function validateRepository(repoRoot) {
   const errors = validateSkills(join(repoRoot, 'skills'))
   errors.push(...collectDocLinkErrors(join(repoRoot, 'docs')))
-  errors.push(...collectRecordNumberErrors(join(repoRoot, 'docs')))
+  errors.push(...collectRecordErrors(join(repoRoot, 'docs')))
   const startSkill = join(repoRoot, 'skills', 'start', 'SKILL.md')
   if (existsSync(startSkill)) errors.push(...collectCheckTableErrors(readFileSync(startSkill, 'utf8')))
   else errors.push('skills/start/SKILL.md: missing')
@@ -246,5 +251,5 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
   const errors = validateRepository(repoRoot)
   if (errors.length) { console.error(errors.join('\n')); process.exitCode = 1 }
-  else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills, documentation links, local references, adapters, record numbers, catalog phrases, fixture layout, and start's check table.`)
+  else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills, documentation links, local references, adapters, record names and indexes, catalog phrases, fixture layout, and start's check table.`)
 }

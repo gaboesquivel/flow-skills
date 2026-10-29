@@ -24,10 +24,10 @@ test('context review prompt includes title, body, and labels', () => {
     names: 'PRODUCT.md',
     diff: 'diff',
     title: 'Align roots',
-    body: 'Alignment: docs-only',
-    labels: ['alignment-exempt'],
+    body: 'Fixes the glossary.',
+    labels: ['docs'],
   })
   assert.match(prompt, /Title: Align roots/)
-  assert.match(prompt, /Labels: alignment-exempt/)
-  assert.match(prompt, /Alignment: docs-only/)
+  assert.match(prompt, /Labels: docs/)
+  assert.match(prompt, /Fixes the glossary./)
 })

@@ -1,6 +1,6 @@
 # 004: Pull request alignment review
 
-Status: implemented (2026-10-27). Authoritative contract: [pr-review-contract.md](../pr-review-contract.md).
+Status: implemented (2026-10-27); amended by [decision 0045](../decisions/0045-trusted-review-and-local-record-checks.md), which removed the deterministic checker and its escape hatches and runs the review from base-commit code. Authoritative contract: [pr-review-contract.md](../pr-review-contract.md).
 
 ## Problem statement
 
@@ -9,7 +9,7 @@ Flow treats every bounded change — product, design, engineering, marketing, or
 ## Solution
 
 1. **Contract** — [docs/pr-review-contract.md](../pr-review-contract.md): one checklist any agent or CI can follow.
-2. **Deterministic checker** — [scripts/check-pr-alignment.mjs](../../scripts/check-pr-alignment.mjs): path and documentation rules on this repository's pull requests. CI compares `merge-base(base, head)` through `head`. The `main` branch ruleset requires that check, plus `validate (ubuntu-latest, 22)` ([spec 014](014-faster-pr-ci.md)) and `context-review` when secrets are set, and rejects direct pushes.
+2. **Deterministic checker** — `scripts/check-pr-alignment.mjs` (removed by 0045): path and documentation rules on this repository's pull requests. CI compares `merge-base(base, head)` through `head`. The `main` branch ruleset requires that check, plus `validate (ubuntu-latest, 22)` ([spec 014](014-faster-pr-ci.md)) and `context-review` when secrets are set, and rejects direct pushes.
 3. **Judgment layer** — GitHub Actions job calling an OpenAI-compatible API with the contract, PR title, body, labels, and diff. The job fails when the diff cannot be read or the response has no `pass` or `fail` verdict. It is a required check on `main` when `FLOW_REVIEW_API_KEY` is configured.
 4. **Portable adoption** — Copy the contract and script into an adopter repository; wire their own CI and API secrets. Flow skills do not install workflows into consumer projects.
 
@@ -43,7 +43,7 @@ Flow treats every bounded change — product, design, engineering, marketing, or
 
 ## Adopter copy pattern
 
-1. Copy [docs/pr-review-contract.md](../pr-review-contract.md) and [scripts/check-pr-alignment.mjs](../../scripts/check-pr-alignment.mjs); adjust path rules at the top of the script for your layout.
+1. Copy [docs/pr-review-contract.md](../pr-review-contract.md) and `scripts/check-pr-alignment.mjs` (removed by 0045); adjust path rules at the top of the script for your layout.
 2. Add a `pull_request` workflow step that runs the script with your CI's base and head SHAs.
 3. Optionally copy [scripts/run-context-review.mjs](../../scripts/run-context-review.mjs) and the `context-review` job from [.github/workflows/ci.yml](../../.github/workflows/ci.yml); set `FLOW_REVIEW_API_KEY`, optional `FLOW_REVIEW_API_BASE`, and `FLOW_REVIEW_MODEL` as repository secrets.
 4. Install Flow skills separately via `npx skills add gaboesquivel/flow-skills`; invoke `review` and `flow` using the same contract before opening a PR when CI is not yet wired.
