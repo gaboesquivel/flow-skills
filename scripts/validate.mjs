@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, readdirSync, realpathSync } from 'node:fs'
 import { dirname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { collectCatalogPhraseErrors } from './check-catalog-phrases.mjs'
 import { collectDocLinkErrors } from './check-doc-links.mjs'
 import { ESSENTIAL_CHECK_IDS } from '../skills/start/lib/commit-gate.mjs'
 
@@ -211,6 +212,23 @@ export function collectSkillsLinkErrors(repoRoot) {
   return []
 }
 
+export function collectFixtureNestedGitErrors(repoRoot) {
+  const errors = []
+  const fixturesRoot = join(repoRoot, 'tests', 'fixtures')
+  if (!existsSync(fixturesRoot)) return errors
+  const walk = (dir, rel = '') => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name === '.git' && entry.isDirectory()) {
+        errors.push(`${join('tests/fixtures', rel, '.git').replace(/^\.\//u, '')}: remove nested .git; init in a throwaway clone per fixture README`)
+        continue
+      }
+      if (entry.isDirectory()) walk(join(dir, entry.name), rel ? `${rel}/${entry.name}` : entry.name)
+    }
+  }
+  walk(fixturesRoot)
+  return errors
+}
+
 export function validateRepository(repoRoot) {
   const errors = validateSkills(join(repoRoot, 'skills'))
   errors.push(...collectDocLinkErrors(join(repoRoot, 'docs')))
@@ -219,6 +237,8 @@ export function validateRepository(repoRoot) {
   if (existsSync(startSkill)) errors.push(...collectCheckTableErrors(readFileSync(startSkill, 'utf8')))
   else errors.push('skills/start/SKILL.md: missing')
   errors.push(...collectSkillsLinkErrors(repoRoot))
+  errors.push(...collectCatalogPhraseErrors(repoRoot))
+  errors.push(...collectFixtureNestedGitErrors(repoRoot))
   return errors
 }
 
@@ -226,5 +246,5 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
   const errors = validateRepository(repoRoot)
   if (errors.length) { console.error(errors.join('\n')); process.exitCode = 1 }
-  else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills, documentation links, local references, adapters, record numbers, and start's check table.`)
+  else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills, documentation links, local references, adapters, record numbers, catalog phrases, fixture layout, and start's check table.`)
 }

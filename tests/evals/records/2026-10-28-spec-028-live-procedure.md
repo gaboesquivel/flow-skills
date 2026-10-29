@@ -32,8 +32,8 @@ Never run competing write agents in the user's active workspace ([eval README](.
 | Prompt | Task file | Fixture |
 | --- | --- | --- |
 | E26 | [E26-task.md](../tasks/E26-task.md) | [e26-ship-draft-gate](../../fixtures/e26-ship-draft-gate/) |
-| E34 | [E34-task.md](../tasks/E34-task.md) | TBD — needs mock GitHub checks/deployments or narrated state |
-| E37 | [E37-task.md](../tasks/E37-task.md) | TBD — scratch app + accepted spec + local mode |
+| E34 | [E34-task.md](../tasks/E34-task.md) | [e34-ship-verify](../../fixtures/e34-ship-verify/) (+ [MOCK-GITHUB.md](../../fixtures/e34-ship-verify/MOCK-GITHUB.md)) |
+| E37 | [E37-task.md](../tasks/E37-task.md) | [e37-build-outcomes](../../fixtures/e37-build-outcomes/) |
 
 ## Per run
 

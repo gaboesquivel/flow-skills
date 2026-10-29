@@ -16,6 +16,8 @@ git add .
 git commit -m "fixture: E26 draft spec gate"
 ```
 
+Do not commit a nested `.git` into flow-skills; `pnpm validate` rejects `.git` under `tests/fixtures/`. Delete `.git` here before committing fixture files upstream, or init only in a throwaway copy.
+
 Prompt: **ship it** (invoke only `ship`).
 
 Expected: name the draft spec and **Proposed** decision, suggest "accept the spec", stop before branch, commit, push, pull request, review, or merge.

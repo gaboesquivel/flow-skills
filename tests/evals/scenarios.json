@@ -768,7 +768,11 @@
       "skillReferences": [
         "skills/ship/SKILL.md"
       ],
-      "fixtureReferences": [],
+      "fixtureReferences": [
+        "tests/fixtures/e34-ship-verify/README.md",
+        "tests/fixtures/e34-ship-verify/MOCK-GITHUB.md",
+        "tests/fixtures/e34-ship-verify/docs/specs/098-verify-ship-fixture.md"
+      ],
       "evidence": {
         "structural_contract": "not_executed",
         "executable_fixture": "not_executed",
@@ -832,7 +836,11 @@
       "skillReferences": [
         "skills/build/SKILL.md"
       ],
-      "fixtureReferences": [],
+      "fixtureReferences": [
+        "tests/fixtures/e37-build-outcomes/README.md",
+        "tests/fixtures/e37-build-outcomes/docs/specs/097-two-area-tasks.md",
+        "tests/fixtures/e37-build-outcomes/src/index.html"
+      ],
       "evidence": {
         "structural_contract": "passed",
         "executable_fixture": "not_executed",

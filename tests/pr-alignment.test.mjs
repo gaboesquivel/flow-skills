@@ -43,6 +43,14 @@ test('skill SKILL.md with smoke-contracts update passes contract rule', () => {
   assert.equal(errors.filter((e) => /smoke-contracts/u.test(e)).length, 0)
 })
 
+test('stale catalog ship pipeline phrase fails alignment on touched catalog file', () => {
+  const { errors } = evaluatePrAlignment({
+    changedFiles: ['README.md'],
+    repoRoot: root,
+  })
+  assert.equal(errors.filter((e) => /stale ship pipeline/u.test(e)).length, 0)
+})
+
 test('root context change requires spec or decision in PR', () => {
   const { errors } = evaluatePrAlignment({
     changedFiles: ['PRODUCT.md'],

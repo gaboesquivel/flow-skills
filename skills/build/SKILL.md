@@ -31,6 +31,8 @@ Outside a Git repository, follow `write-agents` [Repository](../write-agents/SKI
 
 **GitHub mode** (see Delivery mode): work on a branch that is not the default branch; **Commit** only this work (Exclude credentials, local logs, and generated secrets; Do not amend or rewrite unrelated commits; preserve unrelated working-tree changes); **Push**; **Open a pull request** or update the open one; **Wait for checks** (reported as pending, never as passing); **Fix rounds** at most 2 (Never skip, disable, or weaken a check); **Report** the pull request and checks.
 
+When this repository's delivery skills change, run `node --test tests/smoke-contracts.test.mjs` before each commit that touches `skills/build/SKILL.md`, `skills/ship/SKILL.md`, or `skills/review/SKILL.md`, then the full local check suite before push.
+
 **Local mode:** run the full local check suite with the same fix rounds, then:
 
 1. **Gate.** For spec work, check the gate `ship` defines under [Preflight](../ship/SKILL.md#preflight); stop when it fails. Unspecced work has no spec gate.
