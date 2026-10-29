@@ -5,8 +5,9 @@ on:
     branches: [main]
     tags: ['v*']
   pull_request:
-    # No `edited`: retitling reruns nothing. After adding an `Alignment:` line to the body, push or re-run the workflow.
-    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
 
 # A new push to the same PR cancels its superseded run.
 concurrency:
@@ -37,29 +38,10 @@ jobs:
       - if: startsWith(github.ref, 'refs/tags/')
         run: pnpm test:release
 
-  alignment:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Deterministic PR alignment
-        env:
-          FLOW_PR_BODY: ${{ github.event.pull_request.body }}
-          FLOW_PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
-        run: |
-          merge_base="$(git merge-base "${{ github.event.pull_request.base.sha }}" "${{ github.sha }}")"
-          node scripts/check-pr-alignment.mjs --base "$merge_base" --head "${{ github.sha }}"
-
   context-review:
-    # Reads the diff only, so it runs beside validate instead of after it.
+    # The reviewer and its contract come from the base commit; the pull request is only git data. A
+    # branch that wants another reviewer has to change this workflow, which shows in its diff.
     if: github.event_name == 'pull_request'
-    needs: [alignment]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -67,13 +49,24 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Trusted reviewer (base)
+        uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: trusted
+          persist-credentials: false
+      - name: Pull request (data only)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr
           fetch-depth: 0
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - name: LLM context review
+        working-directory: pr
         env:
           FLOW_REVIEW_API_KEY: ${{ secrets.FLOW_REVIEW_API_KEY }}
           FLOW_REVIEW_API_BASE: ${{ secrets.FLOW_REVIEW_API_BASE }}
@@ -82,7 +75,10 @@ jobs:
           FLOW_PR_BODY: ${{ github.event.pull_request.body }}
           FLOW_PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
           GH_TOKEN: ${{ github.token }}
-          GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_REPO: ${{ github.repository }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          merge_base="$(git merge-base "${{ github.event.pull_request.base.sha }}" "${{ github.sha }}")"
-          node scripts/run-context-review.mjs --base "$merge_base" --head "${{ github.sha }}" --pr-number "${{ github.event.pull_request.number }}"
+          merge_base="$(git merge-base "$BASE_SHA" "$HEAD_SHA")"
+          node ../trusted/scripts/run-context-review.mjs --base "$merge_base" --head "$HEAD_SHA" --pr-number "$PR_NUMBER"

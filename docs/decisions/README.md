@@ -50,6 +50,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0044-fast-delivery.md](0044-fast-delivery.md) | Accepted | Checks once at PR time, review when it pays; one delivery shape, inferred mode, no spec issue, parallel by default, zero lost work, shipped means deployed |
 | [0045-templates-pin-flow-skills.md](0045-templates-pin-flow-skills.md) | Accepted | Template skills locks pin flow-skills; Flow owns workflow, overlapping third-party workflow skills dropped |
 | [0046-measurement-assistance.md](0046-measurement-assistance.md) | Accepted | Read-only `measure` skill; measurement defined in `explore`, made actionable in `to-spec`; assistance, not analytics or a ship gate |
+| [0047-trusted-review-and-local-record-checks.md](0047-trusted-review-and-local-record-checks.md) | Accepted | `context-review` runs base-commit code with the head as data; API outages do not block; record index checks move to `pnpm validate`; the `alignment` job is removed |
 
 ## Rules
 
