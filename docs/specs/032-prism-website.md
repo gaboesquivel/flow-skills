@@ -1,6 +1,6 @@
 # 032: Prism website
 
-**Status:** accepted (2026-10-29), building on `032-prism-website`
+**Status:** implemented (2026-10-29). Landed in [#165](https://github.com/gaboesquivel/flow-skills/pull/165).
 
 ## Problem Statement
 
