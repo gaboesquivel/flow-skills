@@ -842,7 +842,7 @@
       "fixtureReferences": [
         "tests/fixtures/e37-build-outcomes/README.md",
         "tests/fixtures/e37-build-outcomes/docs/specs/097-two-area-tasks.md",
-        "tests/fixtures/e37-build-outcomes/src/index.html",
+        "tests/fixtures/e37-build-outcomes/golden/task-set/api/version.mjs",
         "tests/fixtures-eval-smoke.test.mjs"
       ],
       "evidence": {

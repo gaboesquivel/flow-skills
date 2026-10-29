@@ -46,6 +46,6 @@ Never run competing write agents in the user's active workspace ([eval README](.
 
 | Condition | E26 | E34 | E37 |
 | --- | --- | --- | --- |
-| A — no skills | passed (Cursor, 2026-10-28) | not_executed | not_executed |
-| B — pre-028 | passed (skill text `492a90f`, 2026-10-28) | not_executed | not_executed |
-| C — optimized | passed (Cursor, 2026-10-28) | Verify replay passed (2026-10-28); full ship not run | (b) copy-fix replay passed (2026-10-28); (a)(c) not run |
+| C — optimized | passed (Cursor, 2026-10-28) | Verify replay A/B/C passed (2026-10-28) | (a) task integrate passed; (b) copy-fix passed; (c) guard replay passed |
+| A — no skills | passed (Cursor, 2026-10-28) | Verify replay passed (2026-10-28) | not_executed |
+| B — pre-028 | passed (skill text `492a90f`, 2026-10-28) | Verify replay passed (2026-10-28) | not_executed |
