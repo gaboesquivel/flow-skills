@@ -51,6 +51,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0045-templates-pin-flow-skills.md](0045-templates-pin-flow-skills.md) | Accepted | Template skills locks pin flow-skills; Flow owns workflow, overlapping third-party workflow skills dropped |
 | [0046-measurement-assistance.md](0046-measurement-assistance.md) | Accepted | Read-only `measure` skill; measurement defined in `explore`, made actionable in `to-spec`; assistance, not analytics or a ship gate |
 | [0047-delivery-phrases-are-approvals.md](0047-delivery-phrases-are-approvals.md) | Accepted | "Push it", "build it", and "ship it" are approvals with narrow triggers; build reviews, checks, and verifies the branch; light liveness at every depth |
+| [0047-trusted-review-and-local-record-checks.md](0047-trusted-review-and-local-record-checks.md) | Accepted | `context-review` runs base-commit code with the head as data; API outages do not block; record index checks move to `pnpm validate`; the `alignment` job is removed |
 
 ## Rules
 

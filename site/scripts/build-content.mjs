@@ -337,6 +337,20 @@ for (const d of docs) pushChunks({ kind: 'doc', url: `/docs/${d.slug}`, title: d
 for (const d of decisions) pushChunks({ kind: 'decision', url: `/docs/${d.slug}`, title: `${d.number} — ${d.title}`, markdown: d.markdown, lead: d.description })
 for (const s of starters) if (s.markdown) pushChunks({ kind: 'starter', url: `/starters/${s.slug}`, title: s.slug, markdown: s.markdown })
 
+// ---------- invariants ----------
+// Fail the build (and the Vercel check on the pull request) when a source format drifts from what this script parses.
+
+const problems = [
+  ...skills.filter((s) => s.group === 'Other').map((s) => `skills/${s.name}: no row in docs/skills.md (| [name](../skills/name/SKILL.md) | "phrase" | when |)`),
+  ...skills.filter((s) => !s.summary || !s.phrases.length).map((s) => `${s.source}: description needs a summary and 'Use when the user says "…"' phrases`),
+  ...decisions.filter((d) => d.status === 'Unknown').map((d) => `${d.source}: no recognizable status (front matter "status:" or a "Status:" line)`),
+  ...decisions.filter((d) => !d.title).map((d) => `${d.source}: missing "# NNNN — Title" heading`),
+]
+if (problems.length) {
+  console.error(`content: source format drift\n${problems.map((p) => `  - ${p}`).join('\n')}`)
+  process.exit(1)
+}
+
 // ---------- write ----------
 
 const commit = (() => {

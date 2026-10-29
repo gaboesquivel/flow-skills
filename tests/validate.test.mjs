@@ -11,7 +11,7 @@ import {
   collectBareFilenameErrors,
   collectCheckTableErrors,
   collectFixtureNestedGitErrors,
-  collectRecordNumberErrors,
+  collectRecordErrors,
   collectSkillsLinkErrors,
   stripFencedCode,
   validateSkills,
@@ -46,11 +46,33 @@ test('bare filename check resolves against the citing skill only and ignores pro
   ])
 })
 
-test('record number check catches duplicate spec and decision numbers', () => {
-  const errors = collectRecordNumberErrors(join(fixtures, 'docs'))
+test('record check catches duplicate spec and decision numbers', () => {
+  const errors = collectRecordErrors(join(fixtures, 'docs'))
   assert.equal(errors.length, 2, errors.join('\n'))
   assert.match(errors.join('\n'), /docs\/decisions\/0003-b\.md: number 0003 already used by 0003-a\.md/u)
   assert.match(errors.join('\n'), /docs\/specs\/007-b\.md: number 007 already used by 007-a\.md/u)
+})
+
+test('record check catches a decision without a known status', (t) => {
+  const dir = tempDir(t, 'flow-records-')
+  mkdirSync(join(dir, 'decisions'))
+  writeFileSync(join(dir, 'decisions', '0001-front-matter.md'), '---\nstatus: superseded\ndate: 2026-10-27\n---\n\n# Title\n')
+  writeFileSync(join(dir, 'decisions', '0002-bold.md'), '# 0002 — Title\n\nStatus: **Accepted** (2026-10-28).\n')
+  writeFileSync(join(dir, 'decisions', '0003-missing.md'), '# 0003 — Title\n\nNo status here.\n')
+  const errors = collectRecordErrors(dir)
+  assert.equal(errors.length, 1, errors.join('\n'))
+  assert.match(errors[0], /0003-missing\.md: start with a status line/u)
+})
+
+test('record check catches misnamed and unindexed records', (t) => {
+  const dir = tempDir(t, 'flow-records-')
+  mkdirSync(join(dir, 'specs'))
+  writeFileSync(join(dir, 'specs', 'README.md'), '- [001](001-listed.md)\n')
+  for (const file of ['001-listed.md', '002-unlisted.md', 'notes.md']) writeFileSync(join(dir, 'specs', file), '')
+  assert.deepEqual(collectRecordErrors(dir), [
+    'docs/specs/002-unlisted.md: link it from docs/specs/README.md',
+    'docs/specs/notes.md: name must match NNN-short-name.md',
+  ])
 })
 
 test('check-table check catches drift from ESSENTIAL_CHECK_IDS', () => {

@@ -48,16 +48,11 @@ When an automated reviewer runs this contract, respond with **only** JSON (no ma
 
 - `verdict`: `pass` or `fail`.
 - `findings[].severity`: `blocking` or `advisory`.
-- CI fails the check when `verdict` is `fail`, any finding has `severity: blocking`, the diff cannot be read, or `verdict` is not `pass` or `fail`.
+- CI fails the check when `verdict` is `fail`, any finding has `severity: blocking`, the diff cannot be read, or the response is not a `pass` or `fail` verdict.
 
 ## Deterministic checks (this repository)
 
-`node scripts/check-pr-alignment.mjs --base <sha> --head <sha>` enforces path rules documented at the top of that script. Local dry-run before pushing:
-
-```bash
-git fetch origin main
-node scripts/check-pr-alignment.mjs --base "$(git merge-base origin/main HEAD)" --head HEAD
-```
+`pnpm validate` checks skills, documentation links, and that every spec and decision is well named, uniquely numbered, and linked from its index. Run it before opening a pull request.
 
 ## LLM review secrets (maintainers)
 
@@ -69,14 +64,12 @@ Configure in the GitHub repository (not in the npm skills package):
 | `FLOW_REVIEW_API_BASE` | Optional base URL (default: `https://api.openai.com/v1`) |
 | `FLOW_REVIEW_MODEL` | Model id (default: `gpt-4o-mini` if unset) |
 
-The `context-review` workflow job runs on every pull request. When `FLOW_REVIEW_API_KEY` is present on same-repository pull requests, it calls the API with the PR title, body, and labels. Fork pull requests never receive repository secrets; the job skips the API call and passes. Deterministic alignment still runs on all pull requests.
+The `context-review` workflow job runs on every pull request. When `FLOW_REVIEW_API_KEY` is present on same-repository pull requests, it calls the API with the PR title, body, and labels. Fork pull requests never receive repository secrets; the job skips the API call and passes.
 
-## Escape hatches (maintainers)
+## Trust boundary
 
-- Label `alignment-exempt` skips the deterministic alignment rules except filename shape and broken in-skill links.
-- A line of its own, `Alignment: docs-only`, skips only the root-context spec-or-decision requirement, and only when every changed path is a root context path listed at the top of `scripts/check-pr-alignment.mjs`. Quoting that phrase inside a sentence does not exempt the PR.
-- Adding or removing the label, or editing the PR title or body, reruns the check.
+The CI job runs the reviewer script and this contract from the pull request's base commit and reads the head only as git data, so editing either has no effect on its own review; a change takes effect on the next pull request after it merges ([decision 0047](decisions/0047-trusted-review-and-local-record-checks.md)). The workflow file itself runs from the pull request, so getting around the reviewer takes a workflow change, which reviewers see in the diff. Only rate limits, timeouts, and server errors count as an outage: after one retry the job warns, comments that it skipped, and passes. Any other API error, a refusal, or a response that is not a verdict fails.
 
-`main` requires a pull request and passing `alignment`, `validate`, and `context-review` checks before merge when `FLOW_REVIEW_API_KEY` is configured. Direct pushes to `main` are rejected.
+`main` requires a pull request and passing `validate (ubuntu-latest, 22)` and `context-review` checks. Direct pushes to `main` are rejected.
 
 Review is read-only unless the author requests fixes. Automated comments do not authorize commits on behalf of the reviewer.
