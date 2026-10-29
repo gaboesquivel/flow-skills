@@ -57,7 +57,7 @@ Use this when changing Flow. Apply the skills already in the catalog, in proport
 
 Keep the two kinds of evidence apart:
 
-- **Structural checks** — `pnpm validate`, `pnpm test`, smoke contracts, and (on pull requests) deterministic alignment in CI. They show that links, package metadata, and documentation path rules match the catalog; smoke contracts check twelve safety rules by keyword, not skill wording ([decision 0044](decisions/0044-fast-delivery.md)).
+- **Structural checks** — `pnpm validate`, `pnpm test`, smoke contracts, and (on pull requests) deterministic alignment in CI. They show that links, package metadata, and documentation path rules match the catalog; smoke contracts check safety rules by keyword, not skill wording ([decision 0044](decisions/0044-fast-delivery.md)).
 - **Live agent verification** — a person or agent used a skill in a host. Name the host, the date, and what was observed. A structural pass is not a live run. One agent is not an independent review. Optional LLM context review in CI follows the same [pr-review-contract](pr-review-contract.md) as the `review` skill but is not a substitute for human judgment on consequential changes.
 
 Do not add a dogfood skill, a required pipeline, or a second copy of the product statement for the record.
