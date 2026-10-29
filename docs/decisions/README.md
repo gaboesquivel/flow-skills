@@ -45,6 +45,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0039-build-never-requires-a-spec.md](0039-build-never-requires-a-spec.md) | Accepted | The size guard escalates review instead of stopping; specs only on request; "build it" after `explore` builds the brief; "build it local" on a protected repository stops at a branch commit |
 | [0040-ship-verifies-liveness.md](0040-ship-verifies-liveness.md) | Accepted | `ship` verifies only that the shipped commit's checks are green and its deployment answers; no scenario, browser, or preview run |
 | [0041-align-skill.md](0041-align-skill.md) | Accepted | Read-only `align` skill checks the product against its vision, problems, metrics, and roadmap |
+| [0042-outcome-build-and-ship.md](0042-outcome-build-and-ship.md) | Proposed | `build` and `ship` state outcomes, reasons, and proofs; workers, scheduling, and test order are choices |
 
 ## Rules
 
