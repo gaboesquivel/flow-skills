@@ -171,7 +171,7 @@ export function ExamplesSection({ origin }: { origin: string }) {
       <Container>
         <Eyebrow>Try it</Eyebrow>
         <h2 id="examples-heading" className="headline mt-5 text-[clamp(1.8rem,3.4vw,2.4rem)] text-fg">
-          Copy, paste, <span className="text-prism">read.</span>
+          Copy, paste, read.
         </h2>
         <div className="mt-10 grid gap-4 lg:grid-cols-2">
           <div className="flex min-w-0 flex-col gap-4">
@@ -196,7 +196,7 @@ export function ObservableSection({ host }: { host: string }) {
       <Container>
         <Eyebrow>Verify the result</Eyebrow>
         <h2 id="observable-heading" className="headline mt-5 text-[clamp(2.4rem,5.2vw,3.6rem)] text-fg">
-          Agent-ready is <span className="text-prism">observable.</span>
+          Agent-ready is observable.
         </h2>
         <Lede className="mt-6 text-lg sm:text-lg">
           Test semantic HTML, canonical identity, Markdown responses, API discovery, structured errors, and real agent journeys. Report measured

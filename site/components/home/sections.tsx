@@ -238,7 +238,7 @@ export function FindSection() {
             <h2 id="find-heading" className="headline mt-5 text-[clamp(2.2rem,4.6vw,3.4rem)] text-fg">
               Find the skill.
               <br />
-              <span className="text-prism">Ask the question.</span>
+              Ask the question.
             </h2>
           </div>
           <p className="max-w-[24rem] text-base leading-relaxed text-fg-muted">
