@@ -48,8 +48,14 @@ A review of the first implementation against realistic runs led the maintainer t
 - **Inferred delivery.** No delivery question; the remote and `gh` access decide, and a `Delivery:` line overrides.
 - **No spec issue.** The pull request links the spec file; issues and sub-issues only on request; candidates are files; "share the draft" opens a draft pull request.
 - **Parallel by default**, with the agent choosing how.
-- **Zero lost work** (build's Work in flight): worktrees on their own branches, unfinished work reported and kept, no partial spec marked implemented or shipped unasked, and every report lists what is left.
+- **Zero lost work** (build's Work in flight): workers in their own worktree start from the delivery head and commit on their branch, workers in the shared checkout leave commits to the main thread, and nothing counts as integrated until a commit on the delivery branch contains it; unfinished work reported and kept, no partial spec marked implemented or shipped unasked, and every report lists what is left.
 - **Shipped means deployed:** the default branch contains the commit and, for apps, the host reports that commit's production deployment as successful before the URL check.
+
+**Validation (2026-10-29).** One real parallel Claude Code run integrated into this pull request through [#159](https://github.com/gaboesquivel/flow-skills/pull/159):
+- **Setup:** two subagents ran in native worktree isolation and committed on their own branches; one worked in the shared checkout with no commits.
+- **Base finding:** native isolation started both worktrees from `main`, not the delivery branch, so they were moved to the delivery head before editing. That is now a rule in Work in flight.
+- **Integration:** both branches merged and their containment was confirmed; the shared-checkout changes were committed by the main thread; validate passed and 130/130 tests passed; CI passed on #159.
+- **Squash-only repository:** this repository allows only squash or rebase merges, so worker commits are not ancestors after landing. Cleanup therefore relies on the pull request having merged, as Work in flight allows.
 
 ## User Stories
 

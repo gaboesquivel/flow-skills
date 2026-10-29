@@ -62,7 +62,7 @@ Either way, tasks stay a checklist in the spec.
 
 One home for keeping work from being lost or stranded; `ship` points here.
 
-- A worker in its own worktree, whether the host's isolation or one you created, commits on that worktree's branch before it finishes; never a detached head. A worker in the shared checkout edits disjoint files and leaves committing to the main thread.
+- A worker in its own worktree, whether the host's isolation or one you created, starts from the delivery branch's head and commits on that worktree's branch before it finishes; never a detached head. Host isolation may start a worktree elsewhere (Claude Code starts from the default branch): move the worker's branch to the delivery head before it works. A worker in the shared checkout edits disjoint files and leaves committing to the main thread.
 - Work counts as integrated only when it is in a commit on the delivery branch. Before the pull request or landing, merge every worker branch into it, commit every shared-checkout change, and confirm each worker branch is contained in the delivery branch.
 - An unfinished task is reported with its path and branch, never dropped. A spec becomes `implemented` only when every task is integrated; otherwise its status stays and the pull request claims no completion.
 - Remove a worktree or branch only when its commits are on the default branch, its pull request or the spec branch that integrated it was merged, or the user dropped the work, and never with uncommitted changes in it.

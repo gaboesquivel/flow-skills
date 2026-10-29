@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Land accepted work with no confirmation, building if needed, then green checks, review when it pays, merge or push, and a liveness check of the shipped commit's deployment. Use when the user says "ship it", "land it", or "drop the spec".
+description: Land accepted work with no confirmation, building if needed, then green checks, review when large or asked, merge or push, and a liveness check of the shipped commit's deployment. Use when the user says "ship it", "land it", or "drop the spec".
 disable-model-invocation: false
 ---
 

@@ -20,7 +20,7 @@ Flow keeps its work in Git: specs, decision records, and the product brief are f
 | --- | --- |
 | Thinking skills: `grill`, `interview`, `council`, `align`, `debug`, `tldr`, the writing skills, and the rest | Nothing. Any folder works, with or without Git. |
 | The delivery chain: `flow`'s setup, `start`, `explore`, `to-spec`, `to-tasks`, `build`, `review`, `ship`, `board` | A Git repository. Outside one, the skill offers `git init` and stops if you say no. |
-| GitHub mode | GitHub access as well: pull requests and preview deployments live there. |
+| GitHub mode | GitHub access as well: pull requests and CI live there. |
 
 The rules Flow follows in a project live in Git too. "Set up Flow here" writes one [Flow block](GLOSSARY.md#flow-block) into the instruction file Git tracks: `AGENTS.md`, or `CLAUDE.md` with an `@AGENTS.md` import when `AGENTS.md` is ignored. The block holds the phrase table and, when you set one, a `Delivery:` override, and every agent and teammate who clones the repository reads the same rules. Delete the block to opt out.
 
