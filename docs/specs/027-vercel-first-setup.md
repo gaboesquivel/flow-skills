@@ -1,6 +1,6 @@
 # 027: Vercel-first setup
 
-**Status:** draft (2026-10-28)
+**Status:** accepted (2026-10-28)
 
 **Repositories:** [flow-next](https://github.com/gaboesquivel/flow-next), [flow-mono](https://github.com/gaboesquivel/flow-mono), flow-skills
 
