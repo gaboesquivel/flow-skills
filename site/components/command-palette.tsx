@@ -266,7 +266,7 @@ export function CommandPalette() {
                     className={`cursor-pointer rounded-lg px-3 py-2.5 ${selected ? "bg-panel-hover ring-1 ring-lavender/40" : ""}`}
                   >
                     <div className="flex items-baseline justify-between gap-3">
-                      <span className={`min-w-0 truncate font-semibold ${o.question ? "text-lavender" : "text-fg"}`}>
+                      <span className={`min-w-0 font-semibold ${o.question ? "line-clamp-2 text-lavender" : "truncate text-fg"}`}>
                         {o.question ? <span aria-hidden="true">✧ </span> : null}
                         {o.label}
                       </span>

@@ -70,7 +70,7 @@ export function SkillFilter({ skills, groups }: { skills: SkillCardData[]; group
             className="min-h-12 w-full rounded-xl border border-line-strong bg-panel pl-11 pr-4 text-base text-fg placeholder:text-fg-subtle focus:border-lavender/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lavender"
           />
         </div>
-        <fieldset className="flex flex-wrap gap-2">
+        <fieldset className="-mx-5 flex min-w-0 gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
           <legend className="sr-only">Filter by group</legend>
           {[ALL, ...groups].map((name) => {
             const active = group === name;
@@ -81,7 +81,7 @@ export function SkillFilter({ skills, groups }: { skills: SkillCardData[]; group
                 aria-pressed={active}
                 onClick={() => update(query, name)}
                 className={cn(
-                  "min-h-10 rounded-lg border px-3.5 text-sm transition-colors",
+                  "min-h-10 shrink-0 whitespace-nowrap rounded-lg border px-3.5 text-sm transition-colors",
                   active ? "border-lavender-soft bg-lavender-soft font-semibold text-ink" : "border-line-strong text-fg-muted hover:border-lavender/50 hover:text-fg",
                 )}
               >
