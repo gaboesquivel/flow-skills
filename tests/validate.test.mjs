@@ -89,10 +89,11 @@ test('validator catches missing supporting-file links and escaped dependency clo
   const dir = tempDir(t, 'flow-reference-test-')
   cpSync(join(skillsRoot, 'write-agents'), join(dir, 'write-agents'), { recursive: true })
   const path = join(dir, 'write-agents/SKILL-MECHANICS.md')
-  writeFileSync(path, read(path) + '\n[Missing](missing.md)\n[Outside](../../outside.md)\n')
+  writeFileSync(path, read(path) + '\n[Missing](missing.md)\n[Outside](../../outside.md)\n[Sibling](../build/SKILL.md)\n')
   const errors = validateSkills(dir)
   assert.ok(errors.some((error) => error.includes('SKILL-MECHANICS.md') && error.includes('missing.md')))
   assert.ok(errors.some((error) => error.includes('outside.md')))
+  assert.ok(errors.some((error) => error.includes('../build/SKILL.md')), 'a sibling skill is absent from a standalone install')
 })
 
 test('validator rejects conflicting adapter activation and duplicate metadata', (t) => {
