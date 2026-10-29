@@ -10,6 +10,7 @@
 
 A developer who clones flow-next or flow-mono to start a product cannot get from clone to a green Vercel production deployment without manual fixes. Checked on fresh clones of both `main` branches (2026-10-29):
 
+- **Template skills unreadable.** Every `.agents/skills/<name>` entry is a symlink to itself, because the `skills` CLI runs inside `.agents/` and vendors into `.agents/.agents/skills/`; no agent can open any template skill. `pnpm setup` also refetches every skill from upstream, dirtying a fresh clone's lock.
 - **No Flow in the clone.** `.agents/skills-lock.json` has no flow-skills, so `/start` is missing until flow-skills is installed separately.
 - **Conflicting workflow skills.** The lock ships `domain-modeling` and `prototype` under the same names as Flow skills, plus `diagnosing-bugs`, `research`, `tdd`, and `test-driven-development`, which overlap `debug`, `explore`, and each other.
 - **flow-next setup crashes.** `tooling/setup/setup.mjs` calls `copyFileSync` without importing it, so `pnpm setup` throws on any clone without `.env.local`.
@@ -37,7 +38,8 @@ Clone either template (or create a repository from it), run `/start`, and reach 
 
 ## Implementation Decisions
 
-- **Skills lock** ([0045](../decisions/0045-templates-pin-flow-skills.md)). Both locks add the Flow catalog from `gaboesquivel/flow-skills` and drop `domain-modeling`, `prototype`, `diagnosing-bugs`, `research`, and one of the two TDD skills (keep `test-driven-development`). Regenerate with `pnpm skills:update`; the vendored `.agents/skills/` tree matches the lock.
+- **Skills layout.** Run the `skills` CLI from the repository root (`pnpm dlx skills@1.7.4`), so the lock is the root `skills-lock.json`, skills are committed under `.agents/skills/`, and Claude Code reads them through `.claude/skills/` links. Drop the `.agents/` package and its install; `pnpm setup` restores skills only when `.agents/skills/` is missing.
+- **Skills lock** ([0045](../decisions/0045-templates-pin-flow-skills.md)). Both locks add the Flow catalog from `gaboesquivel/flow-skills` and drop `domain-modeling`, `prototype`, `diagnosing-bugs`, `research`, and one of the two TDD skills (keep `test-driven-development`). Regenerate with `pnpm skills:update`; the committed tree matches the lock.
 - **Setup parity.** Both `tooling/setup/setup.mjs` install root dependencies when `node_modules` is missing, create every `.env.local` they need from an example or empty, and fail with a clear message only for Node < 24 or a missing pnpm. Fix flow-next's missing `copyFileSync` import.
 - **Builds without secrets.** `pnpm build` passes with `.env.local` empty; AI routes read keys at request time and answer with an actionable error when none are configured. On Vercel, AI Gateway uses the project's OIDC token, so no key is required for the deployment to be green.
 - **flow-mono migrations.** `vercel-build.mjs` runs the migration script that exists (add `db:migrate` to the package that owns Drizzle, or call `drizzle-kit migrate` directly); without `DATABASE_URL` it skips, as now.
