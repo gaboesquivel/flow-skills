@@ -11,7 +11,7 @@ The `alignment` job caused 23 of the 27 failed pull request runs from 2026-10-27
 ## Decision
 
 1. **The reviewer is trusted code.** `context-review` runs the base commit's script and contract; the pull request head is checked out only as git data, both without persisted credentials. Title, body, labels, and diff remain untrusted input to the model.
-2. **An unreachable API does not block.** After one retry, the job warns and passes. A response that is not a `pass` or `fail` verdict still fails, because pull request content may be steering it.
+2. **An outage does not block.** Network failures, timeouts, 408, 429, and 5xx responses warn, comment that the review was skipped, and pass after one retry. Any other API error (a content filter, a bad key, a wrong model), an empty completion, or a response that is not a `pass` or `fail` verdict still fails, because pull request content may be steering it.
 3. **Record checks move into `pnpm validate`.** Every spec and decision file must be well named, uniquely numbered, and linked from its index. Agents run that before opening a pull request, so the failure appears locally.
 4. **The `alignment` job, its script, the label, and the marker are removed.** Whether root context still matches is a judgment for `review` and `context-review`, not a path rule. Required checks on `main` become `validate (ubuntu-latest, 22)` and `context-review`.
 
@@ -23,6 +23,6 @@ The `alignment` job caused 23 of the 27 failed pull request runs from 2026-10-27
 
 ## Consequences
 
-- A pull request cannot weaken its own review; a change to the reviewer takes effect on the next pull request after it merges.
+- Editing the reviewer script or contract cannot change a pull request's own review. On `pull_request` the workflow file still comes from the branch, so a bypass needs a visible workflow change; forks get no secrets either way.
 - The `main` ruleset must drop the `alignment` required check when this lands.
 - Fewer CI round trips: the most common failure now fails `pnpm validate` before push.

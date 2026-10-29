@@ -60,6 +60,7 @@ async function chatCompletion({ apiBase, apiKey, model, system, user }) {
   const url = `${apiBase.replace(/\/$/u, '')}/chat/completions`
   const res = await fetch(url, {
     method: 'POST',
+    signal: AbortSignal.timeout(180_000),
     headers: {
       Authorization: `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
@@ -76,13 +77,19 @@ async function chatCompletion({ apiBase, apiKey, model, system, user }) {
   })
   if (!res.ok) {
     const body = await res.text()
-    throw new Error(`LLM HTTP ${res.status}: ${body.slice(0, 500)}`)
+    const error = new Error(`LLM HTTP ${res.status}: ${body.slice(0, 500)}`)
+    // Only rate limits, timeouts, and server errors are outages; a 4xx such as a content filter or a
+    // bad key is an answer, and blocks.
+    error.outage = res.status === 408 || res.status === 429 || res.status >= 500
+    throw error
   }
   const data = await res.json()
-  const content = data.choices?.[0]?.message?.content
-  if (!content) throw new Error('LLM response missing content')
-  return content
+  // A refusal or filtered completion has no content; it reaches the not-a-verdict path and blocks.
+  return data.choices?.[0]?.message?.content ?? ''
 }
+
+// fetch rejects with TypeError on network failure and TimeoutError when its signal expires.
+export const isOutage = (error) => error.outage === true || ['TypeError', 'TimeoutError', 'AbortError'].includes(error.name)
 
 function formatComment({ verdict, findings }) {
   const lines = [`## Flow context review`, `**Verdict:** ${verdict}`, '']
@@ -157,13 +164,19 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
           try {
             content = await chatCompletion({ apiBase, apiKey, model, system, user })
           } catch (err) {
+            if (!isOutage(err)) throw err
             if (attempt === 1) {
-              console.warn(`LLM context review unavailable; not blocking: ${err.message}`)
+              console.log(`::warning::LLM context review unavailable; not blocking: ${err.message}`)
+              if (prNumber && process.env.GH_TOKEN) {
+                try {
+                  upsertPrComment({ prNumber, body: '## Flow context review\n**Skipped:** the review API was unavailable; this run did not review the head.' })
+                } catch {}
+              }
               return
             }
           }
         }
-        let parsed = {}
+        let parsed = { findings: [{ severity: 'blocking', path: '', message: 'The reviewer response was not a JSON verdict.' }] }
         try {
           parsed = extractJson(content)
         } catch {

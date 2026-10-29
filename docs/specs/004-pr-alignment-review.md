@@ -15,7 +15,7 @@ Flow treats every bounded change — product, design, engineering, marketing, or
 
 ## Acceptance criteria
 
-- `pull_request` CI runs `node scripts/check-pr-alignment.mjs` with base and head SHAs after full history checkout.
+- `pull_request` CI runs `node scripts/check-pr-alignment.mjs` with base and head SHAs after full history checkout (removed by 0045).
 - Contract documents scope, inspect, align, spec expectations, and JSON output schema for automated review.
 - LLM job runs only for same-repository PRs when `FLOW_REVIEW_API_KEY` is set; posts or updates a PR comment with findings.
 - `skills/review` documents PR merge-base scope and points to the contract.
@@ -24,7 +24,7 @@ Flow treats every bounded change — product, design, engineering, marketing, or
 
 ## Implementation decisions
 
-- Escape hatches: label `alignment-exempt` skips deterministic alignment rules except filename shape and broken in-skill links. A standalone line `Alignment: docs-only` skips only the root-context spec-or-decision requirement, and only when every changed path is a root context path. The check reruns on `labeled`, `unlabeled`, and `edited`.
+- Escape hatches (removed by 0045): label `alignment-exempt` skips deterministic alignment rules except filename shape and broken in-skill links. A standalone line `Alignment: docs-only` skips only the root-context spec-or-decision requirement, and only when every changed path is a root context path. The check reruns on `labeled`, `unlabeled`, and `edited`.
 - New specs and decisions must be named in the index file contents. Renames are reviewed as a deletion plus an addition, so a renamed root context file still counts.
 - npm package continues to ship `skills/` only; automation stays in the repository root.
 
@@ -43,7 +43,6 @@ Flow treats every bounded change — product, design, engineering, marketing, or
 
 ## Adopter copy pattern
 
-1. Copy [docs/pr-review-contract.md](../pr-review-contract.md) and `scripts/check-pr-alignment.mjs` (removed by 0045); adjust path rules at the top of the script for your layout.
-2. Add a `pull_request` workflow step that runs the script with your CI's base and head SHAs.
-3. Optionally copy [scripts/run-context-review.mjs](../../scripts/run-context-review.mjs) and the `context-review` job from [.github/workflows/ci.yml](../../.github/workflows/ci.yml); set `FLOW_REVIEW_API_KEY`, optional `FLOW_REVIEW_API_BASE`, and `FLOW_REVIEW_MODEL` as repository secrets.
-4. Install Flow skills separately via `npx skills add gaboesquivel/flow-skills`; invoke `review` and `flow` using the same contract before opening a PR when CI is not yet wired.
+1. Copy [docs/pr-review-contract.md](../pr-review-contract.md).
+2. Optionally copy [scripts/run-context-review.mjs](../../scripts/run-context-review.mjs) and the `context-review` job from [.github/workflows/ci.yml](../../.github/workflows/ci.yml); set `FLOW_REVIEW_API_KEY`, optional `FLOW_REVIEW_API_BASE`, and `FLOW_REVIEW_MODEL` as repository secrets.
+3. Install Flow skills separately via `npx skills add gaboesquivel/flow-skills`; invoke `review` and `flow` using the same contract before opening a PR when CI is not yet wired.

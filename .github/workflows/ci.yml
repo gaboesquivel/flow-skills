@@ -39,8 +39,8 @@ jobs:
         run: pnpm test:release
 
   context-review:
-    # The reviewer and its contract come from the base commit; the pull request is only git data, so
-    # a branch cannot rewrite the code that holds the API key or the rules it is judged by.
+    # The reviewer and its contract come from the base commit; the pull request is only git data. A
+    # branch that wants another reviewer has to change this workflow, which shows in its diff.
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -79,4 +79,6 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: node ../trusted/scripts/run-context-review.mjs --base "$(git merge-base "$BASE_SHA" "$HEAD_SHA")" --head "$HEAD_SHA" --pr-number "$PR_NUMBER"
+        run: |
+          merge_base="$(git merge-base "$BASE_SHA" "$HEAD_SHA")"
+          node ../trusted/scripts/run-context-review.mjs --base "$merge_base" --head "$HEAD_SHA" --pr-number "$PR_NUMBER"
