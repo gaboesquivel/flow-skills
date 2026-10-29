@@ -27,6 +27,7 @@ pnpm dev
 | `lib/search.ts`, `lib/ask.ts` | In-memory search and source-grounded Ask |
 | `lib/mcp/`, `lib/markdown-pages.ts`, `lib/openapi.ts` | Agent interfaces |
 | `styles/globals.css` | Prism tokens and rendered-Markdown styles |
+| `components/logo.tsx`, `app/icon.svg`, `public/brand/` | Throughline mark and brand assets; rules in [DESIGN.md](../DESIGN.md) |
 
 ## Agent interfaces
 

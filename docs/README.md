@@ -10,7 +10,8 @@ Conventions for Flow Skills and a default pattern adopters may follow. Create do
 | [methodology.md](methodology.md) | How principles apply in practice (optional judgment, not enforcement) |
 | [skills.md](skills.md) | Skill catalog and links to `skills/*/SKILL.md` |
 | [AGENTS.md](../AGENTS.md) | Instructions for maintaining this repository |
-| DESIGN.md / ARCHITECTURE.md at the root | Current experience and technical decisions; create when useful |
+| [DESIGN.md](../DESIGN.md) at the root | Flow's visual identity (Throughline mark, Prism tokens) and cross-surface design intent |
+| ARCHITECTURE.md at the root | Current technical decisions; create when useful |
 | [specs/](specs/README.md) | Numbered specifications for bounded increments of work |
 | [pr-review-contract.md](pr-review-contract.md) | Agent-agnostic PR review and alignment checklist (CI-enforced on this repo) |
 | [decisions/](decisions/README.md) | Significant decision records and rationale |

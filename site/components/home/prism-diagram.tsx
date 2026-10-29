@@ -1,3 +1,4 @@
+import { THROUGHLINE_PATHS } from "@/components/logo";
 import { cn } from "@/lib/cn";
 
 const C = 240;
@@ -29,16 +30,11 @@ export function PrismDiagram({ className }: { className?: string }) {
           <stop offset="55%" stopColor="#c6a8f6" />
           <stop offset="100%" stopColor="#f0a6cf" />
         </linearGradient>
-        <linearGradient id="prism-inner" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#7c6fe0" />
-          <stop offset="60%" stopColor="#b98af0" />
-          <stop offset="100%" stopColor="#f0a6cf" />
+        <linearGradient id="prism-mark" x1="15" y1="0" x2="377" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#9ea6f8" />
+          <stop offset="0.55" stopColor="#c6a8f6" />
+          <stop offset="1" stopColor="#f0a6cf" />
         </linearGradient>
-        <radialGradient id="prism-core">
-          <stop offset="0%" stopColor="#fbe7ff" />
-          <stop offset="70%" stopColor="#d7a6f4" />
-          <stop offset="100%" stopColor="#a78bfa" />
-        </radialGradient>
         <radialGradient id="prism-glow">
           <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.35" />
           <stop offset="100%" stopColor="#a78bfa" stopOpacity="0" />
@@ -74,11 +70,14 @@ export function PrismDiagram({ className }: { className?: string }) {
         />
       ))}
 
-      <g>
-        <rect x={C - 65} y={CY - 65} width="130" height="130" transform={`rotate(45 ${C} ${CY})`} fill="#1a1530" stroke="url(#prism-outer)" strokeWidth="2.5" />
-        <rect x={C - 40} y={CY - 40} width="80" height="80" transform={`rotate(45 ${C} ${CY})`} fill="url(#prism-inner)" />
-        <rect x={C - 22} y={CY - 22} width="44" height="44" transform={`rotate(45 ${C} ${CY})`} fill="#2a2040" opacity="0.85" />
-        <circle cx={C} cy={CY} r="13" fill="url(#prism-core)" className={cn(spin, "animate-[pulse_4s_ease-in-out_infinite]")} />
+      {/* Throughline at the centre: the brand mark, not a second logo shape. */}
+      <circle cx={C} cy={CY} r="66" fill="#1a1530" stroke="url(#prism-outer)" strokeWidth="2.5" />
+      <g transform={`translate(${C - 44} ${CY - 33}) scale(0.22)`} fill="url(#prism-mark)">
+        <g transform="translate(4 10) scale(.99)">
+          {THROUGHLINE_PATHS.map((d) => (
+            <path key={d} d={d} />
+          ))}
+        </g>
       </g>
 
       {NODES.map((n, i) => (

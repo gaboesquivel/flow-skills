@@ -8,9 +8,9 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-line">
       <Container className="flex flex-col gap-6 py-10 sm:flex-row sm:items-center sm:justify-between">
-        <Link href="/" aria-label="Flow home" className="inline-flex items-center gap-1.5">
-          <LogoMark className="size-5" />
-          <span className="headline text-xl">flow/</span>
+        <Link href="/" aria-label="Flow home" className="inline-flex items-center gap-2">
+          <LogoMark className="h-5 w-7" />
+          <span className="headline text-xl">flow</span>
         </Link>
         <p className="text-sm text-fg-muted">Product-first. Agent-agnostic. Built to ship.</p>
         <ul className="flex flex-wrap gap-x-6 gap-y-2 text-xs font-medium uppercase tracking-[0.12em] text-fg-muted">

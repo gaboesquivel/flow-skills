@@ -42,5 +42,6 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [034-measurement-support.md](034-measurement-support.md)
 - [035-delivery-phrases.md](035-delivery-phrases.md)
 - [036-agent-does-the-work.md](036-agent-does-the-work.md)
+- [038-throughline-identity.md](038-throughline-identity.md)
 
 Significant standalone decisions belong in `docs/decisions/`, not in a spec. See [decisions](../decisions/README.md).

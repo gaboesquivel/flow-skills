@@ -21,22 +21,22 @@ export default function OpengraphImage() {
       }}
     >
       <div style={{ alignItems: "center", display: "flex", gap: 20 }}>
-        <svg width="64" height="64" viewBox="0 0 32 32">
+        <svg width="82" height="64" viewBox="0 0 395 295">
           <defs>
-            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <linearGradient id="throughline-gradient" x1="15" y1="0" x2="377" y2="0" gradientUnits="userSpaceOnUse">
               <stop offset="0" stopColor="#9ea6f8" />
               <stop offset="0.55" stopColor="#c6a8f6" />
               <stop offset="1" stopColor="#f0a6cf" />
             </linearGradient>
           </defs>
-          <rect width="32" height="32" rx="8" fill="url(#g)" />
-          <path d="M16 5.5 26.5 16 16 26.5 5.5 16Z" fill="#17121f" />
-          <path d="M16 10.5 21.5 16 16 21.5 10.5 16Z" fill="#c9b8ff" />
-          <path d="M16 13.6 18.4 16 16 18.4 13.6 16Z" fill="#17121f" />
+          <g transform="translate(4 10) scale(.99)">
+            <path d={"M38 30 H125 C169 30 190 73 222 92 C239 103 258 108 285 108 H319 L333 145 H278 C227 145 201 122 177 101 C161 87 146 79 122 79 H38 C23 79 15 69 15 55 C15 40 23 30 38 30 Z"} fill="url(#throughline-gradient)" />
+            <path d={"M37 116 H120 C157 116 170 135 192 147 C173 157 157 178 120 178 H37 C22 178 15 167 15 154 V140 C15 126 23 116 37 116 Z"} fill="url(#throughline-gradient)" />
+            <path d={"M38 218 H122 C147 218 161 211 179 194 C205 169 233 147 280 147 H333 L318 185 H285 C257 185 240 192 221 204 C187 227 171 266 122 266 H38 C23 266 15 257 15 243 C15 227 23 218 38 218 Z"} fill="url(#throughline-gradient)" />
+            <path d={"M275 108 H319 C331 108 340 115 349 126 L373 145 C380 151 380 156 373 163 L351 179 C341 186 331 187 319 187 H275 C309 173 312 123 275 108 Z"} fill="url(#throughline-gradient)" />
+          </g>
         </svg>
-        <div style={{ display: "flex", fontSize: 44, fontWeight: 700, letterSpacing: -1 }}>
-          flow <span style={{ color: "#a78bfa", marginLeft: 12 }}>/</span>
-        </div>
+        <div style={{ display: "flex", fontSize: 44, fontWeight: 700, letterSpacing: -1 }}>flow</div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
         <div
@@ -53,7 +53,9 @@ export default function OpengraphImage() {
         >
           Make ideas flow.
         </div>
-        <div style={{ color: "#b5afc6", display: "flex", fontSize: 30, lineHeight: 1.4, maxWidth: 980 }}>{SITE_DESCRIPTION}</div>
+        <div style={{ color: "#b5afc6", display: "flex", fontSize: 30, lineHeight: 1.4, maxWidth: 980 }}>
+          {SITE_DESCRIPTION}
+        </div>
       </div>
     </div>,
     size,
