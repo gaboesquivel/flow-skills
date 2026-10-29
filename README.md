@@ -18,7 +18,7 @@ Flow keeps its work in Git: specs, decision records, and the product brief are f
 
 | You use | You need |
 | --- | --- |
-| Thinking skills: `grill`, `interview`, `council`, `debug`, `tldr`, the writing skills, and the rest | Nothing. Any folder works, with or without Git. |
+| Thinking skills: `grill`, `interview`, `council`, `align`, `debug`, `tldr`, the writing skills, and the rest | Nothing. Any folder works, with or without Git. |
 | The delivery chain: `flow`'s setup, `start`, `explore`, `to-spec`, `to-tasks`, `build`, `review`, `ship`, `board` | A Git repository. Outside one, the skill offers `git init` and stops if you say no. |
 | GitHub mode | GitHub access as well: spec issues, sub-issues, pull requests, and preview deployments live there. |
 
@@ -95,13 +95,13 @@ flowchart TB
   ready["Ready PR<br/>One per spec · green checks"]
   land["Ship<br/>One review, merge, sync main"]
   verify["Verify<br/>Green checks, deployment live"]
-  align["flow aligns context<br/>Root docs current before review"]
+  sync["flow aligns context<br/>Root docs current before review"]
   explore --> spec
   explore -.-> decision
   decision -.-> spec
   spec --> tasks --> frontier --> checkpoint
   checkpoint -- unblocked tasks --> frontier
-  checkpoint -- all integrated --> align --> ready --> land --> verify
+  checkpoint -- all integrated --> sync --> ready --> land --> verify
   classDef doc fill:#EEEDFE,stroke:#534AB7,color:#3C3489
   classDef run fill:#FAECE7,stroke:#993C1D,color:#712B13
   class decision,spec,tasks doc
@@ -118,7 +118,7 @@ flowchart TB
 | Prototype | `prototype` |
 | Shared language | `domain-modeling` |
 | Quality | `debug` |
-| Product discovery | `jtbd`, `competitors` |
+| Product discovery | `jtbd`, `competitors`, `align` |
 | Writing | `write-agents`, `write-humans` |
 | Project start | `start` |
 | Misc | `tldr`, `handoff`, `board` |

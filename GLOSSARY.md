@@ -22,6 +22,10 @@ An adopter project's own product identity, normally in that project's `PRODUCT.m
 
 The [`flow`](skills/flow/SKILL.md) skill: keep the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` aligned with meaningful changes, and set up Flow in a project. Not template initialization, and it does not run other skills. Model-invocable like most Flow skills ("update the docs"); that is not an always-on guarantee. Earlier records call it **Flow Lite**; current documents do not ([decision 0026](docs/decisions/0026-process-depth.md)).
 
+## Product alignment
+
+The [`align`](skills/align/SKILL.md) skill: a read-only check of the whole product, as built, against its stated vision, users' problems, success metrics, and roadmap. Distinct from [context alignment](#context-alignment) (`flow`: docs follow the product), session alignment (`tldr`), and alignment review (`review`: a change against its spec). [Decision 0041](docs/decisions/0041-align-skill.md).
+
 <a id="process-depth"></a>
 
 ## Discovery depth
@@ -98,7 +102,7 @@ A stub for a later bet: the problem and the assumption it tests. In GitHub mode 
 
 ## Human summary
 
-A visual presentation for a person. Prefer generative UI (GenUI) when the host actually provides it; otherwise Mermaid, tables, and a short statement. The [`tldr`](skills/tldr/SKILL.md) skill owns this, including session recaps and "show me". [`write-humans`](skills/write-humans/SKILL.md) drafts prose. There is no separate `human` skill. [Decision 0008](docs/decisions/0008-leading-words-and-visual-summaries.md).
+A visual presentation for a person. Prefer generative UI (GenUI) when the host actually provides it; otherwise Mermaid, tables, and a short statement. The [`tldr`](skills/tldr/SKILL.md) skill owns this, including session recaps and "show me". [`write-humans`](skills/write-humans/SKILL.md) drafts prose. There is no separate `human` skill; other skills, such as `align`, may lead their own reports with a visual. [Decision 0008](docs/decisions/0008-leading-words-and-visual-summaries.md).
 
 ## Leading word
 
