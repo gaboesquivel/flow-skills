@@ -45,7 +45,7 @@ These apply to manual work and skill use. They are not a fixed sequence.
 | Activity | Documentation responsibility |
 |---|---|
 | Exploration | Preserve worthwhile possibilities; link evidence when saving artifacts. |
-| Planning | Capture bounded scope in a spec when the work warrants it; accept it before shipping. Work without a spec is always allowed, in either delivery mode ([unspecced work](../GLOSSARY.md#unspecced-work)). In GitHub mode the spec issue copies the file; edit the file. |
+| Planning | Capture bounded scope in a spec file when the work warrants it; it is accepted before shipping ("build it" or "ship it" on a draft accepts it). Work without a spec is always allowed, in either delivery mode ([unspecced work](../GLOSSARY.md#unspecced-work)). The file is the record; in GitHub mode the pull request links it ([decision 0044](decisions/0044-fast-delivery.md)). |
 | Execution | Update root context and specs when behavior or accepted intent changes. |
 | Review | Record findings and update decisions or root docs when conclusions matter. |
 
@@ -57,7 +57,7 @@ Use this when changing Flow. Apply the skills already in the catalog, in proport
 
 Keep the two kinds of evidence apart:
 
-- **Structural checks** — `pnpm validate`, `pnpm test`, smoke contracts, and (on pull requests) deterministic alignment in CI. They show that links, package metadata, and documentation path rules match the catalog; smoke contracts pin only safety rules in skill text, not its wording ([decision 0029](decisions/0029-spec-issues.md)).
+- **Structural checks** — `pnpm validate`, `pnpm test`, smoke contracts, and (on pull requests) deterministic alignment in CI. They show that links, package metadata, and documentation path rules match the catalog; smoke contracts check twelve safety rules by keyword, not skill wording ([decision 0044](decisions/0044-fast-delivery.md)).
 - **Live agent verification** — a person or agent used a skill in a host. Name the host, the date, and what was observed. A structural pass is not a live run. One agent is not an independent review. Optional LLM context review in CI follows the same [pr-review-contract](pr-review-contract.md) as the `review` skill but is not a substitute for human judgment on consequential changes.
 
 Do not add a dogfood skill, a required pipeline, or a second copy of the product statement for the record.

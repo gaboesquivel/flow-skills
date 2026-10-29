@@ -9,10 +9,12 @@ import { BEGIN, END, alignTable, buildFlowBlock, describeLayout, ensureImport, i
 
 const skillsRoot = join(dirname(fileURLToPath(import.meta.url)), '..', 'skills')
 
-test('block has markers, a Delivery line, the flow pointer, and stays short', () => {
+test('block has markers, the flow pointer, a Delivery line only when a mode is given, and stays short', () => {
   const block = buildFlowBlock()
   assert.ok(block.startsWith(BEGIN) && block.endsWith(END))
-  assert.match(block, /^Delivery: unset$/mu)
+  assert.doesNotMatch(block, /^Delivery:/mu)
+  assert.match(buildFlowBlock({ delivery: 'local' }), /^Delivery: local$/mu)
+  assert.doesNotMatch(buildFlowBlock({ delivery: 'bogus' }), /^Delivery:/mu)
   assert.doesNotMatch(block, /^Process:/mu)
   assert.match(block, /`flow` skill/u)
   assert.match(block, /"ship it".*`ship`/u)
@@ -66,11 +68,18 @@ test('upsert appends once, then updates in place without touching outside text',
   const once = upsertFlowBlock(original)
   assert.ok(once.startsWith(original))
   assert.equal(upsertFlowBlock(once), once)
-  const edited = `${once}\n## After\n`.replace('Delivery: unset', 'Delivery: stale')
+  const edited = `${once}\n## After\n`.replace('\n## Flow\n', '\n## Flow\n\nDelivery: stale\n')
   const updated = upsertFlowBlock(edited, { delivery: 'local' })
   assert.equal(updated.split(BEGIN).length, 2)
   assert.ok(updated.startsWith(original) && updated.endsWith('\n## After\n'))
   assert.equal(readDelivery(updated), 'local')
+})
+
+test('an unset Delivery line is dropped on rewrite', () => {
+  const unset = upsertFlowBlock('# Project\n').replace('\n## Flow\n', '\n## Flow\n\nDelivery: unset\n')
+  const rewritten = upsertFlowBlock(unset)
+  assert.doesNotMatch(rewritten, /^Delivery:/mu)
+  assert.equal(rewritten, upsertFlowBlock('# Project\n'))
 })
 
 test('re-running keeps a recorded delivery mode unless overridden', () => {

@@ -12,7 +12,7 @@ An independent read of the change against intent, the spec when there is one, an
 
 **Proof.** For a spec, a verdict per acceptance scenario step: `satisfied`, `unmet`, or `unresolved`, each with evidence; without evidence it is `unresolved`, never `satisfied`. An `unmet` step is a blocking finding. Other unmet requirements are findings. Findings are ranked by impact.
 
-One reviewer by default, separate from the implementing agent. Separate axis workers are optional. Without separate execution, assess the axes in order and label the review **single-agent**. Never claim independence or model diversity without actual separate execution.
+One reviewer by default, separate from the implementing agent. Without separate execution, assess the axes in order and label the review **single-agent**; never claim independence or model diversity without it.
 
 ## Establish scope
 
@@ -32,10 +32,10 @@ Recover intent from the request, spec, tests, and decisions. Assess every axis t
 - **Security:** trust boundaries, secrets, permissions.
 - **Performance:** scaling, repeated I/O, blocking paths.
 
-Reviewers read the reviewed commit with `git show`, `git diff`, or a detached worktree they create (`git worktree add --detach`) and remove when done. Never `checkout` or `switch` in a checkout they did not create.
+Read the reviewed commit without changing any checkout you did not create (for example `git show`, `git diff`, or a temporary worktree you remove when done).
 
 For consequential changes, add proportional blast-radius checks when cheap tests or code can prove assumptions.
 
 ## Report
 
-Open spec reviews with the scenario verdicts, then findings. Note stale root docs as findings. Review is read-only unless fixes are requested. When `ship` runs the review, post on the pull request as a comment or COMMENT-type review, never an approval.
+Open spec reviews with the scenario verdicts, then findings. Note stale root docs as findings. Review is read-only unless fixes are requested.

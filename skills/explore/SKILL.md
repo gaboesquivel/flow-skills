@@ -14,25 +14,19 @@ Read the brief and conversation, then, while the first question waits on the use
 
 ## Direction changes
 
-This is the one home of the direction-change gate. When the user's goal would reverse or narrow an Accepted decision, an accepted or implemented spec, or a `PRODUCT.md` fact, stop: name each conflicting file, quote its position, say what changes and whether that supersedes or amends it, and continue only on an explicit yes. Candidate and draft specs, Proposed decisions, and a shared topic without a contradicting position do not gate; when unsure, name the possible conflict in one line and continue. On a no, explore within the current direction. A contradiction found at Skip depth ends Skip.
+This is the one home of the direction-change gate. When the user's goal would reverse or narrow an Accepted decision, an accepted or implemented spec, or a `PRODUCT.md` fact, stop: name each conflicting file, quote its position, say what changes and whether that supersedes or amends it, and continue only on an explicit yes. Candidate and draft specs, Proposed decisions, and a shared topic without a contradicting position do not gate; when unsure, name the possible conflict in one line and continue. On a no, explore within the current direction.
 
-On the yes, changing an Accepted decision gets a new decision record with status **Proposed** and `Supersedes [NNNN]` or `Amends [NNNN]` (with scope) on its Status line. A conflict only with a spec or a `PRODUCT.md` fact gets a record only when it passes `to-spec`'s decision test; otherwise the spec records it. Show the record's text with the brief and write it on the `explore/<slug>` branch on the same yes; a killed run writes none. Never edit the old record, spec, or `PRODUCT.md` here: `to-spec` writes the back-pointers at acceptance, or `build` when the user builds the brief with no spec.
+On the yes, changing an Accepted decision gets a new decision record with status **Proposed** and `Supersedes [NNNN]` or `Amends [NNNN]` (with scope) on its Status line. A conflict only with a spec or a `PRODUCT.md` fact gets a record only when it passes `to-spec`'s decision test; otherwise the spec records it. Show the record's text with the brief and write it on the work's branch on the same yes; a killed run writes none. Never edit the old record, spec, or `PRODUCT.md` here: `to-spec` writes the back-pointers at acceptance, or `build` when the user builds the brief with no spec.
 
-## Depth
+## Proportion
 
-Classify the work; never ask for a depth.
+Match the request; never ask for a depth.
 
-- **Fix or clear small change: Skip.** No questions and no writes beyond the direction-change gate; hand back to the requested work.
+- **Fix or small change:** no questions and no writes beyond the direction-change gate; hand back to the requested work.
 - **Feature:** clear intent, the journeys it adds or changes (one line each), and the agent lens (agent users and their journey, or "no agent users").
-- **New product:** clear intent, the riskiest assumption, a kill criterion, one main metric ("unknown, measure first" is acceptable) plus any supporting metrics the user names, 1–3 core journeys in one line each, alternatives including the status quo, and the agent lens.
+- **New product:** the feature's items plus the riskiest assumption, a kill criterion, one main metric ("unknown, measure first" is acceptable) plus any supporting metrics the user names, alternatives including the status quo, and one pre-mortem (assume it failed six months from now; list the likeliest reasons).
 
-Deeper discovery (`competitors`, `jtbd`) runs only when the user asks; when evidence warrants one, suggest it in one line.
-
-Explore does not ask the delivery mode; the first delivery skill that needs it asks, as `build`'s [Delivery mode](../build/SKILL.md#delivery-mode) describes.
-
-## Extract, then challenge
-
-Use `interview`'s question forms only until intent is clear, and skip its restatement and confirmation: the brief's confirmation covers intent. For a new product, or when the user asks, then follow `grill` on the riskiest claims only, with one pre-mortem (assume it failed six months from now; list the likeliest reasons) folded in; `grill` runs no second one. Features skip the grill and pre-mortem. Missing supporting skills never block: apply the same steps directly.
+Use `interview`'s question forms only until intent is clear, and skip its restatement and confirmation: the brief's confirmation covers intent. For a new product, or when the user asks, follow `grill` on the riskiest claims, with the pre-mortem folded in. Deeper discovery (`competitors`, `jtbd`) runs only when the user asks; when evidence warrants one, suggest it in one line. Missing supporting skills never block: apply the same steps directly.
 
 ## Outcome and write gate
 
@@ -45,9 +39,9 @@ For a brief, show the exact text once and ask once:
 
 Label unproven items as hypotheses with a confidence. An explicit yes to the shown text confirms intent and authorizes that write in the same turn; anything else is not a yes. Fold corrections in and show the text again.
 
-**Explore branch.** Outside a Git repository, offer `git init` and stop on a no. Write on a new `explore/<slug>` branch cut from the default branch (the product slug for a new product, otherwise the feature's slug), never on the default branch. Commit only those writes with a Conventional Commits message (for example `docs(product): brief for <slug>`) and report the branch and commit. `to-spec` renames the branch to the spec's, or `build` to the work branch when there is no spec.
+**Branch.** Outside a Git repository, offer `git init` and stop on a no. Write on the work's branch: one non-default branch named for the product or feature, cut from the default branch, which later specs and builds keep using. Commit only those writes and report the branch and commit.
 
-**After `start`.** In a run handed over by `start`, cut no branch and write nothing until the bootstrap lane reports its initial commit, even after a yes; then cut `explore/<slug>` from that commit, and the yes carries over. The brief replaces the product sections of the baseline `PRODUCT.md` and keeps its template facts. If the bootstrap failed, keep everything confirmed in conversation until a repository exists.
+**After `start`.** In a run handed over by `start`, cut no branch and write nothing until the bootstrap lane reports its initial commit, even after a yes; then cut the work's branch from that commit, and the yes carries over. The brief replaces the product sections of the baseline `PRODUCT.md` and keeps its template facts. If the bootstrap failed, keep everything confirmed in conversation until a repository exists.
 
 Research is saved only when `competitors` ran; it owns that rule. Other choices become decision records only when they pass `to-spec`'s decision test or change an Accepted decision.
 

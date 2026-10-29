@@ -6,9 +6,9 @@ disable-model-invocation: false
 
 # Board
 
-**Show the board.** Render every spec in `docs/specs/` (and, with GitHub links, every open `candidate` issue) as a card in five columns: **Candidate → Specced → Ready → Building → Shipped**. The columns are the same in every delivery mode.
+**Show the board.** Render every spec in `docs/specs/`, on the default branch or only on a work branch, as a card in five columns: **Candidate → Specced → Ready → Building → Shipped**. The columns and staging rules are the same in every delivery mode.
 
-The board is read-only. Git decides each stage: spec status lines and task checkboxes on the default branch, spec branches, and merges. With GitHub links, a merged pull request from the spec's branch into the default branch also counts as that branch's merge. To move work, use the skill that does it (`to-spec`, `to-tasks`, `build`, `ship`); never edit cards or the generated page.
+The board is read-only. Files and branches decide each stage: `Status:` lines and task checkboxes, spec branches, and merges; with GitHub links, a merged pull request from the spec's branch into the default branch also counts as that branch's merge. To move work, use the skill that does it (`to-spec`, `to-tasks`, `build`, `ship`); never edit cards or the generated page.
 
 ## Run it
 
@@ -32,25 +32,18 @@ When the user wants progress in chat rather than a page, run `--json` and summar
 
 A card shows the spec number, title, task progress (`done/total`, from `- [x] NN: Title (#45)` checklist items or `### NN: Title (#45)` headings in the Tasks section), and the branch that set its stage.
 
-**GitHub mode** is every project whose Flow block does not say `Delivery: local` (`Delivery: github`; an unset `Delivery` counts as `github`, except in a repository with no remote, which counts as local). In this mode an open spec branch alone is not Building: it counts only when it changes something outside `docs/`. Otherwise a ticked task moves the card; a draft stays in Specced, an accepted spec with tasks in Ready. This rule follows the delivery mode alone, so it holds without GitHub data and with `--no-github`.
+**Stages.** An open spec branch is Building only when it changes something outside `docs/`; otherwise a ticked task moves the card, a draft stays in Specced, and an accepted spec with tasks sits in Ready. A spec with `Status: dropped`, or one that exists only on a branch whose pull request closed unmerged, leaves the columns; `--json` lists it under `dropped`.
 
-**GitHub links** (GitHub mode, when `gh` is installed and authenticated): cards also link the spec issue from the header's `Issue:` line, the task issues, and the pull request (head branch matches the slug, or its body closes the spec issue or a task issue), with each state in text. With GitHub data:
-
-- An `accepted` label on the spec issue reads as status `accepted`.
-- An open issue labelled `candidate` that no spec's `Issue:` line names is a Candidate card numbered `#N`.
-- A spec whose issue was closed as not planned leaves the columns; `--json` lists it under `dropped`.
-
-When GitHub cannot be reached, the board renders from git alone and its header says why; pass that note on, never treat it as an error. `--no-github` skips `gh` entirely (no links, labels, or candidate issues); staging still follows the delivery mode.
+**GitHub links** (when `gh` is installed and authenticated, and delivery is not `local`; an unset `Delivery` follows `build`'s [inference](../build/SKILL.md#delivery-mode)): cards also link the pull request (head branch matches the slug, or its body closes a task issue) and any task issues, with each state in text. When GitHub cannot be reached, the board renders from git alone and its header says why; pass that note on, never treat it as an error. `--no-github` skips `gh` entirely.
 
 Markers flag what needs a human look:
 
 - `no status line` or `unknown status "…"`: the card stays in Specced unless git shows more progress.
 - `on branch <name>`: the spec is not on the default branch yet, so it never shows past Building.
 - `number NNN also used by …`: two spec files share a number.
-- `label accepted, file draft` (any pair): the spec issue's label and the file's `Status:` disagree.
 
 Report markers rather than fixing specs unasked.
 
-Limits: a merged branch ships a spec only when it changed something outside `docs/` and the spec's tasks are done. With GitHub links, a merged pull request counts the same way when its merge commit is in the local clone; a rebase merge is judged by its last commit only. Without them, fast-forward merges, and squash merges later edited on the default branch, may show as Building; a spec reads as Shipped for good once its `Status:` line says `implemented`, which `build` sets once an accepted spec's last task integrates (`ship` sets it if still missing).
+Limits: a merged branch ships a spec only when it changed something outside `docs/` and the spec's tasks are done. With GitHub links, a merged pull request counts the same way when its merge commit is in the local clone; a rebase merge is judged by its last commit only. Without them, fast-forward merges, and squash merges later edited on the default branch, may show as Building; a spec reads as Shipped for good once its `Status:` line says `implemented`, which `build` or `ship` sets.
 
 The script exits nonzero with a message when it is not inside a git repository or finds no default branch (`main`, `origin/HEAD`, `master`, or `init.defaultBranch`); report that message and the command you ran. Outside a repository, offer `git init` and stop on a no.

@@ -1,6 +1,6 @@
 # 031: Fast delivery
 
-Status: accepted (2026-10-29). Issue: [#157](https://github.com/gaboesquivel/flow-skills/issues/157). Decision: [0044](../decisions/0044-fast-delivery.md) (Accepted).
+Status: accepted (2026-10-29; amended 2026-10-29). Issue: [#157](https://github.com/gaboesquivel/flow-skills/issues/157). Decision: [0044](../decisions/0044-fast-delivery.md) (Accepted).
 
 ## Goal
 
@@ -40,6 +40,17 @@ Running checks once at pull request time, waiting for CI once, and verifying onl
     - Move `npm pack` and the `skills` CLI listing (pinned version) to a release-only script.
     - CI runs one cell (ubuntu, Node 22) on pull requests and on `main`; the OS × Node matrix runs on release tags.
 
+## Amendment (2026-10-29)
+
+A review of the first implementation against realistic runs led the maintainer to widen this spec within the same pull request ([decision 0044, amendment](../decisions/0044-fast-delivery.md#amendment-2026-10-29-one-shape-parallel-by-default-zero-lost-work)). It replaces items 1 (local mode), 3, and 6 above:
+
+- **One shape.** `build` ends with a ready branch (a pull request in GitHub mode); `ship` lands in both modes, running the local suite once on the merge result in local mode.
+- **Inferred delivery.** No delivery question; the remote and `gh` access decide, and a `Delivery:` line overrides.
+- **No spec issue.** The pull request links the spec file; issues and sub-issues only on request; candidates are files; "share the draft" opens a draft pull request.
+- **Parallel by default**, with the agent choosing how.
+- **Zero lost work** (build's Work in flight): worktrees on their own branches, unfinished work reported and kept, no partial spec marked implemented or shipped unasked, and every report lists what is left.
+- **Shipped means deployed:** the default branch contains the commit and, for apps, the host reports that commit's production deployment as successful before the URL check.
+
 ## User Stories
 
 1. As a maintainer, I say "build it" for a one-line skill fix, so a pull request opens with no local suite run, CI checks it once, and "ship it" merges and reports that `main` is the shipped commit.
@@ -63,7 +74,7 @@ Behavior tests stay: `board`, `flow-block`, `start-bootstrap`, `pr-alignment`, `
 
 1. Says "build it: fix the typo 'recieve' in skills/grill/SKILL.md". A branch and pull request open; no local test command runs in the session.
 2. CI runs one cell and passes in under a minute; no smoke-contracts edit or `alignment-exempt` label was needed.
-3. Says "ship it". `ship` waits for checks once, merges, and reports that `origin/main` is the merge commit.
+3. Says "ship it". `ship` waits for checks once, merges, and reports that `origin/main` contains the merge commit.
 4. The session log shows under 15 minutes from the first prompt to step 3's report, with one user confirmation or fewer.
 
 ## Direction changes

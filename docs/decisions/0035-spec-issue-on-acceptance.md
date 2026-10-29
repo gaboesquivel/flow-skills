@@ -1,6 +1,6 @@
 # 0035 — Open the spec issue at acceptance
 
-Status: **Accepted** (2026-10-28). Amends [0029](0029-spec-issues.md) (the spec issue opens at "spec it", labelled `draft`). Spec: [021](../specs/021-demo-findings.md). Amended by [0044](0044-fast-delivery.md) (acceptance also happens on "build it" or "ship it"; no body sync).
+Status: **Superseded** (2026-10-29). Was Accepted (2026-10-28). Amends [0029](0029-spec-issues.md) (the spec issue opens at "spec it", labelled `draft`). Spec: [021](../specs/021-demo-findings.md). Amended by [0044](0044-fast-delivery.md) (acceptance also happens on "build it" or "ship it"; no body sync). Superseded by [0044](0044-fast-delivery.md) (no spec issue).
 
 ## Context
 

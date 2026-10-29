@@ -14,7 +14,7 @@ Prefer the fewest tasks that each verify on their own. Keep a straightforward ch
 
 ### 1. Gather context
 
-Work from the conversation. If the user passes a spec path, issue number, or URL, read the full body and comments.
+Work from the conversation. If the user passes a spec path, issue, or URL, read it in full, comments included.
 
 ### 2. Explore the codebase (optional)
 
@@ -41,21 +41,17 @@ Give each task its **blocking edges**: other tasks that must finish before it ca
 
 **Wide refactors are the exception to vertical slicing.** A **wide refactor** is one mechanical change (rename a column, retype a shared symbol) whose **affected scope** spans the codebase, so one edit breaks many call sites and no vertical slice can land green. Sequence it as **expand–contract**. Expand: add the new form beside the old so nothing breaks. Migrate call sites in batches sized by impact (per package or directory), each batch its own task blocked by the expand, keeping CI green because the old form still exists. Contract: remove the old form once no caller remains, in a task blocked by every migrate batch. When batches cannot stay green alone, they may share an integration branch and a final integrate-and-verify task; green is promised only there.
 
-### 4. Check the breakdown
+### 4. Record and report
 
-Show the proposed tasks, what each delivers, their areas, and real dependencies. Resolve only consequential scope or sequencing uncertainty. "Break it down" authorizes recording them.
+Resolve only consequential scope or sequencing uncertainty first; "break it down" authorizes recording, so do not show the tasks for approval before writing them.
 
-### 5. Record
+Outside a Git repository, offer `git init` and stop on a no. Tasks are the spec's checklist: write its Tasks section, one line per task (`- [ ] NN: Title`), and detail each task below it with the task template. Commit on the spec's branch. Without a spec, write one with `to-spec` first, or return the tasks as a local draft and say so. Do not introduce a `.scratch/` task system or labels.
 
-Outside a Git repository, offer `git init` and stop on a no. Tasks live in the spec file in every delivery mode: write its Tasks section as a checklist, one line per task (`- [ ] NN: Title`), and detail each task below it with the task template. Without a spec, write one with `to-spec` first, or return the tasks as a local draft and say so. Do not introduce a `.scratch/` task system or new labels.
+**Task issues** open only when the user asks: one per task from the issue template (sub-issues of the issue the user names, if any), opened in parallel, with blockers linked once every number exists (native blocked-by links where supported, otherwise `Blocked by #a, #b` atop the body); append `(#N)` to each checklist line. On a public repository, say the issues are public. If publishing stops partway, report which issues exist; on a retry, match existing issues by title and open only the missing ones.
 
-**Sub-issues** open only when the user asks, in GitHub mode ([delivery mode](../build/SKILL.md#delivery-mode)), once the spec issue exists (the spec's `Issue:` line). Open each task with the issue template, in parallel, then add native blocked-by links once every number exists (for example `gh issue create --parent <spec#>`); without sub-issue or dependency support, start the body with `Part of #N` and `Blocked by #a, #b`. Append `(#N)` to each checklist line. On a public repository, say the issues are public. If publishing stops partway, report which issues exist; on a retry, match existing sub-issues by title and open only the missing ones. Never close or edit the spec issue.
+Tasks are not pull requests; `build` owns how tasks group into pull requests. A task is **ready** when its blockers are complete.
 
-Tasks are not pull requests; `build` owns how tasks group into pull requests. Tasks that are **ready** have their blockers complete.
-
-### 6. Hand off
-
-End by naming where the tasks live and the ready set, then wait for "build it". Do not start implementation.
+Report where the tasks live, each task with what it delivers and its area, and the ready set, then wait for "build it". Do not start implementation.
 
 <task-template>
 
@@ -76,7 +72,7 @@ End by naming where the tasks live and the ready set, then wait for "build it". 
 
 ## Spec
 
-A link to the spec this task belongs to, so `ship` can resolve it (omit only when the task belongs to no spec).
+A link to the spec file this task belongs to (omit only when the task belongs to no spec).
 
 ## What to build
 

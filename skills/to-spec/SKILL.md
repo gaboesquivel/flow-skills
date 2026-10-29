@@ -8,35 +8,29 @@ disable-model-invocation: false
 
 Turn conversation context and repository understanding into a proportionate specification. Do not run a separate interview; synthesize what is already known and label unresolved assumptions rather than inventing decisions.
 
-Use the project's existing spec location, numbering, labels, and trackers; with no convention, write `docs/specs/NNN-short-name.md` (three-digit sequence, kebab-case slug). Outside a Git repository, offer `git init` and stop on a no. Write the spec on a feature branch named for it, never the default branch; it merges with the work. On an `explore/` branch with no spec yet, rename it to the spec's branch (`git branch -m`) before writing, so the exploration's commits ship with the spec. In local mode a `candidate` stub written during a spec's run is committed on that spec's branch; one written alone, with no spec branch open, is committed on the default branch.
+Use the project's existing spec location and numbering; with no convention, write `docs/specs/NNN-short-name.md` (three-digit sequence, kebab-case slug). Outside a Git repository, offer `git init` and stop on a no. Commit on the work's branch, never the default branch, candidate stubs included: the branch already open for this work (exploration included), or a new one named for the spec. The spec merges with the work.
 
 **Spec, tasks, decision.** A spec is one bet: it tests one assumption and ships as one unit. Its tasks are the slices inside it, so a spec may be large. Work that only makes sense after seeing how another bet did gets its own spec. A choice gets a decision record in `docs/decisions/NNNN-short-name.md` (four-digit sequence) only when it chose among real alternatives **and** reaches beyond this spec or is costly to reverse; otherwise it belongs in the spec's Implementation Decisions. Never put feature scope or tasks in a decision record. When a spec makes a choice that passes the test, write the record beside the spec with status **Proposed** and link it from the spec. Also link any **Proposed** records written during exploration that the spec depends on.
 
 Specs may cover product, research, marketing, engineering, operations, or cross-functional work. Use the sections below only when they fit; omit irrelevant headings. Keep small, understood changes brief.
 
-**Candidate specs.** A later bet that should not be specified yet gets a stub: the problem and the assumption it tests. In local mode it is a file with status `candidate`. In GitHub mode it is an issue labelled `candidate`, with no file, opened only when the user asks for one; otherwise name it in the report. Flesh it out into a full spec only when its turn comes; until then it has no tasks.
+**Candidate specs.** A later bet that should not be specified yet gets a stub file with status `candidate`: the problem and the assumption it tests, no tasks. Flesh it out into a full draft when its turn comes.
+
+**Issues.** Specs live in files; open no issue unless the user asks. When the spec fleshes out an issue the user named, the pull request closes it (`Closes #N`).
 
 ## Status and acceptance
 
-A spec's `Status:` line follows `candidate → draft → accepted → implemented`. `to-spec` writes `candidate` and `draft`, and owns acceptance; `build` sets `implemented` once an accepted spec's last task integrates, and `ship` sets it if still missing.
+A spec's `Status:` line reads `candidate`, `draft`, `accepted`, `implemented`, or `dropped`, with the date. `to-spec` writes `candidate` and `draft` and owns acceptance; `build` sets `implemented` once every task integrates, and `ship` sets it if still missing; `ship` drops a spec.
 
-**Acceptance** happens when the user says "accept the spec", or says "build it" or "ship it" on a draft; `build` and `ship` apply the steps below in their first commit. Writing a draft or a request to write a spec is not acceptance. In one commit:
+**Acceptance** happens when the user says "accept the spec", or "build it" or "ship it" on a draft (`build` and `ship` apply these steps in their first commit). Writing a draft is not acceptance. In one commit:
 
-- Set the spec's status to `accepted` with the date, and each decision record it links from **Proposed** to **Accepted** with the date, in the project's decision format.
+- Set the spec's status to `accepted`, and each decision record it links from **Proposed** to **Accepted**, with the date, in the project's decision format.
 - Write the back-pointers. For each linked record that supersedes or amends an older one, append `Superseded by [NNNN]`, `Superseded in part by [NNNN]`, or `Amended by [NNNN]`, with a short scope, to the older record's Status line (in a frontmatter format, set `superseded_by` instead, and `status: superseded` only for a full supersession) and index row, and to the Status line of each spec it changes; update each contradicted `PRODUCT.md` fact to the new position, linking the record. Entries in the spec's Direction changes section get the same spec and `PRODUCT.md` updates, linking the spec.
 - Never write back-pointers before acceptance. A back-pointer is not a scope change and does not return another spec to `draft`.
 
-A spec without an acceptance scenario, or without an **Exposure** line when it adds deployable behaviour, is not accepted: name what is missing and leave it in `draft`. A `candidate` must become a full draft first. Changing an accepted spec's scope or a decision it links returns it to `draft`. An `accepted` label a maintainer added is acceptance: when the label is ahead of the file, write the file status (and linked decisions, with their back-pointers) to match. Report the files changed.
+A draft without an acceptance scenario, or without an **Exposure** line when it adds deployable behaviour, stays `draft`: name what is missing and stop the request. A `candidate` must become a full draft first. Changing an accepted spec's scope or a decision it links returns it to `draft`. Report the files changed.
 
-## Spec issue
-
-GitHub mode only; local mode keeps files only. When the mode is unset, settle it as [`build`'s Delivery mode](../build/SKILL.md#delivery-mode) says.
-
-- **"Spec it" publishes nothing.** It commits the draft on the spec branch; no push, no issue.
-- **At acceptance,** push the branch and open the spec issue, or reuse the `candidate`, shared-draft, or feature-request issue the spec fleshes out. Title it `NNN: Title`; the body is one line linking the file on its branch and on the default branch, for example `Spec: [docs/specs/NNN-x.md](https://github.com/<owner>/<repo>/blob/<branch>/docs/specs/NNN-x.md) (on [<default>](https://github.com/<owner>/<repo>/blob/<default>/docs/specs/NNN-x.md) once merged).` Never copy the spec into the body or update it afterwards. Write `Issue: #N`, linked, beside `Status:`, then commit and push. On a public repository, say that the branch and the issue become public.
-- **"Share the draft"** opens the issue early, the same way, labelled `draft`.
-- **Labels** carry the status: `candidate`, `draft`, or `accepted`, exactly one, created on first use. Relabel when the status changes; that is the only issue update.
-- Without GitHub access, say the issue was not opened.
+**Share the draft** (comments before acceptance): push the branch and open a draft pull request whose body links the spec file; in local mode ([delivery mode](../build/SKILL.md#delivery-mode)) there is nothing to open, so report the file. On a public repository, say the branch becomes public.
 
 ## Process
 
@@ -44,7 +38,7 @@ GitHub mode only; local mode keeps files only. When the mode is unset, settle it
 
 2. Sketch test seams at the highest practical level. Prefer existing seams.
 
-3. Write the spec with status `draft` and the date, and any decision record it needs as **Proposed**, and commit them on the spec branch. Do not show the text inline or ask before writing; report links to the files, open assumptions, and the next step: "build it" or "accept the spec" (or "share the draft" for comments first in GitHub mode).
+3. Write the spec with status `draft` and the date, and any decision record it needs as **Proposed**, and commit them on the work's branch. "Spec it" publishes nothing. Do not show the text inline or ask before writing; report links to the files, open assumptions, and the next step: "build it", "accept the spec", or "share the draft".
 
 <spec-template>
 

@@ -27,7 +27,7 @@
 | E23 | start, explore | passed | not_executed | not_executed | not_executed |
 | E24 | start, explore | passed | not_executed | not_executed | not_executed |
 | E25 | explore, to-spec | passed | not_executed | not_executed | not_executed |
-| E26 | ship | passed | not_executed | not_executed | not_executed |
+| E26 | ship | passed | not_executed | passed | not_executed |
 | E27 | ship | passed | not_executed | not_executed | not_executed |
 | E28 | ship | passed | not_executed | not_executed | not_executed |
 | E29 | to-spec | not_executed | not_executed | not_executed | not_executed |
@@ -38,8 +38,10 @@
 | E34 | ship | not_executed | not_executed | not_executed | not_executed |
 | E35 | build | not_executed | not_executed | not_executed | not_executed |
 | E36 | explore | not_executed | not_executed | not_executed | not_executed |
-| E37 | build | not_executed | not_executed | not_executed | not_executed |
+| E37 | build | passed | not_executed | not_executed | not_executed |
 | E38 | build | not_executed | not_executed | not_executed | not_executed |
 | E39 | start | not_executed | not_executed | not_executed | not_executed |
 
-Live column: [2026-10-27-cursor-live.md](records/2026-10-27-cursor-live.md) (E03, E07, E08). Structural and fixture columns reflect `pnpm test` and `pnpm eval:check`. Second host still open.
+Live column: [2026-10-27-cursor-live.md](records/2026-10-27-cursor-live.md) (E03, E07, E08) and [2026-10-28-spec-028-live-partial.md](records/2026-10-28-spec-028-live-partial.md) (E26). Structural and fixture columns reflect `pnpm test` and `pnpm eval:check`. Second host still open.
+
+Structural results recorded before [spec 031](../../docs/specs/031-fast-delivery.md) came from skill-wording pins that spec 031 removed; `tests/smoke-contracts.test.mjs` now checks safety rules by keyword. E29, E33, E36, and E38 describe behavior superseded by spec 031 ([decision 0044](../../docs/decisions/0044-fast-delivery.md)): the spec issue sync, a review before every merge, a pre-mortem at every depth, and a local suite run before integrating tasks.
