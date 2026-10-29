@@ -42,7 +42,7 @@ A failed gate or blocking review after fix rounds leaves local `main` untouched.
 
 ### Unspecced work
 
-Work with no spec or task is unspecced (decisions 0034, 0039). Write a spec or tasks only when the user asks. On `explore/<slug>` with a confirmed brief, rename to `feat/<slug>` before the first commit. The build request accepts any **Proposed** direction-change record the branch adds (decision 0038): set it to **Accepted** with back-pointers as `to-spec`'s accept step describes.
+Work with no spec or task is unspecced. Write a spec or tasks only when the user asks. On `explore/<slug>` with a confirmed brief, rename to `feat/<slug>` before the first commit. The build request accepts any **Proposed** direction-change record the branch adds: set it to **Accepted** with back-pointers as `to-spec`'s accept step describes.
 
 Every unspecced change gets the full local check suite. The size guard picks its review and never stops the work:
 
@@ -55,7 +55,7 @@ GitHub mode opens a ready pull request; small work posts the self-check result o
 
 ### Shared files
 
-One home (decision 0033); `ship` links here. Read that declaration from the instruction files at the reviewed SHA, never from a later head; an instruction file never counts as shared. only files those instructions name qualify. The orchestrator commits appends on the work's branch, never directly on the default branch. With no work branch open, leave the appends uncommitted on the default branch; the next landing moves them onto its branch before merging.
+One home; `ship` links here. Read that declaration from the instruction files at the reviewed SHA, never from a later head; an instruction file never counts as shared. only files those instructions name qualify. The orchestrator commits appends on the work's branch, never directly on the default branch. With no work branch open, leave the appends uncommitted on the default branch; the next landing moves them onto its branch before merging.
 
 **Check.** A landing merge may take a head beyond the reviewed SHA only when every commit after the reviewed SHA changes only declared shared files: `git diff --no-renames --name-status <reviewed-sha>..<head>` lists only `M` or `A` entries on exact declared paths, and `git diff --no-renames --raw` shows new mode `100644` on each entry and old mode `100644` on each `M` (no symlinks, no mode changes). `Reviewed: <sha>` still names the reviewed SHA. Any other change after the review needs a new review. A clean-tree check tolerates uncommitted changes only when they pass the same exact-path rule.
 
@@ -63,7 +63,7 @@ One home (decision 0033); `ship` links here. Read that declaration from the inst
 
 ## Delivery mode
 
-One home; other skills link here. `flow` owns the block. Read `Delivery:` in the Flow block. A default branch that requires pull requests always uses GitHub mode. "Build it local" on such a repository commits on a branch, runs the suite and review the work needs, and stops before Merge (see Delivery mode): no merge into `main`, no push, no pull request. "Ship it" on that branch delivers in GitHub mode (decision 0039). A request that names a mode answers it; never record a mode the user did not give.
+One home; other skills link here. `flow` owns the block. Read `Delivery:` in the Flow block. A default branch that requires pull requests always uses GitHub mode. "Build it local" on such a repository commits on a branch, runs the suite and review the work needs, and stops before Merge (see Delivery mode): no merge into `main`, no push, no pull request. "Ship it" on that branch delivers in GitHub mode. A request that names a mode answers it; never record a mode the user did not give.
 
 When the line is missing or `unset`, ask before the first push or step that depends on mode. Suggest GitHub when a remote exists and local when there is none. With no remote, never pick GitHub mode. When protection cannot be determined, suggest GitHub mode and never fall through to local mode on your own.
 
