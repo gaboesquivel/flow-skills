@@ -58,6 +58,6 @@ Analytics backends, vendor adapters, dashboards, automated monitoring, mandatory
 - Fixture of 100 eligible requests, 60 qualifying, one duplicate row: reported 60% (counting the duplicate would give 61/101). Labelled it a fixture, kept 20 pending rows as unknown, and claimed no trend.
 - No access: reported **No access**, connected nothing, and named no tool.
 - First 8 rows only: reported **Insufficient**, flagging the sample as small and biased, not 100%.
-- Dogfood on Flow's metrics: no maintainer join script exists, so idea → prod and time to close PR are **Instrumentation missing**, and time to start is **No access**. PR open → merge over the last 30 PRs (median 2.8 min) was labelled incompatible with time to close PR.
+- Dogfood on Flow's metrics: the run predates `scripts/metrics.mjs` (#164). It found no join script, so idea → prod and time to close PR were **Instrumentation missing**, and time to start was **No access**. It labelled PR open → merge over the last 30 PRs (median 2.8 min) incompatible with time to close PR. Since #164, the script covers time to close PR. Idea → prod still needs session logs.
 - Steps 1, 2, and 6 were verified as instruction text by independent review, not live runs.
 - That run led to one change: raw data with no computation now counts as instrumentation missing.

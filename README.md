@@ -10,7 +10,7 @@
 npx skills add gaboesquivel/flow-skills
 ```
 
-Choose your agent and install scope in the installer. [Agent compatibility](docs/agent-compatibility.md) covers other install paths and metadata limits. Flow needs no changes to your instruction files; setting up Flow mode adds one removable block, and only when you ask.
+To pin a release, install from its tag: `npx skills add https://github.com/gaboesquivel/flow-skills/tree/<tag>`. Choose your agent and install scope in the installer. [Agent compatibility](docs/agent-compatibility.md) covers other install paths and metadata limits. Flow needs no changes to your instruction files; setting up Flow mode adds one removable block, and only when you ask.
 
 ## Flow is Git-based
 
