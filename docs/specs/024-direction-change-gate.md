@@ -1,6 +1,6 @@
 # 024: Direction-change gate
 
-Status: implemented (2026-10-28). Issue: [#128](https://github.com/gaboesquivel/flow-skills/issues/128). Decisions: [0038](../decisions/0038-direction-changes-are-confirmed-and-recorded.md) (Accepted). Builds on [decision 0036](../decisions/0036-one-explore-depth.md) (explore's background readers).
+Status: implemented (2026-10-28). Issue: [#128](https://github.com/gaboesquivel/flow-skills/issues/128). Decisions: [0038](../decisions/0038-direction-changes-are-confirmed-and-recorded.md) (Accepted). Builds on [decision 0036](../decisions/0036-one-explore-depth.md) (explore's background readers). Item 3 amended by [0044](../decisions/0044-fast-delivery.md) (the decisions reader checks the current branch only; no scan of unmerged branches).
 
 ## Problem Statement
 

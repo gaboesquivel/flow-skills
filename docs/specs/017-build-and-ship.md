@@ -1,6 +1,6 @@
 # 017: Build and ship
 
-Status: implemented (2026-10-28). Decision: [0028](../decisions/0028-build-and-ship.md). Builds on [spec 015](015-wave-checkpoints.md) and [spec 012](012-progress-board.md).
+Status: implemented (2026-10-28). Decision: [0028](../decisions/0028-build-and-ship.md). Builds on [spec 015](015-wave-checkpoints.md) and [spec 012](012-progress-board.md). Amended by [0044](../decisions/0044-fast-delivery.md) (`build` ends with a ready branch and never waits on CI; `ship` lands both delivery modes).
 
 ## Problem Statement
 
