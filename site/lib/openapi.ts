@@ -20,11 +20,11 @@ const kind = { enum: ["skill", "doc", "decision", "starter"], type: "string" };
 export const buildOpenApiDocument = (origin: string) => ({
   openapi: "3.1.0",
   info: {
-    description: `${SITE_DESCRIPTION} Read-only, no authentication. Agent index: ${origin}/llms.txt`,
+    description: `${SITE_DESCRIPTION} Read-only, no authentication. Agent index: ${origin}/llms.txt. Versioning: paths under /v1 are the stable contract (/api is an unversioned alias of the current version); breaking changes ship under a new path version, and deprecated versions announce removal with Deprecation and Sunset headers.`,
     title: "Flow API",
     version: content.version,
   },
-  servers: [{ url: origin }],
+  servers: [{ url: `${origin}/v1`, description: "Version 1" }],
   externalDocs: { description: "For agents", url: `${origin}/agents` },
   paths: {
     "/api/search": {

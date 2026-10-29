@@ -39,5 +39,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/|api/|api$|mcp$|md/|md$|\\.well-known/|favicon\\.ico|icon\\.svg|opengraph-image).*)"],
+  matcher: ["/((?!_next/|api/|api$|v1/|mcp$|md/|md$|\\.well-known/|favicon\\.ico|icon\\.svg|opengraph-image).*)"],
 };

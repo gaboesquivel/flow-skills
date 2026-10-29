@@ -37,6 +37,7 @@ describe("generation config", () => {
   it("is off without gateway credentials and on with a key or OIDC", () => {
     expect(askModel({})).toBeNull();
     expect(askModel({ AI_GATEWAY_API_KEY: "k" })).toBe(DEFAULT_ASK_MODEL);
+    expect(askModel({ VERCEL: "1" })).toBe(DEFAULT_ASK_MODEL);
     expect(askModel({ ASK_MODEL: "anthropic/claude-sonnet-5.5", VERCEL_OIDC_TOKEN: "t" })).toBe("anthropic/claude-sonnet-5.5");
   });
 });
