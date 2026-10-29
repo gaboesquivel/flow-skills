@@ -1,6 +1,6 @@
 # 0042 — Outcome-first build and ship
 
-Status: **Accepted** (2026-10-28). Amends [0031](0031-fan-out-by-default.md) (parallel workers and one review worker per axis do not bind `build`, `ship`, or the review they run), [0029](0029-spec-issues.md) (frontier scheduling, and workers testing their own edits while the orchestrator runs the suite), [0028](0028-build-and-ship.md) (`ship` lands by running `build` and `review` as a named pipeline), [0025](0025-wave-checkpoints.md) (item 8, a failing test before the change), and [0039](0039-build-never-requires-a-spec.md) (the independent review need not be one worker per axis). Spec: [028](../specs/028-outcome-build-and-ship.md).
+Status: **Accepted** (2026-10-28). Amends [0031](0031-fan-out-by-default.md) (parallel workers and one review worker per axis do not bind `build`, `ship`, or the review they run), [0029](0029-spec-issues.md) (frontier scheduling, and workers testing their own edits while the orchestrator runs the suite), [0028](0028-build-and-ship.md) (`ship` lands by running `build` and `review` as a named pipeline), [0025](0025-wave-checkpoints.md) (item 8, a failing test before the change), and [0039](0039-build-never-requires-a-spec.md) (the independent review need not be one worker per axis). Spec: [028](../specs/028-outcome-build-and-ship.md). Amended by [0044](0044-fast-delivery.md) (the independent review runs only when the size guard escalates or the user asks; checks once at pull request time).
 
 ## Context
 

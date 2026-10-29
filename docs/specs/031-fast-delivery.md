@@ -1,6 +1,6 @@
 # 031: Fast delivery
 
-Status: draft (2026-10-29). Decision: [0044](../decisions/0044-fast-delivery.md) (Proposed).
+Status: accepted (2026-10-29). Decision: [0044](../decisions/0044-fast-delivery.md) (Accepted).
 
 ## Problem Statement
 

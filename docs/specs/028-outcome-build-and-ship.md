@@ -1,6 +1,6 @@
 # 028: Outcome-first build and ship
 
-Status: implemented (2026-10-28). Issue: [#144](https://github.com/gaboesquivel/flow-skills/issues/144). Decision: [0042](../decisions/0042-outcome-build-and-ship.md) (Accepted).
+Status: implemented (2026-10-28). Issue: [#144](https://github.com/gaboesquivel/flow-skills/issues/144). Decision: [0042](../decisions/0042-outcome-build-and-ship.md) (Accepted). Amended by [0044](../decisions/0044-fast-delivery.md) (independent review only when escalated or asked; checks once at pull request time).
 
 ## Problem Statement
 

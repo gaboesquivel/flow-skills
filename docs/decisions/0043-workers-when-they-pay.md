@@ -1,6 +1,6 @@
 # 0043 — Workers when they pay, checks once per head
 
-Status: **Accepted** (2026-10-28). Amends [0031](0031-fan-out-by-default.md) (item 1: parallel workers are no longer the default for every independent step). Extends [0042](0042-outcome-build-and-ship.md) to the skills it left on 0031.
+Status: **Accepted** (2026-10-28). Amends [0031](0031-fan-out-by-default.md) (item 1: parallel workers are no longer the default for every independent step). Extends [0042](0042-outcome-build-and-ship.md) to the skills it left on 0031. Amended by [0044](0044-fast-delivery.md) (item 2: no checks between task integrations).
 
 ## Context
 
