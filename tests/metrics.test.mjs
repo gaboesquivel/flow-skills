@@ -38,6 +38,7 @@ test('idea → prod links sessions to merged pull requests and counts turns afte
     prompt('2026-10-29T00:02:00.000Z', 'ignored', { isMeta: true }),
     prompt('2026-10-29T00:05:00.000Z', 'ship it'),
     prompt('2026-10-29T00:06:00.000Z', 'thanks'),
+    prompt('2026-10-29T00:07:00.000Z', [{ type: 'tool_result', content: 'Permission for this action was denied by the Claude Code auto mode classifier.' }], { isSidechain: true }),
     prompt('2026-10-29T02:00:00.000Z', 'after the merge'),
     prompt('2026-10-29T02:01:00.000Z', [{ type: 'tool_result', content: [{ type: 'text', text: "The user doesn't want to proceed with this tool use." }] }]),
   ]))
@@ -52,11 +53,11 @@ test('idea → prod links sessions to merged pull requests and counts turns afte
   ]
   const result = ideaToProd({ prs, sessions: [linked, viaLink], repo: 'o/flow-skills' })
   assert.deepEqual(result.changes, [
-    { number: 1, linked: true, minutes: 10, turnsAfterPhrase: 1, denials: 1 },
-    { number: 2, linked: true, minutes: 30, turnsAfterPhrase: null, denials: 0 },
+    { number: 1, linked: true, minutes: 10, turnsAfterPhrase: 1, denialsAt: ['2026-10-29T00:03:00.000Z', '2026-10-29T00:07:00.000Z'] },
+    { number: 2, linked: true, minutes: 30, turnsAfterPhrase: null, denialsAt: [] },
     { number: 3, linked: false },
   ])
   assert.equal(result.unlinked, 1)
   assert.equal(result.linkRate, 2 / 3)
-  assert.equal(result.denials, 1)
+  assert.equal(result.denials, 2)
 })

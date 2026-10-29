@@ -8,7 +8,7 @@ Make product engineering with AI agents simpler, faster, and more reliable—wit
 
 ## Definition
 
-Flow is a lightweight, human-led product engineering methodology for building and evolving software with AI agents.
+Flow is a lightweight, human-directed, agent-executed product engineering methodology for building and evolving software with AI agents.
 
 It combines shared product context, reusable engineering skills, and practical development conventions in a continuous workflow from exploration to verified delivery.
 
@@ -26,7 +26,7 @@ Humans define direction and make consequential decisions. Agents do the work: ex
 
 1. **Product before code.** Build useful software, not just completed tasks.
 2. **Preserve intent.** Keep product, design, architecture, and significant decisions understandable and current.
-3. **Human-directed, agent-executed.** Agents carry out the work, including setup and operations; people decide, and handle only what needs them: sign-in, secrets, payment, and consent ([decision 0049](docs/decisions/0049-agent-does-the-work.md)).
+3. **Human-directed, agent-executed.** Agents carry out the work, including setup and operations; people decide, and handle only the steps that need them, such as sign-in and secrets ([decision 0049](docs/decisions/0049-agent-does-the-work.md)).
 4. **Minimal process.** Use only the structure and skills the task requires.
 5. **Evidence over claims.** Verify outcomes through appropriate tests, reviews, and real-world checks.
 6. **Portable by design.** Work across agents, interfaces, frameworks, and tools.

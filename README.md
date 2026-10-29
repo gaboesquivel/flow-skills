@@ -1,6 +1,6 @@
 # Flow Skills
 
-**From intent to verified software.** Portable [agent skills](https://agentskills.io) for [Flow](PRODUCT.md), a lightweight, human-led product engineering methodology. You talk to your agent, typed or dictated: "interview me", "spec it", "ship it". Each phrase reaches one skill. Nothing runs unless you ask, and you can use one skill, all of them, or none.
+**From intent to verified software.** Portable [agent skills](https://agentskills.io) for [Flow](PRODUCT.md), a lightweight, human-directed, agent-executed product engineering methodology. You talk to your agent, typed or dictated: "interview me", "spec it", "ship it". Each phrase reaches one skill. Nothing runs unless you ask, and you can use one skill, all of them, or none.
 
 [Flow identity and catalog scope](PRODUCT.md) · **[Skill catalog](docs/skills.md)** · [Methodology](docs/methodology.md) · [Documentation guide](docs/README.md)
 
@@ -134,7 +134,7 @@ Flow builds on the work of engineers and teams who have advanced software engine
 
 Flow combines product thinking, engineering discipline, and verified execution without imposing a fixed sequence or orchestration runtime.
 
-- **Human-led:** People retain control of consequential product and engineering decisions.
+- **Human-directed:** People set direction and make consequential decisions; agents do the work.
 - **Minimal:** Use only the skills, documentation, and verification the work requires.
 - **Portable:** Skills work independently across compatible agents, models, and interfaces.
 - **Evidence-driven:** Tests and observed behavior matter more than confident claims.

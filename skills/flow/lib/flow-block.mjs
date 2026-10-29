@@ -27,7 +27,7 @@ export const PHRASES = [
 ]
 
 // The always-loaded form of `write-agents` Tools, so the rule holds outside skills too.
-export const TOOL_RULE = 'Do the work yourself: CLI, then MCP, then API, then browser. Hand the user only sign-in, secrets, payment, or consent, once, as one command each (`write-agents` Tools).'
+export const TOOL_RULE = 'Do the work yourself: CLI, then MCP, then API, then browser. Hand the user only sign-in, secrets, payment, consent, or permission changes, once, as one command each (`write-agents` Tools).'
 
 const eolOf = (text) => (text.includes('\r\n') ? '\r\n' : '\n')
 

@@ -10,7 +10,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0004-portable-skill-catalog.md](0004-portable-skill-catalog.md) | Accepted (parts superseded by 0006, 0013, and 0019) | Portable catalog and Agent Skills install |
 | [0005-misc-tldr-skill.md](0005-misc-tldr-skill.md) | Accepted | Misc group and `tldr` visual recap skill |
 | [0006-flow-lite-and-flat-docs.md](0006-flow-lite-and-flat-docs.md) | Accepted (invocation split superseded by 0019) | Flow Lite `flow` skill and flat specs/decisions docs |
-| [0007-flow-product-identity.md](0007-flow-product-identity.md) | Accepted | Official Flow identity in PRODUCT.md |
+| [0007-flow-product-identity.md](0007-flow-product-identity.md) | Accepted (amended by 0049) | Official Flow identity in PRODUCT.md |
 | [0008-leading-words-and-visual-summaries.md](0008-leading-words-and-visual-summaries.md) | Accepted (leading words redefined by 0019) | Leading words in the catalog; visual summaries stay in `tldr` |
 | [0009-adopter-product-context.md](0009-adopter-product-context.md) | Accepted | Adopter `PRODUCT.md` is that product; no `flow start` |
 | [0010-optional-start-skill.md](0010-optional-start-skill.md) | Accepted | Optional `start` skill authorized (shipped on catalog PR); does not supersede 0009 |

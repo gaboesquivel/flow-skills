@@ -4,7 +4,7 @@ Working meanings for Flow's product-engineering practice. Include only project-s
 
 ## Flow
 
-The lightweight, human-led product engineering methodology defined in this repository's [PRODUCT.md](PRODUCT.md). Distinct from the flow-skills distribution, Flow Factory orchestration, application templates (flow-next, flow-mono), and an adopter project's own product. See [Product context](#product-context).
+The lightweight, human-directed, agent-executed product engineering methodology defined in this repository's [PRODUCT.md](PRODUCT.md). Distinct from the flow-skills distribution, Flow Factory orchestration, application templates (flow-next, flow-mono), and an adopter project's own product. See [Product context](#product-context).
 
 ## Agentic product engineering
 

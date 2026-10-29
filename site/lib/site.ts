@@ -3,7 +3,7 @@ type HeaderLike = Pick<Headers, "get">;
 export const SITE_NAME = "Flow";
 export const SITE_TAGLINE = "Make ideas flow.";
 export const SITE_DESCRIPTION =
-  "Flow is a lightweight, human-led product engineering methodology for building software with AI agents: portable skills, Vercel-first starters, and source-grounded documentation for humans and agents.";
+  "Flow is a lightweight, human-directed, agent-executed product engineering methodology for building software with AI agents: portable skills, Vercel-first starters, and source-grounded documentation for humans and agents.";
 
 export const NAV = [
   { href: "/methodology", label: "Methodology" },
