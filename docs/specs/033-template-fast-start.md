@@ -1,6 +1,6 @@
 # 033: Template fast start
 
-**Status:** accepted (2026-10-29)
+**Status:** implemented (2026-10-29)
 
 **Repositories:** [flow-next](https://github.com/gaboesquivel/flow-next), [flow-mono](https://github.com/gaboesquivel/flow-mono), flow-skills
 
@@ -73,11 +73,27 @@ Clone either template (or create a repository from it), run `/start`, and reach 
 
 ## Tasks
 
-- [ ] Measure baseline clone-to-setup times on fresh clones of both templates.
-- [ ] flow-next: skills lock, setup fix, single MCP App build in CI.
-- [ ] flow-mono: skills lock, setup parity, migration script.
-- [ ] flow-skills: `start` in a template clone; keep the template's Flow install.
-- [ ] Run the acceptance scenario on both templates and record times.
+- [x] Measure baseline clone-to-setup times on fresh clones of both templates.
+- [x] flow-next: skills lock, setup fix, single MCP App build in CI.
+- [x] flow-mono: skills lock, setup parity, migration script.
+- [x] flow-skills: `start` in a template clone; keep the template's Flow install.
+- [x] Run the acceptance scenario on both templates and record times.
+
+## Results
+
+Delivered in gaboesquivel/flow-skills#163, gaboesquivel/flow-next#8, and gaboesquivel/flow-mono#5 (2026-10-29). Times on fresh clones of the PR branches, warm pnpm store:
+
+| Step | flow-next | flow-mono |
+| --- | --- | --- |
+| Baseline `pnpm setup` before the fix | crashed (6s) | 48s, refetched skills, dirty tree, broken skill links |
+| clone + `pnpm setup` | 7s | 12s |
+| `start` bootstrap in place (installed libs; all four checks passed; `chore: initialize`) | 8s | 10s |
+| Vercel install + build commands, local | 30s | 28s |
+| Vercel Git deployment, wall (build) | 2m35s (76s) preview; 1m45s (100s) production | 2m04s (74s) preview; 2m55s (73s) production |
+
+Clone to a live deployment is about 3 minutes of machine time, excluding the person's answers during `explore`. Production of merged `main` answers 200 on `/` and `/genui` for both templates.
+
+Not run: steps 1 and 5 against a newly created GitHub repository and Vercel project (creating them was refused by the session's tool permissions), and step 7 (Neon) against real accounts; the preset and migration paths are covered by unit tests only. Fixes found while validating: flow-mono's `.gitignore` dropped Flow's `build` skill, and the preset tests used the template name as a fixture, which failed `start`'s identity scan.
 
 ## Out of Scope
 
