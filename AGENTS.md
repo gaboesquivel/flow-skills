@@ -27,6 +27,7 @@ Flow ships a portable `skills/` tree for the [Agent Skills](https://agentskills.
 | --- | --- |
 | Policy checks | `pnpm validate` |
 | Tests | `pnpm test` |
+| Delivery metrics (time to close PR, CI failures and wait, skill words) | `pnpm metrics [--repo owner/name] [--limit N]` |
 
 Release checklist: [docs/RELEASE.md](docs/RELEASE.md). Host notes: [docs/agent-compatibility.md](docs/agent-compatibility.md).
 
