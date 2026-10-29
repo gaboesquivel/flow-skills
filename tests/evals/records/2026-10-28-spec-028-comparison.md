@@ -20,9 +20,9 @@ E37 task set, copy fix, and API escalation; E26 draft stop; E34 verify reporting
 ## Results
 
 - **Structural:** smoke contracts and eval checker pass on the optimized skills.
-- **Live triple comparison:** `live_skill_execution: not_executed` — no isolated workspaces with three skill installs were run in this delivery session.
-- **Kill criterion:** no proof regression observed in structural pins; a live run may still fail the bet and should restore prior skill text if it does.
+- **Live triple comparison:** `live_skill_execution: partial` — one cell complete (optimized Flow × E26). See [2026-10-28-spec-028-live-partial.md](2026-10-28-spec-028-live-partial.md) and [2026-10-28-spec-028-live-procedure.md](2026-10-28-spec-028-live-procedure.md). Conditions A (no skills) and B (pre-028) and prompts E34/E37 not executed yet.
+- **Kill criterion:** no proof regression in the completed cell; pre-028 and no-skill baselines still open.
 
 ## Limitation
 
-This record satisfies task 03’s artifact slot honestly. It is not the full blinded comparison the spec describes. Schedule that run before claiming agent-performance improvement.
+This record satisfies task 03’s artifact slot honestly. The full blinded 3×3 comparison is in progress; schedule remaining cells before claiming agent-performance improvement.
