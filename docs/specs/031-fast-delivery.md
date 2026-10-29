@@ -48,7 +48,7 @@ A review of the first implementation against realistic runs led the maintainer t
 - **Inferred delivery.** No delivery question; the remote and `gh` access decide, and a `Delivery:` line overrides.
 - **No spec issue.** The pull request links the spec file; issues and sub-issues only on request; candidates are files; "share the draft" opens a draft pull request.
 - **Parallel by default**, with the agent choosing how.
-- **Zero lost work** (build's Work in flight): worktrees on their own branches, unfinished work reported and kept, no partial spec marked implemented or shipped unasked, and every report lists what is left.
+- **Zero lost work** (build's Work in flight): workers in their own worktree start from the delivery head and commit on their branch, workers in the shared checkout leave commits to the main thread, and nothing counts as integrated until a commit on the delivery branch contains it; unfinished work reported and kept, no partial spec marked implemented or shipped unasked, and every report lists what is left.
 - **Shipped means deployed:** the default branch contains the commit and, for apps, the host reports that commit's production deployment as successful before the URL check.
 
 ## User Stories
