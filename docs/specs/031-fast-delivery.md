@@ -57,7 +57,7 @@ Running checks once at pull request time, waiting for CI once, and verifying onl
 
 ## Testing Decisions
 
-Behavior tests stay: `board`, `flow-block`, `start-bootstrap`, `spec-issue` (as changed), `pr-alignment`, `context-review`, `start-preset`, and the validate negative fixtures. Skill prose is not pinned beyond the short safety keyword list. The real test of this spec is the metrics: idea → prod, time to start, and time to close PR, plus CI failure rate, compared before and after on the dogfood repositories.
+Behavior tests stay: `board`, `flow-block`, `start-bootstrap`, `pr-alignment`, `context-review`, `start-preset`, and the validate negative fixtures. Skill prose is not pinned beyond the short safety keyword list. The real test of this spec is the metrics: idea → prod, time to start, and time to close PR, plus CI failure rate, compared before and after on the dogfood repositories.
 
 **Acceptance scenario.** A maintainer on flow-skills `main`, with this spec shipped and a clean tree:
 

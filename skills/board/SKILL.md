@@ -32,7 +32,7 @@ When the user wants progress in chat rather than a page, run `--json` and summar
 
 A card shows the spec number, title, task progress (`done/total`, from `- [x] NN: Title (#45)` checklist items or `### NN: Title (#45)` headings in the Tasks section), and the branch that set its stage.
 
-**GitHub mode** is every project whose Flow block does not say `Delivery: local` (`Delivery: github`; an unset `Delivery` counts as `github`, except in a repository with no remote, which counts as local). In this mode an open spec branch alone is not Building: it counts only when it changes something outside `docs/`. Otherwise a ticked task or a live `build` run moves the card; a draft stays in Specced, an accepted spec with tasks in Ready. This rule follows the delivery mode alone, so it holds without GitHub data and with `--no-github`.
+**GitHub mode** is every project whose Flow block does not say `Delivery: local` (`Delivery: github`; an unset `Delivery` counts as `github`, except in a repository with no remote, which counts as local). In this mode an open spec branch alone is not Building: it counts only when it changes something outside `docs/`. Otherwise a ticked task moves the card; a draft stays in Specced, an accepted spec with tasks in Ready. This rule follows the delivery mode alone, so it holds without GitHub data and with `--no-github`.
 
 **GitHub links** (GitHub mode, when `gh` is installed and authenticated): cards also link the spec issue from the header's `Issue:` line, the task issues, and the pull request (head branch matches the slug, or its body closes the spec issue or a task issue), with each state in text. With GitHub data:
 
@@ -48,12 +48,9 @@ Markers flag what needs a human look:
 - `on branch <name>`: the spec is not on the default branch yet, so it never shows past Building.
 - `number NNN also used by …`: two spec files share a number.
 - `label accepted, file draft` (any pair): the spec issue's label and the file's `Status:` disagree.
-- `build run stopped updating…`: a `build` run never recorded its end and has not updated for 30 minutes (likely a crash), so its task states are ignored.
-
-During a `build` task-set run, the run's card moves to Building and lists each task with its live state (`running`, `waiting`, `integrated`, `blocked`), fix round, and note, from `<git common dir>/flow/board.json`. Git wins: a task the spec marks done shows integrated, and a spec git shows as shipped stays Shipped. An ended run is ignored; an unreadable overlay is ignored with a header note. `--record` is for `build`: its orchestrator records `run-start` and `run-end`, and the orchestrator or a worker records its own task with `--record task`. Never use it to move cards or answer a request to change progress.
 
 Report markers rather than fixing specs unasked.
 
-Limits: a merged branch ships a spec only when it changed something outside `docs/` and the spec's tasks are done. With GitHub links, a merged pull request counts the same way when its merge commit is in the local clone; a rebase merge is judged by its last commit only. Without them, fast-forward merges, and squash merges later edited on the default branch, may show as Building; a spec reads as Shipped for good once its `Status:` line says `implemented`, which `build` sets once an accepted spec's last task integrates (`ship` sets it if still missing). The board shows one `build` run per repository at a time: a new run start replaces the previous overlay.
+Limits: a merged branch ships a spec only when it changed something outside `docs/` and the spec's tasks are done. With GitHub links, a merged pull request counts the same way when its merge commit is in the local clone; a rebase merge is judged by its last commit only. Without them, fast-forward merges, and squash merges later edited on the default branch, may show as Building; a spec reads as Shipped for good once its `Status:` line says `implemented`, which `build` sets once an accepted spec's last task integrates (`ship` sets it if still missing).
 
-The script exits nonzero with a message when it is not inside a git repository or finds no default branch (`main`, `origin/HEAD`, `master`, or `init.defaultBranch`); report that message and the command you ran. Outside a repository, offer `git init` as `write-agents` [Repository](../write-agents/SKILL.md#repository) describes.
+The script exits nonzero with a message when it is not inside a git repository or finds no default branch (`main`, `origin/HEAD`, `master`, or `init.defaultBranch`); report that message and the command you ran. Outside a repository, offer `git init` and stop on a no.

@@ -19,7 +19,6 @@ const ROOT_CONTEXT_PATHS = [
 
 const SPEC_PATH = /^docs\/specs\/(\d{3})-[a-z0-9-]+\.md$/u
 const DECISION_PATH = /^docs\/decisions\/(\d{4})-[a-z0-9-]+\.md$/u
-const SKILL_SKILL_MD = /^skills\/[a-z][a-z0-9-]{0,63}\/SKILL\.md$/u
 
 export const hasAlignmentExemptLabel = ({ prLabels = [] }) =>
   prLabels.some((label) => label.trim().toLowerCase() === 'alignment-exempt')
@@ -72,14 +71,6 @@ export function evaluatePrAlignment({
   const files = normalizeChanged(changedFiles)
   const labelExempt = hasAlignmentExemptLabel({ prLabels })
   const docsOnly = hasDocsOnlyMarker({ prBody }) && isRootContextOnly({ changedFiles: files })
-  const fileSet = new Set(files)
-
-  const skillSkillMd = files.filter((f) => SKILL_SKILL_MD.test(f))
-  if (skillSkillMd.length && !fileSet.has('tests/smoke-contracts.test.mjs') && !labelExempt) {
-    errors.push(
-      `Skill contract change (${skillSkillMd.join(', ')}): update tests/smoke-contracts.test.mjs or add label alignment-exempt.`,
-    )
-  }
 
   for (const file of files.filter((f) => f.startsWith('skills/') && f.endsWith('.md'))) {
     errors.push(...validateSkillMarkdownRefs({ repoRoot, filePath: file }))
@@ -118,7 +109,7 @@ export function evaluatePrAlignment({
     if (!text.includes(slug)) errors.push(`${file}: new decision record should update docs/decisions/README.md or use alignment-exempt.`)
   }
 
-  if (files.some((f) => f.startsWith('skills/')) && !files.includes('docs/skills.md') && skillSkillMd.length) {
+  if (files.some((f) => /^skills\/[a-z][a-z0-9-]{0,63}\/SKILL\.md$/u.test(f)) && !files.includes('docs/skills.md')) {
     warnings.push('skills/ changed including SKILL.md; consider updating docs/skills.md if catalog descriptions changed.')
   }
 

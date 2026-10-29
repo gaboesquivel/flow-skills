@@ -31,11 +31,11 @@ The first time a delivery skill needs to know, Flow asks one question: **GitHub 
 | | Local | GitHub |
 | --- | --- | --- |
 | Needs | Git only. Works with GitLab, Bitbucket, or no remote at all. | Git plus a GitHub repository and access to it. |
-| Spec | A file on its feature branch. | The same file, plus a [spec issue](GLOSSARY.md#spec-issue) that copies it, opened when you accept the spec. |
-| Tasks | A checklist in the spec's Tasks section. | The same checklist, plus sub-issues of the spec issue with blocking links. |
-| "Build it" | Runs the checks and the review, then merges the work's branch into your local `main`. Nothing is pushed. | Runs the checks and opens one pull request for the work with green CI. |
-| "Ship it" | Pushes `main` when a remote exists. | Reviews the pull request, waits for green checks, and merges it. |
-| Verification | Checks that the pushed commit is green and its deployment answers, or reports "deployment unverified" when there is none. | The same, on the merge commit. |
+| Spec | A file on its feature branch. | The same file, plus a [spec issue](GLOSSARY.md#spec-issue) that links to it, opened when the spec is accepted. |
+| Tasks | A checklist in the spec's Tasks section. | The same checklist; sub-issues only when you ask. |
+| "Build it" | Runs the suite once and any review the change needs, then merges the work's branch into your local `main`. Nothing is pushed. | Opens one pull request for the work; CI checks it. |
+| "Ship it" | Pushes `main` when a remote exists. | Waits for green checks once, reviews only large or risky changes, and merges. |
+| Verification | Checks that the change is live: the remote `main` is the shipped commit, or the app's production URL answers. | The same, on the merge commit. |
 
 Pick local when you work alone, use another Git host, or want nothing published. Pick GitHub when your team reviews in pull requests or your default branch requires them; Flow detects that protection and uses GitHub mode without asking. To use the other mode for one run, say so: "build it local" or "ship it with GitHub". The full rule lives in [`build`](skills/build/SKILL.md#delivery-mode); the glossary defines [delivery mode](GLOSSARY.md#delivery-mode).
 

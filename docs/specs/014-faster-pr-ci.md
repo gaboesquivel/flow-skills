@@ -10,7 +10,7 @@ A maintainer who opens or updates a pull request waits up to ten minutes for CI,
 
 1. **Pull requests run one validate job:** `ubuntu-latest` with Node 22, the minimum in `engines`.
 2. **Pushes to `main` keep the full matrix:** ubuntu and macOS, Node 22 and 24. Platform or runtime breakage surfaces after merge instead of blocking every PR.
-3. **Drop the standalone `npx --yes skills@latest --version` step.** [distribution.test.mjs](../../tests/distribution.test.mjs) already runs `skills@latest add`.
+3. **Drop the standalone `npx --yes skills@latest --version` step.** [skills-cli.test.mjs](../../tests/release/skills-cli.test.mjs) (since spec 031, a release-only test) already runs `skills@latest add`.
 4. **Bound every job with `timeout-minutes`**, so a stuck runner or LLM call fails instead of hanging.
 5. **The `main` ruleset requires** `alignment`, `context-review`, and `validate (ubuntu-latest, 22)`. The other three matrix contexts are no longer required.
 

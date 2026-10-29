@@ -34,11 +34,11 @@ Retired. Earlier records call it **process depth**: a Lite or Full setting recor
 
 ## Spec
 
-One bet: a numbered document that tests one assumption and ships as one unit, with tasks as the slices inside it. A bet that depends on how another one does gets its own spec, stubbed as a [candidate](#candidate-spec) until its turn. Its `Status:` line moves `candidate → draft → accepted → implemented`: `to-spec` writes drafts without asking first and sets `accepted` when the user approves the spec ("accept the spec"), moving its linked decision records from **Proposed** to **Accepted**; `build` sets `implemented` on an accepted spec once its last task integrates, and `ship` lands only accepted specs, setting `implemented` if still missing. In both delivery modes the file is written on the spec's feature branch, never alone on the default branch, and merges with the work (local-mode candidate stubs excepted). In GitHub mode a [spec issue](#spec-issue) carries the same state as a label, and the `accepted` label is the gate. [`to-spec`](skills/to-spec/SKILL.md) owns the rules; decisions [0028](docs/decisions/0028-build-and-ship.md) and [0029](docs/decisions/0029-spec-issues.md).
+One bet: a numbered document that tests one assumption and ships as one unit, with tasks as the slices inside it. A bet that depends on how another one does gets its own spec, stubbed as a [candidate](#candidate-spec) until its turn. Its `Status:` line moves `candidate → draft → accepted → implemented`: `to-spec` writes drafts without asking first and sets `accepted` when the user approves the spec ("accept the spec", or "build it" or "ship it" on a draft), moving its linked decision records from **Proposed** to **Accepted**; `build` sets `implemented` in its last commit, and `ship` sets it if still missing. In both delivery modes the file is written on the spec's feature branch, never alone on the default branch, and merges with the work (local-mode candidate stubs excepted). In GitHub mode a [spec issue](#spec-issue) carries the same state as a label. [`to-spec`](skills/to-spec/SKILL.md) owns the rules; decisions [0028](docs/decisions/0028-build-and-ship.md) and [0029](docs/decisions/0029-spec-issues.md).
 
 ## Spec issue
 
-In GitHub mode, the GitHub issue for a [spec](#spec): a one-way copy of the spec file, written only by skills, labelled `candidate`, `draft`, or `accepted`. It opens at acceptance: "spec it" publishes nothing, "accept the spec" opens it labelled `accepted`, and "share the draft" opens it early as `draft`. The spec's tasks are its sub-issues, with blocking links; the pull request that delivers the spec closes them all. The file stays the source of truth. [`to-spec`](skills/to-spec/SKILL.md#spec-issue) owns the rules; decisions [0029](docs/decisions/0029-spec-issues.md) and [0035](docs/decisions/0035-spec-issue-on-acceptance.md).
+In GitHub mode, the GitHub issue for a [spec](#spec): a one-line body linking the spec file, labelled `candidate`, `draft`, or `accepted`; relabelling is its only update. It opens at acceptance: "spec it" publishes nothing, acceptance opens it labelled `accepted`, and "share the draft" opens it early as `draft`. Tasks stay a checklist in the file; sub-issues open only on request. The file is the source of truth. [`to-spec`](skills/to-spec/SKILL.md#spec-issue) owns the rules; decisions [0029](docs/decisions/0029-spec-issues.md) and [0035](docs/decisions/0035-spec-issue-on-acceptance.md).
 
 ## Exposure
 
@@ -54,7 +54,7 @@ A portable `skills/<name>/SKILL.md` package in the Flow Skills distribution. Use
 
 ## Delivery mode
 
-How `build` delivers work and `ship` lands it in a project: **local** (tasks as the spec's checklist; `build` reviews the spec branch and merges it into local `main`, and "ship it" pushes `main` when a remote exists; needs no remote) or **GitHub** (`Delivery: github`; formerly `pull-request`), with a [spec issue](#spec-issue) with tasks as sub-issues, one pull request per spec that `ship` merges, and GitHub access needed. Either way `ship` then runs [verification](#verification). Asked once as **Delivery** the first time a delivery-chain skill needs it (never by a thinking skill), the only setup question, and recorded as the [Flow block](#flow-block)'s `Delivery:` line; a default branch that requires pull requests is reported, not asked. The rule lives in [`build`](skills/build/SKILL.md#delivery-mode); decisions [0020](docs/decisions/0020-flow-mode.md), [0028](docs/decisions/0028-build-and-ship.md), [0029](docs/decisions/0029-spec-issues.md), [0030](docs/decisions/0030-asked-delivery-and-local-mode.md), [0032](docs/decisions/0032-local-build-lands-ship-verifies.md), [0036](docs/decisions/0036-one-explore-depth.md), and [0037](docs/decisions/0037-git-for-delivery-github-for-github-mode.md) record why. What each mode needs from the environment: [requirements](PRODUCT.md#install-and-catalog).
+How `build` delivers work and `ship` lands it in a project: **local** (tasks as the spec's checklist; `build` reviews the spec branch and merges it into local `main`, and "ship it" pushes `main` when a remote exists; needs no remote) or **GitHub** (`Delivery: github`; formerly `pull-request`), with a [spec issue](#spec-issue), one pull request per spec that `ship` merges, and GitHub access needed. Either way `ship` then runs [verification](#verification). Asked once as **Delivery** the first time a delivery-chain skill needs it (never by a thinking skill), the only setup question, and recorded as the [Flow block](#flow-block)'s `Delivery:` line; a default branch that requires pull requests is reported, not asked. The rule lives in [`build`](skills/build/SKILL.md#delivery-mode); decisions [0020](docs/decisions/0020-flow-mode.md), [0028](docs/decisions/0028-build-and-ship.md), [0029](docs/decisions/0029-spec-issues.md), [0030](docs/decisions/0030-asked-delivery-and-local-mode.md), [0032](docs/decisions/0032-local-build-lands-ship-verifies.md), [0036](docs/decisions/0036-one-explore-depth.md), and [0037](docs/decisions/0037-git-for-delivery-github-for-github-mode.md) record why. What each mode needs from the environment: [requirements](PRODUCT.md#install-and-catalog).
 
 ## Flow block
 
@@ -62,19 +62,11 @@ The removable section between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->` that
 
 ## Unspecced work
 
-Work that resolves to no spec or task, from a one-line fix to a feature built from an `explore` brief. It never needs a spec. "Build it" gives it the full local check suite, then lands it as the [delivery mode](#delivery-mode) does. A size guard picks the review and never stops the work: one self-check against the request for small work, or the one independent review when the guard escalates it. [`build`](skills/build/SKILL.md#unspecced-work) owns the guard; decisions [0034](docs/decisions/0034-no-ceremony-without-a-spec.md) and [0039](docs/decisions/0039-build-never-requires-a-spec.md).
-
-## Shared file
-
-A file the project's instructions tell every session to append to, such as a prompt log. Only the orchestrator writes it, on the work's branch; commits that change only shared files after the review do not move the reviewed head. [`build`](skills/build/SKILL.md#shared-files) owns the rule; [decision 0033](docs/decisions/0033-shared-files-and-reviewed-head.md).
+Work that resolves to no spec or task, from a one-line fix to a feature built from an `explore` brief. It never needs a spec. "Build it" lands it as the [delivery mode](#delivery-mode) does, with checks once at pull request time (CI in GitHub mode, the local suite once before the merge in local mode). A size guard picks the review and never stops the work: one self-check against the request for small work, or the one independent review when the guard escalates it. [`build`](skills/build/SKILL.md#unspecced-work) owns the guard; decisions [0034](docs/decisions/0034-no-ceremony-without-a-spec.md) and [0039](docs/decisions/0039-build-never-requires-a-spec.md).
 
 ## Area
 
 A task's `Area:` line: every package or directory it changes, comma-separated when there are several (such as `lib/feedback/connect, app/opportunities`), coarse and never a file path. [`to-tasks`](skills/to-tasks/SKILL.md) assigns it. [`build`](skills/build/SKILL.md#task-set) uses it to keep tasks that change the same files from landing as if they were independent. [Decision 0031](docs/decisions/0031-fan-out-by-default.md); [spec 026](docs/specs/026-clean-baseline-and-worktrees.md); amended by [decision 0042](docs/decisions/0042-outcome-build-and-ship.md) and [spec 028](docs/specs/028-outcome-build-and-ship.md).
-
-## Baseline failure
-
-A check that already fails on a spec's head before any task runs, or a later batch failure that bisect traces to no task. [`build`](skills/build/SKILL.md#task-set) stops on it before changing the spec branch. [Spec 026](docs/specs/026-clean-baseline-and-worktrees.md); amended by [decision 0042](docs/decisions/0042-outcome-build-and-ship.md) and [spec 028](docs/specs/028-outcome-build-and-ship.md).
 
 ## Frontier
 
@@ -82,7 +74,7 @@ The tasks of a spec's task set whose blockers have all integrated. `build` may s
 
 ## Checkpoint
 
-A progress report `build` may post when it has something to report: tasks integrated, running, and blocked, the local suite result, the commit, and screenshots when the host has a browser tool. A pull request comment in GitHub mode, a message in local mode. A posted checkpoint waits for CI or the user only when the user asked; CI is waited on only for the final pull request. Decisions [0025](docs/decisions/0025-wave-checkpoints.md), [0029](docs/decisions/0029-spec-issues.md), and [0042](docs/decisions/0042-outcome-build-and-ship.md); [spec 028](docs/specs/028-outcome-build-and-ship.md).
+A progress report `build` may post when it has something to report: tasks integrated, running, and blocked, the local suite result, the commit, and screenshots when the host has a browser tool. A pull request comment in GitHub mode, a message in local mode. `build` never waits on CI; `ship` waits once, on the head it merges. Decisions [0025](docs/decisions/0025-wave-checkpoints.md), [0029](docs/decisions/0029-spec-issues.md), and [0042](docs/decisions/0042-outcome-build-and-ship.md); [spec 028](docs/specs/028-outcome-build-and-ship.md).
 
 ## Acceptance scenario
 
@@ -90,11 +82,11 @@ The one representative end-to-end journey a spec names in its Testing Decisions:
 
 ## Requirement verdict
 
-The status a spec review gives each of the spec's user stories, acceptance criteria, and acceptance scenario steps: **satisfied**, **unmet**, or **unresolved**, with cited evidence. No evidence means unresolved; unmet is a blocking finding in review. [`review`](skills/review/SKILL.md#inspect) owns the rule; [spec 022](docs/specs/022-requirement-verdicts.md).
+The status a spec review gives each step of the spec's acceptance scenario: **satisfied**, **unmet**, or **unresolved**, with cited evidence. No evidence means unresolved; unmet blocks the merge. Other unmet requirements are ordinary findings. [`review`](skills/review/SKILL.md#inspect) owns the rule; [spec 022](docs/specs/022-requirement-verdicts.md).
 
 ## Verification
 
-What `ship` does once after the merge or push: confirm the shipped commit's checks are green on GitHub, its deployment succeeded, and its environment URL answers with a 2xx. It runs no scenario or browser. With no deployment it reports **deployment unverified**; a failure is **shipped, verification failed**, and nothing is rolled back unless asked. [`ship`](skills/ship/SKILL.md#verify) owns the rule; decisions [0032](docs/decisions/0032-local-build-lands-ship-verifies.md) and [0040](docs/decisions/0040-ship-verifies-liveness.md).
+What `ship` does once after the merge or push: confirm the change is live. With no deployment, the remote default branch's head is the shipped commit; for an app, one unauthenticated request to the production URL (and its health route, when present) answers 2xx. It runs no tests, scenario, or browser, reports, and never gates or rolls back unless asked. [`ship`](skills/ship/SKILL.md#verify) owns the rule; decisions [0032](docs/decisions/0032-local-build-lands-ship-verifies.md), [0040](docs/decisions/0040-ship-verifies-liveness.md), and [0044](docs/decisions/0044-fast-delivery.md).
 
 ## Candidate spec
 

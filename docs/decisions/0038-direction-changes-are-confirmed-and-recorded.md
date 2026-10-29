@@ -1,6 +1,6 @@
 # 0038 — Direction changes are confirmed and recorded
 
-Status: **Accepted** (2026-10-28). Amends the decisions [README](README.md) rule that accepted records are immutable. Spec: [024](../specs/024-direction-change-gate.md).
+Status: **Accepted** (2026-10-28). Amends the decisions [README](README.md) rule that accepted records are immutable. Spec: [024](../specs/024-direction-change-gate.md). Amended by [0044](0044-fast-delivery.md) (the decisions reader checks the current branch only; no scan of unmerged branches).
 
 ## Context
 

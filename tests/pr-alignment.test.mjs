@@ -27,20 +27,12 @@ test('hasAlignmentEscape respects label and a root-only docs-only line', () => {
   assert.equal(hasAlignmentEscape({ prLabels: [], prBody: 'no marker' }), false)
 })
 
-test('skill SKILL.md change requires smoke-contracts update', () => {
+test('skill SKILL.md change needs no test-file edit', () => {
   const { errors } = evaluatePrAlignment({
     changedFiles: ['skills/review/SKILL.md'],
     repoRoot: root,
   })
-  assert.ok(errors.some((e) => /smoke-contracts/u.test(e)))
-})
-
-test('skill SKILL.md with smoke-contracts update passes contract rule', () => {
-  const { errors } = evaluatePrAlignment({
-    changedFiles: ['skills/review/SKILL.md', 'tests/smoke-contracts.test.mjs'],
-    repoRoot: root,
-  })
-  assert.equal(errors.filter((e) => /smoke-contracts/u.test(e)).length, 0)
+  assert.deepEqual(errors, [])
 })
 
 test('stale catalog ship pipeline phrase fails alignment on touched catalog file', () => {
@@ -91,17 +83,7 @@ test('quoted docs-only marker does not exempt a mixed pull request', () => {
     prBody: 'See the contract: Alignment: docs-only is only for root docs.',
     repoRoot: root,
   })
-  assert.ok(errors.some((e) => /smoke-contracts/u.test(e)))
   assert.ok(errors.some((e) => /Root context/u.test(e)))
-})
-
-test('docs-only line does not exempt skill contract changes', () => {
-  const { errors } = evaluatePrAlignment({
-    changedFiles: ['GLOSSARY.md', 'skills/review/SKILL.md'],
-    prBody: 'Alignment: docs-only',
-    repoRoot: root,
-  })
-  assert.ok(errors.some((e) => /smoke-contracts/u.test(e)))
 })
 
 test('new spec must be named in the specs index even when the index changes', () => {
