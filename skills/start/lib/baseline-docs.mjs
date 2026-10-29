@@ -30,6 +30,10 @@ The repository ships the template application shell: public routes (\`/\`, \`/ge
 
 The UI inherits the ${template} template: a minimal home page, GenUI playground at \`/genui\`, and developer links at \`/dev\`. Replace the home experience when the product direction is known.
 
+## Visual identity
+
+Not chosen yet. Say "design this" to compare directions and record the approved one here; product intent stays in \`PRODUCT.md\`.
+
 ## Constraints carried from the template
 
 - Operator and protected MCP require \`OPERATOR_SECRET\` (minimum 16 characters) and fail closed when unset.

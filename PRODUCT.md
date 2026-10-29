@@ -102,7 +102,7 @@ flow-skills offers a small catalog: **context alignment** (`flow`) for root cont
 | Tier | Skills or features | Needs |
 | --- | --- | --- |
 | Thinking | `grill`, `interview`, `council`, `jtbd`, `competitors`, `align`, `measure`, `domain-modeling`, `debug`, `tldr`, `write-humans`, `write-agents`, `retro`, `handoff`, `prototype` | Nothing: any folder, or none |
-| Delivery chain | `flow` (the Flow block), `start`, `explore`, `to-spec`, `to-tasks`, `build`, `review`, `ship`, `push`, `board` | A Git repository; outside one, the skill offers `git init` and stops on a no |
+| Delivery chain | `flow` (the Flow block), `start`, `explore`, `design` (recording), `to-spec`, `to-tasks`, `build`, `review`, `ship`, `push`, `board` | A Git repository; outside one, the skill offers `git init` and stops on a no |
 | GitHub mode | Pull requests and CI; issues only on request | GitHub access (an authenticated `gh`), on top of Git |
 
 Local delivery needs only Git, so the whole chain works with GitLab, Bitbucket, or no remote. No skill asks the delivery mode; delivery skills infer it ([decision 0044](docs/decisions/0044-fast-delivery.md)). Thinking skills may read Git when it exists.
@@ -112,6 +112,7 @@ Local delivery needs only Git, so the whole chain works with GitLab, Bitbucket, 
 | Context alignment | [`flow`](skills/flow/SKILL.md) — align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md` where hosts support discovery, and set up Flow: the opt-in [Flow block](GLOSSARY.md#flow-block), which can override the inferred [delivery mode](GLOSSARY.md#delivery-mode). Not always-on, and not template initialization. |
 | Delivery | `explore`, `interview`, `grill`, `to-spec`, `to-tasks`, `build`, `review`, `ship`, `push`, `retro` |
 | Advisory | `council` |
+| Design | `design` |
 | Prototype | `prototype` |
 | Shared language | `domain-modeling` |
 | Quality | `debug` |
@@ -134,12 +135,12 @@ Opt-in conversational delivery ([decision 0020](docs/decisions/0020-flow-mode.md
 
 | Chain stage | How the current catalog supports it |
 | --- | --- |
-| Product thinking | `explore`, `interview`, `grill`, `jtbd`, `competitors`, `council`; `flow` keeps product intent in root docs |
+| Product thinking | `explore`, `interview`, `grill`, `jtbd`, `competitors`, `council`, `design` (visual direction before building); `flow` keeps product intent in root docs |
 | Engineering discipline | `to-spec`, `to-tasks`, `domain-modeling`, `write-agents`, `write-humans`, `prototype`, `debug`; specs and decisions as flat durable artifacts |
 | Agent execution | `build` (outcomes and proofs for an implementation, in either delivery mode), `ship`, `push`; portable packages with no mandatory router |
 | Verified value | `review`, `ship`, `retro`, `tldr`, `board`, `align`, `measure`; evidence, alignment, visual summaries, a read-only progress view derived from git, a product-wide check against vision and metrics, and evidence-based metric results |
 
-Further catalog growth needs its own decision. [0013](docs/decisions/0013-restore-engineering-skills.md) restored `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug`. [0014](docs/decisions/0014-handoff-skill.md) adds `handoff`. [0015](docs/decisions/0015-tasks-and-domain-modeling.md) renames `to-tasks` and restores `domain-modeling`. [0019](docs/decisions/0019-voice-first-invocation.md) retires `simplify`, `security`, and `performance` in favor of host tools. [0027](docs/decisions/0027-progress-board-skill.md) adds `board`. [0041](docs/decisions/0041-align-skill.md) adds `align`. [0046](docs/decisions/0046-measurement-assistance.md) adds `measure`.
+Further catalog growth needs its own decision. [0013](docs/decisions/0013-restore-engineering-skills.md) restored `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug`. [0014](docs/decisions/0014-handoff-skill.md) adds `handoff`. [0015](docs/decisions/0015-tasks-and-domain-modeling.md) renames `to-tasks` and restores `domain-modeling`. [0019](docs/decisions/0019-voice-first-invocation.md) retires `simplify`, `security`, and `performance` in favor of host tools. [0027](docs/decisions/0027-progress-board-skill.md) adds `board`. [0041](docs/decisions/0041-align-skill.md) adds `align`. [0046](docs/decisions/0046-measurement-assistance.md) adds `measure`. [0051](docs/decisions/0051-design-skill.md) adds `design`.
 
 ### Open choices
 

@@ -22,7 +22,7 @@ Keep implementation correctness and evidence of customer value distinct. A worki
 
 Choose design priorities from what people need to do on each page or screen: decide and act, complete a task, understand information, or explore an experience.
 
-Keep shared visual decisions in DESIGN.md and page-specific intent in a small brief when needed. These practices are adapted from [Impeccable](research/2026-10-19-impeccable.md).
+Keep shared visual decisions in DESIGN.md and page-specific intent in a small brief when needed. When the look is not settled, the [`design`](../skills/design/SKILL.md) skill compares rendered directions and records the one the user chooses. These practices are adapted from [Impeccable](research/2026-10-19-impeccable.md).
 
 ## Maintain connected context
 
