@@ -1,6 +1,6 @@
 import { generateText, streamText } from "ai";
 
-import { CORS_HEADERS, corsPreflight, createRateLimiter, jsonError } from "@/lib/api";
+import { createRateLimiter, jsonError } from "@/lib/api";
 import {
   type AskMode,
   type AskResult,
@@ -20,10 +20,7 @@ export const maxDuration = 30;
 const limited = createRateLimiter({ limit: 10, name: "ask", windowSeconds: 60 });
 const MAX_OUTPUT_TOKENS = 700;
 
-export const OPTIONS = corsPreflight;
-
 const streamHeaders = (sources: AskSource[], mode: AskMode, model: string | null) => ({
-  ...CORS_HEADERS,
   "Cache-Control": "no-store",
   "Content-Type": "text/plain; charset=utf-8",
   "X-Content-Type-Options": "nosniff",
@@ -73,7 +70,7 @@ export async function POST(request: Request) {
         console.error("ask: generation failed, using extractive answer", error);
       }
     if (!result.answer) result.answer = extractiveAnswer(question, sources);
-    return Response.json(result, { headers: { ...CORS_HEADERS, "Cache-Control": "no-store" } });
+    return Response.json(result, { headers: { "Cache-Control": "no-store" } });
   }
 
   if (call) {

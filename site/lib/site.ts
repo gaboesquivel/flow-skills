@@ -16,6 +16,8 @@ export const NAV = [
 export const resolveSiteOrigin = (request?: Request | HeaderLike) => {
   const fromEnv = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   if (fromEnv) return fromEnv.replace(/\/$/u, "");
+  const production = process.env.VERCEL_ENV === "production" ? process.env.VERCEL_PROJECT_PRODUCTION_URL : undefined;
+  if (production) return `https://${production.replace(/^https?:\/\//u, "").replace(/\/$/u, "")}`;
   const headers = request && "headers" in request ? request.headers : request;
   const host = headers?.get("x-forwarded-host") ?? headers?.get("host");
   if (host) {

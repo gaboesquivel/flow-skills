@@ -73,6 +73,7 @@ const docBySource = new Map(DOCS.map((d) => [d.source, d]))
 const siteRouteFor = (repoPath) => {
   const doc = docBySource.get(repoPath)
   if (doc) return `/docs/${doc.slug}`
+  if (repoPath === 'skills' || repoPath === 'skills/') return '/skills'
   let m = repoPath.match(/^skills\/([a-z0-9-]+)\/SKILL\.md$/u)
   if (m && skillNames.includes(m[1])) return `/skills/${m[1]}`
   m = repoPath.match(/^skills\/([a-z0-9-]+)\/?$/u)
@@ -128,8 +129,17 @@ const render = (markdown, sourcePath, opts = {}) => {
         const html = marked.Renderer.prototype.table.call(this, token)
         return `<div class="table-wrap" role="region" aria-label="Table" tabindex="0">${html}</div>\n`
       },
+      // Raw HTML is shown as text, never rendered: starter READMEs come from other repositories.
+      html({ text, block }) {
+        const anchor = text.trim().match(/^<a id="([\w-]+)">(<\/a>)?$/u)
+        if (anchor) return `<a id="${anchor[1]}">${anchor[2] ?? ''}`
+        if (text.trim() === '</a>') return '</a>'
+        if (/^\s*<!--[\s\S]*-->\s*$/u.test(text)) return ''
+        return block ? `<p>${escapeHtml(text.trim())}</p>\n` : escapeHtml(text)
+      },
       link({ href, title, tokens }) {
         const inner = this.parser.parseInline(tokens)
+        if (!/^(?:https?:|mailto:|\/|#)/iu.test(href)) return inner
         const external = /^https?:/u.test(href)
         const t = title ? ` title="${escapeHtml(title)}"` : ''
         return external
@@ -151,7 +161,7 @@ const sections = (markdown) => {
   let inFence = false
   for (const line of markdown.split('\n')) {
     if (line.startsWith('```')) inFence = !inFence
-    const m = !inFence && line.match(/^(#{1,3})\s+(.*)$/u)
+    const m = !inFence && line.match(/^(#{2,3})\s+(.*)$/u)
     if (m) {
       out.push(current)
       current = { heading: plain(m[2]), lines: [] }

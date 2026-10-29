@@ -4,12 +4,10 @@ import type { ReactNode } from "react";
 import { distinctHeading } from "@/components/search/kinds";
 import type { Citation } from "@/lib/ask";
 
-/** Only site paths and https URLs become links; everything else renders as text. */
+/** Model output links only to site paths; anything else renders as text, so a prompt cannot plant outbound links. */
 export const safeHref = (href: string) => {
   const h = href.trim();
-  if (/^\/(?!\/)[^\s]*$/u.test(h)) return h;
-  if (/^https:\/\/[^\s]+$/iu.test(h)) return h;
-  return null;
+  return /^\/(?!\/)[^\s]*$/u.test(h) ? h : null;
 };
 
 const INLINE = /(\*\*([^*]+)\*\*|`([^`]+)`|\[([^\]]+)\]\(([^)\s]+)\)|\[(\d{1,2})\]|(?<![\p{L}\p{N}])_([^_]+)_(?![\p{L}\p{N}]))/gu;

@@ -60,13 +60,12 @@ export function SearchAskPanel({
   return (
     <div className={cn("overflow-hidden rounded-2xl border border-line-strong bg-panel-raised/80 shadow-[0_30px_80px_-40px_rgb(167_139_250/0.35)]", className)}>
       <div className="flex items-center justify-between gap-3 border-b border-line-strong px-4 py-3 sm:px-5">
-        <div role="radiogroup" aria-label="Mode" className="flex gap-1.5">
+        <div role="group" aria-label="Mode" className="flex gap-1.5">
           {tabs.map((t) => (
             <button
               key={t.id}
               type="button"
-              role="radio"
-              aria-checked={mode === t.id}
+              aria-pressed={mode === t.id}
               onClick={() => {
                 setMode(t.id);
                 onModeChange?.(t.id, query);

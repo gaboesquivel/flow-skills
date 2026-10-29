@@ -13,11 +13,12 @@ import {
   skillsInCatalogOrder,
   sourceUrl,
 } from "@/lib/content";
+import { mcpToolCatalog } from "@/lib/mcp/tool-catalog";
 import { search } from "@/lib/search";
 import { type Starter, starters } from "@/lib/starters";
 import { absolutizeMarkdown, SITE_DESCRIPTION } from "@/lib/site";
 
-export const MCP_TOOLS = ["search_flow", "list_skills", "get_skill", "get_doc", "ask_flow"] as const;
+export const MCP_TOOLS = mcpToolCatalog.map((t) => t.name);
 
 /** Site path for a guide or decision slug. */
 export const docPath = (doc: Pick<Doc, "slug">) => `/docs/${doc.slug}`;
