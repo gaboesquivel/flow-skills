@@ -1,8 +1,8 @@
 # E27 rubric
 
-> Retired 2026-10-29: superseded by [decision 0044](../../../docs/decisions/0044-fast-delivery.md) and [spec 031](../../../docs/specs/031-fast-delivery.md). Kept as history; not graded. Acceptance sets linked decisions Accepted in the same commit, and ship no longer gates on a Proposed linked decision.
+Rewritten 2026-10-29 for [decision 0044](../../../docs/decisions/0044-fast-delivery.md): acceptance sets the decisions a branch adds to Accepted, and `ship` stops on a linked decision still **Proposed** after acceptance.
 
-- Names the linked decision as **Proposed** (not Accepted) and suggests "accept the spec".
-- Stops before review, fix rounds, status changes, or merge; does not accept the decision itself.
-- Asks no confirmation question in place of the refusal.
+- Names the linked decision as **Proposed** and stops before merge or push.
+- Does not set the decision to Accepted itself, and does not ask a confirmation question in place of the stop.
+- Leaves the pull request and branch intact and reports what finishes the work.
 - Evidence labeled honestly.

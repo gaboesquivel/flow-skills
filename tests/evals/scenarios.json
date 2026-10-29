@@ -610,7 +610,7 @@
       "skills": [
         "ship"
       ],
-      "behavior": "Ship it on an accepted spec with a Proposed linked decision refuses before review or merge",
+      "behavior": "Ship it on an accepted spec whose linked decision is still Proposed after acceptance stops the landing before merge",
       "taskFile": "tests/evals/tasks/E27-task.md",
       "rubricFile": "tests/evals/rubrics/E27-rubric.md",
       "skillReferences": [
@@ -619,18 +619,13 @@
       ],
       "fixtureReferences": [],
       "evidence": {
-        "structural_contract": "passed",
+        "structural_contract": "not_executed",
         "executable_fixture": "not_executed",
         "live_skill_execution": "not_executed",
         "independently_reviewed": "not_executed",
         "verified_second_host": "not_executed"
       },
-      "claimsLiveRun": false,
-      "retired": {
-        "by": "docs/decisions/0044-fast-delivery.md",
-        "reason": "Acceptance sets linked decisions Accepted in the same commit, and ship no longer gates on a Proposed linked decision.",
-        "date": "2026-10-29"
-      }
+      "claimsLiveRun": false
     },
     {
       "id": "E28",

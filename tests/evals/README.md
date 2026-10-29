@@ -36,4 +36,4 @@ Never run competing writing agents against the user's active workspace.
 
 ## Records
 
-Live and manual runs: [records/](records/). Latest live slice: [2026-10-28 spec 028 partial](records/2026-10-28-spec-028-live-partial.md). Structural index: [scenario-status.md](scenario-status.md).
+Live and manual runs: [records/](records/). Latest live run: [2026-10-29 parallel workflow](records/2026-10-29-parallel-workflow-live.md). Structural index: [scenario-status.md](scenario-status.md).

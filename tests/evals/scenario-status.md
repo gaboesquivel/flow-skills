@@ -28,7 +28,7 @@
 | E24 | start, explore | rewritten | not_executed | not_executed | not_executed | not_executed |
 | E25 | explore, to-spec | rewritten | not_executed | not_executed | not_executed | not_executed |
 | E26 | ship | retired | passed | not_executed | passed | not_executed |
-| E27 | ship | retired | passed | not_executed | not_executed | not_executed |
+| E27 | ship | rewritten | not_executed | not_executed | not_executed | not_executed |
 | E28 | ship, to-spec | rewritten | not_executed | not_executed | not_executed | not_executed |
 | E29 | to-spec | retired | not_executed | not_executed | not_executed | not_executed |
 | E30 | explore, build | rewritten | not_executed | not_executed | not_executed | not_executed |
@@ -47,4 +47,4 @@
 
 Live column: [2026-10-27-cursor-live.md](records/2026-10-27-cursor-live.md) (E03, E07, E08, Cursor) and [2026-10-28-spec-028-live-partial.md](records/2026-10-28-spec-028-live-partial.md) (E26, Cursor, recorded before retirement). Structural and fixture columns reflect `pnpm test` and `pnpm eval:check`. Second host still open.
 
-Structural results still marked passed were recorded before spec 031 from skill-wording pins it removed; `tests/smoke-contracts.test.mjs` now checks safety rules by keyword only. Spec 031 retired five scenarios: E26 and E27 (ship refusing a draft or a Proposed linked decision; drafts are now accepted on "ship it"), E29 (spec issue sync; there is no spec issue), E35 (build landing on local `main`; `ship` lands in both modes), and E38 (a baseline suite before integrating tasks; checks run once, in `ship`). Sixteen were rewritten to current behavior, keeping their safety coverage (no force-push, no self-approval, authorization boundaries, zero lost work). E40 covers the parallel-first task set and build's Work in flight; its live run is not yet recorded.
+Structural results still marked passed were recorded before spec 031 from skill-wording pins it removed; `tests/smoke-contracts.test.mjs` now checks safety rules by keyword only. Spec 031 retired four scenarios: E26 (ship refusing a draft; drafts are now accepted on "ship it"), E29 (spec issue sync; there is no spec issue), E35 (build landing on local `main`; `ship` lands in both modes), and E38 (a baseline suite before integrating tasks; checks run once, in `ship`). Seventeen were rewritten to current behavior, including E27 (ship stops on a linked decision still Proposed after acceptance), keeping their safety coverage (no force-push, no self-approval, authorization boundaries, zero lost work). E40 covers the parallel-first task set and build's Work in flight; [2026-10-29-parallel-workflow-live.md](records/2026-10-29-parallel-workflow-live.md) records a real run that covered its worktree, shared-checkout, and containment items but not its dependent or unfinished task, so its live result stays `not_executed`.

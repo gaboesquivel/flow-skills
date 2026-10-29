@@ -6,8 +6,8 @@ Starting state after `build` (simulated):
 
 - Flow block `Delivery: local`
 - Accepted spec with an acceptance scenario
-- Local `main` holds the reviewed merge; working tree clean
-- GitHub remote present; pipeline reports checks and deployments (see [MOCK-GITHUB.md](MOCK-GITHUB.md) for the three `ship it` cases)
+- The accepted spec's branch is committed and ready (`build` never merges; `ship` lands it); working tree clean
+- GitHub remote present; pipeline reports checks and deployments (see [MOCK-GITHUB.md](MOCK-GITHUB.md) for the `ship it` cases)
 
 Setup:
 
@@ -20,4 +20,4 @@ git remote add origin git@github.com:example/e34-fixture.git
 
 Do **not** commit a `.git` directory inside this folder into flow-skills; init only in a throwaway copy or delete `.git` before committing fixture files upstream.
 
-Prompt three times per [E34-task.md](../../evals/tasks/E34-task.md), using mock responses from MOCK-GITHUB.md.
+Prompt once per case in [E34-task.md](../../evals/tasks/E34-task.md), using mock responses from MOCK-GITHUB.md.
