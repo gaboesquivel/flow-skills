@@ -1,6 +1,6 @@
 # 039 — Design skill
 
-Status: accepted (2026-10-29). Decision: [0051](../decisions/0051-design-skill.md).
+Status: implemented (2026-10-29). Decision: [0051](../decisions/0051-design-skill.md).
 
 ## Problem Statement
 

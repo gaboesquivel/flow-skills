@@ -107,6 +107,7 @@ Details and links to every `SKILL.md`: **[docs/skills.md](docs/skills.md)**.
 | Context alignment | `flow` |
 | Delivery | `explore`, `interview`, `grill`, `to-spec`, `to-tasks`, `build`, `review`, `ship`, `retro` |
 | Advisory | `council` |
+| Design | `design` |
 | Prototype | `prototype` |
 | Shared language | `domain-modeling` |
 | Quality | `debug` |

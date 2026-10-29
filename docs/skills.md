@@ -14,7 +14,7 @@ Talk to your agent, by typing or dictation. Each skill has a [leading word](../G
 
 The delivery skills and the paths between them are drawn in the README: [how it works](../README.md#how-it-works). Every step is skippable; there is no required order.
 
-Product discovery, writing, advisory, prototype, quality, and misc skills are optional and do not block delivery.
+Product discovery, writing, advisory, design, prototype, quality, and misc skills are optional and do not block delivery.
 
 ## Context alignment
 
@@ -49,11 +49,17 @@ Product discovery, writing, advisory, prototype, quality, and misc skills are op
 | --- | --- | --- |
 | [council](../skills/council/SKILL.md) | "ask the council" | Independent perspectives on a consequential decision. It does not implement or approve. |
 
+## Design
+
+| Skill | Say | When to use |
+| --- | --- | --- |
+| [design](../skills/design/SKILL.md) | "design this" | Compare two to four rendered visual directions against `PRODUCT.md`, choose one, and record it with its canonical assets in `DESIGN.md`. Skip it when a change fits the existing `DESIGN.md` ([decision 0051](decisions/0051-design-skill.md)). |
+
 ## Prototype
 
 | Skill | Say | When to use |
 | --- | --- | --- |
-| [prototype](../skills/prototype/SKILL.md) | "prototype this" | Build a throwaway experiment for a design, interaction, API, or logic question. |
+| [prototype](../skills/prototype/SKILL.md) | "prototype this" | Build a throwaway experiment for an interaction, layout, API, or logic question. |
 
 ## Quality
 

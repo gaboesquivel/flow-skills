@@ -89,4 +89,4 @@ With an authorized GitHub repository, push the initial commit to it; push nowher
 
 ## Completion
 
-Report the template and its commit SHA, destination, preserved and skipped files, slug and host, files created or updated, the Flow block (file, tracked, imports), each check, the initial commit SHA, the governance report (verified, unsupported, missing permissions), the deployment URL or that none is configured, and blockers. Report the bootstrap lane when it finishes, without interrupting an open exploration question.
+Report the template and its commit SHA, destination, preserved and skipped files, slug and host, files created or updated, the Flow block (file, tracked, imports), each check, the initial commit SHA, the governance report (verified, unsupported, missing permissions), the deployment URL or that none is configured, and blockers. Report the bootstrap lane when it finishes, without interrupting an open exploration question. After the first deployment, name "design this" once as an optional way to choose the product's visual identity; it never delays the bootstrap.
