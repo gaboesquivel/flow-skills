@@ -26,18 +26,19 @@ The rules Flow follows in a project live in Git too. "Set up Flow here" writes o
 
 ## Local or GitHub delivery
 
-Local and GitHub are delivery options, not separate methodologies: the skills, phrases, and steps are the same, and only where the work lands differs. Flow never asks which one. It uses GitHub when `origin` is a GitHub repository and `gh` is signed in, and local otherwise; a default branch that requires pull requests always gets GitHub ([decision 0044](docs/decisions/0044-fast-delivery.md)).
+Local and GitHub are delivery options, not separate methodologies: the skills, phrases, and steps are the same, and only where the work lands differs. Flow never asks which one. It uses GitHub when `origin` is a GitHub repository, and stops until `gh` is signed in rather than falling back; local otherwise. A default branch that requires pull requests always gets GitHub (decisions [0044](docs/decisions/0044-fast-delivery.md), [0047](docs/decisions/0047-delivery-phrases-are-approvals.md)).
 
 | | Local | GitHub |
 | --- | --- | --- |
 | Needs | Git only. Works with GitLab, Bitbucket, or no remote at all. | Git plus a GitHub repository and an authenticated `gh`. |
 | Spec | A file on its feature branch. | The same file; the pull request links it. |
 | Tasks | A checklist in the spec's Tasks section. | The same checklist. |
-| "Build it" | Ends with the work committed on its branch. | Ends with an open pull request whose body links the spec file. Never waits on CI. |
-| "Ship it" | Runs the suite once on the merge result, merges into `main`, and pushes when a remote exists. | Waits for CI once and merges the pull request. |
-| Verification | The remote `main` contains the shipped commit; for an app, the production deployment of that commit answers. | The same, on the merge commit. |
+| "Push it" | Commits and pushes the current or named branch. | The same; no pull request. |
+| "Build it" | Ends with the work committed, reviewed, and checked on its branch. | Ends with an open pull request, reviewed, with CI green. |
+| "Ship it" | Builds if needed, merges into `main`, and pushes when a remote exists. | Builds if needed and merges the pull request. |
+| [Liveness](GLOSSARY.md#liveness) | Each phrase ends with a light check that its commit is on the remote and, for an app, deployed. | The same. |
 
-In both modes `ship` adds the independent review only when the size guard escalates or you say "review it". To override the inferred mode, add a `Delivery:` line to the Flow block, or say so for one run: "ship it local" or "ship it with GitHub". The full rule lives in [`build`](skills/build/SKILL.md#delivery-mode); the glossary defines [delivery mode](GLOSSARY.md#delivery-mode).
+Each phrase is the approval; nothing asks again after it. `build` runs the independent review only when the size guard escalates or you say "review it". To override the inferred mode, add a `Delivery:` line to the Flow block, or say so for one run: "ship it local" or "ship it with GitHub". The full rule lives in [`build`](skills/build/SKILL.md#delivery-mode); the glossary defines [delivery mode](GLOSSARY.md#delivery-mode).
 
 ## Work without a spec
 

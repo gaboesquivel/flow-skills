@@ -54,7 +54,7 @@ A portable `skills/<name>/SKILL.md` package in the Flow Skills distribution. Use
 
 ## Delivery mode
 
-Where `ship` lands work: **local** (needs only Git; `build` ends with a committed branch, and `ship` merges it into `main` and pushes when a remote exists) or **GitHub** (`Delivery: github`; formerly `pull-request`; `build` ends with an open pull request linking the spec file, and `ship` merges it). Delivery options, not separate methodologies: the skills and steps are the same, and `ship` ends with [verification](#verification) in both. Never asked: GitHub when `origin` is a GitHub repository and `gh` is authenticated, otherwise local; a `Delivery:` line in the [Flow block](#flow-block) or the request overrides, and a default branch that requires pull requests forces GitHub. The rule lives in [`build`](skills/build/SKILL.md#delivery-mode); decision [0044](docs/decisions/0044-fast-delivery.md) amends the earlier [0028](docs/decisions/0028-build-and-ship.md), [0030](docs/decisions/0030-asked-delivery-and-local-mode.md), [0032](docs/decisions/0032-local-build-lands-ship-verifies.md), and [0037](docs/decisions/0037-git-for-delivery-github-for-github-mode.md). What each mode needs from the environment: [requirements](PRODUCT.md#install-and-catalog).
+Where `ship` lands work: **local** (needs only Git; `build` ends with a committed branch, and `ship` merges it into `main` and pushes when a remote exists) or **GitHub** (`Delivery: github`; formerly `pull-request`; `build` ends with an open pull request linking the spec file, and `ship` merges it). Delivery options, not separate methodologies: the skills and steps are the same, and each delivery phrase ends with [liveness](#liveness) in both. Never asked: GitHub when `origin` is a GitHub repository (stopping until `gh` is authenticated, never falling back), otherwise local; a `Delivery:` line in the [Flow block](#flow-block) or the request overrides, and a default branch that requires pull requests forces GitHub. The rule lives in [`build`](skills/build/SKILL.md#delivery-mode); decision [0044](docs/decisions/0044-fast-delivery.md) amends the earlier [0028](docs/decisions/0028-build-and-ship.md), [0030](docs/decisions/0030-asked-delivery-and-local-mode.md), [0032](docs/decisions/0032-local-build-lands-ship-verifies.md), and [0037](docs/decisions/0037-git-for-delivery-github-for-github-mode.md). What each mode needs from the environment: [requirements](PRODUCT.md#install-and-catalog).
 
 ## Flow block
 
@@ -84,9 +84,13 @@ The one representative end-to-end journey a spec names in its Testing Decisions:
 
 The status a spec review gives each step of the spec's acceptance scenario: **satisfied**, **unmet**, or **unresolved**, with cited evidence. No evidence means unresolved; unmet blocks the merge. Other unmet requirements are ordinary findings. [`review`](skills/review/SKILL.md#inspect) owns the rule; [spec 022](docs/specs/022-requirement-verdicts.md).
 
+## Liveness
+
+The light check that ends "push it", "build it", and "ship it": the remote ref contains the commit and, when the host reports deployments, the deployment for that commit is ready and its URL answers 2xx. It reports `live`, `pushed, no deployment reported`, `reachable, commit unconfirmed`, `not live`, or `unverified`, and never gates. It runs no tests, scenario, or browser; behavior is [`review`](skills/review/SKILL.md)'s. [`ship`](skills/ship/SKILL.md#liveness) owns the rule; decisions [0040](docs/decisions/0040-ship-verifies-liveness.md) and [0047](docs/decisions/0047-delivery-phrases-are-approvals.md).
+
 ## Verification
 
-What `ship` does once after the merge: confirm the change shipped. The remote default branch contains the shipped commit; for an app, the host also reports a successful production deployment of that commit, and its URL (and health route, when present) answers 2xx. When the deployment cannot be tied to the commit, the report says "reachable, commit unconfirmed". It runs no tests, scenario, or browser, and never gates or rolls back. [`ship`](skills/ship/SKILL.md#verify) owns the rule; decisions [0040](docs/decisions/0040-ship-verifies-liveness.md) and [0044](docs/decisions/0044-fast-delivery.md).
+Former name for [liveness](#liveness) after shipping.
 
 ## Candidate spec
 
