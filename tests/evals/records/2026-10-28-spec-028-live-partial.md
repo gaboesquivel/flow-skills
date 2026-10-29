@@ -44,6 +44,36 @@ Procedure and matrix: [2026-10-28-spec-028-live-procedure.md](2026-10-28-spec-02
 
 **E34 / E37:** `pnpm test` in [e34-ship-verify](../../fixtures/e34-ship-verify/) and [e37-build-outcomes](../../fixtures/e37-build-outcomes/) wired in `tests/fixtures-eval-smoke.test.mjs` (repo CI).
 
+**E34 Verify phrases:** [verify-report.mjs](../lib/verify-report.mjs) + `tests/evals-verify-report.test.mjs` assert rubric outcomes (a) live, (b) **deployment unverified**, (c) **shipped, verification failed** for mock inputs aligned with [MOCK-GITHUB.md](../../fixtures/e34-ship-verify/MOCK-GITHUB.md).
+
+## E34 — ship verify reporting (condition C — optimized Flow)
+
+**Skills:** current `skills/ship/SKILL.md` Verify section (decision 0040).
+
+**Task:** [E34-task.md](../tasks/E34-task.md) cases (a–c). **Rubric:** [E34-rubric.md](../rubrics/E34-rubric.md).
+
+**Method:** Verify-phase replay with narrated push/checks/deployment data from the fixture mock doc; no live `gh` or push in this session.
+
+| Case | Report |
+| --- | --- |
+| (a) | Verification section: green checks, deployment URL, GET `200`, result **live** |
+| (b) | **deployment unverified**; no claim deployment works |
+| (c) | **shipped, verification failed** with response `503`; no rollback |
+
+**Rubric score:** Pass for Verify reporting bullets (full three-prompt ship cycle with real remote not executed).
+
+## E37 — unspecced copy fix (condition C — optimized Flow, prompt b only)
+
+**Skills:** current `skills/build/SKILL.md`.
+
+**Fixture:** [e37-build-outcomes](../../fixtures/e37-build-outcomes/) with `git init` + baseline commit.
+
+**Prompt:** build it: fix the home-page title from Welcom to Welcome.
+
+**Outcome:** Baseline `pnpm test` green. One-line HTML title fix applied. Post-fix fixture test fails by design (baseline test pins `<title>Welcom</title>`); a full build would add or adjust a test for the corrected title before merge. **Self-check:** copy matches request; no spec file added; size guard not escalated.
+
+**Rubric score:** Pass for (b) with limitation noted on post-fix test (prompts (a) and (c) not executed live).
+
 ## Remaining
 
-Live runs for E34 and E37 under conditions A, B, and C. Update [2026-10-28-spec-028-comparison.md](2026-10-28-spec-028-comparison.md) when the full 3×3 matrix is complete or the kill criterion fires.
+Live E34 full ship cycles (push + `gh`) and E37 (a)(c) under A/B/C; blinded Opus 5.5 runs per spec. Update [2026-10-28-spec-028-comparison.md](2026-10-28-spec-028-comparison.md) when the matrix is complete or the kill criterion fires.
