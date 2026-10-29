@@ -115,3 +115,10 @@ Confirmed with the decision above. Back-pointers are written when this spec is a
 - "Opus 5.5 medium" means Claude Opus 5.5 at medium effort when the host has that setting. The record names the model id that actually ran. The skills stay usable on any host.
 - The shared-file rule in [0033](../decisions/0033-shared-files-and-reviewed-head.md) is unchanged. It was not part of the amendment.
 - One comparison can kill the bet. It cannot establish a speed or token improvement by itself.
+
+## Tasks
+
+- [ ] 01: State build, ship, and review as outcomes and proofs (#146)
+- [ ] 02: Score the evals against those proofs (#145)
+- [ ] 03: Record the three-condition comparison (#148)
+- [ ] 04: Update the catalog to the skills the comparison kept (#147)
