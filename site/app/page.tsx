@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { FindSection, HomeHero, InstallBand, PillarsSection, PrincipleStrip } from "@/components/home/sections";
+import { FindSection, HomeHero, InstallBand, PillarsSection, PracticeSection, PrincipleStrip } from "@/components/home/sections";
 import { content, repo } from "@/lib/content";
 import { SITE_DESCRIPTION, SITE_NAME, staticSiteOrigin } from "@/lib/site";
 
@@ -49,6 +49,7 @@ export default function Home() {
       />
       <HomeHero />
       <PrincipleStrip />
+      <PracticeSection />
       <FindSection />
       <PillarsSection />
       <InstallBand />
