@@ -34,7 +34,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0028-build-and-ship.md](0028-build-and-ship.md) | Accepted (amended by 0029, 0030, 0032, 0042) | `build` opens a pull request with green checks; `ship` lands accepted specs and hotfixes with no confirmation; spec acceptance; `Deploy:` retired |
 | [0029-spec-issues.md](0029-spec-issues.md) | Accepted (amended by 0030, 0031, 0032, 0034, 0035, 0042) | One issue per spec with tasks as sub-issues and one pull request; the spec file is the source of truth; frontier builds, one review per spec, automatic merge, tests that never sleep |
 | [0030-asked-delivery-and-local-mode.md](0030-asked-delivery-and-local-mode.md) | Accepted (amended by 0032, 0036, 0037, 0039) | Depth and delivery asked together once; local mode keeps the spec branch, needs no remote, pushes only on request; clean task worktrees removed on integration (local landing and push changed by 0032) |
-| [0031-fan-out-by-default.md](0031-fan-out-by-default.md) | Accepted (amended by 0042) | Skills run independent steps as parallel workers by default; per-axis spec review; tasks declare an area |
+| [0031-fan-out-by-default.md](0031-fan-out-by-default.md) | Accepted (amended by 0042, 0043) | Skills run independent steps as parallel workers by default; per-axis spec review; tasks declare an area |
 | [0032-local-build-lands-ship-verifies.md](0032-local-build-lands-ship-verifies.md) | Accepted (amended by 0033, 0034, 0040) | Local `build` reviews and merges into local `main`; `ship` publishes, then verifies the shipped commit's deployment with the spec's acceptance scenario; specs require one; discovery depth and delivery asked as independent questions (verification changed by 0040) |
 | [0033-shared-files-and-reviewed-head.md](0033-shared-files-and-reviewed-head.md) | Accepted | Shared-file appends are committed on the spec branch and do not move the reviewed head |
 | [0034-no-ceremony-without-a-spec.md](0034-no-ceremony-without-a-spec.md) | Accepted (amended by 0039) | Unspecced work gets the local suite and one self-check, no spec gate or review workers; `build` owns the size guard |
@@ -46,6 +46,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0040-ship-verifies-liveness.md](0040-ship-verifies-liveness.md) | Accepted | `ship` verifies only that the shipped commit's checks are green and its deployment answers; no scenario, browser, or preview run |
 | [0041-align-skill.md](0041-align-skill.md) | Accepted | Read-only `align` skill checks the product against its vision, problems, metrics, and roadmap |
 | [0042-outcome-build-and-ship.md](0042-outcome-build-and-ship.md) | Accepted | `build` and `ship` state outcomes, reasons, and proofs; workers, scheduling, and test order are choices |
+| [0043-workers-when-they-pay.md](0043-workers-when-they-pay.md) | Accepted | Workers only where they pay; one green run per head; re-review covers the fix |
 
 ## Rules
 

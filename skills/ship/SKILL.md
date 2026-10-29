@@ -55,7 +55,7 @@ Record the reviewed head SHA. An `unmet` [requirement verdict](../review/SKILL.m
 
 ## Fix rounds
 
-On blocking findings or failing checks, fix as `build` describes, then review and check the new head again. A pending check is pending, never passing. Never hide, skip, disable, or weaken a failing check.
+On blocking findings or failing checks, fix as `build` describes, then re-review the fix as `review` scopes it and check the new head again. A pending check is pending, never passing. Never hide, skip, disable, or weaken a failing check.
 
 ## Merge
 

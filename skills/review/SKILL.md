@@ -22,6 +22,8 @@ Scope may be working tree, committed comparison, pull request, or spec (every ta
 
 Default to the working tree when unspecified. Ask only when scope ambiguity materially changes the work.
 
+**Re-review after fix rounds** covers the commits since the last reviewed SHA and the findings they answer, not the whole change again. Conflict resolutions and updates from the default branch count as fix code. Widen it only when the fix reaches code the earlier review did not cover. A review of a different kind (an escalation after a self-check) covers the whole change. Earlier verdicts the fix did not touch stand. The new head becomes the reviewed head.
+
 ## Inspect
 
 Recover intent from the request, spec, tests, and decisions. Assess every axis the change can affect:
