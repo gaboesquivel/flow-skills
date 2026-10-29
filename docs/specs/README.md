@@ -40,5 +40,6 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [032-prism-website.md](032-prism-website.md)
 - [033-template-fast-start.md](033-template-fast-start.md)
 - [034-measurement-support.md](034-measurement-support.md)
+- [035-delivery-phrases.md](035-delivery-phrases.md)
 
 Significant standalone decisions belong in `docs/decisions/`, not in a spec. See [decisions](../decisions/README.md).

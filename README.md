@@ -26,24 +26,25 @@ The rules Flow follows in a project live in Git too. "Set up Flow here" writes o
 
 ## Local or GitHub delivery
 
-Local and GitHub are delivery options, not separate methodologies: the skills, phrases, and steps are the same, and only where the work lands differs. Flow never asks which one. It uses GitHub when `origin` is a GitHub repository and `gh` is signed in, and local otherwise; a default branch that requires pull requests always gets GitHub ([decision 0044](docs/decisions/0044-fast-delivery.md)).
+Local and GitHub are delivery options, not separate methodologies: the skills, phrases, and steps are the same, and only where the work lands differs. Flow never asks which one. It uses GitHub when `origin` is a GitHub repository, and stops until `gh` is signed in rather than falling back; local otherwise. A default branch that requires pull requests always gets GitHub (decisions [0044](docs/decisions/0044-fast-delivery.md), [0048](docs/decisions/0048-delivery-phrases-are-approvals.md)).
 
 | | Local | GitHub |
 | --- | --- | --- |
 | Needs | Git only. Works with GitLab, Bitbucket, or no remote at all. | Git plus a GitHub repository and an authenticated `gh`. |
 | Spec | A file on its feature branch. | The same file; the pull request links it. |
 | Tasks | A checklist in the spec's Tasks section. | The same checklist. |
-| "Build it" | Ends with the work committed on its branch. | Ends with an open pull request whose body links the spec file. Never waits on CI. |
-| "Ship it" | Runs the suite once on the merge result, merges into `main`, and pushes when a remote exists. | Waits for CI once and merges the pull request. |
-| Verification | The remote `main` contains the shipped commit; for an app, the production deployment of that commit answers. | The same, on the merge commit. |
+| "Push it" | Commits and pushes the current or named branch. | The same; no pull request. |
+| "Build it" | Ends with the work committed, reviewed, and checked on its branch. | Ends with an open pull request, reviewed, with CI green. |
+| "Ship it" | Builds if needed, merges into `main`, and pushes when a remote exists. | Builds if needed and merges the pull request. |
+| [Liveness](GLOSSARY.md#liveness) | Each phrase ends with a light check that its commit is on the remote and, for an app, deployed. | The same. |
 
-In both modes `ship` adds the independent review only when the size guard escalates or you say "review it". To override the inferred mode, add a `Delivery:` line to the Flow block, or say so for one run: "ship it local" or "ship it with GitHub". The full rule lives in [`build`](skills/build/SKILL.md#delivery-mode); the glossary defines [delivery mode](GLOSSARY.md#delivery-mode).
+Each phrase is the approval; nothing asks again after it. `build` runs the independent review only when the size guard escalates or you say "review it". To override the inferred mode, add a `Delivery:` line to the Flow block, or say so for one run: "ship it local" or "ship it with GitHub". The full rule lives in [`build`](skills/build/SKILL.md#delivery-mode); the glossary defines [delivery mode](GLOSSARY.md#delivery-mode).
 
 ## Work without a spec
 
 Specs are for bets worth tracking, not a toll on every change. In either mode, nothing writes a spec or tasks unless you say "spec it" or "break it down" ([decision 0039](docs/decisions/0039-build-never-requires-a-spec.md)).
 
-- **Say "build it".** With no spec behind it, `build` treats the change as [unspecced work](GLOSSARY.md#unspecced-work) and ends with a ready branch: a committed branch, or an open pull request. "Ship it" checks it once and lands it; its [size guard](skills/build/SKILL.md#unspecced-work) adds the independent review only for a larger or riskier change.
+- **Say "build it".** With no spec behind it, `build` treats the change as [unspecced work](GLOSSARY.md#unspecced-work) and ends with a reviewed, checked branch: a committed branch, or an open pull request. Its [size guard](skills/build/SKILL.md#size-guard) adds the independent review only for a larger or riskier change; "ship it" lands it.
 - **Explore, then build.** After "explore this", "build it" builds the confirmed brief directly. The brief's branch is the work branch, so the brief lands with the code. For a new product, `explore` stops at the brief; spec 001 comes only when you ask. `explore` skips fixes and clearly small changes entirely: no questions, no writes.
 - **Just ask your agent.** Flow skills run when your request matches their phrases. A plain request ("rename this prop") is handled as your agent would without Flow.
 
@@ -79,7 +80,7 @@ Thick arrow: an automatic hand-off, behind your yes. Dashed arrow: you say the n
 
 - **Skills suggest the next step and wait.** The only automatic hand-offs are `start` → `explore` and explore's `interview` questions and, for a new product, its `grill`, each behind your yes ([decision 0024](docs/decisions/0024-gated-hand-offs.md)). `explore` asks in proportion to the change: nothing for a fix, more for a new product.
 - **No spec required.** "Build it" works on a plain request ([decision 0039](docs/decisions/0039-build-never-requires-a-spec.md)); see [work without a spec](#work-without-a-spec).
-- **`ship` lands in both modes.** It builds first when nothing is built, checks once, adds the independent review only when the size guard escalates or you ask, merges, then confirms the shipped commit is deployed ([decision 0044](docs/decisions/0044-fast-delivery.md), amending [0042](docs/decisions/0042-outcome-build-and-ship.md) and [0040](docs/decisions/0040-ship-verifies-liveness.md)).
+- **`ship` lands in both modes.** It builds first unless the branch is already verified, merges, then checks the shipped commit is live (decisions [0044](docs/decisions/0044-fast-delivery.md) and [0048](docs/decisions/0048-delivery-phrases-are-approvals.md)).
 - **Context stays aligned.** "Update the docs" has `flow` align `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md`.
 
 | Path | You say |
