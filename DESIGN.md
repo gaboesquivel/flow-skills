@@ -29,7 +29,7 @@ Flow helps humans understand and direct meaningful product work while agents exe
 | Social/OG composition | [`flow-social.webp`](site/public/brand/flow-social.webp); live Next.js dynamic OG is in `site/app/opengraph-image.tsx` |
 | Portfolio cover | [`flow-portfolio-cover.webp`](site/public/brand/flow-portfolio-cover.webp) |
 
-Treat SVG outlines as canonical. Raster exports are derivatives. Do not change SVG geometry independently across header, favicon, OG or marketing assets; update variants together. The public interface uses a lowercase **flow** wordmark in the site's Inter display style, without an added slash. Text such as *Skills* is a descriptor, not part of the master logo. Monochrome variants must remain readable without gradients.
+Treat SVG outlines as canonical. Raster exports are derivatives. Do not change SVG geometry independently across header, favicon, OG or marketing assets; update variants together. The outlines live once in `THROUGHLINE_PATHS` ([`site/components/logo.tsx`](site/components/logo.tsx)), which the header, footer, hero and OG image import; `pnpm validate` fails when a static SVG variant drifts from them. The public interface uses a lowercase **flow** wordmark in the site's Inter display style, without an added slash. Text such as *Skills* is a descriptor, not part of the master logo. Monochrome variants must remain readable without gradients.
 
 ### Color and type
 
