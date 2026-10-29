@@ -2,6 +2,10 @@
 
 Status: accepted (2026-10-29). Issue: [#157](https://github.com/gaboesquivel/flow-skills/issues/157). Decision: [0044](../decisions/0044-fast-delivery.md) (Accepted).
 
+## Goal
+
+Streamline development and remove ceremony while following good product, lean startup, and engineering practices. Every cut below removes a step that repeats a practice or records state no one reads; none removes the practice itself. CI still checks every pull request, risky changes still get an independent review, every spec still has an acceptance scenario, and new products still name their riskiest assumption, kill criterion, and main metric ([PRODUCT.md](../../PRODUCT.md#success)).
+
 ## Problem Statement
 
 A developer using Flow wants a change live in minutes. Today the process costs rounds, not minutes. On one change, `build` can run the full local suite four times (a baseline, between task integrations, after each fix round, and before the merge). `build` and `ship` each wait for CI, and each require an independent review. A spec needs a separate "accept the spec" turn, a spec issue whose body is re-synced after every file change, and checklist ticks, board recording, and a shared-file exception tracked along the way. `explore` asks for two explicit yeses around a grill and a pre-mortem, even for a feature. `start` restates everything and runs 11 verification checks, including a dev server and HTTP smoke tests, before its first commit.
