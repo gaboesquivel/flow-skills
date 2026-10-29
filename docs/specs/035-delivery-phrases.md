@@ -1,6 +1,6 @@
 # 035: Delivery phrases are approvals
 
-Status: implemented (2026-10-29). Decision: [0047](../decisions/0047-delivery-phrases-are-approvals.md) (Accepted).
+Status: implemented (2026-10-29). Decision: [0048](../decisions/0048-delivery-phrases-are-approvals.md) (Accepted).
 
 ## Problem Statement
 
@@ -36,7 +36,7 @@ Three phrases, from lightest to heaviest. Each phrase is the approval: no confir
 3. **Ship lands.** It runs build when the branch isn't built or its head has moved, then merges and checks default-branch liveness. Nothing is checked twice on the same head.
 4. **`push` skill.** Commits only this work and pushes the current or named branch, the default branch included when named. No pull request, review, or CI wait; then liveness. It never force-pushes. *Justification:* build and ship forbid pushing outside their own flow, so without a narrow home "push it to main" conflicts with them. The skill stays thin and links to the liveness home.
 5. **Acceptance evidence.** `unmet` blocks landing. Build tries to resolve each `unresolved` step (run the test, read the preview). The ones it can't resolve are listed in the pull request body and in build's report. "Ship it" lands with them listed: the user has seen them, and the phrase approves them.
-6. **One delivery-mode rule.** GitHub `origin` with `gh` unavailable or unauthenticated: stop and say how to authenticate; never fall back to local. One home: build's [Delivery mode](../../skills/build/SKILL.md#delivery-mode). 0047 amends 0044 item 2.
+6. **One delivery-mode rule.** GitHub `origin` with `gh` unavailable or unauthenticated: stop and say how to authenticate; never fall back to local. One home: build's [Delivery mode](../../skills/build/SKILL.md#delivery-mode). 0048 amends 0044 item 2.
 7. **One home for draft acceptance.** `to-spec`'s Status and acceptance section. Build, ship, and the catalog link to it and do not restate it.
 8. **Proportional UI checks in `review`.** Only when the diff touches UI. For small changes, a static check: labels and roles, contrast tokens, focus and keyboard, layout at phone width, heading and visual hierarchy. For escalated or new screens, the same check on the preview at phone and desktop widths. Findings rank like other findings. This is behavioral verification, never liveness.
 9. **Idea → prod is measured.** `scripts/metrics.mjs` joins host session logs (first prompt of the session that produced the branch) to merge time and deployment time. It reports idea → prod per change, the user turns between the phrase and done, and the link rate the kill criterion needs (≥ 80%). Unlinkable changes are counted, not dropped.

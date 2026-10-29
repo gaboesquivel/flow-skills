@@ -1,6 +1,6 @@
 # 0040 — Ship verifies liveness, not the journey
 
-Status: **Accepted** (2026-10-28). Amends [0032](0032-local-build-lands-ship-verifies.md) (`ship` runs the acceptance scenario on the deployment, before and after the merge). Amended by [0044](0044-fast-delivery.md) (without a deployment, the remote default branch matching the shipped commit is the proof). Amended by [0047](0047-delivery-phrases-are-approvals.md) (light liveness at every delivery depth, not only after shipping).
+Status: **Accepted** (2026-10-28). Amends [0032](0032-local-build-lands-ship-verifies.md) (`ship` runs the acceptance scenario on the deployment, before and after the merge). Amended by [0044](0044-fast-delivery.md) (without a deployment, the remote default branch matching the shipped commit is the proof). Amended by [0048](0048-delivery-phrases-are-approvals.md) (light liveness at every delivery depth, not only after shipping).
 
 ## Context
 

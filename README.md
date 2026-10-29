@@ -26,7 +26,7 @@ The rules Flow follows in a project live in Git too. "Set up Flow here" writes o
 
 ## Local or GitHub delivery
 
-Local and GitHub are delivery options, not separate methodologies: the skills, phrases, and steps are the same, and only where the work lands differs. Flow never asks which one. It uses GitHub when `origin` is a GitHub repository, and stops until `gh` is signed in rather than falling back; local otherwise. A default branch that requires pull requests always gets GitHub (decisions [0044](docs/decisions/0044-fast-delivery.md), [0047](docs/decisions/0047-delivery-phrases-are-approvals.md)).
+Local and GitHub are delivery options, not separate methodologies: the skills, phrases, and steps are the same, and only where the work lands differs. Flow never asks which one. It uses GitHub when `origin` is a GitHub repository, and stops until `gh` is signed in rather than falling back; local otherwise. A default branch that requires pull requests always gets GitHub (decisions [0044](docs/decisions/0044-fast-delivery.md), [0048](docs/decisions/0048-delivery-phrases-are-approvals.md)).
 
 | | Local | GitHub |
 | --- | --- | --- |
@@ -80,7 +80,7 @@ Thick arrow: an automatic hand-off, behind your yes. Dashed arrow: you say the n
 
 - **Skills suggest the next step and wait.** The only automatic hand-offs are `start` → `explore` and explore's `interview` questions and, for a new product, its `grill`, each behind your yes ([decision 0024](docs/decisions/0024-gated-hand-offs.md)). `explore` asks in proportion to the change: nothing for a fix, more for a new product.
 - **No spec required.** "Build it" works on a plain request ([decision 0039](docs/decisions/0039-build-never-requires-a-spec.md)); see [work without a spec](#work-without-a-spec).
-- **`ship` lands in both modes.** It builds first unless the branch is already verified, merges, then checks the shipped commit is live (decisions [0044](docs/decisions/0044-fast-delivery.md) and [0047](docs/decisions/0047-delivery-phrases-are-approvals.md)).
+- **`ship` lands in both modes.** It builds first unless the branch is already verified, merges, then checks the shipped commit is live (decisions [0044](docs/decisions/0044-fast-delivery.md) and [0048](docs/decisions/0048-delivery-phrases-are-approvals.md)).
 - **Context stays aligned.** "Update the docs" has `flow` align `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md`.
 
 | Path | You say |

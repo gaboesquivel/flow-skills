@@ -1,4 +1,4 @@
-# 0047 — Delivery phrases are approvals
+# 0048 — Delivery phrases are approvals
 
 Status: **Accepted** (2026-10-29). Amends [0044](0044-fast-delivery.md) (amendment item 1: `build` never waits on CI and the review runs in `ship`; amendment item 2: fall back to local when `gh` is unauthenticated), [0040](0040-ship-verifies-liveness.md) (liveness only after shipping), and [0019](0019-voice-first-invocation.md) (two or three trigger variants per skill; Flow avoids generic host verbs). Spec: [035](../specs/035-delivery-phrases.md).
 
