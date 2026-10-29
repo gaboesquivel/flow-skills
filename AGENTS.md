@@ -27,6 +27,7 @@ Flow ships a portable `skills/` tree for the [Agent Skills](https://agentskills.
 | --- | --- |
 | Policy checks | `pnpm validate` |
 | Tests | `pnpm test` |
+| Delivery metrics (time to close PR, CI failures and wait, skill words) | `pnpm metrics [--repo owner/name] [--limit N]` |
 | Website (`site/`) | `pnpm --dir site install`, then `pnpm --dir site dev` or `pnpm --dir site qa` |
 
 The website in `site/` renders skills and docs from this repository at build time: edit the source Markdown, never copy it into `site/` ([spec 032](docs/specs/032-prism-website.md)).
