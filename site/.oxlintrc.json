@@ -1,0 +1,4 @@
+{
+  "plugins": ["react", "typescript", "nextjs", "jsx-a11y"],
+  "ignorePatterns": ["content/generated/**", ".next/**"]
+}

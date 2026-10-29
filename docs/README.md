@@ -18,6 +18,7 @@ Conventions for Flow Skills and a default pattern adopters may follow. Create do
 | [research/](research) | Evidence and assessments (maintainer context, not adopter scaffolding) |
 | [assets/](assets) | Documentation images |
 | [skills/](../skills) at the root | Portable skill packages |
+| [site/](../site/README.md) at the root | The Flow website; renders the documents above, owns none ([spec 032](specs/032-prism-website.md)) |
 
 ## Durable work (adopters)
 
