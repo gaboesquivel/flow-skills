@@ -31,7 +31,7 @@ Work on a branch that is not the default branch. Commit only this work: no crede
 
 ### Unspecced work
 
-Work with no spec or task is unspecced. Write a spec or tasks only when the user asks. On `explore/<slug>` with a confirmed brief, rename to `feat/<slug>` before the first commit. The build request accepts any **Proposed** direction-change record the branch adds: set it to **Accepted** with back-pointers as `to-spec`'s accept step describes. Escalated unspecced work is reviewed against the request (and brief when there is one).
+Work with no spec or task is unspecced. Write a spec or tasks only when the user asks. On a branch that holds a confirmed brief, keep building on it. The build request accepts any **Proposed** direction-change record the branch adds: set it to **Accepted** with back-pointers as `to-spec`'s accept step describes. Escalated unspecced work is reviewed against the request (and brief when there is one).
 
 ### Size guard
 
@@ -42,7 +42,7 @@ One home; `ship` points here. Judge once, at intake, before implementing; it nev
 
 ## Delivery mode
 
-One home; other skills link here. Infer the mode; never ask. GitHub mode when `origin` is a GitHub repository and `gh` is authenticated; otherwise local mode. A `Delivery:` line in the Flow block (`flow` owns it) or a mode named in the request overrides. A default branch that requires pull requests forces GitHub mode; when `gh` cannot reach it, stop and say so. Never record a mode the user did not give.
+One home; other skills link here. Infer the mode; never ask. GitHub mode when `origin` is a GitHub repository; local mode otherwise. When `origin` is on GitHub but `gh` is unavailable, stop and say so; never fall back to local mode. A `Delivery:` line in the Flow block (`flow` owns it) or a mode named in the request overrides. A default branch that requires pull requests forces GitHub mode; when `gh` cannot reach it, stop and say so. Never record a mode the user did not give.
 
 - **GitHub mode:** one pull request per spec; `ship` waits on its checks and merges it.
 - **Local mode:** one branch per spec; `ship` checks the merge result and merges it into `main`.
@@ -65,6 +65,6 @@ One home for keeping work from being lost or stranded; `ship` points here.
 - A worker in its own worktree, whether the host's isolation or one you created, starts from the delivery branch's head and commits on that worktree's branch before it finishes; never a detached head. Host isolation may start a worktree elsewhere (Claude Code starts from the default branch): move the worker's branch to the delivery head before it works. A worker in the shared checkout edits disjoint files and leaves committing to the main thread.
 - Work counts as integrated only when it is in a commit on the delivery branch. Before the pull request or landing, merge every worker branch into it, commit every shared-checkout change, and confirm each worker branch is contained in the delivery branch.
 - An unfinished task is reported with its path and branch, never dropped. A spec becomes `implemented` only when every task is integrated; otherwise its status stays and the pull request claims no completion.
-- Remove a worktree or branch only when its commits are on the default branch, its pull request or the spec branch that integrated it was merged, or the user dropped the work, and never with uncommitted changes in it.
+- Remove only worktrees and branches this work created, and only when their commits are on the default branch, or their tip was integrated into a branch whose pull request merged, or the user dropped the work; never with uncommitted changes in it.
 - A new session finds work in flight from unmerged branches and their spec status before starting anything.
-- Every report, including a stop, lists kept worktrees, branches with commits not on the default branch, local `main` ahead of its remote, and open pull requests, each with the step that finishes it.
+- Every report, including a stop, lists kept worktrees, uncommitted shared-checkout changes, branches with commits not on the default branch, local `main` ahead of its remote, and open pull requests, each with the step that finishes it.

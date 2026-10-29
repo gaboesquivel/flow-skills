@@ -20,7 +20,7 @@ Outside a Git repository, offer `git init` and stop on a no. Fetch, then read br
 
 **Target.** "Ship it" means ship: never ask whether to. Ship the named work, else the current branch; on the default branch, the one unmerged work branch that holds the others, asking only when several remain. When another agent is still pushing, never edit its checkout or race it: wait, then ship the pushed head.
 
-**Leftovers.** Finish this work's items in `build`'s [Work in flight](../build/SKILL.md#work-in-flight) first. A failed task is not runnable: refuse a spec with unfinished tasks unless the user says to ship it partial. Report unrelated leftovers without touching them.
+**Leftovers.** Finish this work's items in `build`'s [Work in flight](../build/SKILL.md#work-in-flight) first. A failed task is not runnable: refuse a spec with unfinished tasks unless the user says to ship it partial. Report unrelated leftovers without touching them; stop when local `main` is ahead of its remote with commits that are not this work. A decision record this work links or adds that is still **Proposed** after acceptance stops the landing.
 
 Classify the work:
 
