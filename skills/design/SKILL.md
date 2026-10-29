@@ -36,11 +36,11 @@ Compare the directions side by side against the brief and recommend one with rea
 
 ## Record
 
-On approval, write `DESIGN.md` (create it when missing): purpose and expression, identity (name, concept, canonical asset paths), tokens with roles, type, usage rules and what to avoid, and how to check rendered output. Record only the approved direction: alternatives and history stay out, and `DESIGN.md` is the record, with no separate decision record unless the user asks. Product goals stay in `PRODUCT.md`; link to them.
+On approval, update `DESIGN.md`, keeping its existing sections (create it when missing): purpose and expression, identity (name, concept, canonical asset paths), tokens with roles, type, usage rules and what to avoid, and how to check rendered output. Record only the approved direction: alternatives and history stay out, and `DESIGN.md` is the record, with no separate decision record unless the user asks. Product goals stay in `PRODUCT.md`; link to them.
 
-Commit the canonical assets the product uses and set the token values in the app's existing theme (for example its CSS variables), with one source for shared geometry and tokens that every surface reads. When cheap, add a check that asset variants (favicon, icons, social image) have not drifted from that source. When the direction replaces a name, mark, or token, list every surface that still shows the old one (pages, icons, page titles and metadata) for `build`.
+Commit the canonical assets the product uses and set the token values in the app's existing theme (for example its CSS variables), with one source for shared geometry and tokens that every surface reads. When cheap, name a check that asset variants (favicon, icons, social image) have not drifted from that source as work for `build`. When the direction replaces a name, mark, or token, list every surface that still shows the old one (pages, icons, page titles and metadata) for `build`.
 
-Recording needs Git: outside a repository, offer `git init` and stop on a no. Write on the work's branch; on the default branch, cut one named for the work (for example `design/identity`). Commit only these writes.
+Recording needs Git: outside a repository, offer `git init` and stop on a no. Write on the work's branch; on the default branch, cut one named for the work (for example `design/identity`). Commit only these writes and any explorations the user chose to track. The token change is reviewed and checked when "build it" or "ship it" runs on the branch.
 
 ## Completion
 

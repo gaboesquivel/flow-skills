@@ -13,6 +13,7 @@ Add an optional `design` skill for Flow-based apps (adopter projects, typically 
 - **`design`** (new): brief from `PRODUCT.md` and existing design evidence, two to four rendered directions in context, a recommendation, the user's choice, then `DESIGN.md`, canonical assets, and the app's theme token values on the work's branch.
 - **`prototype`**: description drops "design" in favor of interaction; points visual-direction work to `design`, which may use its UI guidance.
 - **`explore`**: suggests `design` in one line when the brief creates a surface whose look `DESIGN.md` does not settle.
+- **`build`**: follows `DESIGN.md` when the change touches what users see.
 - **`review`**: the UI axis checks consistency with `DESIGN.md` (tokens, canonical assets, no retired marks).
 - **`flow`**: aligns `DESIGN.md` but does not choose a direction.
 - **`start`**: baseline `DESIGN.md` states that no identity is chosen and how to choose one; completion names `design` as optional after the first deployment. Bootstrap steps and checks are unchanged.

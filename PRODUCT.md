@@ -101,8 +101,8 @@ flow-skills offers a small catalog: **context alignment** (`flow`) for root cont
 
 | Tier | Skills or features | Needs |
 | --- | --- | --- |
-| Thinking | `grill`, `interview`, `council`, `jtbd`, `competitors`, `align`, `measure`, `domain-modeling`, `debug`, `tldr`, `write-humans`, `write-agents`, `retro`, `handoff`, `prototype`, `design` | Nothing: any folder, or none |
-| Delivery chain | `flow` (the Flow block), `start`, `explore`, `to-spec`, `to-tasks`, `build`, `review`, `ship`, `push`, `board` | A Git repository; outside one, the skill offers `git init` and stops on a no |
+| Thinking | `grill`, `interview`, `council`, `jtbd`, `competitors`, `align`, `measure`, `domain-modeling`, `debug`, `tldr`, `write-humans`, `write-agents`, `retro`, `handoff`, `prototype` | Nothing: any folder, or none |
+| Delivery chain | `flow` (the Flow block), `start`, `explore`, `design` (recording), `to-spec`, `to-tasks`, `build`, `review`, `ship`, `push`, `board` | A Git repository; outside one, the skill offers `git init` and stops on a no |
 | GitHub mode | Pull requests and CI; issues only on request | GitHub access (an authenticated `gh`), on top of Git |
 
 Local delivery needs only Git, so the whole chain works with GitLab, Bitbucket, or no remote. No skill asks the delivery mode; delivery skills infer it ([decision 0044](docs/decisions/0044-fast-delivery.md)). Thinking skills may read Git when it exists.
