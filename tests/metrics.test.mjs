@@ -28,16 +28,18 @@ test('summary counts only runs on merged branches and ignores cancelled runs', (
   assert.deepEqual(s.ciWaitMinutes, { median: 1, p90: 1 })
 })
 
-test('idea → prod links sessions to merged pull requests and counts turns after the delivery phrase', () => {
+test('idea → prod links sessions to merged pull requests and counts turns after the delivery phrase and permission denials', () => {
   const log = (entries) => entries.map((entry) => JSON.stringify(entry)).join('\n')
   const prompt = (timestamp, content, extra = {}) => ({ type: 'user', timestamp, cwd: '/code/flow-skills', gitBranch: 'feat', message: { content }, ...extra })
   const linked = parseSession(log([
     prompt('2026-10-29T00:00:00.000Z', 'add a button'),
     prompt('2026-10-29T00:01:00.000Z', [{ type: 'tool_result', content: 'ok' }]),
+    prompt('2026-10-29T00:03:00.000Z', [{ type: 'tool_result', content: "The user doesn't want to proceed with this tool use. The tool use was rejected" }]),
     prompt('2026-10-29T00:02:00.000Z', 'ignored', { isMeta: true }),
     prompt('2026-10-29T00:05:00.000Z', 'ship it'),
     prompt('2026-10-29T00:06:00.000Z', 'thanks'),
     prompt('2026-10-29T02:00:00.000Z', 'after the merge'),
+    prompt('2026-10-29T02:01:00.000Z', [{ type: 'tool_result', content: [{ type: 'text', text: "The user doesn't want to proceed with this tool use." }] }]),
   ]))
   const viaLink = parseSession(log([
     { type: 'pr-link', prRepository: 'o/flow-skills', prNumber: 2, timestamp: '2026-10-29T00:00:00.000Z' },
@@ -50,10 +52,11 @@ test('idea → prod links sessions to merged pull requests and counts turns afte
   ]
   const result = ideaToProd({ prs, sessions: [linked, viaLink], repo: 'o/flow-skills' })
   assert.deepEqual(result.changes, [
-    { number: 1, linked: true, minutes: 10, turnsAfterPhrase: 1 },
-    { number: 2, linked: true, minutes: 30, turnsAfterPhrase: null },
+    { number: 1, linked: true, minutes: 10, turnsAfterPhrase: 1, denials: 1 },
+    { number: 2, linked: true, minutes: 30, turnsAfterPhrase: null, denials: 0 },
     { number: 3, linked: false },
   ])
   assert.equal(result.unlinked, 1)
   assert.equal(result.linkRate, 2 / 3)
+  assert.equal(result.denials, 1)
 })

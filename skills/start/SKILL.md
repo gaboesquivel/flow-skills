@@ -88,7 +88,7 @@ Commit with `chore: initialize <slug>` (`formatInitialCommitMessage`) only when 
 
 ## Deployment
 
-With an authorized GitHub repository, push the initial commit to it; push nowhere else, and deploy by no other means. When the repository is connected to Vercel, wait for that commit's first deployment (its GitHub deployment status) and report the URL once it is green; a failed deployment is a blocker to report. When no deployment is configured, say so: the commit is the done signal.
+With an authorized GitHub repository, push the initial commit to it; push nowhere else, and deploy by no other means. When the repository is connected to Vercel, wait for that commit's first deployment (its GitHub deployment status) and report the URL once it is green; a failed deployment is a blocker to report. When it is not connected, the template's setup connects it through the host's CLI; hand off only a sign-in, once (`write-agents` Tools), never a dashboard path. When no deployment is configured, say so: the commit is the done signal.
 
 ## Boundaries
 

@@ -1,6 +1,6 @@
 # 0023 — Agent-first, API-first principle
 
-Status: **Accepted** (2026-10-28). Amends [0007](0007-flow-product-identity.md) (seven official principles become eight). Related: [0022](0022-start-runs-explore.md). Spec: [011](../specs/011-start-with-explore.md).
+Status: **Accepted** (2026-10-28). Amends [0007](0007-flow-product-identity.md) (seven official principles become eight). Related: [0022](0022-start-runs-explore.md). Spec: [011](../specs/011-start-with-explore.md). Amended by [0049](0049-agent-does-the-work.md) (Flow's own agent uses CLIs, MCP, and APIs first; principle 3 becomes human-directed, agent-executed).
 
 ## Context
 

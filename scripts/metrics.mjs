@@ -40,10 +40,12 @@ export function summarize({ prs, runs }) {
 }
 
 const DELIVERY_PHRASE = /\b(push|build|ship) it\b/iu
+// Claude Code logs a refused permission prompt as this tool result; approved prompts and hand-offs leave no entry.
+const DENIAL = "The user doesn't want to proceed with this tool use"
 
-// One session log (JSONL text) → the branches it worked on, the pull requests it linked, and its human prompts.
+// One session log (JSONL text) → the branches it worked on, the pull requests it linked, its human prompts, and its permission denials.
 export function parseSession(text) {
-  const session = { cwd: null, branches: new Set(), prs: [], prompts: [] }
+  const session = { cwd: null, branches: new Set(), prs: [], prompts: [], denials: [] }
   for (const line of text.split('\n')) {
     let entry
     try { entry = JSON.parse(line) } catch { continue }
@@ -52,6 +54,8 @@ export function parseSession(text) {
     if (entry.cwd && !session.cwd) session.cwd = entry.cwd
     if (entry.type !== 'user' || entry.isMeta || entry.isSidechain || !entry.timestamp) continue
     const content = entry.message?.content
+    const denied = Array.isArray(content) && content.some((part) => part.type === 'tool_result' && JSON.stringify(part.content ?? '').includes(DENIAL))
+    if (denied) session.denials.push(entry.timestamp)
     const text = typeof content === 'string' ? content : Array.isArray(content) && !content.some((part) => part.type === 'tool_result') ? content.filter((part) => part.type === 'text').map((part) => part.text).join('\n') : ''
     if (text && !text.startsWith('<')) session.prompts.push({ at: entry.timestamp, text })
   }
@@ -76,6 +80,7 @@ export function ideaToProd({ prs, sessions, repo }) {
       linked: true,
       minutes: minutes(prompts[0].at, end),
       turnsAfterPhrase: phrase < 0 ? null : prompts.length - phrase - 1,
+      denials: linked.flatMap((s) => s.denials).filter((at) => at >= prompts[0].at && at <= end).length,
     }
   })
   const linked = changes.filter((c) => c.linked)
@@ -87,6 +92,7 @@ export function ideaToProd({ prs, sessions, repo }) {
     unlinked: changes.length - linked.length,
     ideaToProdMinutes: { median: percentile(times, 50), p90: percentile(times, 90) },
     turnsAfterPhrase: { median: percentile(turns, 50), p90: percentile(turns, 90) },
+    denials: linked.reduce((sum, c) => sum + c.denials, 0),
   }
 }
 
@@ -135,6 +141,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   console.log(`  Idea → prod (first prompt → production deploy, else merge): median ${fmt(idea.ideaToProdMinutes.median)} min, p90 ${fmt(idea.ideaToProdMinutes.p90)} min`)
   console.log(`  Linked to a starting prompt: ${pct(idea.linkRate)} (${idea.unlinked} unlinked; kill criterion needs 80%)`)
   console.log(`  User turns after the delivery phrase: median ${fmt(idea.turnsAfterPhrase.median)}, p90 ${fmt(idea.turnsAfterPhrase.p90)}`)
+  console.log(`  Permission denials during linked changes: ${idea.denials}; approved prompts and hand-offs: unknown (session logs do not record them)`)
   const live = new Set(prs.filter((pr) => pr.liveAt).map((pr) => pr.number))
   for (const c of idea.changes) console.log(`    #${c.number}: ${c.linked ? `${fmt(c.minutes)} min to ${live.has(c.number) ? 'deploy' : 'merge'}, ${c.turnsAfterPhrase ?? 'n/a'} turns after the phrase` : 'unlinked'}`)
   const words = repo ? null : skillWords(join(dirname(fileURLToPath(import.meta.url)), '..', 'skills'))

@@ -77,7 +77,7 @@ Code simplification, security audits, and performance work belong to host tools 
 | Skill | Say | When to use |
 | --- | --- | --- |
 | [write-humans](../skills/write-humans/SKILL.md) | "write this up" | Draft or edit clear prose for human readers. |
-| [write-agents](../skills/write-agents/SKILL.md) | "write agent instructions" | Draft or edit agent instructions so each fact has one home. |
+| [write-agents](../skills/write-agents/SKILL.md) | "write agent instructions" | Draft or edit agent instructions so each fact has one home. Owns the shared Workers and Tools rules. |
 
 ## Project start
 

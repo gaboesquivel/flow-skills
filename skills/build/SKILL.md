@@ -50,7 +50,7 @@ One home. Judge once, at intake, before implementing; it never stops the work. E
 
 ## Delivery mode
 
-One home; other skills link here. Infer the mode; never ask. GitHub mode when `origin` is a GitHub repository; local mode otherwise. When `origin` is on GitHub but `gh` is unavailable or unauthenticated, stop and say how to fix it (`gh auth login`); never fall back to local mode. A `Delivery:` line in the Flow block (`flow` owns it) or a mode named in the request overrides. A default branch that requires pull requests forces GitHub mode; when `gh` cannot reach it, stop and say so. Never record a mode the user did not give.
+One home; other skills link here. Infer the mode; never ask. GitHub mode when `origin` is a GitHub repository; local mode otherwise. When `origin` is on GitHub but `gh` is unavailable or unauthenticated, stop and hand off its sign-in as one command (`gh auth login`, per `write-agents` Tools); never fall back to local mode. A `Delivery:` line in the Flow block (`flow` owns it) or a mode named in the request overrides. A default branch that requires pull requests forces GitHub mode; when `gh` cannot reach it, stop and say so. Never record a mode the user did not give.
 
 - **GitHub mode:** one pull request per spec; `build` waits on its checks and `ship` merges it.
 - **Local mode:** one branch per spec; `build` checks it and `ship` merges it into `main`.
