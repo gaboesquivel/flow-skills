@@ -1,6 +1,6 @@
 # 0051 — Design skill for visual direction
 
-Status: **Proposed** (2026-10-29). Spec: [039](../specs/039-design-skill.md).
+Status: **Accepted** (2026-10-29). Spec: [039](../specs/039-design-skill.md).
 
 ## Context
 

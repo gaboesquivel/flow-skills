@@ -54,7 +54,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0048-delivery-phrases-are-approvals.md](0048-delivery-phrases-are-approvals.md) | Accepted | "Push it", "build it", and "ship it" are approvals with narrow triggers; build reviews, checks, and verifies the branch; light liveness at every depth |
 | [0049-agent-does-the-work.md](0049-agent-does-the-work.md) | Accepted | The agent does the work: CLI, MCP, API, then browser; hands the user only sign-in, secrets, payment, consent, or permission changes, once |
 | [0050-github-governance-preset.md](0050-github-governance-preset.md) | Accepted | One GitHub governance preset: protected default branch, squash only, required checks, no bypass; `start` applies it |
-| [0051-design-skill.md](0051-design-skill.md) | Proposed | `design` compares rendered visual directions, the user chooses, and `DESIGN.md` records the approved one |
+| [0051-design-skill.md](0051-design-skill.md) | Accepted | `design` compares rendered visual directions, the user chooses, and `DESIGN.md` records the approved one |
 
 ## Rules
 
