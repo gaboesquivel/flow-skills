@@ -53,6 +53,17 @@ test('record check catches duplicate spec and decision numbers', () => {
   assert.match(errors.join('\n'), /docs\/specs\/007-b\.md: number 007 already used by 007-a\.md/u)
 })
 
+test('record check catches a decision without a known status', (t) => {
+  const dir = tempDir(t, 'flow-records-')
+  mkdirSync(join(dir, 'decisions'))
+  writeFileSync(join(dir, 'decisions', '0001-front-matter.md'), '---\nstatus: superseded\ndate: 2026-10-27\n---\n\n# Title\n')
+  writeFileSync(join(dir, 'decisions', '0002-bold.md'), '# 0002 — Title\n\nStatus: **Accepted** (2026-10-28).\n')
+  writeFileSync(join(dir, 'decisions', '0003-missing.md'), '# 0003 — Title\n\nNo status here.\n')
+  const errors = collectRecordErrors(dir)
+  assert.equal(errors.length, 1, errors.join('\n'))
+  assert.match(errors[0], /0003-missing\.md: start with a status line/u)
+})
+
 test('record check catches misnamed and unindexed records', (t) => {
   const dir = tempDir(t, 'flow-records-')
   mkdirSync(join(dir, 'specs'))

@@ -190,8 +190,16 @@ function listMarkdownAndSupportFiles(folder) {
   return out
 }
 
+const DECISION_STATUSES = ['accepted', 'proposed', 'superseded', 'amended', 'deprecated', 'rejected', 'withdrawn', 'dropped']
+
+/** A decision's status word, from YAML front matter or a `Status:` line; the website reads the same. */
+export const decisionStatus = (text) => {
+  const raw = text.match(/^---\n[\s\S]*?^status:\s*(\S+)[\s\S]*?^---$/mu)?.[1] ?? text.match(/^\**Status:?\**:?\s*(.+)$/mu)?.[1] ?? ''
+  return raw.replace(/[*_`]/gu, '').match(/^[a-z]+/iu)?.[0]?.toLowerCase() ?? ''
+}
+
 // Specs and decisions: well-formed names, unique numbers (parallel sessions pick "next free number"
-// independently), and an index entry, so a missing link fails locally instead of in CI.
+// independently), an index entry, and a known decision status, so a missing link fails locally instead of in CI.
 export function collectRecordErrors(docsDir) {
   const errors = []
   for (const [folder, digits] of [['decisions', 4], ['specs', 3]]) {
@@ -206,6 +214,9 @@ export function collectRecordErrors(docsDir) {
       if (seen.has(number)) errors.push(`docs/${folder}/${file}: number ${number} already used by ${seen.get(number)}; renumber to the next free number`)
       else seen.set(number, file)
       if (index !== null && !index.includes(file)) errors.push(`docs/${folder}/${file}: link it from docs/${folder}/README.md`)
+      if (folder === 'decisions' && !DECISION_STATUSES.includes(decisionStatus(readFileSync(join(path, file), 'utf8')))) {
+        errors.push(`docs/${folder}/${file}: start with a status line, for example "Status: **Accepted** (YYYY-MM-DD)", using one of ${DECISION_STATUSES.join(', ')}`)
+      }
     }
   }
   return errors
