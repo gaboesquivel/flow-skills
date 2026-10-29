@@ -43,9 +43,9 @@ Work with no spec or task is unspecced. Write a spec or tasks only when the user
 
 ### Size guard
 
-One home; `ship` points here. Judge once, at intake, before implementing; it never stops the work. Escalate for new product behavior, data shape or public API changes, migrations, or touches to authentication or permissions; secrets or credentials handling; dependencies or lockfiles; CI, workflow, or Git hook configuration; shell, exec, or filesystem-execution paths. When the size is uncertain, treat it as escalated.
+One home. Judge once, at intake, before implementing; it never stops the work. Escalate for new product behavior, data shape or public API changes, migrations, or touches to authentication or permissions; secrets or credentials handling; dependencies or lockfiles; CI, workflow, or Git hook configuration; shell, exec, or filesystem-execution paths. When the size is uncertain, treat it as escalated.
 
-- **Small:** build runs one single-agent self-check with fix rounds.
+- **Small:** build runs one single-agent self-check on `review`'s axes, UI included when the diff changes what users see, with fix rounds.
 - **Escalated, or the user asked ("review it"):** the independent `review`, run in Verify.
 
 ## Delivery mode

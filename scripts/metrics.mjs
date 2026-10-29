@@ -69,7 +69,8 @@ export function ideaToProd({ prs, sessions, repo }) {
     const end = pr.liveAt ?? pr.mergedAt
     const prompts = linked.flatMap((s) => s.prompts).filter((p) => p.at <= end).sort((a, b) => a.at.localeCompare(b.at))
     if (!prompts.length) return { number: pr.number, linked: false }
-    const phrase = prompts.findIndex((p) => DELIVERY_PHRASE.test(p.text))
+    // The last delivery phrase before the end, so a phrase aimed at an earlier change in the same session is not counted.
+    const phrase = prompts.findLastIndex((p) => DELIVERY_PHRASE.test(p.text))
     return {
       number: pr.number,
       linked: true,
@@ -124,8 +125,9 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   // Production deployment time of the merge commit, when the host reports one through GitHub deployments.
   for (const pr of prs) {
     try {
-      const [deployment] = gh('api', `repos/${fullRepo}/deployments?sha=${pr.mergeCommit?.oid}&environment=Production&per_page=1`)
-      const statuses = deployment ? gh('api', `repos/${fullRepo}/deployments/${deployment.id}/statuses`) : []
+      const api = (path) => JSON.parse(execFileSync('gh', ['api', path], { encoding: 'utf8' }))
+      const [deployment] = api(`repos/${fullRepo}/deployments?sha=${pr.mergeCommit?.oid}&environment=Production&per_page=1`)
+      const statuses = deployment ? api(`repos/${fullRepo}/deployments/${deployment.id}/statuses`) : []
       pr.liveAt = statuses.filter((status) => status.state === 'success').map((status) => status.created_at).sort()[0]
     } catch { pr.liveAt = undefined }
   }
@@ -133,6 +135,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   console.log(`  Idea → prod (first prompt → production deploy, else merge): median ${fmt(idea.ideaToProdMinutes.median)} min, p90 ${fmt(idea.ideaToProdMinutes.p90)} min`)
   console.log(`  Linked to a starting prompt: ${pct(idea.linkRate)} (${idea.unlinked} unlinked; kill criterion needs 80%)`)
   console.log(`  User turns after the delivery phrase: median ${fmt(idea.turnsAfterPhrase.median)}, p90 ${fmt(idea.turnsAfterPhrase.p90)}`)
+  const live = new Set(prs.filter((pr) => pr.liveAt).map((pr) => pr.number))
+  for (const c of idea.changes) console.log(`    #${c.number}: ${c.linked ? `${fmt(c.minutes)} min to ${live.has(c.number) ? 'deploy' : 'merge'}, ${c.turnsAfterPhrase ?? 'n/a'} turns after the phrase` : 'unlinked'}`)
   const words = repo ? null : skillWords(join(dirname(fileURLToPath(import.meta.url)), '..', 'skills'))
   if (words) console.log(`  Skill words loaded (all SKILL.md): ${words.total}; largest ${words.largest.map(([n, c]) => `${n} ${c}`).join(', ')}`)
 }

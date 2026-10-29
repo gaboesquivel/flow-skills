@@ -44,7 +44,7 @@ Each phrase is the approval; nothing asks again after it. `build` runs the indep
 
 Specs are for bets worth tracking, not a toll on every change. In either mode, nothing writes a spec or tasks unless you say "spec it" or "break it down" ([decision 0039](docs/decisions/0039-build-never-requires-a-spec.md)).
 
-- **Say "build it".** With no spec behind it, `build` treats the change as [unspecced work](GLOSSARY.md#unspecced-work) and ends with a ready branch: a committed branch, or an open pull request. "Ship it" checks it once and lands it; its [size guard](skills/build/SKILL.md#unspecced-work) adds the independent review only for a larger or riskier change.
+- **Say "build it".** With no spec behind it, `build` treats the change as [unspecced work](GLOSSARY.md#unspecced-work) and ends with a reviewed, checked branch: a committed branch, or an open pull request. Its [size guard](skills/build/SKILL.md#size-guard) adds the independent review only for a larger or riskier change; "ship it" lands it.
 - **Explore, then build.** After "explore this", "build it" builds the confirmed brief directly. The brief's branch is the work branch, so the brief lands with the code. For a new product, `explore` stops at the brief; spec 001 comes only when you ask. `explore` skips fixes and clearly small changes entirely: no questions, no writes.
 - **Just ask your agent.** Flow skills run when your request matches their phrases. A plain request ("rename this prop") is handled as your agent would without Flow.
 
@@ -80,7 +80,7 @@ Thick arrow: an automatic hand-off, behind your yes. Dashed arrow: you say the n
 
 - **Skills suggest the next step and wait.** The only automatic hand-offs are `start` → `explore` and explore's `interview` questions and, for a new product, its `grill`, each behind your yes ([decision 0024](docs/decisions/0024-gated-hand-offs.md)). `explore` asks in proportion to the change: nothing for a fix, more for a new product.
 - **No spec required.** "Build it" works on a plain request ([decision 0039](docs/decisions/0039-build-never-requires-a-spec.md)); see [work without a spec](#work-without-a-spec).
-- **`ship` lands in both modes.** It builds first when nothing is built, checks once, adds the independent review only when the size guard escalates or you ask, merges, then confirms the shipped commit is deployed ([decision 0044](docs/decisions/0044-fast-delivery.md), amending [0042](docs/decisions/0042-outcome-build-and-ship.md) and [0040](docs/decisions/0040-ship-verifies-liveness.md)).
+- **`ship` lands in both modes.** It builds first unless the branch is already verified, merges, then checks the shipped commit is live (decisions [0044](docs/decisions/0044-fast-delivery.md) and [0047](docs/decisions/0047-delivery-phrases-are-approvals.md)).
 - **Context stays aligned.** "Update the docs" has `flow` align `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md`.
 
 | Path | You say |

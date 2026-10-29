@@ -12,7 +12,7 @@ disable-model-invocation: false
 
 **Proof.** Spec accepted; checks green on the landed head; no blocking findings; protection satisfied; when a remote exists, its default branch contains the shipped commit. Liveness is reported, never a gate.
 
-Asking to ship authorizes these steps with no confirmation. It does not authorize destructive Git, security bypasses, production promotion or rollback unless explicitly asked, or unrelated changes. Ship's landing is the only commit, push, or merge to the default branch, apart from `push` when the user names it. Never force-push or rewrite remote branches. Never push other people's work. Never approve your own pull request. Never skip, disable, or weaken a check.
+Asking to ship authorizes these steps with no confirmation. It does not authorize destructive Git, security bypasses, production promotion or rollback unless explicitly asked, or unrelated changes. Ship's landing is the only commit, push, or merge to the default branch, apart from `push` on the current or named branch. Never force-push or rewrite remote branches. Never push other people's work. Never approve your own pull request. Never skip, disable, or weaken a check.
 
 ## Preflight
 
