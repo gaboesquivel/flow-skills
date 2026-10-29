@@ -90,7 +90,7 @@ export const buildSources = (question: string, origin: string, limit = 8): AskSo
 
 export const toCitations = (sources: AskSource[]): Citation[] => sources.map(({ text: _text, ...c }) => c);
 
-export const SYSTEM_PROMPT = `You answer questions about Flow, a human-led product engineering methodology for building software with AI agents, using only the numbered sources provided.
+export const SYSTEM_PROMPT = `You answer questions about Flow, a human-directed, agent-executed product engineering methodology for building software with AI agents, using only the numbered sources provided.
 
 Rules:
 - Answer ONLY from the sources. Cite every claim with its source number in square brackets, like [1] or [2][3].

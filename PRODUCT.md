@@ -8,7 +8,7 @@ Make product engineering with AI agents simpler, faster, and more reliable—wit
 
 ## Definition
 
-Flow is a lightweight, human-led product engineering methodology for building and evolving software with AI agents.
+Flow is a lightweight, human-directed, agent-executed product engineering methodology for building and evolving software with AI agents.
 
 It combines shared product context, reusable engineering skills, and practical development conventions in a continuous workflow from exploration to verified delivery.
 
@@ -20,13 +20,13 @@ Flow is a documented way of working, not an agent router. Ordinary language shou
 
 Working with Flow should feel like one continuous conversation with a product-minded engineering partner.
 
-Humans define direction and make consequential decisions. Agents help explore, design, implement, review, and verify. Shared context preserves understanding as software evolves: product, design, architecture, decisions, and evidence stay current and discoverable.
+Humans define direction and make consequential decisions. Agents do the work: explore, design, implement, review, verify, and operate, through the tools they can reach. Shared context preserves understanding as software evolves: product, design, architecture, decisions, and evidence stay current and discoverable.
 
 ## Principles
 
 1. **Product before code.** Build useful software, not just completed tasks.
 2. **Preserve intent.** Keep product, design, architecture, and significant decisions understandable and current.
-3. **Human-led, agent-assisted.** Automate execution without unnecessarily replacing human judgment.
+3. **Human-directed, agent-executed.** Agents carry out the work, including setup and operations; people decide, and handle only the steps that need them, such as sign-in and secrets ([decision 0049](docs/decisions/0049-agent-does-the-work.md)).
 4. **Minimal process.** Use only the structure and skills the task requires.
 5. **Evidence over claims.** Verify outcomes through appropriate tests, reviews, and real-world checks.
 6. **Portable by design.** Work across agents, interfaces, frameworks, and tools.

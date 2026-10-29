@@ -10,7 +10,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0004-portable-skill-catalog.md](0004-portable-skill-catalog.md) | Accepted (parts superseded by 0006, 0013, and 0019) | Portable catalog and Agent Skills install |
 | [0005-misc-tldr-skill.md](0005-misc-tldr-skill.md) | Accepted | Misc group and `tldr` visual recap skill |
 | [0006-flow-lite-and-flat-docs.md](0006-flow-lite-and-flat-docs.md) | Accepted (invocation split superseded by 0019) | Flow Lite `flow` skill and flat specs/decisions docs |
-| [0007-flow-product-identity.md](0007-flow-product-identity.md) | Accepted | Official Flow identity in PRODUCT.md |
+| [0007-flow-product-identity.md](0007-flow-product-identity.md) | Accepted (amended by 0049) | Official Flow identity in PRODUCT.md |
 | [0008-leading-words-and-visual-summaries.md](0008-leading-words-and-visual-summaries.md) | Accepted (leading words redefined by 0019) | Leading words in the catalog; visual summaries stay in `tldr` |
 | [0009-adopter-product-context.md](0009-adopter-product-context.md) | Accepted | Adopter `PRODUCT.md` is that product; no `flow start` |
 | [0010-optional-start-skill.md](0010-optional-start-skill.md) | Accepted | Optional `start` skill authorized (shipped on catalog PR); does not supersede 0009 |
@@ -26,7 +26,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0020-flow-mode.md](0020-flow-mode.md) | Accepted (amended by 0030) | Flow mode: project instruction block, `to-tasks` hand-off, `ship` task-set orchestration, local and pull-request delivery modes |
 | [0021-autonomous-explore-and-ship.md](0021-autonomous-explore-and-ship.md) | Accepted (amended by 0028) | Explore and ship create docs files and GitHub issues, group pull requests, and suggest the host's autonomous mode |
 | [0022-start-runs-explore.md](0022-start-runs-explore.md) | Accepted (amended by 0039, 0044) | Speakable `start` runs `explore` beside the bootstrap; spec 001 full, later slices as candidates |
-| [0023-agent-first.md](0023-agent-first.md) | Accepted | Agent-first, API-first becomes an official principle; explore and to-spec apply it |
+| [0023-agent-first.md](0023-agent-first.md) | Accepted (amended by 0049) | Agent-first, API-first becomes an official principle; explore and to-spec apply it |
 | [0024-gated-hand-offs.md](0024-gated-hand-offs.md) | Accepted (amended by 0028, 0029) | Named hand-offs; explicit yes before spec writes, task publishing, and merging or pushing `main`; `start` explores at Lite (depth amended by 0026) |
 | [0025-wave-checkpoints.md](0025-wave-checkpoints.md) | Accepted (amended by 0028, 0029, 0031, 0042) | `ship` runs task sets in waves with a draft pull request, preview checkpoints, and a `Deploy:` target |
 | [0026-process-depth.md](0026-process-depth.md) | Accepted (amended by 0029, 0030; superseded in part by 0036) | Lite or Full process recorded in the Flow block; `start` is Flow setup plus bootstrap; spec–decision boundary; "Flow Lite" label retired |
@@ -52,6 +52,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0046-measurement-assistance.md](0046-measurement-assistance.md) | Accepted | Read-only `measure` skill; measurement defined in `explore`, made actionable in `to-spec`; assistance, not analytics or a ship gate |
 | [0047-trusted-review-and-local-record-checks.md](0047-trusted-review-and-local-record-checks.md) | Accepted | `context-review` runs base-commit code with the head as data; API outages do not block; record index checks move to `pnpm validate`; the `alignment` job is removed |
 | [0048-delivery-phrases-are-approvals.md](0048-delivery-phrases-are-approvals.md) | Accepted | "Push it", "build it", and "ship it" are approvals with narrow triggers; build reviews, checks, and verifies the branch; light liveness at every depth |
+| [0049-agent-does-the-work.md](0049-agent-does-the-work.md) | Accepted | The agent does the work: CLI, MCP, API, then browser; hands the user only sign-in, secrets, payment, consent, or permission changes, once |
 
 ## Rules
 

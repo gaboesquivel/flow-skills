@@ -77,7 +77,7 @@ If any check failed, report the blocker; do not claim success or create the init
 
 ## Deployment
 
-With an authorized GitHub repository, push the initial commit to it; push nowhere else, and deploy by no other means. When the repository is connected to Vercel, wait for that commit's first deployment (its GitHub deployment status) and report the URL once it is green; a failed deployment is a blocker to report. When no deployment is configured, say so: the commit is the done signal.
+With an authorized GitHub repository, push the initial commit to it; push nowhere else, and deploy by no other means. When the repository is connected to Vercel, wait for that commit's first deployment (its GitHub deployment status) and report the URL once it is green; a failed deployment is a blocker to report. When it is not connected, connect it with the host's CLI when authenticated (that connection is how its deployment starts); otherwise hand off the sign-in once (`write-agents` Tools), never a dashboard path. When no deployment is configured, say so: the commit is the done signal.
 
 ## Boundaries
 

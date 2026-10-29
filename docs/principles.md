@@ -18,7 +18,7 @@ Plan the signals needed to see what people and agents attempt, where they succee
 
 Elaborates the official **Agent-first, API-first** principle ([decision 0023](decisions/0023-agent-first.md)). Build for agents and humans, with an API-first approach.
 
-Treat agent use as a first-class product interaction. Make relevant capabilities discoverable and usable through clear interfaces, including APIs, CLIs, and MCP where appropriate, alongside useful human experiences. Design permissions, errors, and results so an agent can act within the user's authority and understand the outcome.
+Treat agent use as a first-class product interaction. Make relevant capabilities discoverable and usable through clear interfaces, including APIs, CLIs, and MCP where appropriate, alongside useful human experiences. Design permissions, errors, and results so an agent can act within the user's authority and understand the outcome. Flow's own agent works the same way: it uses those interfaces first and hands people only what needs them ([`write-agents`](../skills/write-agents/SKILL.md#tools) Tools).
 
 ## Lean
 

@@ -1,6 +1,6 @@
 # 0007. Official Flow product identity in PRODUCT.md
 
-Status: accepted (2026-10-27)
+Status: accepted (2026-10-27). Amended by [0049](0049-agent-does-the-work.md) (principle 3 becomes human-directed, agent-executed).
 
 ## Context
 

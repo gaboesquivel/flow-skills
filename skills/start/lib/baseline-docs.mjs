@@ -1,7 +1,7 @@
 const FLOW_IDENTITY_MARKERS = [
   'From intent to verified software',
   'Make product engineering with AI agents simpler',
-  'Flow is a lightweight, human-led product engineering methodology',
+  'Flow is a lightweight, human-directed, agent-executed product engineering methodology',
   'Strategic chain',
 ]
 
