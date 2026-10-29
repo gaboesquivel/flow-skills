@@ -1,4 +1,5 @@
 import { existsSync, readFileSync, readdirSync, realpathSync } from 'node:fs'
+import { homedir } from 'node:os'
 import { dirname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { collectCatalogPhraseErrors } from './check-catalog-phrases.mjs'
@@ -214,6 +215,16 @@ export function collectSkillsLinkErrors(repoRoot) {
   return []
 }
 
+// A user-level install shadows .claude/skills in Claude Code, so dogfooding silently runs an older catalog.
+// Warning only: CI and contributors without a user-level install see nothing.
+export function collectShadowedSkillWarnings(repoRoot, userSkills = join(homedir(), '.claude', 'skills')) {
+  const stale = EXPECTED_SKILL_NAMES.filter((name) => {
+    const installed = join(userSkills, name, 'SKILL.md')
+    return existsSync(installed) && readFileSync(installed, 'utf8') !== readFileSync(join(repoRoot, 'skills', name, 'SKILL.md'), 'utf8')
+  })
+  return stale.length ? [`${userSkills} shadows skills/ with older copies of: ${stale.join(', ')}. Refresh with \`npx skills update -g\` or remove them.`] : []
+}
+
 export function collectFixtureNestedGitErrors(repoRoot) {
   const errors = []
   const fixturesRoot = join(repoRoot, 'tests', 'fixtures')
@@ -247,6 +258,7 @@ export function validateRepository(repoRoot) {
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const repoRoot = join(dirname(fileURLToPath(import.meta.url)), '..')
   const errors = validateRepository(repoRoot)
+  for (const warning of collectShadowedSkillWarnings(repoRoot)) console.warn(`warning: ${warning}`)
   if (errors.length) { console.error(errors.join('\n')); process.exitCode = 1 }
   else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills, documentation links, local references, adapters, record numbers, catalog phrases, fixture layout, and start's check table.`)
 }
