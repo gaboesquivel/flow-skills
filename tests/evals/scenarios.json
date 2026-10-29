@@ -772,7 +772,9 @@
         "tests/fixtures/e34-ship-verify/README.md",
         "tests/fixtures/e34-ship-verify/MOCK-GITHUB.md",
         "tests/fixtures/e34-ship-verify/docs/specs/098-verify-ship-fixture.md",
-        "tests/fixtures-eval-smoke.test.mjs"
+        "tests/fixtures-eval-smoke.test.mjs",
+        "tests/evals/lib/verify-report.mjs",
+        "tests/evals-verify-report.test.mjs"
       ],
       "evidence": {
         "structural_contract": "not_executed",
