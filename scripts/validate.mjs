@@ -2,6 +2,7 @@ import { existsSync, readFileSync, readdirSync, realpathSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { dirname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { collectBrandMarkErrors } from './check-brand-mark.mjs'
 import { collectCatalogPhraseErrors } from './check-catalog-phrases.mjs'
 import { collectDocLinkErrors } from './check-doc-links.mjs'
 import { ESSENTIAL_CHECK_IDS } from '../skills/start/lib/commit-gate.mjs'
@@ -268,6 +269,7 @@ export function validateRepository(repoRoot) {
   else errors.push('skills/start/SKILL.md: missing')
   errors.push(...collectSkillsLinkErrors(repoRoot))
   errors.push(...collectCatalogPhraseErrors(repoRoot))
+  errors.push(...collectBrandMarkErrors(repoRoot))
   errors.push(...collectFixtureNestedGitErrors(repoRoot))
   return errors
 }
@@ -277,5 +279,5 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const errors = validateRepository(repoRoot)
   for (const warning of collectShadowedSkillWarnings(repoRoot)) console.warn(`warning: ${warning}`)
   if (errors.length) { console.error(errors.join('\n')); process.exitCode = 1 }
-  else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills, documentation links, local references, adapters, record names and indexes, catalog phrases, fixture layout, and start's check table.`)
+  else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills, documentation links, local references, adapters, record names and indexes, catalog phrases, brand mark geometry, fixture layout, and start's check table.`)
 }

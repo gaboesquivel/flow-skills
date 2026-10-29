@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
+import { collectBrandMarkErrors } from '../scripts/check-brand-mark.mjs'
 import { STALE_SHIP_PIPELINE_PHRASE, collectCatalogPhraseErrors } from '../scripts/check-catalog-phrases.mjs'
 import { REQUIRED_SCENARIO_IDS, validateEvalScenarios } from '../scripts/check-evals.mjs'
 import {
@@ -126,6 +127,19 @@ test('catalog check flags stale ship pipeline copy', (t) => {
   const errors = collectCatalogPhraseErrors(dir)
   assert.equal(errors.length, 1)
   assert.match(errors[0], /README\.md/u)
+})
+
+test('brand mark check passes on the repository and flags a drifted variant', (t) => {
+  assert.deepEqual(collectBrandMarkErrors(repoRoot), [])
+  const dir = tempDir(t, 'flow-brand-')
+  cpSync(join(repoRoot, 'site', 'components'), join(dir, 'site', 'components'), { recursive: true })
+  cpSync(join(repoRoot, 'site', 'app', 'icon.svg'), join(dir, 'site', 'app', 'icon.svg'))
+  cpSync(join(repoRoot, 'site', 'public', 'brand'), join(dir, 'site', 'public', 'brand'), { recursive: true })
+  const ink = join(dir, 'site', 'public', 'brand', 'throughline-mark-ink.svg')
+  writeFileSync(ink, readFileSync(ink, 'utf8').replace('M38 30 H125', 'M38 30 H126'))
+  const errors = collectBrandMarkErrors(dir)
+  assert.equal(errors.length, 1)
+  assert.match(errors[0], /throughline-mark-ink\.svg: 1 Throughline outline/u)
 })
 
 test('nested .git under tests/fixtures is rejected', (t) => {
