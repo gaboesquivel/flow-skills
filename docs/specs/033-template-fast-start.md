@@ -1,10 +1,10 @@
 # 033: Template fast start
 
-**Status:** draft (2026-10-29)
+**Status:** accepted (2026-10-29)
 
 **Repositories:** [flow-next](https://github.com/gaboesquivel/flow-next), [flow-mono](https://github.com/gaboesquivel/flow-mono), flow-skills
 
-**Decision:** [0045](../decisions/0045-templates-pin-flow-skills.md) (Proposed)
+**Decision:** [0045](../decisions/0045-templates-pin-flow-skills.md) (Accepted)
 
 ## Problem Statement
 
@@ -68,6 +68,14 @@ Clone either template (or create a repository from it), run `/start`, and reach 
 
 - `skills/start/SKILL.md` (Dependencies and setup): "do not install flow-skills into the new repository" becomes "the template lock installs Flow; `start` does not install it again" ([0045](../decisions/0045-templates-pin-flow-skills.md)).
 - `skills/start/SKILL.md` (Obtain template): "Stop when the destination … already has Git commits" gains an exception for a clean checkout of the template itself.
+
+## Tasks
+
+- [ ] Measure baseline clone-to-setup times on fresh clones of both templates.
+- [ ] flow-next: skills lock, setup fix, single MCP App build in CI.
+- [ ] flow-mono: skills lock, setup parity, migration script.
+- [ ] flow-skills: `start` in a template clone; keep the template's Flow install.
+- [ ] Run the acceptance scenario on both templates and record times.
 
 ## Out of Scope
 

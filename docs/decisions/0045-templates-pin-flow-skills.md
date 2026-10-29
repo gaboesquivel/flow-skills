@@ -1,6 +1,6 @@
 # 0045 — Templates pin flow-skills; one owner per workflow
 
-Status: **Proposed** (2026-10-29). Would amend the `start` rule "do not install flow-skills into the new repository" ([skills/start/SKILL.md](../../skills/start/SKILL.md#dependencies-and-setup)). Spec: [033](../specs/033-template-fast-start.md).
+Status: **Accepted** (2026-10-29). Amends the `start` rule "do not install flow-skills into the new repository" ([skills/start/SKILL.md](../../skills/start/SKILL.md#dependencies-and-setup)). Spec: [033](../specs/033-template-fast-start.md).
 
 ## Context
 
