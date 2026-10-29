@@ -10,7 +10,7 @@ import {
 } from '../skills/start/lib/github-governance.mjs'
 
 // An in-memory GitHub that applies writes, so a second run sees the first run's state.
-const fakeGitHub = ({ visibility = 'private', admin = true, rulesetError } = {}) => {
+const fakeGitHub = ({ visibility = 'private', admin = true, rulesetError, prTitleWorkflow = true } = {}) => {
   const state = {
     repo: { default_branch: 'main', visibility, permissions: { admin }, allow_merge_commit: true, security_and_analysis: {} },
     workflow: { default_workflow_permissions: 'write', can_approve_pull_request_reviews: true },
@@ -35,7 +35,8 @@ const fakeGitHub = ({ visibility = 'private', admin = true, rulesetError } = {})
       return method === 'PUT' ? ((state.alerts = true), ok()) : state.alerts ? ok() : { ok: false, status: 404, error: 'Not Found (HTTP 404)' }
     if (path.endsWith('/private-vulnerability-reporting'))
       return method === 'PUT' ? ((state.pvr = true), ok()) : ok({ enabled: state.pvr })
-    if (path === 'repos/o/r/rulesets' && method === 'GET') return ok(state.rulesets.map(({ id, name }) => ({ id, name })))
+    if (path === 'repos/o/r/rulesets' && method === 'GET')
+      return rulesetError ?? ok(state.rulesets.map(({ id, name }) => ({ id, name })))
     if (path === 'repos/o/r/rulesets' && method === 'POST') {
       if (rulesetError) return rulesetError
       state.rulesets.push({ ...body, id: 7, current_user_can_bypass: 'never' })
@@ -43,7 +44,10 @@ const fakeGitHub = ({ visibility = 'private', admin = true, rulesetError } = {})
     }
     if (path === 'repos/o/r/rulesets/7')
       return method === 'PUT' ? (Object.assign(state.rulesets[0], body), ok()) : ok(state.rulesets[0])
-    if (path === 'repos/o/r/rules/branches/main') return ok(state.rulesets.flatMap((ruleset) => ruleset.rules))
+    if (path === 'repos/o/r/rules/branches/main')
+      return rulesetError ?? ok(state.rulesets.flatMap((ruleset) => ruleset.rules))
+    if (path.startsWith('repos/o/r/contents/.github/workflows/pr-title.yml'))
+      return prTitleWorkflow ? ok({ name: 'pr-title.yml' }) : { ok: false, status: 404, error: 'Not Found (HTTP 404)' }
     if (path.includes('/check-runs')) return ok({ check_runs: [{ name: 'verify' }] })
     if (path.includes('/statuses')) return ok([])
     return { ok: false, status: 404, error: `unexpected ${method} ${path} (HTTP 404)` }
@@ -104,10 +108,40 @@ test('the ruleset has no bypass actors, needs no approvals, and allows only squa
   assert.equal(pr.required_approving_review_count, 0)
   assert.deepEqual(pr.allowed_merge_methods, ['squash'])
   const checks = body.rules.find((rule) => rule.type === 'required_status_checks').parameters.required_status_checks
-  assert.deepEqual(checks, [{ context: 'verify', integration_id: 15368 }, { context: 'Vercel' }])
+  assert.deepEqual(checks, [
+    { context: 'verify', integration_id: 15368 },
+    { context: 'Vercel', integration_id: 8329 },
+  ])
 })
 
 test('effective rules fail when another ruleset still allows merge commits', () => {
   const rules = [...rulesetBody({ checks: ['verify'] }).rules, { type: 'pull_request', parameters: { allowed_merge_methods: ['merge', 'squash'] } }]
   assert.match(verifyEffectiveRules({ rules, checks: ['verify'] }).join(), /still allows merge, squash/u)
+})
+
+const requiredChecks = (state) =>
+  state.rulesets[0].rules.find((rule) => rule.type === 'required_status_checks').parameters.required_status_checks.map((c) => c.context)
+
+test('a rerun without checks keeps the checks the ruleset already requires', () => {
+  const { gh, state } = fakeGitHub({ visibility: 'public' })
+  applyGovernance({ repo: 'o/r', gh, checks: ['validate', 'pr-title'] })
+  const rerun = applyGovernance({ repo: 'o/r', gh })
+  assert.equal(rerun.ok, true)
+  assert.deepEqual(rerun.checks, ['validate', 'pr-title'])
+  assert.deepEqual(requiredChecks(state), ['validate', 'pr-title'])
+})
+
+test('pr-title is not required where its workflow is missing', () => {
+  const { gh, state } = fakeGitHub({ prTitleWorkflow: false })
+  const report = applyGovernance({ repo: 'o/r', gh })
+  assert.deepEqual(requiredChecks(state), ['verify'])
+  assert.equal(report.settings.find((s) => s.id === 'pr-title-workflow').status, 'failed')
+})
+
+test('verify-only names plan limits as unsupported, not drift', () => {
+  const { gh } = fakeGitHub({
+    rulesetError: { ok: false, status: 403, error: 'Upgrade to GitHub Pro or make this repository public to enable this feature. (HTTP 403)' },
+  })
+  const report = applyGovernance({ repo: 'o/r', gh, verifyOnly: true })
+  assert.deepEqual(report.unsupported.sort(), ['ruleset', 'secret-scanning'])
 })
