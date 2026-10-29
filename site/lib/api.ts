@@ -4,7 +4,7 @@ export const CORS_HEADERS: Record<string, string> = {
   "Access-Control-Allow-Headers": "Content-Type, Accept",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Expose-Headers": "X-Flow-Citations, X-Flow-Answer-Mode, X-Flow-Model, Retry-After",
+  "Access-Control-Expose-Headers": "X-Flow-Citations, X-Flow-Answer-Mode, X-Flow-Model, Retry-After, RateLimit, RateLimit-Policy",
   "Access-Control-Max-Age": "86400",
 };
 
@@ -41,7 +41,15 @@ const clientKey = (request: Request) =>
  */
 export const createRateLimiter = ({ name, limit, windowSeconds }: { name: string; limit: number; windowSeconds: number }) => {
   const buckets = new Map<string, { count: number; resetAt: number }>();
-  return (request: Request) => {
+  /** RFC RateLimit headers for this client's current window, for successful responses. */
+  const headers = (request: Request): Record<string, string> => {
+    const now = Date.now();
+    const bucket = buckets.get(clientKey(request));
+    const remaining = bucket && now < bucket.resetAt ? Math.max(0, limit - bucket.count) : limit;
+    const reset = bucket && now < bucket.resetAt ? Math.ceil((bucket.resetAt - now) / 1000) : windowSeconds;
+    return { RateLimit: `limit=${limit}, remaining=${remaining}, reset=${reset}`, "RateLimit-Policy": `${limit};w=${windowSeconds}` };
+  };
+  const check = (request: Request) => {
     const now = Date.now();
     if (buckets.size > 5000) for (const [k, v] of buckets) if (v.resetAt <= now) buckets.delete(k);
     const key = clientKey(request);
@@ -57,7 +65,9 @@ export const createRateLimiter = ({ name, limit, windowSeconds }: { name: string
       message: `Too many ${name} requests from this client.`,
       resolution: `Wait ${Math.max(1, Math.ceil((current.resetAt - now) / 1000))} seconds and retry.`,
       retryAfterSeconds: Math.max(1, Math.ceil((current.resetAt - now) / 1000)),
+      headers: headers(request),
       status: 429,
     });
   };
+  return Object.assign(check, { headers });
 };
