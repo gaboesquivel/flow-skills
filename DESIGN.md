@@ -6,7 +6,7 @@
 
 ## Design purpose
 
-Flow helps humans understand and direct meaningful product work while agents execute it. The design should convey **clarity, directed movement, collaboration, and confidence**, without suggesting a rigid workflow or a generic AI brand. The site serves human readers and agent users through the same public knowledge, emphasizing Search + Ask, source-backed answers and discoverable skills and starters.
+Flow helps humans understand and direct meaningful product work while agents execute it. The design should convey **clarity, directed movement, collaboration, and confidence**, without suggesting a rigid workflow or a generic AI brand. The site serves human readers and agent users through the same public knowledge, emphasizing source-backed answers through one `⌘K` palette and discoverable skills and starters.
 
 ## Brand identity
 
@@ -51,15 +51,16 @@ Canonical gradient: `linear-gradient(92deg, #9ea6f8 0%, #c6a8f6 48%, #f0a6cf 100
 
 ## Product and interface design
 
-- Design for the purpose of each surface: Home communicates value; Skills and Docs optimize discovery and comprehension; Search + Ask optimize question-to-evidence; Starters support choosing a suitable foundation.
+- Design for the purpose of each surface: Home communicates value; Skills and Docs optimize discovery and comprehension; the `⌘K` palette optimizes question-to-evidence, with search and cited Ask in one place ([spec 040](docs/specs/040-site-refinement.md)); Starters support choosing a suitable foundation.
 - Show product goals and actual capabilities faithfully. Do not use fabricated counters, testimonials, scores, speed claims or agent-readiness badges without evidence.
+- There is one search surface: the palette. No separate Ask landing or embedded search boxes; entry points open the palette.
 - Preserve the current live Prism information architecture, responsive layouts, source-backed content pipeline and machine-readable endpoints unless there is a separate, confirmed product change.
 - Ensure typography, navigation, loading, error, empty, focus and mobile states are deliberate. Use semantic content for human and agent readers; imagery is supplementary rather than a text substitute.
 - The hero diagram must not preserve the retired diamond as a competing logo. Use Throughline in brand-bearing surfaces.
 
 ### Approved homepage
 
-Order: hero, principles strip, **Build what matters.**, Find the skill / Ask the question, three pillars, install band, footer. Only h1 headings carry the gradient; section headings (h2 and below) stay plain, site-wide.
+Order: hero, principles strip, **Build what matters.**, Find the skill / Ask the question (opens the palette), three pillars, install band, footer. Only h1 headings carry the gradient; section headings (h2 and below) stay plain, site-wide.
 
 - **Hero illustration.** Four stations (Intent, Build, Ship, Measure) on a feedback cycle around the canonical Throughline mark; the cycle shows feedback, not mandatory gates. The source is [`hero-orbit.tsx`](site/components/home/hero-orbit.tsx), which imports `THROUGHLINE_PATHS`; [`flow-hero-orbit.svg`](site/public/brand/flow-hero-orbit.svg) and [`flow-hero-orbit.webp`](site/public/brand/flow-hero-orbit.webp) are static derivatives for reuse outside the site. Update them together; `pnpm validate` checks the SVG's mark outlines.
 - **Build what matters.** A product-first practice timeline: design thinking, lean practices, meaningful velocity. Four stages, each with a mono kicker, title, one-line purpose, and links to its skills, beside an example panel. The examples follow one continuous, illustrative product (a renter shortlist: OMTM with two supporting metrics, an MVP, a vertical slice, verified release, a measured next decision) and are labeled as intended evidence, not claimed results. The Intent panel is emphasized; a *Learning shapes the next intent.* line closes the loop. On desktop the stage text and example sit in two columns on a dotted vertical axis divided by subtle rules; on mobile the example stacks under its stage at full body size. The copy lives in [`sections.tsx`](site/components/home/sections.tsx).

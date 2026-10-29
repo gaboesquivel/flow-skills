@@ -1,6 +1,6 @@
 # 032: Prism website
 
-**Status:** implemented (2026-10-29). Landed in [#165](https://github.com/gaboesquivel/flow-skills/pull/165).
+**Status:** implemented (2026-10-29). Landed in [#165](https://github.com/gaboesquivel/flow-skills/pull/165). Amended by [040](040-site-refinement.md): Search + Ask is one `⌘K` palette; `/search` is only a fallback results page.
 
 ## Problem Statement
 
