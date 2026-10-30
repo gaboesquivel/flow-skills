@@ -64,8 +64,10 @@ export async function POST(request: Request) {
     const result: AskResult = { answer: "", citations: toCitations(sources), mode: "extractive", model: null, question };
     if (call)
       try {
-        const answer = (await generateText(call)).text.trim();
+        const generated = await generateText(call);
+        const answer = generated.text.trim();
         if (answer) Object.assign(result, { answer, mode: "generated", model });
+        else console.warn("ask: model returned no text, using extractive answer", { finishReason: generated.finishReason, warnings: generated.warnings });
       } catch (error) {
         console.error("ask: generation failed, using extractive answer", error);
       }
@@ -78,12 +80,15 @@ export async function POST(request: Request) {
       const parts = streamText(call).stream[Symbol.asyncIterator]();
       // Wait for the first token so a failing model still falls back to extractive with the right headers.
       let first = "";
+      let finishReason: string | undefined;
       while (!first) {
         const next = await parts.next();
         if (next.done) break;
         if (next.value.type === "error") throw next.value.error;
+        if (next.value.type === "finish") finishReason = next.value.finishReason;
         if (next.value.type === "text-delta") first = next.value.text;
       }
+      if (!first) console.warn("ask: model stream ended without text, using extractive answer", { finishReason });
       if (first) {
         const encoder = new TextEncoder();
         const body = new ReadableStream<Uint8Array>({
