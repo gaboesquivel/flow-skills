@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { firstSuccess, ideaToProd, parseSession, percentile, summarize } from '../scripts/metrics.mjs'
+import { bySkill, delivery, firstSuccess, ideaToProd, parseSession, percentile, summarize } from '../scripts/metrics.mjs'
 
 test('percentile picks the nearest rank and handles empty input', () => {
   assert.equal(percentile([], 50), null)
@@ -53,13 +53,55 @@ test('idea → prod links sessions to merged pull requests and counts turns afte
   ]
   const result = ideaToProd({ prs, sessions: [linked, viaLink], repo: 'o/flow-skills' })
   assert.deepEqual(result.changes, [
-    { number: 1, linked: true, minutes: 10, turnsAfterPhrase: 1, denialsAt: ['2026-10-29T00:03:00.000Z', '2026-10-29T00:07:00.000Z'] },
-    { number: 2, linked: true, minutes: 30, turnsAfterPhrase: null, denialsAt: [] },
-    { number: 3, linked: false },
+    { number: 1, linked: true, minutes: 10, turns: 3, turnsAfterPhrase: 1, denialsAt: ['2026-10-29T00:03:00.000Z', '2026-10-29T00:07:00.000Z'], skills: [], cost: null, ciFailures: null, rework: 0 },
+    { number: 2, linked: true, minutes: 30, turns: 1, turnsAfterPhrase: null, denialsAt: [], skills: [], cost: null, ciFailures: null, rework: 0 },
+    { number: 3, linked: false, ciFailures: null, rework: 0 },
   ])
   assert.equal(result.unlinked, 1)
   assert.equal(result.linkRate, 2 / 3)
   assert.equal(result.denials, 2)
+})
+
+test('each change reports its skills, cost, CI failures, and rework, with unknown where the logs say nothing', () => {
+  const log = (entries) => entries.map((entry) => JSON.stringify(entry)).join('\n')
+  const at = (minute) => new Date(Date.UTC(2026, 9, 29, 0, minute)).toISOString()
+  const prompt = (minute, content, branch) => ({ type: 'user', timestamp: at(minute), cwd: '/code/flow-skills', gitBranch: branch, message: { content } })
+  const skill = (minute, name) => ({ type: 'assistant', timestamp: at(minute), message: { content: [{ type: 'tool_use', name: 'Skill', input: { skill: name } }] } })
+  const cost = (total, extra = {}) => ({ type: 'cost-state', totalCostUSD: total, ...extra })
+  // Alone on branch a, with two cumulative cost entries; the skill after the merge is not counted.
+  const alone = parseSession(log([prompt(0, 'build it', 'a'), skill(1, 'build'), skill(2, 'build'), cost(1), cost(2.5), skill(30, 'retro')]))
+  // One session across branches b and c: its total cannot be split, so both costs are unknown.
+  const shared = parseSession(log([prompt(0, 'fix b', 'b'), skill(1, 'debug'), prompt(5, 'now c', 'c'), cost(4)]))
+  // A model with unknown pricing makes the session's cost unknown, not partial.
+  const unpriced = parseSession(log([prompt(0, 'tweak', 'd'), cost(3, { hasUnknownModelCost: true })]))
+  assert.equal(alone.cost, 2.5)
+  assert.equal(unpriced.cost, null)
+  const prs = [
+    { number: 1, headRefName: 'a', mergedAt: at(10), commits: [{ committedDate: at(3) }, { committedDate: at(8) }] },
+    { number: 2, headRefName: 'b', mergedAt: at(10), commits: [] },
+    { number: 3, headRefName: 'c', mergedAt: at(12), commits: [] },
+    { number: 4, headRefName: 'd', mergedAt: at(12), commits: [{ committedDate: at(2) }, { committedDate: at(6) }], reviews: [{ submittedAt: at(5) }] },
+  ]
+  // Branch a fails once and its rerun of the same commit fails again before a fix commit goes green.
+  const runs = [
+    { headBranch: 'a', headSha: 's1', conclusion: 'failure', createdAt: at(4), updatedAt: at(5) },
+    { headBranch: 'a', headSha: 's1', conclusion: 'failure', createdAt: at(6), updatedAt: at(7) },
+    { headBranch: 'a', headSha: 's2', conclusion: 'success', createdAt: at(8), updatedAt: at(9) },
+    { headBranch: 'b', headSha: 's3', conclusion: 'success', createdAt: at(8), updatedAt: at(9) },
+  ]
+  const { changes } = ideaToProd({ prs, sessions: [alone, shared, unpriced], repo: 'o/flow-skills', runs })
+  const pick = ({ number, skills, cost: c, ciFailures, rework }) => ({ number, skills, cost: c, ciFailures, rework })
+  assert.deepEqual(changes.map(pick), [
+    { number: 1, skills: ['build'], cost: 2.5, ciFailures: 1, rework: 1 },
+    { number: 2, skills: ['debug'], cost: null, ciFailures: 0, rework: 0 },
+    { number: 3, skills: ['debug'], cost: null, ciFailures: null, rework: 0 },
+    { number: 4, skills: [], cost: null, ciFailures: null, rework: 1 },
+  ])
+  assert.deepEqual(delivery({ headRefName: 'z', commits: [] }, runs), { ciFailures: null, rework: 0 })
+  assert.deepEqual(bySkill([...changes, { number: 9, linked: false }]), [
+    { skill: 'debug', changes: 2, medianMinutes: 10, medianTurns: 2 },
+    { skill: 'build', changes: 1, medianMinutes: 10, medianTurns: 1 },
+  ])
 })
 
 test('production time is the first success, filtered to the Vercel commit status when there is no deployment', () => {
