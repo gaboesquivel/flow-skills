@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 
 import { CommandLine } from "@/components/command-line";
 import { Prose } from "@/components/prose";
+import { AskButton } from "@/components/search/ask-button";
 import { SkillCard } from "@/components/skills/skill-card";
 import { ArrowUpRight, Breadcrumbs, Container, Eyebrow, Lede } from "@/components/ui";
 import { getSkill, installCommand, skillsInCatalogOrder, sourceUrl } from "@/lib/content";
@@ -47,7 +48,7 @@ export default async function SkillPage({ params }: Props) {
   const next = index < ordered.length - 1 ? ordered[index + 1] : undefined;
   const related = ordered.filter((s) => s.group === skill.group && s.name !== skill.name);
   const groupHref = `/skills?group=${encodeURIComponent(skill.group)}`;
-  const askHref = `/search?mode=ask&q=${encodeURIComponent(`When should I use the ${skill.name} skill, and what does it do?`)}`;
+  const askQuestion = `When should I use the ${skill.name} skill, and what does it do?`;
   const sourceDir = skill.source.replace(/\/SKILL\.md$/u, "");
 
   return (
@@ -177,9 +178,9 @@ export default async function SkillPage({ params }: Props) {
             </dl>
             <ul className="mt-6 space-y-3 border-t border-line pt-5 text-sm">
               <li>
-                <Link href={askHref} className="inline-flex items-center gap-1.5 font-semibold text-lavender hover:text-lavender-soft">
+                <AskButton question={askQuestion} className="inline-flex items-center gap-1.5 font-semibold text-lavender hover:text-lavender-soft">
                   <Sparkles aria-hidden="true" className="size-3.5" /> Ask about this skill
-                </Link>
+                </AskButton>
               </li>
               <li>
                 <a href={sourceUrl(skill.source)} rel="noopener" className="inline-flex items-center gap-1.5 font-semibold text-lavender hover:text-lavender-soft">

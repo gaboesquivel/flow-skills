@@ -66,8 +66,10 @@ The methodology defines what good product engineering looks like. Reusable skill
 | **Flow** | The methodology (this document and related practice docs) |
 | **flow-skills** (this repository) | Reusable skills and conventions for agents |
 | **[flow-next](https://github.com/gaboesquivel/flow-next)** / **[flow-mono](https://github.com/gaboesquivel/flow-mono)** | Independent application foundations (templates); [interop contract](docs/specs/005-flow-templates-interop.md) (candidate; owned by the template repositories) (supersedes [003](docs/specs/003-flow-templates-baseline-v2.md) for new work) |
-| **Flow website** ([`site/`](site/README.md)) | Public home for the ecosystem: methodology, skill catalog, starters, and docs rendered from this repository, with Search + Ask for people and `llms.txt`, Markdown, search, and MCP for agents ([spec 032](docs/specs/032-prism-website.md)) |
+| **Flow website** ([`site/`](site/README.md)) | Public home for the ecosystem: methodology, skill catalog, starters, and docs rendered from this repository, with a `⌘K` palette for search and cited answers for people ([spec 040](docs/specs/040-site-refinement.md)), and `llms.txt`, Markdown, search, and MCP for agents ([spec 032](docs/specs/032-prism-website.md)) |
 | **[Flow Factory](https://github.com/gaboesquivel/flow-factory)** | Optional hosted, issue-driven orchestration and automated execution built on Flow—not Flow itself. [Flow mode](#flow-mode) is the in-session counterpart and does not depend on it. |
+
+Adoption is flexible: take one skill or the whole practice, and shape the workflow to the work. The starters are deliberately opinionated: they choose the stack, tooling, and deployment so a project ships on day one; teams that want other choices keep the methodology and skip or fork a starter ([spec 040](docs/specs/040-site-refinement.md)).
 
 Templates remain usable without Flow. Flow owns the methodology; flow-skills implements portable agent behavior; templates own their application foundations.
 

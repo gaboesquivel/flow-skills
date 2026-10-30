@@ -1,15 +1,22 @@
 type HeaderLike = Pick<Headers, "get">;
 
 export const SITE_NAME = "Flow";
-export const SITE_TAGLINE = "Make ideas flow.";
+export const SITE_TAGLINE = "Agent skills for product engineers.";
 export const SITE_DESCRIPTION =
-  "Flow is a lightweight, human-directed, agent-executed product engineering methodology for building software with AI agents: portable skills, Vercel-first starters, and source-grounded documentation for humans and agents.";
+  "Flow is a way to build software with AI agents: you decide what to build, agents do the work. Portable skills for the agent you use, opinionated Next.js starters, and docs that people and agents can search.";
 
 export const NAV = [
   { href: "/methodology", label: "Methodology" },
   { href: "/skills", label: "Skills" },
   { href: "/starters", label: "Starters" },
   { href: "/docs", label: "Docs" },
+] as const;
+
+/** Example questions the palette and Home offer to Ask. */
+export const SUGGESTED_QUESTIONS = [
+  "How do I fix a small bug with Flow?",
+  "How does Flow keep PRODUCT.md aligned?",
+  "Should I start with flow-next or flow-mono?",
 ] as const;
 
 /** Canonical origin: explicit env, then the request, then Vercel, then localhost. */

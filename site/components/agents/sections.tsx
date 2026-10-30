@@ -46,8 +46,8 @@ const PILLARS: { n: string; title: string; text: string; href: string; cta: stri
     title: "Retrieve",
   },
   {
-    cta: "Ask Flow",
-    href: "/search?mode=ask",
+    cta: "See the ask example",
+    href: "#examples-heading",
     icon: (
       <svg {...iconProps}>
         <path d="M16 4c.9 6.4 5.6 11.1 12 12-6.4.9-11.1 5.6-12 12-.9-6.4-5.6-11.1-12-12 6.4-.9 11.1-5.6 12-12Z" />
@@ -62,11 +62,11 @@ const PILLARS: { n: string; title: string; text: string; href: string; cta: stri
 export function AgentsHero() {
   return (
     <Container className="pb-8 pt-14 sm:pt-20 lg:pt-24">
-      <Eyebrow>Public knowledge / Agent-first</Eyebrow>
+      <Eyebrow>For agents</Eyebrow>
       <Headline lead="Made for people." accent="Readable by agents." className="mt-6" />
       <Lede className="mt-8">
-        The same Flow knowledge is available as semantic pages, Markdown, searchable records, and documented read-only interfaces. No login is needed
-        to discover a skill.
+        Every page people read is also available as Markdown, with a search API, an ask API, and a read-only MCP server beside it. Nothing needs a
+        login.
       </Lede>
     </Container>
   );
@@ -199,8 +199,7 @@ export function ObservableSection({ host }: { host: string }) {
           Agent-ready is observable.
         </h2>
         <Lede className="mt-6 text-lg sm:text-lg">
-          Test semantic HTML, canonical identity, Markdown responses, API discovery, structured errors, and real agent journeys. Report measured
-          evidence, not scores imagined in advance.
+          Check the HTML, Markdown responses, API discovery, structured errors, and real agent journeys yourself, and report what you measure.
         </Lede>
         <CommandLine command={`npx is-agentic ${host}`} className="mt-8 max-w-xl" />
         <div className="mt-8">

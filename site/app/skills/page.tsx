@@ -5,7 +5,7 @@ import { SkillFilter } from "@/components/skills/skill-filter";
 import { Container, Eyebrow, Headline, Lede } from "@/components/ui";
 import { catalogGroups, installCommand, skillsInCatalogOrder } from "@/lib/content";
 
-const description = "Talk to your agent. Use the skill that fits. No required sequence, no mandatory specs, and no new process to operate.";
+const description = "Say what you want in plain words and your agent picks the skill. Each skill works on its own, in any order.";
 
 export const metadata: Metadata = {
   title: "Skills",

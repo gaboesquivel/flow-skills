@@ -1,6 +1,6 @@
 # Flow website (Prism)
 
-The public website for Flow: methodology, portable skills, starters, docs, Search + Ask, and agent interfaces. Built on [flow-next](https://github.com/gaboesquivel/flow-next) conventions; scope and rationale in [spec 032](../docs/specs/032-prism-website.md).
+The public website for Flow: methodology, portable skills, starters, docs, a ⌘K palette for search and cited answers, and agent interfaces. Built on [flow-next](https://github.com/gaboesquivel/flow-next) conventions; scope and rationale in [spec 032](../docs/specs/032-prism-website.md).
 
 ## Develop
 

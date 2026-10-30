@@ -3,7 +3,7 @@ import { ImageResponse } from "next/og";
 import { THROUGHLINE_PATHS } from "@/components/logo";
 import { SITE_DESCRIPTION } from "@/lib/site";
 
-export const alt = "Flow — Make ideas flow.";
+export const alt = "Flow — Agent skills for product engineers.";
 export const size = { height: 630, width: 1200 };
 export const contentType = "image/png";
 
@@ -39,19 +39,18 @@ export default function OpengraphImage() {
         <div style={{ display: "flex", fontSize: 44, fontWeight: 700, letterSpacing: -1 }}>flow</div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
-        <div
-          style={{
-            backgroundClip: "text",
-            backgroundImage: "linear-gradient(90deg, #9ea6f8, #c6a8f6 55%, #f0a6cf)",
-            color: "transparent",
-            display: "flex",
-            fontSize: 128,
-            fontWeight: 800,
-            letterSpacing: -5,
-            lineHeight: 1,
-          }}
-        >
-          Make ideas flow.
+        <div style={{ display: "flex", flexDirection: "column", fontSize: 104, fontWeight: 800, letterSpacing: -4, lineHeight: 1 }}>
+          <div style={{ color: "#f5f3fb", display: "flex" }}>Agent skills for</div>
+          <div
+            style={{
+              backgroundClip: "text",
+              backgroundImage: "linear-gradient(90deg, #9ea6f8, #c6a8f6 55%, #f0a6cf)",
+              color: "transparent",
+              display: "flex",
+            }}
+          >
+            product engineers.
+          </div>
         </div>
         <div style={{ color: "#b5afc6", display: "flex", fontSize: 30, lineHeight: 1.4, maxWidth: 980 }}>
           {SITE_DESCRIPTION}

@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 
 import { CommandLine } from "@/components/command-line";
 import { HeroOrbit } from "@/components/home/hero-orbit";
-import { SearchAskPanel } from "@/components/search-ask-panel";
+import { PaletteLauncher } from "@/components/search/palette-launcher";
 import { ButtonLink, Container, Eyebrow, Lede, Section, TextLink } from "@/components/ui";
 import { installCommand, skills } from "@/lib/content";
 
@@ -16,15 +16,15 @@ export function HomeHero() {
           <span aria-hidden="true" className="text-violet">
             •
           </span>
-          Open product engineering ecosystem
+          Product engineering with AI
         </Eyebrow>
-        <h1 className="headline mt-6 text-[clamp(3rem,8vw,5.4rem)] text-fg">
-          Make
+        <h1 className="headline mt-6 text-[clamp(2.6rem,6.4vw,4.6rem)] text-fg">
+          Agent skills for
           <br />
-          ideas <span className="text-prism">flow.</span>
+          <span className="text-prism">product engineers.</span>
         </h1>
         <Lede className="mt-8 max-w-[34rem] sm:text-lg">
-          For humans who think in products. For agents who build them. One flexible practice, from the first question to verified production.
+          You decide what to build. Your agent explores, builds, checks, and ships it. Adopt one skill or the whole practice, in your own repo or from an opinionated starter.
         </Lede>
         <div className="mt-9 flex flex-wrap gap-3">
           <ButtonLink href="/methodology">Explore the practice</ButtonLink>
@@ -234,7 +234,7 @@ export function FindSection() {
       <Container>
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <Eyebrow>Knowledge for humans and agents</Eyebrow>
+            <Eyebrow>Search and ask</Eyebrow>
             <h2 id="find-heading" className="headline mt-5 text-[clamp(2.2rem,4.6vw,3.4rem)] text-fg">
               Find the skill.
               <br />
@@ -242,11 +242,10 @@ export function FindSection() {
             </h2>
           </div>
           <p className="max-w-[24rem] text-base leading-relaxed text-fg-muted">
-            Search skills, methodology, docs, and starter capabilities. Source-backed answers meet you where you work.
+            Search every skill, guide, and decision. Or ask a question and get a short answer that links to its sources.
           </p>
         </div>
-        <SearchAskPanel className="mt-10" />
-        <p className="mt-4 text-sm text-fg-subtle">Ask answers link to the source. Search remains available without an LLM.</p>
+        <PaletteLauncher className="mt-10" />
       </Container>
     </Section>
   );
@@ -260,7 +259,7 @@ export function PillarsSection() {
       n: "01",
       kicker: "The practice",
       title: "Methodology",
-      body: "Product thinking, proportionate planning, and durable decisions.",
+      body: "Start from the problem, plan only as much as the change needs, and keep decisions written down.",
       href: "/methodology",
       cta: "Discover the practice",
       Icon: Target,
@@ -269,7 +268,7 @@ export function PillarsSection() {
       n: "02",
       kicker: "The capabilities",
       title: "Portable skills",
-      body: `${skills.length} focused skills for the coding agent you already use.`,
+      body: `${skills.length} skills for the coding agent you already use. Install one or all of them.`,
       href: "/skills",
       cta: "Browse skills",
       Icon: Command,
@@ -278,7 +277,7 @@ export function PillarsSection() {
       n: "03",
       kicker: "The foundations",
       title: "Flow Starters",
-      body: "Agent-ready, Vercel-first foundations for shipping products.",
+      body: "Opinionated Next.js foundations that make the stack choices for you and deploy to Vercel on day one.",
       href: "/starters",
       cta: "Explore starters",
       Icon: LayoutList,
@@ -287,7 +286,7 @@ export function PillarsSection() {
   return (
     <Section aria-labelledby="pillars-heading" className="pt-4 sm:pt-8">
       <Container>
-        <Eyebrow>Three connected pillars</Eyebrow>
+        <Eyebrow>Three parts</Eyebrow>
         <h2 id="pillars-heading" className="headline mt-5 text-[clamp(2.2rem,4.6vw,3.4rem)] text-fg">
           Everything connects.
           <br />
@@ -319,7 +318,7 @@ export function InstallBand() {
       <Container>
         <div className="grid grid-cols-1 items-center gap-8 rounded-[20px] bg-[linear-gradient(110deg,#9ea6f8_0%,#c6a8f6_55%,#f0a6cf_100%)] p-5 sm:p-10 lg:grid-cols-[1fr_1.15fr]">
           <div>
-            <p className="eyebrow text-ink/80">Start where you are</p>
+            <p className="eyebrow text-ink/80">Install</p>
             <h2 id="install-heading" className="headline mt-5 text-[clamp(2.2rem,4.2vw,3.2rem)] text-ink">
               Your agent.
               <br />
@@ -337,7 +336,7 @@ export function InstallBand() {
             </div>
             <div className="p-3 sm:p-5">
               <CommandLine command={installCommand()} />
-              <p className="mt-4 text-sm text-fg-muted">One command. No mandatory setup ritual.</p>
+              <p className="mt-4 text-sm text-fg-muted">Adds the skills to your agent. Then say what you want in plain words.</p>
             </div>
           </div>
         </div>

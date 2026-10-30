@@ -6,7 +6,7 @@ import { ButtonLink, Container, Eyebrow, Headline, Lede, Section } from "@/compo
 import { comparison, starters } from "@/lib/starters";
 
 const description =
-  "Production-minded application foundations for software built by humans and agents. Designed around current standards, useful defaults, and Vercel-first delivery, with room to grow.";
+  "Two deliberately opinionated Next.js templates. They choose the stack, tooling, and deployment for you, so a new product deploys on day one. Want other choices? Use Flow's skills in your own repo.";
 
 export const metadata: Metadata = {
   title: "Starters",
@@ -31,7 +31,7 @@ const foundation = [
     icon: ArrowIcon,
     label: "Delivery",
     title: "Vercel-first",
-    body: "Vercel build configuration and AI Gateway inference ready from the first commit, so the first deployment comes early.",
+    body: "Every push to main deploys with no environment variables set, and inference runs through Vercel AI Gateway.",
   },
 ];
 
