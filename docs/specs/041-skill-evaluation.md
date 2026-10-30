@@ -1,6 +1,6 @@
 # 041 — Skill evaluation against real delivery
 
-Status: draft (2026-10-29).
+Status: accepted (2026-10-30).
 
 ## Problem Statement
 
