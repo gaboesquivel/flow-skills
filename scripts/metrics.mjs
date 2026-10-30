@@ -2,7 +2,8 @@
  * Delivery metrics from git, GitHub, and the skill tree (PRODUCT.md Success). Maintainer tool; read-only.
  *   node scripts/metrics.mjs [--repo owner/name] [--limit 50]
  * Works on flow-next and flow-mono through --repo. Idea → prod joins Claude Code session logs (~/.claude/projects) to merges
- * and production deployments; other hosts' changes count as unlinked.
+ * and production deployments; other hosts' changes count as unlinked. Per change it also reports the skills invoked, user turns,
+ * CI failures, rework, and cost; what the logs cannot show is unknown, never zero (spec 041).
  */
 import { execFileSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
@@ -52,13 +53,23 @@ const DELIVERY_PHRASE = /\b(push|build|ship) it\b/iu
 // approved prompts and hand-offs leave no entry.
 const DENIALS = ["The user doesn't want to proceed with this tool use", 'Permission for this action was denied', 'Permission to use']
 
-// One session log (JSONL text) → the branches it worked on, the pull requests it linked, its human prompts, and its permission denials.
+// One session log (JSONL text) → the branches it worked on, the pull requests it linked, its human prompts, its permission denials,
+// the skills it invoked, and its cost (null when the log has none or a model's cost is unknown).
 export function parseSession(text) {
-  const session = { cwd: null, branches: new Set(), prs: [], prompts: [], denials: [] }
+  const session = { cwd: null, branches: new Set(), prs: [], prompts: [], denials: [], skills: [], cost: null }
+  let unknownCost = false
   for (const line of text.split('\n')) {
     let entry
     try { entry = JSON.parse(line) } catch { continue }
     if (entry.type === 'pr-link') session.prs.push({ repo: entry.prRepository, number: entry.prNumber })
+    // cost-state totals are cumulative for the session, so the largest one is the session's cost.
+    if (entry.type === 'cost-state') {
+      if (entry.hasUnknownModelCost) unknownCost = true
+      if (typeof entry.totalCostUSD === 'number') session.cost = Math.max(session.cost ?? 0, entry.totalCostUSD)
+    }
+    if (entry.type === 'assistant' && entry.timestamp && Array.isArray(entry.message?.content)) {
+      for (const part of entry.message.content) if (part.type === 'tool_use' && part.name === 'Skill' && part.input?.skill) session.skills.push({ at: entry.timestamp, name: part.input.skill })
+    }
     if (entry.gitBranch) session.branches.add(entry.gitBranch)
     if (entry.cwd && !session.cwd) session.cwd = entry.cwd
     if (entry.type !== 'user' || !entry.timestamp) continue
@@ -70,28 +81,49 @@ export function parseSession(text) {
     const text = typeof content === 'string' ? content : Array.isArray(content) && !content.some((part) => part.type === 'tool_result') ? content.filter((part) => part.type === 'text').map((part) => part.text).join('\n') : ''
     if (text && !text.startsWith('<')) session.prompts.push({ at: entry.timestamp, text })
   }
+  if (unknownCost) session.cost = null
   return session
 }
 
-// prs: merged pull requests ({ number, headRefName, mergedAt, liveAt? }); sessions: parseSession results.
-// A pull request links to every session that opened it or worked on its branch in this repository.
-export function ideaToProd({ prs, sessions, repo }) {
+// CI failures: failing commits on the branch, so a rerun of the same commit counts once; null when no run was listed for it.
+// Rework (provisional): commits after the first failed run or the first review.
+export function delivery(pr, runs) {
+  const branchRuns = runs.filter((run) => run.headBranch === pr.headRefName && run.conclusion !== 'cancelled' && run.conclusion !== 'skipped')
+  const failed = branchRuns.filter((run) => run.conclusion === 'failure')
+  const ciFailures = branchRuns.length ? new Set(failed.map((run) => run.headSha ?? run.createdAt)).size : null
+  const trigger = [...failed.map((run) => run.createdAt), ...(pr.reviews ?? []).map((review) => review.submittedAt)].filter(Boolean).sort()[0]
+  const rework = trigger ? (pr.commits ?? []).filter((c) => c.committedDate > trigger).length : 0
+  return { ciFailures, rework }
+}
+
+// prs: merged pull requests ({ number, headRefName, mergedAt, liveAt?, commits?, reviews? }); sessions: parseSession results;
+// runs: CI workflow runs. A pull request links to every session that opened it or worked on its branch in this repository.
+export function ideaToProd({ prs, sessions, repo, runs = [] }) {
   const name = repo.split('/').pop()
-  const changes = prs.map((pr) => {
-    const linked = sessions.filter((s) =>
-      s.prs.some((link) => link.repo === repo && link.number === pr.number) ||
-      (s.branches.has(pr.headRefName) && (s.cwd ?? '').includes(`/${name}`)))
+  const linkedTo = prs.map((pr) => sessions.filter((s) =>
+    s.prs.some((link) => link.repo === repo && link.number === pr.number) ||
+    (s.branches.has(pr.headRefName) && (s.cwd ?? '').includes(`/${name}`))))
+  const uses = new Map()
+  for (const s of linkedTo.flat()) uses.set(s, (uses.get(s) ?? 0) + 1)
+  const changes = prs.map((pr, i) => {
+    const linked = linkedTo[i]
     const end = pr.liveAt ?? pr.mergedAt
     const prompts = linked.flatMap((s) => s.prompts).filter((p) => p.at <= end).sort((a, b) => a.at.localeCompare(b.at))
-    if (!prompts.length) return { number: pr.number, linked: false }
+    if (!prompts.length) return { number: pr.number, linked: false, ...delivery(pr, runs) }
+    const start = prompts[0].at
     // The last delivery phrase before the end, so a phrase aimed at an earlier change in the same session is not counted.
     const phrase = prompts.findLastIndex((p) => DELIVERY_PHRASE.test(p.text))
     return {
       number: pr.number,
       linked: true,
-      minutes: minutes(prompts[0].at, end),
+      minutes: minutes(start, end),
+      turns: prompts.length,
       turnsAfterPhrase: phrase < 0 ? null : prompts.length - phrase - 1,
-      denialsAt: linked.flatMap((s) => s.denials).filter((at) => at >= prompts[0].at && at <= end),
+      denialsAt: linked.flatMap((s) => s.denials).filter((at) => at >= start && at <= end),
+      skills: [...new Set(linked.flatMap((s) => s.skills).filter((k) => k.at >= start && k.at <= end).map((k) => k.name))].sort(),
+      // Session cost is a total, so it is attributable only when every linked session served this change alone.
+      cost: linked.every((s) => s.cost !== null && uses.get(s) === 1) ? linked.reduce((sum, s) => sum + s.cost, 0) : null,
+      ...delivery(pr, runs),
     }
   })
   const linked = changes.filter((c) => c.linked)
@@ -102,10 +134,23 @@ export function ideaToProd({ prs, sessions, repo }) {
     linkRate: changes.length ? linked.length / changes.length : null,
     unlinked: changes.length - linked.length,
     ideaToProdMinutes: { median: percentile(times, 50), p90: percentile(times, 90) },
+    turns: { median: percentile(linked.map((c) => c.turns), 50), p90: percentile(linked.map((c) => c.turns), 90) },
     turnsAfterPhrase: { median: percentile(turns, 50), p90: percentile(turns, 90) },
     // Unique timestamps, so a session that spans several pull requests counts each denial once.
     denials: new Set(linked.flatMap((c) => c.denialsAt)).size,
   }
+}
+
+// Linked changes grouped by each skill they invoked; a change with several skills counts under each.
+export function bySkill(changes) {
+  const groups = new Map()
+  for (const c of changes.filter((change) => change.linked)) for (const skill of c.skills) groups.set(skill, [...(groups.get(skill) ?? []), c])
+  return [...groups].map(([skill, cs]) => ({
+    skill,
+    changes: cs.length,
+    medianMinutes: percentile(cs.map((c) => c.minutes), 50),
+    medianTurns: percentile(cs.map((c) => c.turns), 50),
+  })).sort((a, b) => b.changes - a.changes || a.skill.localeCompare(b.skill))
 }
 
 export function readSessions(projectsDir = join(homedir(), '.claude', 'projects')) {
@@ -130,8 +175,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const limit = arg('--limit', '50')
   const repo = arg('--repo', '')
   const gh = (...args) => JSON.parse(execFileSync('gh', [...args, ...(repo ? ['-R', repo] : [])], { encoding: 'utf8', maxBuffer: 50 * 1024 * 1024 }))
-  const prs = gh('pr', 'list', '--state', 'merged', '-L', limit, '--json', 'number,createdAt,mergedAt,headRefName,commits,mergeCommit')
-  const runs = gh('run', 'list', '--event', 'pull_request', '-L', String(Number(limit) * 6), '--json', 'conclusion,headBranch,createdAt,updatedAt')
+  const prs = gh('pr', 'list', '--state', 'merged', '-L', limit, '--json', 'number,createdAt,mergedAt,headRefName,commits,mergeCommit,reviews')
+  const runs = gh('run', 'list', '--event', 'pull_request', '-L', String(Number(limit) * 6), '--json', 'conclusion,headBranch,headSha,createdAt,updatedAt')
   const fmt = (n) => (n === null ? 'n/a' : n.toFixed(1))
   const pct = (n) => (n === null ? 'n/a' : `${Math.round(n * 100)}%`)
   const s = summarize({ prs, runs })
@@ -151,13 +196,21 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
         : firstSuccess(api(`repos/${fullRepo}/commits/${sha}/statuses`), 'Vercel')
     } catch { pr.liveAt = undefined }
   }
-  const idea = ideaToProd({ prs, sessions: readSessions(), repo: fullRepo })
+  const idea = ideaToProd({ prs, sessions: readSessions(), repo: fullRepo, runs })
   console.log(`  Idea → prod (first prompt → production deploy, else merge): median ${fmt(idea.ideaToProdMinutes.median)} min, p90 ${fmt(idea.ideaToProdMinutes.p90)} min`)
   console.log(`  Linked to a starting prompt: ${pct(idea.linkRate)} (${idea.unlinked} unlinked; kill criterion needs 80%)`)
+  console.log(`  User turns per linked change: median ${fmt(idea.turns.median)}, p90 ${fmt(idea.turns.p90)}`)
   console.log(`  User turns after the delivery phrase: median ${fmt(idea.turnsAfterPhrase.median)}, p90 ${fmt(idea.turnsAfterPhrase.p90)}`)
   console.log(`  Permission denials during linked changes: ${idea.denials}; approved prompts and hand-offs: unknown (session logs do not record them)`)
   const live = new Set(prs.filter((pr) => pr.liveAt).map((pr) => pr.number))
-  for (const c of idea.changes) console.log(`    #${c.number}: ${c.linked ? `${fmt(c.minutes)} min to ${live.has(c.number) ? 'deploy' : 'merge'}, ${c.turnsAfterPhrase ?? 'n/a'} turns after the phrase, ${c.denialsAt.length} denials` : 'unlinked'}`)
+  const known = (n, format = String) => (n === null ? 'unknown' : format(n))
+  for (const c of idea.changes) {
+    const ci = `${known(c.ciFailures)} CI failures, ${c.rework} rework commits`
+    console.log(`    #${c.number}: ${c.linked ? `${fmt(c.minutes)} min to ${live.has(c.number) ? 'deploy' : 'merge'}, ${c.turns} turns (${c.turnsAfterPhrase ?? 'n/a'} after the phrase), ${c.denialsAt.length} denials, ${ci}, cost ${known(c.cost, (n) => `$${n.toFixed(2)}`)}, skills ${c.skills.join(' ') || 'none'}` : `unlinked, ${ci}`}`)
+  }
+  const skills = bySkill(idea.changes)
+  if (skills.length) console.log('  By skill (linked changes; a change counts under each skill it invoked):')
+  for (const k of skills) console.log(`    ${k.skill}: ${k.changes} changes, median ${fmt(k.medianMinutes)} min, median ${fmt(k.medianTurns)} turns`)
   const words = repo ? null : skillWords(join(dirname(fileURLToPath(import.meta.url)), '..', 'skills'))
   if (words) console.log(`  Skill words loaded (all SKILL.md): ${words.total}; largest ${words.largest.map(([n, c]) => `${n} ${c}`).join(', ')}`)
 }
