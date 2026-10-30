@@ -1,7 +1,7 @@
 type HeaderLike = Pick<Headers, "get">;
 
 export const SITE_NAME = "Flow";
-export const SITE_TAGLINE = "Make ideas flow.";
+export const SITE_TAGLINE = "Agent skills for product engineers.";
 export const SITE_DESCRIPTION =
   "Flow is a way to build software with AI agents: you decide what to build, agents do the work. Portable skills for the agent you use, opinionated Next.js starters, and docs that people and agents can search.";
 

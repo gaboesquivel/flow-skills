@@ -5,7 +5,7 @@ import { content, repo } from "@/lib/content";
 import { SITE_DESCRIPTION, SITE_NAME, staticSiteOrigin } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: { absolute: "Flow — Make ideas flow" },
+  title: { absolute: "Flow — Agent skills for product engineers" },
   description: SITE_DESCRIPTION,
   alternates: { canonical: "/", types: { "text/markdown": "/index.md", "text/plain": "/llms.txt" } },
 };

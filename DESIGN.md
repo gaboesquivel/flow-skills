@@ -12,7 +12,7 @@ Flow helps humans understand and direct meaningful product work while agents exe
 
 - **Name:** Flow. Use *Flow Skills*, *Flow Starters* and *Flow Factory* for specific ecosystem surfaces, not as replacements for the parent brand.
 - **Concept:** **Throughline** — three distinct, open trajectories converge into a single forward direction. The paths represent independent human intent, agent work and tooling converging on a verified outcome; they are not a mandatory three-step process.
-- **Tagline:** *From intent to verified software.* Homepage headline: *Make ideas flow.*
+- **Tagline:** *From intent to verified software.* Homepage headline: *Agent skills for product engineers.* ([spec 040](docs/specs/040-site-refinement.md))
 - **Expression:** precise, modern, approachable, editorial, and technically credible. Flow has its own identity, distinct from gaboesquivel.com's green, but should complement the portfolio's minimal, confident presentation.
 - **Avoid:** infinity symbols, generic glowing nodes, stock AI brains, triangular prism marks, neon green, compulsory workflow diagrams presented as the logo, or gradients that are needed to recognize the silhouette.
 

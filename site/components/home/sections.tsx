@@ -16,12 +16,12 @@ export function HomeHero() {
           <span aria-hidden="true" className="text-violet">
             •
           </span>
-          Product engineering with AI agents
+          Product engineering with AI
         </Eyebrow>
-        <h1 className="headline mt-6 text-[clamp(3rem,8vw,5.4rem)] text-fg">
-          Make
+        <h1 className="headline mt-6 text-[clamp(2.6rem,6.4vw,4.6rem)] text-fg">
+          Agent skills for
           <br />
-          ideas <span className="text-prism">flow.</span>
+          <span className="text-prism">product engineers.</span>
         </h1>
         <Lede className="mt-8 max-w-[34rem] sm:text-lg">
           You decide what to build. Your agent explores, builds, checks, and ships it. Adopt one skill or the whole practice, in your own repo or from an opinionated starter.

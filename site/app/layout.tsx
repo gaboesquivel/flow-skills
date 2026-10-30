@@ -13,10 +13,10 @@ const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains", 
 
 export const metadata: Metadata = {
   metadataBase: new URL(staticSiteOrigin()),
-  title: { default: "Flow — Make ideas flow", template: "%s · Flow" },
+  title: { default: "Flow — Agent skills for product engineers", template: "%s · Flow" },
   description: SITE_DESCRIPTION,
   applicationName: SITE_NAME,
-  openGraph: { type: "website", siteName: SITE_NAME, title: "Flow — Make ideas flow", description: SITE_DESCRIPTION },
+  openGraph: { type: "website", siteName: SITE_NAME, title: "Flow — Agent skills for product engineers", description: SITE_DESCRIPTION },
   twitter: { card: "summary_large_image" },
 };
 

@@ -50,7 +50,7 @@ export const skillHeader = (skill: Skill) =>
 
 const home = (origin: string) =>
   frame(
-    "Flow — Make ideas flow",
+    "Flow — Agent skills for product engineers",
     "/",
     origin,
     `
