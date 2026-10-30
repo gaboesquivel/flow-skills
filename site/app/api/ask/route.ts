@@ -57,7 +57,16 @@ export async function POST(request: Request) {
   const model = sources.length ? askModel() : null;
   const stream = new URL(request.url).searchParams.get("stream") === "1";
   const call = model
-    ? { abortSignal: request.signal, maxOutputTokens: MAX_OUTPUT_TOKENS, maxRetries: 1, model, prompt: buildPrompt(question, sources), system: SYSTEM_PROMPT }
+    ? {
+        abortSignal: request.signal,
+        maxOutputTokens: MAX_OUTPUT_TOKENS,
+        maxRetries: 1,
+        model,
+        prompt: buildPrompt(question, sources),
+        // Thinking tokens count against maxOutputTokens; with adaptive thinking on, a long think left no room for the answer (finishReason "length").
+        reasoning: "none" as const,
+        system: SYSTEM_PROMPT,
+      }
     : null;
 
   if (!stream) {
