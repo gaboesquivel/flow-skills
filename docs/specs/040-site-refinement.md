@@ -1,6 +1,6 @@
 # 040: Website editorial and UX refinement
 
-**Status:** accepted (2026-10-29). Builds on [032](032-prism-website.md) and [038](038-throughline-identity.md).
+**Status:** implemented (2026-10-30). Builds on [032](032-prism-website.md) and [038](038-throughline-identity.md).
 
 ## Problem Statement
 
