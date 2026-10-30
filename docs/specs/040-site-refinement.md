@@ -29,7 +29,7 @@ One focused refinement pass over the existing Prism site. The homepage structure
 
 - **Palette is the one surface.** Extend `site/components/command-palette.tsx` with an inline answer state that reuses the streaming and citation rendering now in `site/components/search/` (`answer-markdown.tsx`, `highlight.tsx`, `kinds.ts`). Delete what becomes unused: `search-ask-panel.tsx`, `search-experience.tsx`, `docs/ask-callout.tsx` as a link to `/search` (keep at most a button that opens the palette prefilled), and the header "Ask" link. The `OPEN_SEARCH_EVENT` event gains an optional `mode: "ask"` so callers can open straight into an answer.
 - **Palette interaction contract.** Results debounce as today; arrow keys move through results and the Ask row; `↵` opens the active result or runs Ask on the Ask row; `⌘↵`/`Ctrl↵` asks from anywhere; `Esc` returns from an answer to results, then closes. The answer region is `aria-live="polite"`, citations are real links, and loading, empty, rate-limited, and error states each have specific copy.
-- **`/search` stays as a fallback, not a landing.** `/search?q=` keeps a plain server-rendered results list for shareable links and no-JS visitors, without the hero, mode switch, or Ask. `?mode=ask` opens the palette in Ask with the query. It is removed from navigation. *(Assumption; the alternative is a redirect to Home that opens the palette.)*
+- **`/search` stays as a fallback, not a landing.** `/search?q=` keeps a plain server-rendered results list for shareable links and no-JS visitors, without the hero, mode switch, or Ask. `?mode=ask` opens the palette in Ask with the query. It is removed from navigation and not indexed. A redirect to Home that opens the palette was the alternative; the fallback keeps shared links working without JavaScript.
 - **Home's "Find the skill / Ask the question" section** keeps its place in the approved order; its embedded panel becomes a palette trigger with example queries rather than a second search box.
 - **Philosophy copy lives in one owner.** The flexible-adoption / opinionated-starters position is added to `PRODUCT.md` (Ecosystem) and the site restates it in each page's own words; the methodology docs are not rewritten.
 - **Agent interfaces unchanged in contract.** No route, schema, or MCP tool changes; only prose such as the For agents "Ask" CTA (now pointing at `/api/ask` docs or the palette) and `llms.txt` descriptions.
@@ -66,6 +66,6 @@ Rendered checks over snapshots. Existing Vitest suites in `site/` (search rankin
 
 ## Further Notes
 
-- Open assumption: `/search` fallback versus redirect (see Implementation Decisions).
-- Open assumption: the mobile header shows a search icon that opens the palette; today `SearchTrigger` is hidden below `md`.
+- Resolved during the build: `/search` stays as the fallback (see Implementation Decisions), and the header search control shows at every width, as an icon below `sm`.
+- Starter facts were checked against the flow-next and flow-mono default branches during the build. Neither README calls itself opinionated; the site states that position, and `PRODUCT.md` owns it.
 - Verify starter facts against the live template repositories at build time, not from memory; `site/lib/starters.ts` already asks for re-verification when templates change.
