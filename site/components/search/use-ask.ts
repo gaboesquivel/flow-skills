@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import type { AskMode, Citation } from "@/lib/ask";
 
@@ -49,6 +49,7 @@ export function useAsk(announce: (text: string) => void) {
         });
         if (!res.ok || !res.body) {
           const err = (await res.json().catch(() => null)) as { error?: string; resolution?: string } | null;
+          if (ctrl.signal.aborted) return;
           const message = res.status === 429 ? "Too many questions in a short time." : (err?.error ?? `The request failed (${res.status}).`);
           setAsk((s) => ({ ...s, error: { message, resolution: err?.resolution }, status: "error" }));
           announce(`Ask failed. ${message}`);
@@ -94,8 +95,6 @@ export function useAsk(announce: (text: string) => void) {
     abort.current?.abort();
     setAsk(IDLE);
   }, []);
-
-  useEffect(() => () => abort.current?.abort(), []);
 
   return { ask, run, stop, reset };
 }

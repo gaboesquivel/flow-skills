@@ -128,7 +128,7 @@ const bestPassage = (text: string, terms: string[], max = 280) => {
 /** No-model answer: the most relevant passages from the top three sources, cited. */
 export const extractiveAnswer = (question: string, sources: AskSource[]) => {
   if (!sources.length)
-    return "The Flow sources don't cover this question. Try [Search](/search) with different words, or browse [Docs](/docs) and [Skills](/skills).";
+    return "The Flow sources don't cover this question. Try different words, or browse [Docs](/docs) and [Skills](/skills).";
   const terms = termsOf(question);
   const substantive = sources.filter((s) => s.text.length >= 80);
   const lines = (substantive.length ? substantive : sources).slice(0, 3).map((s) => {

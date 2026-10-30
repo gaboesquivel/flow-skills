@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 
-import { OpenPaletteOnLoad } from "@/components/search/open-palette-on-load";
 import { SearchResults } from "@/components/search/search-results";
 import type { SearchHit } from "@/components/search/types";
 import { Container } from "@/components/ui";
@@ -23,7 +22,6 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
   return (
     <Container className="max-w-[48rem] pb-24 pt-16 sm:pb-32 sm:pt-20">
-      {first(params.mode) === "ask" ? <OpenPaletteOnLoad query={query} /> : null}
       <h1 className="headline text-[clamp(2rem,4vw,2.6rem)] text-fg">Search</h1>
       <form role="search" action="/search" method="get" className="mt-6 flex gap-2">
         <label htmlFor="search-q" className="sr-only">

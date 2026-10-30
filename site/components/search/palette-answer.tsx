@@ -1,18 +1,37 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 
 import { AnswerMarkdown } from "@/components/search/answer-markdown";
 import { KIND_LABEL, distinctHeading } from "@/components/search/kinds";
 import type { AskState } from "@/components/search/use-ask";
 
 /** The palette's answer view: a cited answer, its sources, and stop/retry. */
-export function PaletteAnswer({ ask, onBack, onStop, onRetry }: { ask: AskState; onBack: () => void; onStop: () => void; onRetry: () => void }) {
+export function PaletteAnswer({
+  ask,
+  onBack,
+  onStop,
+  onRetry,
+  onNavigate,
+}: {
+  ask: AskState;
+  onBack: () => void;
+  onStop: () => void;
+  onRetry: () => void;
+  /** A source link was followed; same-page anchors don't change the route, so close explicitly. */
+  onNavigate: () => void;
+}) {
   const busy = ask.status === "loading" || ask.status === "streaming";
+  const back = useRef<HTMLButtonElement>(null);
+  // Stop unmounts when streaming ends; don't leave focus on <body>.
+  useEffect(() => {
+    if (!busy && document.activeElement === document.body) back.current?.focus();
+  }, [busy]);
   return (
-    <div className="overflow-y-auto px-5 pb-5 pt-4" aria-busy={busy}>
+    <div className="overflow-y-auto px-5 pb-5 pt-4" aria-busy={busy} onClickCapture={(e) => (e.target as Element).closest("a[href]") && onNavigate()}>
       <div className="flex items-center justify-between gap-3">
-        <button type="button" onClick={onBack} className="label-mono rounded-md hover:text-fg">
+        <button ref={back} type="button" onClick={onBack} className="label-mono rounded-md hover:text-fg">
           ← Results
         </button>
         {busy ? (
@@ -27,7 +46,13 @@ export function PaletteAnswer({ ask, onBack, onStop, onRetry }: { ask: AskState;
       </div>
       <h2 className="mt-4 text-xl font-bold tracking-[-0.03em] text-fg [overflow-wrap:anywhere]">{ask.question}</h2>
       <p className="label-mono mt-2">
-        {ask.mode === "generated" ? "Answer from Flow sources" : ask.mode === "extractive" ? "Matching passages from Flow sources" : "Looking up sources…"}
+        {ask.mode === "generated"
+          ? "Answer from Flow sources"
+          : ask.mode === "extractive"
+            ? ask.citations.length
+              ? "Matching passages from Flow sources"
+              : "No matching sources"
+            : "Looking up sources…"}
       </p>
       <div className="mt-4 text-[0.95rem]">
         {ask.status === "error" ? (

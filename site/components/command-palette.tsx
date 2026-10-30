@@ -37,6 +37,8 @@ export function CommandPalette() {
   const [view, setView] = useState<"list" | "answer">("list");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchHit[]>([]);
+  // The query `results` answer; until it matches the input, the hits are stale.
+  const [resultsFor, setResultsFor] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [active, setActive] = useState(0);
   const [announcement, setAnnouncement] = useState("");
@@ -95,10 +97,18 @@ export function CommandPalette() {
     };
   }, [show, close]);
 
-  // A citation or result link navigated: the palette's job is done.
+  // A link navigated: the palette's job is done. Old `/search?mode=ask` links open it in Ask instead.
+  const handledUrl = useRef("");
   useEffect(() => {
-    dialog.current?.close();
-  }, [pathname]);
+    const url = window.location.pathname + window.location.search;
+    if (handledUrl.current === url) return;
+    handledUrl.current = url;
+    const params = new URLSearchParams(window.location.search);
+    if (pathname === "/search" && params.get("mode") === "ask") {
+      const q = params.get("q")?.trim() ?? "";
+      show({ ask: Boolean(q), query: q });
+    } else dialog.current?.close();
+  }, [pathname, show]);
 
   useEffect(() => {
     const q = query.trim();
@@ -110,6 +120,7 @@ export function CommandPalette() {
         const res = await fetch(searchUrl(q, 10), { signal: ctrl.signal });
         if (!res.ok) throw new Error(String(res.status));
         setResults(((await res.json()) as { results: SearchHit[] }).results);
+        setResultsFor(q);
         setStatus("ready");
       } catch {
         if (!ctrl.signal.aborted) setStatus("error");
@@ -123,7 +134,8 @@ export function CommandPalette() {
 
   const q = query.trim();
   const askOption: Option = { id: "ask", label: `Ask: ${q}`, meta: "⌘↵", question: q };
-  const hits: Option[] = results.map((r) => ({ hit: r, href: r.path, id: r.path, label: r.title, meta: KIND_LABEL[r.kind] }));
+  const fresh = resultsFor === q;
+  const hits: Option[] = (fresh ? results : []).map((r) => ({ hit: r, href: r.path, id: r.path, label: r.title, meta: KIND_LABEL[r.kind] }));
   const options: Option[] = q
     ? looksLikeQuestion(q)
       ? [askOption, ...hits]
@@ -144,6 +156,7 @@ export function CommandPalette() {
 
   const backToList = () => {
     reset();
+    setAnnouncement("");
     setView("list");
     input.current?.focus();
   };
@@ -163,7 +176,7 @@ export function CommandPalette() {
     else if (e.key === "Enter") {
       e.preventDefault();
       // Keyword results are still arriving: don't let Enter fall through to Ask.
-      if (q && !looksLikeQuestion(q) && status !== "ready" && status !== "error") return;
+      if (q && !looksLikeQuestion(q) && !fresh && status !== "error") return;
       pick(options[Math.min(active, options.length - 1)]);
     }
   };
@@ -197,6 +210,7 @@ export function CommandPalette() {
       onClose={() => {
         setOpen(false);
         stop();
+        setAnnouncement("");
         setView("list");
         restoreFocus.current?.focus();
       }}
@@ -246,7 +260,7 @@ export function CommandPalette() {
           </button>
         </div>
         {view === "answer" ? (
-          <PaletteAnswer ask={ask} onBack={backToList} onStop={stop} onRetry={() => askQuestion(ask.question)} />
+          <PaletteAnswer ask={ask} onNavigate={close} onBack={backToList} onStop={stop} onRetry={() => askQuestion(ask.question)} />
         ) : (
           <>
             <p className="label-mono px-5 pb-1 pt-3" id={`${listId}-label`}>
@@ -282,7 +296,7 @@ export function CommandPalette() {
                 );
               })}
             </ul>
-            {q && status === "ready" && !results.length ? <p className="px-5 pb-3 text-sm text-fg-muted">No pages match. Ask it as a question instead.</p> : null}
+            {q && fresh && status === "ready" && !results.length ? <p className="px-5 pb-3 text-sm text-fg-muted">No pages match. Ask it as a question instead.</p> : null}
             {status === "error" ? <p className="px-5 pb-3 text-sm text-fg-muted">Search is unavailable. Try again.</p> : null}
           </>
         )}
