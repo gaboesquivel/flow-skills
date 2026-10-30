@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { bySkill, delivery, ideaToProd, parseSession, percentile, summarize } from '../scripts/metrics.mjs'
+import { bySkill, delivery, firstSuccess, ideaToProd, parseSession, percentile, summarize } from '../scripts/metrics.mjs'
 
 test('percentile picks the nearest rank and handles empty input', () => {
   assert.equal(percentile([], 50), null)
@@ -102,4 +102,15 @@ test('each change reports its skills, cost, CI failures, and rework, with unknow
     { skill: 'debug', changes: 2, medianMinutes: 10, medianTurns: 2 },
     { skill: 'build', changes: 1, medianMinutes: 10, medianTurns: 1 },
   ])
+})
+
+test('production time is the first success, filtered to the Vercel commit status when there is no deployment', () => {
+  const statuses = [
+    { context: 'Vercel', state: 'pending', created_at: '2026-10-29T21:05:00Z' },
+    { context: 'Vercel', state: 'success', created_at: '2026-10-29T21:05:28Z' },
+    { context: 'other', state: 'success', created_at: '2026-10-29T21:01:00Z' },
+  ]
+  assert.equal(firstSuccess(statuses, 'Vercel'), '2026-10-29T21:05:28Z')
+  assert.equal(firstSuccess(statuses), '2026-10-29T21:01:00Z')
+  assert.equal(firstSuccess([], 'Vercel'), undefined)
 })
