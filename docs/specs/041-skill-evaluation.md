@@ -10,7 +10,7 @@ Flow's main metric is idea → prod ([PRODUCT.md Success](../../PRODUCT.md#succe
 
 Evaluate skills against real delivery in three layers, without adding infrastructure:
 
-1. **CI stays fast.** Keep the existing structural tests, fixtures, and `pnpm eval:check`. No live-agent evals are required per PR.
+1. **CI stays fast.** PR CI runs only the existing structural tests, fixtures, and `pnpm eval:check`. Skill behavior testing (live runs and with/without comparisons) runs on demand only, never in PR CI.
 2. **Measure real usage.** Extend `pnpm metrics` so each linked change reports the skills it invoked, its starting prompt, its shipped result (merge or deploy), elapsed time, user turns, CI failures, and rework, plus cost where the host log exposes it. Anything the logs cannot provide is reported as `unknown`, never as zero.
 3. **Compare against no skills.** When a skill's value is uncertain, or someone proposes a meaningful change to a skill, run the same task twice: once with Flow and once without any skills. Both runs use the same model, the same host, and isolated copies of the same project state. Each comparison is recorded under `tests/evals/records/`.
 
@@ -49,7 +49,7 @@ A skill change is justified by observed results: a lower idea → prod time, or 
 
 - New orchestration infrastructure, eval runners, or hosted dashboards.
 - Exhaustive benchmarks and mandatory cross-host matrices.
-- Live-agent evals in CI.
+- Skill behavior testing in PR CI, whether required or optional. It runs only when a maintainer asks for it.
 - Speculative skill rewrites. Skill edits that follow from these results get their own specs.
 
 ## Further Notes
