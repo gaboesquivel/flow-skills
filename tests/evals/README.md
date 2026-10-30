@@ -34,6 +34,15 @@ When comparing skill versions:
 
 Never run competing writing agents against the user's active workspace.
 
+### Against no skills
+
+When a skill's value is uncertain or a meaningful change to it is proposed, the baseline condition is **no Flow skills** instead of the previous version ([spec 041](../../docs/specs/041-skill-evaluation.md)). Run on demand only, never in PR CI.
+
+- Run both conditions with the same model, the same host, the same starting prompt, and two clones or worktrees made from the same commit. The baseline has no `.claude/skills` link and no globally installed Flow skills.
+- Drive each run to a merge on a throwaway branch, or to a ready pull request when a merge is not possible.
+- Record in `records/YYYY-MM-DD-<skill>-vs-no-skills.md` the model, host, starting commit, and isolation method. Report the fields `pnpm metrics` reports (elapsed time, user turns, CI failures, rework, cost), plus retries and unauthorized actions. Write `unknown` where a value is not observable, never zero.
+- Conclude only what the runs support: the skill lowered idea → prod with no more failures or unauthorized actions, it did not, or the evidence is insufficient. One run per condition is a start; repeat when the difference is small.
+
 ## Records
 
 Live and manual runs: [records/](records/). Latest live run: [2026-10-29 parallel workflow](records/2026-10-29-parallel-workflow-live.md). Structural index: [scenario-status.md](scenario-status.md).
