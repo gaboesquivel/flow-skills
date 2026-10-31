@@ -22,6 +22,8 @@ Working with Flow should feel like one continuous conversation with a product-mi
 
 Humans define direction and make consequential decisions. Agents do the work: explore, design, implement, review, verify, and operate, through the tools they can reach. Shared context preserves understanding as software evolves: product, design, architecture, decisions, and evidence stay current and discoverable.
 
+**Direct from any device.** The same phrases behave the same in a local session and a cloud session, so delivery can be directed from a phone. Optionally, a repository writer's `build-it` label on an issue starts a cloud build that ends at a pull request; "ship it" stays a conversational approval ([decision 0055](docs/decisions/0055-capability-based-github-and-host-triggered-builds.md), Proposed).
+
 ## Principles
 
 1. **Product before code.** Build useful software, not just completed tasks.
@@ -41,14 +43,14 @@ Reduce the time and effort between human intent and verified product value. Proc
 
 | Metric | From | To | Target (hypothesis, low confidence) |
 | --- | --- | --- | --- |
-| **Idea → prod** (main) | First prompt of the session where the work begins | Live: production deploy answers (apps), or merged to `main` (flow-skills) | Small change < 15 min; feature < 2 h |
+| **Idea → prod** (main) | First prompt of the session where the work begins, local or cloud, or the authorizing `build-it` label on an issue | Live: production deploy answers (apps), or merged to `main` (flow-skills) | Small change < 15 min; feature < 2 h |
 | Time to start | First prompt to `start` | First green deploy | < 5 min; flow-next and flow-mono ship Vercel-ready so `start` deploys with no extra setup |
 | Time to close PR | First commit on the branch | Merge | Median < 10 min (baseline 7.4 min, p90 60 min) |
 | Delivery within appetite | Increment accepted with an appetite | Shipped | Most increments ship within appetite with accepted scope intact; not yet measured ([decision 0053](docs/decisions/0053-delivery-appetite-and-scope.md)) |
 
 Diagnostics explain where the time goes: scope added mid-flight, user turns and confirmations, local check runs, CI waits and failures, rework, skills invoked, cost, agent workers, and skill words loaded. What the logs cannot show is unknown, never zero ([spec 041](docs/specs/041-skill-evaluation.md)).
 
-Measured only on the dogfood repositories (flow-skills, flow-next, flow-mono) by a maintainer script that joins host session logs, git, GitHub, and deployment data. Nothing ships to adopters.
+Measured only on the dogfood repositories (flow-skills, flow-next, flow-mono) by a maintainer script that joins host session logs, git, GitHub, and deployment data. Nothing ships to adopters. Each change is split by where it ran (local, cloud, or issue-triggered). Cloud cost comes from the host's OpenTelemetry export when configured, otherwise unknown; linking cloud runs to merges through the session link in the pull request body is a hypothesis (medium confidence).
 
 **Kill criterion:** if session logs cannot link at least 80% of merged changes to their starting prompt, idea → prod falls back to first commit → live.
 

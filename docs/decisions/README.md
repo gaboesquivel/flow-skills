@@ -58,6 +58,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0052-git-first-coordination.md](0052-git-first-coordination.md) | Accepted | Git-first independent-session ownership, worktree boundaries and best-effort discovery |
 | [0053-delivery-appetite-and-scope.md](0053-delivery-appetite-and-scope.md) | Accepted | Bounded delivery appetite, scope protection and economical parallelism |
 | [0054-native-capability-first-sessions.md](0054-native-capability-first-sessions.md) | Accepted | Native observable sessions, Claude Code validation priority and portable fallback |
+| [0055-capability-based-github-and-host-triggered-builds.md](0055-capability-based-github-and-host-triggered-builds.md) | Proposed | GitHub mode through any reachable route; optional label-triggered cloud builds; cloud-ready repository setup |
 
 ## Rules
 
