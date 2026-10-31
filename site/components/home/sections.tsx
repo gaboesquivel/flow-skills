@@ -38,8 +38,8 @@ export function HomeHero() {
   );
 }
 
-// Each claim is grounded in PRODUCT.md / README.md: product before code, parallel independent work, no spec required, ship verifies liveness.
-const PRINCIPLES = ["Product first", "Parallel by default", "No mandatory specs", "Verified delivery"];
+// Each claim is grounded in PRODUCT.md / README.md: product before code, parallel work when it pays, no spec required, ship verifies liveness.
+const PRINCIPLES = ["Product first", "Parallel when it pays", "No mandatory specs", "Verified delivery"];
 
 export function PrincipleStrip() {
   return (

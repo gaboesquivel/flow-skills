@@ -78,7 +78,7 @@ Work started but not yet on the default branch: worktrees, task branches, and un
 
 ## Delivery appetite
 
-How much time (and, when material, model, evaluation, or infrastructure cost) an increment is worth, with its first verifiable slice and non-goals. A target and constraint, not a guarantee; recorded in the increment's spec, never in `PRODUCT.md`. [`to-spec`](skills/to-spec/SKILL.md) holds the Appetite section; [decision 0053](docs/decisions/0053-delivery-appetite-and-scope.md).
+How much time (and, when material, model, evaluation, or infrastructure cost) an increment is worth, with its first verifiable slice and non-goals. A target and constraint, not a guarantee; recorded in the increment's spec (or, for work built without one, its brief or pull request), never in `PRODUCT.md`. [`to-spec`](skills/to-spec/SKILL.md) holds the Appetite section; [decision 0053](docs/decisions/0053-delivery-appetite-and-scope.md).
 
 ## Scope trade-off
 
@@ -106,7 +106,7 @@ Former name for [liveness](#liveness) after shipping.
 
 ## Candidate spec
 
-A stub for a later bet: the problem and the assumption it tests, written as a spec file with status `candidate` in both delivery modes. Fleshed out only when its turn comes, after the bet it depends on ships; `to-spec` then completes the same file. Decisions [0022](docs/decisions/0022-start-runs-explore.md), [0026](docs/decisions/0026-process-depth.md), and [0044](docs/decisions/0044-fast-delivery.md).
+A stub for a later bet worth triaging: the problem and the assumption it tests, written as a spec file with status `candidate` in both delivery modes. Fleshed out only when its turn comes, after the bet it depends on ships; `to-spec` then completes the same file. Decisions [0022](docs/decisions/0022-start-runs-explore.md), [0026](docs/decisions/0026-process-depth.md), and [0044](docs/decisions/0044-fast-delivery.md).
 
 ## Human summary
 
