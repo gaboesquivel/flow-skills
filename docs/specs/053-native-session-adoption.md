@@ -1,11 +1,11 @@
 # 053 — Native-session adoption across the starters
 
-Status: draft (2026-10-31)
+Status: accepted (2026-10-31)
 Execution: delivery branch `spec/053-native-session-adoption`; integration owner for `flow-skills`: the coordination session. Each starter's pull request is owned by that repository's child session.
 
 ## Problem Statement
 
-[Spec 052](052-native-session-integration.md) ([PR #216](https://github.com/gaboesquivel/flow-skills/pull/216), open at `c4e848f` on 2026-10-31) tightens how Flow runs native sessions in Claude Code Desktop. The three starters a new project is copied from, `flow-next`, `flow-mono`, and `flow-signal`, bundle Flow skills under `.agents/skills/` pinned in `skills-lock.json`, and each bundled `write-agents` already differs from Flow `main`. A project started today inherits guidance that is behind Flow, and the 052 changes will not reach any project until the starters are refreshed.
+[Spec 052](052-native-session-integration.md) ([PR #216](https://github.com/gaboesquivel/flow-skills/pull/216), merged to `main` as `47ae57c` on 2026-10-31) tightens how Flow runs native sessions in Claude Code Desktop. The three starters a new project is copied from, `flow-next`, `flow-mono`, and `flow-signal`, bundle Flow skills under `.agents/skills/` pinned in `skills-lock.json`, and each bundled `write-agents` already differs from Flow `main`. A project started today inherits guidance that is behind Flow, and the 052 changes will not reach any project until the starters are refreshed.
 
 Doing that refresh is itself a native-session job across three repositories, and running it exposes two gaps that specs [045](045-native-observable-sessions.md) and 052 leave open:
 
@@ -35,9 +35,9 @@ The other areas the request named (native cross-session messaging, context hando
 - **Gate.** A child refreshes only after `gh pr view 216 -R gaboesquivel/flow-skills --json state` reports `MERGED`; it then reads Flow `main`'s head SHA and records it in the pull request description.
 - **Refresh.** Use the skills CLI's update path for the Flow entries in `skills-lock.json` (`npx skills` from published `gaboesquivel/flow-skills`), never copying files from a local `flow-skills` checkout. Keep non-Flow lock entries and every file outside the Flow skill directories. When the refresh produces no diff, there is no pull request.
 - **Starter pull requests.** Drafts run nothing ([0057](../decisions/0057-draft-workspace-ready-checks.md)). Mark ready after focused local checks; the repository's required checks then run once. Merge only with shipping authorization from the user.
-- **`skills/write-agents/SKILL.md`** (after #216 merges, since it edits the same bullet): in Native sessions, scope "the parent stays integration owner" to its own delivery and add that a child delivering in another repository owns that repository's pull request.
+- **`skills/write-agents/SKILL.md`**: in Native sessions, scope "the parent stays integration owner" to its own delivery and add that a child delivering in another repository owns that repository's pull request.
 - **`skills/ship/SKILL.md`** Landing, GitHub and local mode: before deleting the local branch, remove the worktree that holds it when `git worktree list` shows it, it is clean, and it belongs to this delivery (`git worktree remove`, never `--force`); otherwise report its path and leave the branch.
-- **`docs/specs/README.md`**: index this spec after #216 merges, since #216 edits the same index.
+- **`docs/specs/README.md`**: index this spec.
 - No decision record: both skill changes apply [0052](../decisions/0052-git-first-coordination.md) and [0054](../decisions/0054-native-capability-first-sessions.md) as written. No direction change: one integration owner per delivery stands; spec 045's "the parent normally retains integration ownership" already allows the cross-repository case.
 
 **Exposure:** Markdown guidance in the Flow skill distribution and bundled skill files in three starter repositories. No deployed service, route, write path, or authentication change; `flow-signal` product behaviour is out of scope.
@@ -46,7 +46,7 @@ The other areas the request named (native cross-session messaging, context hando
 
 Structural checks only: `pnpm validate` and `pnpm test` in `flow-skills` when its pull request is ready; in each starter, its own lint and typecheck when it is ready, plus a check that every changed path is under `.agents/skills/` or is `skills-lock.json`. No paid evaluation, no model call in CI, no preview deployment.
 
-**Acceptance scenario:** the maintainer in Claude Code Desktop, `flow-skills` at `4e9a44f` with #216 open, and the three starters on clean `main` with no open pull requests.
+**Acceptance scenario:** the maintainer in Claude Code Desktop, `flow-skills` at `4e9a44f` with #216 open (it merged as `47ae57c` during this build, so step 2's wait was not exercised), and the three starters on clean `main` with no open pull requests.
 
 1. The coordination session starts three linked sessions, one per starter. Verify: three linked sessions exist, each starter has one new worktree on `chore/flow-skills-052`, and nothing was written in any starter's main checkout.
 2. Each child reports its drift audit (which bundled Flow skills differ from Flow `main`, and which repository files are local configuration) with no branch pushed. Verify: `git ls-remote --heads origin chore/flow-skills-052` is empty in each starter.
