@@ -47,7 +47,7 @@ The maintainer’s direction is “review is repair,” confirmed for standalone
 
 Preserve [decision 0040](../decisions/0040-ship-verifies-liveness.md) and current `ship`: no automatic production journey, browser run, write, rollback, or extra ship gate. Identify unavailable behavioral evidence as unresolved; do not infer it from HTTP success. Explicitly requested production investigation remains separate authorized work.
 
-This is the conservative draft assumption, not an answer supplied by the maintainer to the previous interview question. Automatically exercising consequential production changes would require an explicitly accepted direction change and is outside this draft.
+The maintainer confirmed this boundary on 2026-10-31: production behavior checks run only on request. Automatically exercising consequential production changes would require an explicitly accepted direction change and is outside this spec.
 
 **Exposure:** no new runtime behavior, API, MCP tool, or deployed write surface. These are documentation and skill-source changes. Do not push or deploy under the current cost constraint; existing site generation may expose tracked documentation on a later authorized deployment.
 
@@ -87,7 +87,6 @@ The blog article and its research note (candidate spec 051); blog routes, CMS, s
 
 ## Open Assumptions
 
-- Preserve explicitly requested production behavior checks rather than introduce automatic checks.
 - The proposed two-hour implementation appetite is a planning default, not an accepted deadline.
 
 ## Sources
