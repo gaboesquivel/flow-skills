@@ -4,6 +4,7 @@
 // Prints JSON. Exit 0 only when authorized; 1 when refused; 2 when GitHub could not be read (refused too: fail closed).
 // Reads through `gh api` REST, which works behind proxies that refuse GraphQL. Zero dependencies, Node >= 22.
 import { execFileSync } from 'node:child_process'
+import { realpathSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
 export const LABEL = 'build-it'
@@ -104,4 +105,6 @@ function main(argv) {
   }
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) process.exitCode = main(process.argv.slice(2))
+// Skills are often reached through a symlinked directory (`.claude/skills`), so compare real paths.
+const real = (path) => { try { return realpathSync(path) } catch { return path } }
+if (process.argv[1] && real(process.argv[1]) === real(fileURLToPath(import.meta.url))) process.exitCode = main(process.argv.slice(2))

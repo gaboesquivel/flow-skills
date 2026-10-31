@@ -91,3 +91,15 @@ test('permission reader caches and reports null when every route fails', () => {
   assert.equal(read('dev'), null)
   assert.equal(calls, 2)
 })
+
+test('runs as a command when reached through a symlinked skills directory', async () => {
+  const { execFileSync } = await import('node:child_process')
+  const { mkdtempSync, symlinkSync } = await import('node:fs')
+  const { join, resolve } = await import('node:path')
+  const { tmpdir } = await import('node:os')
+  const dir = mkdtempSync(join(tmpdir(), 'flow-gate-'))
+  symlinkSync(resolve('skills'), join(dir, 'skills'))
+  let out = ''
+  try { execFileSync(process.execPath, [join(dir, 'skills/build/scripts/issue-trigger.mjs'), '--repo'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }) } catch (e) { out = e.stdout; assert.equal(e.status, 1) }
+  assert.match(out, /"ok":false/u)
+})
