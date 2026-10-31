@@ -27,7 +27,7 @@ Read repository instructions and inspect Git status. Outside a Git repository, r
 Recover intent from the request, spec, tests, and decisions. Assess every axis the change can affect:
 
 - **Correctness:** intent match, regressions, failure paths, test coverage.
-- **Scope:** additions outside the accepted scope (unrelated refactors, dependencies, infrastructure, UI surfaces, test harnesses, new specs) and accepted behavior the change omits (`build`'s Scope guard). An unrequested dependency, surface, or infrastructure blocks until the user accepts it; omitted accepted behavior is an `unmet` step. Judge content, not a changed-file count.
+- **Scope:** additions outside the accepted scope (unrelated refactors, dependencies, infrastructure, UI surfaces, test harnesses, new specs) and accepted behavior the change omits (`build`'s Scope guard). A dependency, surface, or infrastructure the accepted scope does not need blocks until the user accepts it; omitted accepted behavior is an `unmet` step. Judge content, not a changed-file count.
 - **Readability and simplicity:** names, complexity, dead code.
 - **Architecture:** boundaries, duplication, conventions.
 - **Security:** trust boundaries, secrets, permissions.

@@ -33,9 +33,9 @@ Choose the lightest record that does the job:
 | Record | Use when |
 |---|---|
 | Conversation and code | A small, understood change |
-| Spec | A bounded, verifiable bet whose scope is worth keeping; several only when each increment proves something alone, ships safely alone, exceeds one appetite, or depends on an earlier one's learning |
-| Task | Delegation, dependencies, independently verifiable slices, or recovery need it; a task is not a PR, issue, worktree, or wave |
-| Decision record | A choice among real alternatives that reaches beyond one spec or is costly to reverse |
+| Spec | A bounded, verifiable bet whose scope is worth keeping ([`to-spec`](../skills/to-spec/SKILL.md) has the split and decision tests) |
+| Task | Delegation, dependencies, independent verification, or recovery need it ([`to-tasks`](../skills/to-tasks/SKILL.md)) |
+| Decision record | A cross-cutting or costly-to-reverse choice among real alternatives |
 | Issue | Only when someone asks for one; it links a spec rather than copying it |
 | Pull request | One coherent deliverable with its evidence, normally one per spec |
 
