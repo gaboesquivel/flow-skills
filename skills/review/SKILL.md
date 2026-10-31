@@ -38,11 +38,11 @@ Read the reviewed commit without changing any checkout you did not create (for e
 
 For consequential changes, add proportional blast-radius checks when cheap tests or code can prove assumptions.
 
-Each consequential finding names the observable behavior or affected caller, the assumption or coupling at risk, and its evidence, and says whether it is a **defect** (confirmed), a **risk** (plausible, unconfirmed), or a **preference**. Future-change risk needs a concrete later change it would break, not a call for speculative architecture.
+Each consequential finding names the observable behavior or affected caller, the assumption or coupling at risk, and its evidence, and labels it a **confirmed** defect, a **plausible risk**, or a **preference**. Future-change risk needs a concrete later change it would break, not a call for speculative architecture.
 
 ## Repair
 
-Review is repair. Fix each confirmed defect inside the reviewed scope (working tree, branch, or pull request), with a focused check that fails without the fix; investigate risks and report what you find; report preferences without applying them. Follow `build`'s Scope guard and its two fix rounds; pushing and readiness follow `build`. A finding closes with evidence or stays `unresolved` with the reason repair cannot proceed. "Review only" or "don't fix" keeps the review read-only. Inside `build`, the integration owner makes the repair and this review re-reviews it.
+Review is repair. Fix each confirmed defect inside the reviewed scope (working tree, branch, or pull request) in a checkout this session owns; on another session's branch or pull request, report the repair to its integration owner instead (`write-agents` Sessions). A behavior fix gets a focused check that fails without it, as `build` Tests describes; a prose fix needs none. Investigate plausible risks and report what you find; report preferences without applying them. Follow `build`'s Scope guard and its two fix rounds; pushing and readiness follow `build`. A finding closes with evidence or stays `unresolved` with the reason repair cannot proceed. "Review only" or "don't fix" keeps the review read-only. Inside `build`, the integration owner makes the repair and this review re-reviews it.
 
 A repair the reviewer wrote is not independently reviewed: a separate execution re-reviews it, or the report labels it **single-agent**. Name the original and repaired heads and who wrote and reviewed each repair.
 
