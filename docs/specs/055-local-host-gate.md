@@ -1,6 +1,6 @@
 # 055 — Claude Code host gate on local models
 
-Status: draft (2026-10-31).
+Status: accepted (2026-10-31).
 Execution: spec/055-local-host-gate; isolated worktree `.worktrees/055-local-host-gate`. Integration owner: unassigned; the session that runs "build it" takes it.
 
 ## Problem Statement

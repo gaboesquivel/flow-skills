@@ -59,6 +59,6 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [054-native-handoff.md](054-native-handoff.md) (implemented)
 - [048-delivery-lifecycle.md](048-delivery-lifecycle.md) (implemented)
 - [049-local-evaluation.md](049-local-evaluation.md) (implemented)
-- [055-local-host-gate.md](055-local-host-gate.md) (draft)
+- [055-local-host-gate.md](055-local-host-gate.md) (accepted)
 
 Significant standalone decisions belong in `docs/decisions/`, not in a spec. See [decisions](../decisions/README.md).
