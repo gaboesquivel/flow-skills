@@ -92,6 +92,10 @@ The response to new scope that changes an accepted boundary, whether the user or
 
 The one session that integrates a delivery (a spec, or one unspecced change): it merges contributed branches and opens or updates the pull request. Recorded once, as a session role, in the pull request description or the spec's `Execution:` line. Missing or conflicting ownership is unknown, never assumed. [`write-agents`](skills/write-agents/SKILL.md#sessions) owns the rule; [decision 0052](docs/decisions/0052-git-first-coordination.md).
 
+## Delivery branch
+
+The one remote branch for a delivery: `spec/<number>-<slug>` for a spec, a short descriptive name otherwise. Its one pull request opens as a draft and is the shared workspace; drafts run no checks or previews, and the pull request is marked ready once verified. Workers' branches stay local. [`build`](skills/build/SKILL.md#pull-request) owns the rule; [decision 0057](docs/decisions/0057-draft-workspace-ready-checks.md).
+
 ## Vertical slice
 
 One verifiable outcome cut through every layer it needs: a `to-tasks` task, or a group of small tasks that must land together. The unit of parallel work: a worker or native session takes a whole slice and keeps its small steps inside it, never one technical layer. [`to-tasks`](skills/to-tasks/SKILL.md) drafts them; [`write-agents`](skills/write-agents/SKILL.md#workers) assigns them; [decision 0054](docs/decisions/0054-native-capability-first-sessions.md).

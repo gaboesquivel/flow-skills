@@ -25,6 +25,8 @@ const safety = [
   ['write-agents', /never edit, reset, clean, switch, or remove another session's worktree/iu],
   ['write-agents', /evidence, not a lock/iu],
   ['ship', /pending or failing stops the landing/iu],
+  ['ship', /skipped while the pull request was a draft never counts/iu],
+  ['build', /drafts run no CI/iu],
   ['build', /never cut by weakening a check/iu],
   ['write-agents', /\[REDACTED\]/u],
   ['write-agents', /never pick by timestamp/iu],

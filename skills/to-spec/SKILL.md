@@ -8,7 +8,7 @@ disable-model-invocation: false
 
 Turn conversation context and repository understanding into a proportionate specification. Do not run a separate interview; synthesize what is already known and label unresolved assumptions rather than inventing decisions.
 
-Use the project's existing spec location and numbering; with no convention, write `docs/specs/NNN-short-name.md` (three-digit sequence, kebab-case slug). Take a number no local or remote branch already uses. Outside a Git repository, offer `git init` and stop on a no. Commit on the work's branch, never the default branch, candidate stubs included: the branch already open for this work (exploration included), or a new one named for the spec. The spec merges with the work.
+Use the project's existing spec location and numbering; with no convention, write `docs/specs/NNN-short-name.md` (three-digit sequence, kebab-case slug). Take a number no local or remote branch already uses. Outside a Git repository, offer `git init` and stop on a no. Commit on the work's branch, never the default branch, candidate stubs included: the branch already open for this work (exploration included), or a new `spec/<number>-<slug>` branch (`build`'s Pull request). The spec merges with the work.
 
 **Spec, tasks, decision.** A spec is one bet: it tests one assumption and ships as one unit. Its tasks are the slices inside it, so a spec may be large. Work that only makes sense after seeing how another bet did gets its own spec. Split into several specs only when each increment proves something on its own, ships safely alone, exceeds one appetite, or depends on learning from an earlier one; a promising later idea is a candidate stub only when it is worth triaging. A choice gets a decision record in `docs/decisions/NNNN-short-name.md` (four-digit sequence) only when it chose among real alternatives **and** reaches beyond this spec or is costly to reverse; otherwise it belongs in the spec's Implementation Decisions. Never put feature scope or tasks in a decision record. When a spec makes a choice that passes the test, write the record beside the spec with status **Proposed** and link it from the spec. Also link any **Proposed** records written during exploration that the spec depends on.
 
@@ -30,7 +30,7 @@ A spec's `Status:` line reads `candidate`, `draft`, `accepted`, `implemented`, o
 
 A draft without an acceptance scenario, or without an **Exposure** line when it adds deployable behaviour, stays `draft`: name what is missing and stop the request. A `candidate` must become a full draft first. Changing an accepted spec's scope or a decision it links returns it to `draft`. Report the files changed.
 
-**Share the draft** (comments before acceptance): push the branch and open a draft pull request whose body links the spec file; in local mode (`origin` is not on GitHub, or the user named local) there is nothing to open, so report the file. On a public repository, say the branch becomes public.
+**Share the draft** (comments before acceptance): push the branch and open its draft pull request, which `build` later reuses, with a body that links the spec file; in local mode (`origin` is not on GitHub, or the user named local) there is nothing to open, so report the file. On a public repository, say the branch becomes public.
 
 ## Process
 

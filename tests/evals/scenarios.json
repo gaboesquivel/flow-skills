@@ -434,7 +434,7 @@
         "build",
         "to-tasks"
       ],
-      "behavior": "GitHub-mode task set runs ready tasks in parallel respecting blockers and intersecting areas, integrates every task on one spec branch, and ends at a ready pull request without waiting on CI or merging",
+      "behavior": "GitHub-mode task set runs ready tasks in parallel respecting blockers and intersecting areas, integrates every task on one spec branch, and ends at the one pull request, marked ready with checks run on its head, without merging",
       "taskFile": "tests/evals/tasks/E20-task.md",
       "rubricFile": "tests/evals/rubrics/E20-rubric.md",
       "skillReferences": [

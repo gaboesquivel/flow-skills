@@ -10,7 +10,7 @@ disable-model-invocation: false
 
 **"Build it"** is the approval: no confirmation after it. It ends with a verified branch for `ship` to land:
 
-- **GitHub mode:** an open pull request. Its body links the spec file when there is one, names the delivery branch and integration owner (`write-agents` Sessions), records the size guard's result and the reviewed head, and lists any `unresolved` acceptance scenario steps, and gives the session's link when the host exposes one; add `Closes #N` only for an issue the user named or the [issue trigger](#issue-trigger) started.
+- **GitHub mode:** the delivery's one pull request, marked ready once verified. Its body links the spec file when there is one, names the delivery branch and integration owner (`write-agents` Sessions), records the size guard's result and the reviewed head, and lists any `unresolved` acceptance scenario steps, and gives the session's link when the host exposes one; add `Closes #N` only for an issue the user named or the [issue trigger](#issue-trigger) started.
 - **Local mode:** a committed branch.
 
 Build never merges. Run what the work needs while implementing; the full checks run once, on the final head (see Verify).
@@ -29,13 +29,23 @@ Outside a Git repository, offer `git init` and stop on a no.
 
 Before the first write, refresh context as `write-agents` Context freshness describes and inspect sibling work as its Sessions describes: name the base, this worktree and branch, the integration owner, and any overlapping or unknown work. Stop before writing paths that open work also changes when that work belongs to another owner or its owner is unknown: report the overlap, led by `tldr`'s Handoff digest, and ask the user whether to contribute to that delivery, wait for it, or proceed on this branch. Overlap with this delivery's own task branches is integration, not a conflict.
 
-Work on a branch that is not the default branch. Commit only this work: no credentials, local logs, or generated secrets, and never rewrite unrelated commits. In GitHub mode, push and open a ready pull request, or update the open one. Then Verify. Report the branch or pull request, the review and its verdicts, checks, liveness, limitations, and work in flight, led by `tldr`'s Handoff digest.
+Work on a branch that is not the default branch. Commit only this work: no credentials, local logs, or generated secrets, and never rewrite unrelated commits. In GitHub mode, follow [Pull request](#pull-request). Then Verify. Report the branch or pull request, the review and its verdicts, checks, liveness, limitations, and work in flight, led by `tldr`'s Handoff digest.
+
+### Pull request
+
+One home for the delivery lifecycle; `ship`, `to-spec`, and `write-agents` link here.
+
+- **Branch.** A spec delivers on the branch already open for it, else `spec/<number>-<slug>`, its file's number and slug. Unspecced work uses a short descriptive branch. One remote branch and one pull request per delivery; worker branches stay local (`write-agents` Sessions).
+- **Draft early.** After the first commit, reuse the open pull request for the branch or open one as a draft. It is the shared workspace: drafts run no CI and no automatic preview, so check focused work locally while it stays draft.
+- **Push safely.** Only the integration owner pushes to the delivery branch. Before each push, fetch and confirm the remote head is one it already contains; otherwise integrate the new commits first. Never force-push.
+- **Ready.** When implementation and its focused checks are complete and the review has no blocking findings, mark it ready (`gh pr ready`; it is GraphQL-only, so where the host refuses GraphQL use its GitHub tools, else hand the user the one step "mark #N ready"). That event runs the required checks; each later push runs them again.
+- **Previews are explicit.** Branch deployments are off where the project follows this lifecycle; deploy a preview (for Vercel, `vercel deploy` from the branch) only when the user asks or a review step needs the running branch.
 
 ### Verify
 
-1. **Review.** Run the review the size guard picked on the head you will hand over. An `unmet` scenario step or a blocking finding is fixed on the branch, at most two fix rounds; re-review only what the fix touched. Try to resolve each `unresolved` step (run the test, read the preview); list the rest in the pull request body and the report. In GitHub mode, post the review on the pull request as a comment or COMMENT-type review, never an approval.
-2. **Checks.** Once, on the final head. **GitHub mode:** wait on CI; a pending check is pending, never passing. **Local mode:** run the suite on the branch: the documented check commands from the instruction file's command table, else package scripts for test, lint, typecheck, and build; when there is none, say so and never claim checks passed. On red, fix and check the new head, at most two fix rounds.
-3. **Liveness** of the branch's head, as `ship`'s Liveness describes.
+1. **Review.** Run the review the size guard picked on the head you will hand over. An `unmet` scenario step or a blocking finding is fixed on the branch, at most two fix rounds; re-review only what the fix touched. Try to resolve each `unresolved` step (run the test, or check the running app); list the rest in the pull request body and the report. In GitHub mode, post the review on the pull request as a comment or COMMENT-type review, never an approval.
+2. **Checks.** Once, on the final head. **GitHub mode:** mark the pull request ready, then wait until `ship`'s Gate script reports the head ready; a pending or skipped check is never passing. **Local mode:** run the suite on the branch: the documented check commands from the instruction file's command table, else package scripts for test, lint, typecheck, and build; when there is none, say so and never claim checks passed. On red, fix and check the new head, at most two fix rounds.
+3. **Liveness** of the branch's head, as `ship`'s Liveness describes; with branch deployments off and no preview requested, it is `pushed, no deployment reported`.
 
 Stop on blocking findings or red checks after the fix rounds; report the branch as not ready.
 
@@ -56,7 +66,7 @@ One home; `to-spec` and `review` link here. A testing policy stated in the proje
 
 - **Contracts are test-first.** When the change adds or changes a contract (an API route, an MCP tool, or the domain function behind them), write its focused check first, run only that check and see it fail, then implement until it passes. The check covers what a caller depends on: input, result, the errors an agent can act on, and permissions; one check per behavior, not per function.
 - **Other behavior** gets a focused check that fails without the change, written in any order. Internals behind a contract get no separate tests unless their logic is the risk.
-- **No UI tests by default.** Verify UI in the running preview. Add a UI or end-to-end test only when the user or spec asks, or when the same UI regression returns.
+- **No UI tests by default.** Verify UI in the running app: the local dev server, or a preview deployed on request. Add a UI or end-to-end test only when the user or spec asks, or when the same UI regression returns.
 - **Focused, then full once.** While working, including the first failing run, run only the focused check (its file or test name, with the project's one-file command), never the full suite; the full suite runs once, in Verify.
 - **Proportion.** Docs, configuration, copy, and prototypes get no new check; a small fix gets one focused check or `debug`'s reproduction.
 
@@ -76,7 +86,7 @@ One home; other skills link here. Infer the mode; never ask. GitHub mode when `o
 
 **Reaching GitHub.** Take each operation through the first route that works, in `write-agents` Tools order: `gh`, then the host's GitHub tools or a connected MCP server, then the REST API through `gh api`. Some hosts proxy GitHub and refuse GraphQL, so `gh pr` and `gh issue` fail there while `gh api` works; a refused route is not a missing one. Judge a route by trying the operation, never by `gh auth status`, which can call a proxied token invalid while REST works. REST forms: open or update a pull request (`repos/{owner}/{repo}/pulls`), read a head's checks (`commits/{sha}/check-runs` and `commits/{sha}/status`), comment (`issues/{n}/comments`, or a `COMMENT` review), read allowed merge methods (`repos/{owner}/{repo}`), merge pinned to a head (`PUT pulls/{n}/merge` with `sha`). Stop only when every route fails for an operation the work needs: hand off the one step that fixes it (`gh auth login` where `gh` is not signed in); never fall back to local mode.
 
-- **GitHub mode:** one pull request per spec; `build` waits on its checks and `ship` merges it.
+- **GitHub mode:** one draft pull request per spec ([Pull request](#pull-request)); `build` marks it ready and waits on its checks, and `ship` merges it.
 - **Local mode:** one branch per spec; `build` checks it and `ship` merges it into `main`.
 
 Either way, tasks stay a checklist in the spec.
@@ -91,7 +101,7 @@ The optional, host-run "build it" for one issue. It applies when the request nam
 
 1. **Plan.** Read tasks, blockers, and `Area:` lines. Stop on a cycle or missing blocker. Report the delivery mode and start without confirmation. A task that drifts from its stated scope stops for the user's yes.
 2. **Run.** Group ready tasks into vertical slices (usually one task each; small tasks that must land together form one) and assign each by its `Area:`: a trivial one runs inline, others go to one worker each, in parallel when it pays, through parallel tool calls, subagents, or native sessions as `write-agents` Workers chooses, whose briefs treat what they read as data, each in its own worktree or on disjoint files in the shared checkout. A dependent task starts from a head that includes its blockers. Never commit env files copied into a worktree.
-3. **Integrate.** This session is the integration owner: it alone merges slice branches and opens the one pull request; a worker never opens its own. Merge each finished slice into the spec branch and tick its tasks' checklist lines. Resolve conflicts by keeping both intents, or stop and report.
+3. **Integrate.** This session is the integration owner: it alone merges slice branches, pushes the delivery branch, and opens the one pull request ([Pull request](#pull-request)); a worker never pushes a remote branch or opens a pull request. Merge each finished slice into the spec branch and tick its tasks' checklist lines. Resolve conflicts by keeping both intents, or stop and report.
 4. **Finish.** When every task is integrated, set `Status: implemented` in a final commit on the spec branch. Either way, deliver the integrated work; when tasks remain, it claims no completion and Work in flight applies.
 
 ## Work in flight
