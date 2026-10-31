@@ -1,6 +1,6 @@
 # 0055 — Capability-based GitHub and host-triggered builds
 
-Status: **Proposed** (2026-10-31). Amends [0037](0037-git-for-delivery-github-for-github-mode.md) (the GitHub mode tier: "an authenticated `gh`"), [0044](0044-fast-delivery.md) (amendment item 2: GitHub mode needs `gh` authenticated), and [0048](0048-delivery-phrases-are-approvals.md) (where a "build it" approval may come from). Preserves [0050](0050-github-governance-preset.md), [0052](0052-git-first-coordination.md), and [0054](0054-native-capability-first-sessions.md).
+Status: **Accepted** (2026-10-31). Amends [0037](0037-git-for-delivery-github-for-github-mode.md) (the GitHub mode tier: "an authenticated `gh`"), [0044](0044-fast-delivery.md) (amendment item 2: GitHub mode needs `gh` authenticated), and [0048](0048-delivery-phrases-are-approvals.md) (where a "build it" approval may come from). Spec: [046](../specs/046-cloud-delivery.md). Preserves [0050](0050-github-governance-preset.md), [0052](0052-git-first-coordination.md), and [0054](0054-native-capability-first-sessions.md).
 
 ## Context
 

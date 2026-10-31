@@ -50,6 +50,6 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [043-defensive-delivery.md](043-defensive-delivery.md) (implemented)
 - [044-context-and-human-experience.md](044-context-and-human-experience.md) (implemented)
 - [045-native-observable-sessions.md](045-native-observable-sessions.md) (implemented)
-- [046-cloud-delivery.md](046-cloud-delivery.md) (draft)
+- [046-cloud-delivery.md](046-cloud-delivery.md) (accepted)
 
 Significant standalone decisions belong in `docs/decisions/`, not in a spec. See [decisions](../decisions/README.md).
