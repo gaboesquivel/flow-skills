@@ -52,7 +52,7 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [045-native-observable-sessions.md](045-native-observable-sessions.md) (implemented)
 - [046-cloud-delivery.md](046-cloud-delivery.md) (accepted)
 - [047-shared-language-test-first.md](047-shared-language-test-first.md) (implemented)
-- [048-delivery-lifecycle.md](048-delivery-lifecycle.md) (accepted)
+- [048-delivery-lifecycle.md](048-delivery-lifecycle.md) (implemented)
 - [049-local-evaluation.md](049-local-evaluation.md) (implemented)
 
 Significant standalone decisions belong in `docs/decisions/`, not in a spec. See [decisions](../decisions/README.md).
