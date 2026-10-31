@@ -13,3 +13,7 @@ Host: Claude Code cloud (CLI 2.1.316 in the flow-skills check), routines (resear
 | 7. Metrics tags | met in part | REST reads work in cloud; the run crashed on untagged changes (fixed in `d0e57e8`'s follow-up). Cloud cost stays unknown without an OpenTelemetry export. |
 
 Not covered: protection on `main` (private repositories on GitHub Free hold no rulesets). Until the permission gate is enforced deterministically, use the issue trigger only on repositories where every account that can add labels has `write` access.
+
+## Gate follow-up (same day)
+
+`build` now runs `skills/build/scripts/issue-trigger.mjs` before any write. First cloud run: reached through `.claude/skills`, its entry check compared the symlink path with the real path, so it printed nothing and exited 0, failing open (issue #6 built; a closed issue #1 was not refused by the gate). After comparing real paths, re-labeling closed issue #1 produced the comment "the `build-it` issue trigger refused to run — issue #1 is closed" and no branch. `board.mjs` had the same entry check and is fixed. Still not run: a labeler below `write` (needs a second account); the unit tests cover it, the proxy's refused permission endpoint, and the collaborators-list fallback.
