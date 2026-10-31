@@ -68,7 +68,8 @@ export function check({ api, repo, number }) {
   if (level === null) throw new ReadError(`cannot read ${labeler}'s permission on ${repo}`)
   if (!WRITERS.has(level)) return refuse(`${labeler} added ${LABEL} with ${level} permission; it needs write or admin`)
   const author = issue.user?.login
-  const authorLevel = author ? permission(author) : null
+  if (!author) return refuse(`issue #${number} has no readable author`)
+  const authorLevel = permission(author)
   if (authorLevel === null) throw new ReadError(`cannot read the issue author's permission on ${repo}`)
   if (!WRITERS.has(authorLevel)) return refuse(`issue #${number} was written by ${author} (${authorLevel}); a writer must open the issue and label it`)
   const comments = pages(api, `repos/${repo}/issues/${number}/comments`)
@@ -84,14 +85,17 @@ export function check({ api, repo, number }) {
   }
 }
 
-export const repoFromRemote = (url) => /github\.com[:/]([^/]+\/[^/]+?)(?:\.git)?\s*$/u.exec(url ?? '')?.[1] ?? null
+// github.com remotes, and host git proxies that keep `/git/<owner>/<repo>` in the path.
+export const repoFromRemote = (url) => /(?:github\.com[:/]|\/git\/)([^/]+\/[^/]+?)(?:\.git)?\s*$/u.exec(url ?? '')?.[1] ?? null
 
 function main(argv) {
   const repoAt = argv.indexOf('--repo')
-  const repo = repoAt >= 0 ? argv[repoAt + 1] : repoFromRemote(execFileSync('git', ['remote', 'get-url', 'origin'], { encoding: 'utf8' }))
-  const number = Number(argv.find((a, i) => /^\d+$/u.test(a) && argv[i - 1] !== '--repo'))
-  if (!repo || !Number.isInteger(number)) {
-    console.log(JSON.stringify(refuse('usage: issue-trigger.mjs <issue> [--repo owner/name]')))
+  let origin = null
+  try { origin = repoFromRemote(execFileSync('git', ['remote', 'get-url', 'origin'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })) } catch {}
+  const repo = repoAt >= 0 ? argv[repoAt + 1] : origin
+  const number = Number(argv.find((a, i) => /^#?\d+$/u.test(a) && argv[i - 1] !== '--repo')?.replace('#', ''))
+  if (!/^[\w.-]+\/[\w.-]+$/u.test(repo ?? '') || (origin && repo.toLowerCase() !== origin.toLowerCase()) || !Number.isInteger(number)) {
+    console.log(JSON.stringify(refuse('usage: issue-trigger.mjs <issue> [--repo owner/name, matching origin]')))
     return 1
   }
   const api = (path) => JSON.parse(execFileSync('gh', ['api', path], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 32 * 1024 * 1024 }))
