@@ -49,7 +49,7 @@ Outside a Git repository, offer `git init` and stop on a no. Tasks are the spec'
 
 **Task issues** open only when the user asks: one per task from the issue template (sub-issues of the issue the user names, if any), opened in parallel, with blockers linked once every number exists (native blocked-by links where supported, otherwise `Blocked by #a, #b` atop the body); append `(#N)` to each checklist line. On a public repository, say the issues are public. If publishing stops partway, report which issues exist; on a retry, match existing issues by title and open only the missing ones.
 
-Tasks are not pull requests; `build` owns how tasks group into pull requests. A task is **ready** when its blockers are complete.
+Tasks are not pull requests, issues, or worktrees; `build` owns how tasks group into pull requests, and a worker or session gets none of its own. A task is **ready** when its blockers are complete.
 
 Report where the tasks live, each task with what it delivers and its area, and the ready set, then wait for "build it". Do not start implementation.
 

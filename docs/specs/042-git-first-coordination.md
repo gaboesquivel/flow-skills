@@ -1,6 +1,6 @@
 # 042 — Git-first coordination and delivery ownership
 
-Status: **draft** (2026-10-31)  
+Status: **accepted** (2026-10-31)  
 Repository: `gaboesquivel/flow-skills`  
 Priority: **P0 — first**  
 Dependencies: none; preserve accepted safety and governance requirements.

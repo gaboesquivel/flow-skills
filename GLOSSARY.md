@@ -76,6 +76,10 @@ The tasks of a spec's task set whose blockers have all integrated. `build` runs 
 
 Work started but not yet on the default branch: worktrees, task branches, and unfinished tasks. Flow loses none of it. Every worktree has its own branch, finished work reaches the work branch, unfinished tasks are reported rather than dropped, a branch or worktree is removed only when its commits are on the default branch or the user dropped the work, and every report lists what is left. [`build`](skills/build/SKILL.md#work-in-flight) owns the rule; [decision 0044](docs/decisions/0044-fast-delivery.md).
 
+## Integration owner
+
+The one session that integrates a delivery (a spec, or one unspecced change): it merges contributed branches and opens or updates the pull request. Recorded once, as a session role, in the pull request description or the spec's `Execution:` line. Missing or conflicting ownership is unknown, never assumed. [`write-agents`](skills/write-agents/SKILL.md#sessions) owns the rule; [decision 0052](docs/decisions/0052-git-first-coordination.md).
+
 ## Acceptance scenario
 
 The one representative end-to-end journey a spec names in its Testing Decisions: the actor, the starting state with realistic data, and numbered steps with the observable result of each, plus the same journey through the agent interface when the spec names agent users. A draft without one is not accepted: acceptance, and a "build it" or "ship it" on that draft, stops and names what is missing. [`to-spec`](skills/to-spec/SKILL.md) owns the rule; decisions [0032](docs/decisions/0032-local-build-lands-ship-verifies.md) and [0044](docs/decisions/0044-fast-delivery.md).

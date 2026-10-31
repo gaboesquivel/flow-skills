@@ -16,7 +16,7 @@ Specs may cover product, research, marketing, engineering, operations, or cross-
 
 **Candidate specs.** A later bet that should not be specified yet gets a stub file with status `candidate`: the problem and the assumption it tests, no tasks. Flesh it out into a full draft when its turn comes.
 
-**Issues.** Specs live in files; open no issue unless the user asks. When the spec fleshes out an issue the user named, the pull request closes it (`Closes #N`).
+**Issues.** Specs live in files; open no issue unless the user asks, and never one per session, worker, or task, or one that copies the spec. Reference an existing issue when it is relevant. When the spec fleshes out an issue the user named, the pull request closes it (`Closes #N`).
 
 ## Status and acceptance
 

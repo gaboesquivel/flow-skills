@@ -36,6 +36,19 @@ This is the shared worker rule; other skills link here instead of restating it.
 - The main thread verifies findings and synthesizes results and disagreements. Record actual models when the host exposes them; distinguish model diversity from host diversity.
 - Without workers, run the same steps in order and say so. Never claim independence without separate execution.
 
+## Sessions
+
+This is the shared rule for independent sessions: several sessions (Claude Code, Codex, Cursor, started by hand or by another session) writing to one repository with no controller between them. Other skills link here instead of restating it. Git is the only shared state, and what it shows is evidence, not a lock.
+
+- **Isolate writers.** Each writing session works on its own branch in its own worktree, inside the repository under an ignored directory: `.worktrees/` by default, or the host's own location when Git ignores it. Check with `git check-ignore -q <dir>` before creating it. Never create worktrees beside the repository, and never switch branches in a checkout another session may be using. When no ignored in-repo location is available, work sequentially in one checkout. Separate worktrees make parallel work possible, not worthwhile; Workers decides when it pays.
+- **Inspect before consequential writes.** At the start, before editing paths other work may touch, and before integrating, read with parallel calls: `git worktree list`, each relevant worktree's `git status --short` (read only), branches with commits not on the default branch that name the same spec or change the same paths (`git diff --stat <default>...<branch>`), and in GitHub mode open pull requests (`gh pr list`). Read only what bears on this work; never scan all history.
+- **Report what you cannot see.** A session that has not committed, works in another clone, or has stopped may be invisible. Report found sibling work with its branch, path, and overlap, and the rest as unknown. Never claim no one else is working.
+- **One integration owner per delivery.** Each spec, or one unspecced change, has one session that integrates it and opens or updates its pull request; other sessions contribute commits on their own branches for it to merge. Record the delivery branch and owner once: in the pull request description, or before a pull request exists (or in local mode) in one `Execution:` line under the spec's Status line. An owner is a session role (`session A`, `the build session`), never personal data. Ownership comes from worktree paths, branch names, spec references, and pull request descriptions; when it is missing or conflicting, it is unknown: say so and do not write overlapping paths until the user or the owner resolves it.
+- **Leave others' work alone.** Never edit, reset, clean, switch, or remove another session's worktree or branch, and never merge or close its pull request. Report it as work in flight (`build`'s Work in flight).
+- **Optional recovery notes.** A session may keep an ignored `progress.md` in its own worktree; it is scratch, never project truth. Prompt or event logs, when kept, are one file per session with secrets redacted before writing; never a shared tracked log.
+
+Two sessions inspecting at the same moment can both find no owner. These rules reduce collisions; they do not prevent them. Stronger coordination needs a tool outside these skills.
+
 ## Tools
 
 This is the shared tool rule; other skills link here instead of restating it. The agent does the work; the user directs it.

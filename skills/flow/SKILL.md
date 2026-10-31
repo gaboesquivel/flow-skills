@@ -48,6 +48,7 @@ Report the helper's output: the block's file (`Wrote` or `Unchanged`), any stale
 - Edit adopter instruction files (`AGENTS.md`, `CLAUDE.md`, `.cursorrules`, or similar) only for the Flow block and the `@AGENTS.md` import, and write the block only when the user asks or `start` runs.
 - Do not require installation, initialization, or a prior skill invocation.
 - Do not treat alignment edits as permission to implement unrelated code. For authorized implementation and tests, invoke the `build` skill when installed.
+- Never write a session registry, live roster, or shared progress log; coordination is Git evidence (`write-agents` Sessions).
 - Do not create `docs/specs/` or `docs/decisions/` records here; use `to-spec` or explicit decision work when durable bounded artifacts are justified.
 - Name another skill (`to-spec`, `domain-modeling`, `review`, …) only when the user asks or setup finds no goals (see Flow block), then wait.
 
