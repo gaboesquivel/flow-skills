@@ -55,6 +55,15 @@ test('the latest run wins: a real run after the skipped draft run counts', () =>
   assert.equal(result.ready, true)
 })
 
+test('a draft run that raced the ready run and got a higher id never hides the real result', () => {
+  const raced = check({ [`${R}/commits/${HEAD}/check-runs`]: runs(run('validate (ubuntu-latest, 22)', 'success', 5), run('pr-title', 'success', 6), run('pr-title', 'skipped', 9)) })
+  assert.equal(raced.ready, true)
+  const failed = check({ [`${R}/commits/${HEAD}/check-runs`]: runs(run('validate (ubuntu-latest, 22)', 'failure', 5), run('validate (ubuntu-latest, 22)', 'skipped', 8), run('pr-title', 'success', 6)) })
+  assert.equal(stateOf(failed, 'validate (ubuntu-latest, 22)'), 'failure')
+  const workflows = check({ ...unprotected, [`${R}/actions/runs`]: { total_count: 3, workflow_runs: [wf('ci', 'success', 50), wf('pr-title', 'success', 51), wf('pr-title', 'skipped', 52)] } })
+  assert.equal(workflows.ready, true)
+})
+
 test('pending, skipped, neutral, cancelled, and failing required checks stop it', () => {
   for (const [conclusion, status, expected] of [[null, 'in_progress', 'pending'], ['skipped', 'completed', 'skipped'], ['neutral', 'completed', 'neutral'], ['cancelled', 'completed', 'cancelled'], ['failure', 'completed', 'failure']]) {
     const result = check({ [`${R}/commits/${HEAD}/check-runs`]: runs(run('validate (ubuntu-latest, 22)', conclusion, 5, status), run('pr-title', 'success', 6)) })
