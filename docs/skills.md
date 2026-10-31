@@ -97,7 +97,7 @@ Code simplification, security audits, and performance work belong to host tools 
 | --- | --- | --- |
 | [tldr](../skills/tldr/SKILL.md) | "tldr" | Visual human summary of named material, or a session recap and alignment check. Owns the Handoff digest other skills lead their reports with, which needs no `tldr` run. Prose stays with `write-humans`. |
 | [board](../skills/board/SKILL.md) | "show the board" | Read-only kanban of specs by stage (Candidate, Specced, Ready, Building, Shipped), derived from spec files, checklists, branches, and merges in git; builds record nothing for it ([0044](decisions/0044-fast-delivery.md)). Shows Git evidence, never a live session roster. Opens a live local page, or a static snapshot with `--once`. |
-| [handoff](../skills/handoff/SKILL.md) | "hand off" | Compact the current conversation into a temporary handoff document so a fresh agent can continue. |
+| [handoff](../skills/handoff/SKILL.md) | "hand off" | Hand the work to a fresh agent: the host's native hand-off where it has one, else a temporary handoff document. |
 
 ## Maintain (this repository)
 

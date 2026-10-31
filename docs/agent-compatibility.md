@@ -63,7 +63,7 @@ Claude Code ships built-in skills that overlap with parts of the catalog. Flow o
 | `review` | `/code-review` | Intent and root-context alignment matter, not only correctness bugs. |
 | — | Plan mode | Flow does not claim "plan". Say "spec it" or "break it down" when the plan should last. |
 | `flow`, `start` | `/init`, memory | Product facts belong in root context files. Keep `CLAUDE.md` and memory as pointers, not copies. |
-| `handoff` | Automatic compaction | A fresh agent needs a standalone document. |
+| `handoff` | Automatic compaction, native hand-off | A fresh agent on another host, or on a host without native hand-off, needs a standalone document ([spec 054](specs/054-native-handoff.md)). |
 | `to-tasks` | Session task list | Work needs durable vertical slices or tracker issues. |
 
 Flow retired `simplify`, `security`, and `performance` in favor of `/simplify`, `/security-review`, and host tooling ([decision 0019](decisions/0019-voice-first-invocation.md)). Flow avoids generic verbs: "review the code" reaches `/code-review`; "check it against the spec" reaches Flow `review`.
