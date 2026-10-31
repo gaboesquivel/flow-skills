@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "site", "runtimeExecutable": "pnpm", "runtimeArgs": ["--dir", "site", "start", "-p", "3138"], "port": 3138 }
+  ]
+}
