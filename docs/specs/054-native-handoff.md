@@ -1,6 +1,6 @@
 # 054 — Native hand-off in handoff
 
-Status: draft (2026-10-31)
+Status: accepted (2026-10-31)
 
 ## Problem Statement
 

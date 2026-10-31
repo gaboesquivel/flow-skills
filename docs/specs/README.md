@@ -56,7 +56,7 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [051-code-quality-article.md](051-code-quality-article.md) (candidate)
 - [052-native-session-integration.md](052-native-session-integration.md) (implemented)
 - [053-native-session-adoption.md](053-native-session-adoption.md) (accepted)
-- [054-native-handoff.md](054-native-handoff.md) (draft)
+- [054-native-handoff.md](054-native-handoff.md) (accepted)
 - [048-delivery-lifecycle.md](048-delivery-lifecycle.md) (implemented)
 - [049-local-evaluation.md](049-local-evaluation.md) (implemented)
 
