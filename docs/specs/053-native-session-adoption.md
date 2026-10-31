@@ -16,7 +16,7 @@ Doing that refresh is itself a native-session job across three repositories, and
 
 - **One session per starter, gated on published Flow.** The coordination session starts one native session per starter. Each owns its repository's checkout, branch, and pull request. Each begins with a read-only drift audit. Once 052 has merged to Flow `main`, each refreshes its Flow skills from published `main` (never from a feature branch), keeps its repository-specific configuration, runs focused local checks, and delivers one pull request when the refresh changes anything.
 - **Ownership follows the repository.** The parent stays integration owner of its own delivery. A child that delivers in another repository owns that repository's pull request; the parent coordinates and reports but never integrates or ships it.
-- **`ship` closes its own worktree.** After merging, `ship` removes the worktree that holds the delivery branch, when it is clean and belongs to this delivery, before deleting the local branch. Other sessions' worktrees stay untouched.
+- **`ship` closes its own worktree.** After merging, `ship` removes the worktree that holds the delivery branch, when this work created it and it is clean, before deleting the local branch. A worktree the host made for a session (Claude Code's `.claude/worktrees/`, which the app cleans up with the session) stays for the host; `ship` reports its path and the branch it keeps. Other sessions' worktrees stay untouched.
 
 The other areas the request named (native cross-session messaging, context handoffs, interruption and recovery) showed no failure that 045 and 052 leave unaddressed. They stay as they are; see Further Notes.
 
@@ -36,7 +36,7 @@ The other areas the request named (native cross-session messaging, context hando
 - **Refresh.** Use the skills CLI's update path for the Flow entries in `skills-lock.json` (`npx skills` from published `gaboesquivel/flow-skills`), never copying files from a local `flow-skills` checkout. Keep non-Flow lock entries and every file outside the Flow skill directories. When the refresh produces no diff, there is no pull request.
 - **Starter pull requests.** Drafts run nothing ([0057](../decisions/0057-draft-workspace-ready-checks.md)). Mark ready after focused local checks; the repository's required checks then run once. Merge only with shipping authorization from the user.
 - **`skills/write-agents/SKILL.md`**: in Native sessions, scope "the parent stays integration owner" to its own delivery and add that a child delivering in another repository owns that repository's pull request.
-- **`skills/ship/SKILL.md`** Landing, GitHub and local mode: before deleting the local branch, remove the worktree that holds it when `git worktree list` shows it, it is clean, and it belongs to this delivery (`git worktree remove`, never `--force`); otherwise report its path and leave the branch.
+- **`skills/ship/SKILL.md`** Landing, GitHub and local mode: before deleting the local branch, remove the worktree that holds it when this work created it and it is clean (`git worktree remove`, never `--force`); a host-made session worktree stays for the host, reported with the branch it keeps. This orders the existing Work in flight cleanup; it adds no removal authority.
 - **`docs/specs/README.md`**: index this spec.
 - No decision record: both skill changes apply [0052](../decisions/0052-git-first-coordination.md) and [0054](../decisions/0054-native-capability-first-sessions.md) as written. No direction change: one integration owner per delivery stands; spec 045's "the parent normally retains integration ownership" already allows the cross-repository case.
 
@@ -53,7 +53,7 @@ Structural checks only: `pnpm validate` and `pnpm test` in `flow-skills` when it
 3. #216 merges. Each child confirms `MERGED`, refreshes from published `main`, and opens one draft pull request. Verify: the pull request names the Flow `main` SHA, every changed path is under `.agents/skills/` or is `skills-lock.json`, and no CI job ran on the draft.
 4. Each child runs its focused checks, marks its pull request ready, and reports branch, head SHA, and unresolved work first. Verify: required checks pass on that head; the parent's summary matches each pull request head.
 5. The `flow-skills` session lands the `write-agents` and `ship` edits on this spec's branch and opens its pull request. Verify: `pnpm validate` and `pnpm test` pass on the ready head.
-6. On "ship it" for one starter in a test repository where the delivery branch is checked out in a clean worktree, `ship` merges, removes that worktree, and deletes the local branch. Verify: `git worktree list` and `git branch --list` no longer show either; a second worktree with uncommitted changes is reported and left.
+6. On "ship it" for one starter in a test repository where the delivery branch is checked out in a clean worktree, `ship` merges, removes that worktree, and deletes the local branch. Verify: `git worktree list` and `git branch --list` no longer show either; a second worktree with uncommitted changes, and a host-made session worktree, are each reported with their path and left.
 
 ## Out of Scope
 
