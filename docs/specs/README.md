@@ -52,6 +52,8 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [045-native-observable-sessions.md](045-native-observable-sessions.md) (implemented)
 - [046-cloud-delivery.md](046-cloud-delivery.md) (accepted)
 - [047-shared-language-test-first.md](047-shared-language-test-first.md) (implemented)
+- [050-understandable-changes.md](050-understandable-changes.md) (accepted)
+- [051-code-quality-article.md](051-code-quality-article.md) (candidate)
 - [048-delivery-lifecycle.md](048-delivery-lifecycle.md) (implemented)
 - [049-local-evaluation.md](049-local-evaluation.md) (implemented)
 
