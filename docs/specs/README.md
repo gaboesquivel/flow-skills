@@ -53,7 +53,7 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [046-cloud-delivery.md](046-cloud-delivery.md) (accepted)
 - [047-shared-language-test-first.md](047-shared-language-test-first.md) (implemented)
 - [048-delivery-lifecycle.md](048-delivery-lifecycle.md) (accepted)
-- [050-understandable-changes.md](050-understandable-changes.md) (draft)
+- [050-understandable-changes.md](050-understandable-changes.md) (accepted)
 - [051-code-quality-article.md](051-code-quality-article.md) (candidate)
 
 Significant standalone decisions belong in `docs/decisions/`, not in a spec. See [decisions](../decisions/README.md).
