@@ -1,6 +1,6 @@
 # 047 — Shared language and contract-first tests
 
-Status: draft (2026-10-31)
+Status: accepted (2026-10-31)
 
 ## Problem Statement
 
@@ -77,10 +77,10 @@ Structural pins catch a lost rule; they do not show an agent follows it. The pro
 
 [Decision 0056](../decisions/0056-contract-first-tests.md) amends [0042](../decisions/0042-outcome-build-and-ship.md) items 1 and 5 for contracts only. This preserves [0044](../decisions/0044-fast-delivery.md) (checks once), [0015](../decisions/0015-tasks-and-domain-modeling.md) (one glossary, no bounded contexts), [0023](../decisions/0023-agent-first.md), and [0045](../decisions/0045-templates-pin-flow-skills.md).
 
-## Open decisions
+## Settled at acceptance
 
-1. **Home of the shared-language rule.** `domain-modeling` (as specified) versus `write-agents` Owners. Recommendation: `domain-modeling`, which already owns the glossary format.
-2. **Domain logic without a contract.** Whether a pure domain rule that no API or tool exposes yet (a pricing or eligibility function) is also test-first. As specified it is not: it gets a focused check in any order. Recommendation: keep it so until a fixture run shows the gap.
+1. **Home of the shared-language rule:** `domain-modeling`, which already owns the glossary format (not `write-agents` Owners).
+2. **Domain logic without a contract:** a pure domain rule that no API or tool exposes yet gets a focused check in any order, not test-first, until a fixture run shows the gap.
 
 ## Out of Scope
 

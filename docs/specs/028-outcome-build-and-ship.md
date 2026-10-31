@@ -1,6 +1,6 @@
 # 028: Outcome-first build and ship
 
-Status: implemented (2026-10-28). Issue: [#144](https://github.com/gaboesquivel/flow-skills/issues/144). Decision: [0042](../decisions/0042-outcome-build-and-ship.md) (Accepted). Amended by [0044](../decisions/0044-fast-delivery.md) (independent review only when escalated or asked; checks once at pull request time). The full three-condition (3×3) live comparison is retired by [0044](../decisions/0044-fast-delivery.md) and [spec 031](031-fast-delivery.md): its [record](../../tests/evals/records/2026-10-28-spec-028-comparison.md) stays partial, and real runs of the current skills measured against the [PRODUCT.md](../../PRODUCT.md#success) delivery metrics replace it.
+Status: implemented (2026-10-28). Issue: [#144](https://github.com/gaboesquivel/flow-skills/issues/144). Decision: [0042](../decisions/0042-outcome-build-and-ship.md) (Accepted). Amended by [0044](../decisions/0044-fast-delivery.md) (independent review only when escalated or asked; checks once at pull request time). Amended by [0056](../decisions/0056-contract-first-tests.md) (API routes and MCP tools are test-first; no UI tests by default). The full three-condition (3×3) live comparison is retired by [0044](../decisions/0044-fast-delivery.md) and [spec 031](031-fast-delivery.md): its [record](../../tests/evals/records/2026-10-28-spec-028-comparison.md) stays partial, and real runs of the current skills measured against the [PRODUCT.md](../../PRODUCT.md#success) delivery metrics replace it.
 
 ## Problem Statement
 

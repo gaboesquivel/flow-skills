@@ -1,6 +1,6 @@
 # 0056 — Contract-first tests, no UI tests by default
 
-Status: **Proposed** (2026-10-31). Amends [0042](0042-outcome-build-and-ship.md) items 1 and 5 (test order), for contracts only. Preserves [0023](0023-agent-first.md), [0044](0044-fast-delivery.md), and [0045](0045-templates-pin-flow-skills.md). Spec: [047](../specs/047-shared-language-test-first.md).
+Status: **Accepted** (2026-10-31). Amends [0042](0042-outcome-build-and-ship.md) items 1 and 5 (test order), for contracts only. Preserves [0023](0023-agent-first.md), [0044](0044-fast-delivery.md), and [0045](0045-templates-pin-flow-skills.md). Spec: [047](../specs/047-shared-language-test-first.md).
 
 ## Context
 
