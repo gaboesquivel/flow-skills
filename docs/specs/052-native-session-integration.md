@@ -1,6 +1,6 @@
 # 052 — Native session integration in Claude Code
 
-Status: accepted (2026-10-31)
+Status: implemented (2026-10-31)
 
 ## Problem Statement
 
@@ -43,7 +43,7 @@ Tighten existing rules; add no skill, command, registry, or ceremony. Portable s
 - **`docs/agent-compatibility.md`**: update the Claude Code Desktop row (plan-acceptance proposals, linked-session completion notes with a 400-character quote, merge-only-on-the-user's-word, PR binding and Auto-fix, native hand-off, `sync_with_base_branch`, sessions from a plain checkout starting off the delivery head), dated 2026-10-31, observed from tool guidance and not exercised.
 - **`docs/research/2026-10-31-native-sessions.md`**: one row for the same observation with its limit.
 - No decision record: each change applies [0054](../decisions/0054-native-capability-first-sessions.md) and [0052](../decisions/0052-git-first-coordination.md) as written. No direction change to spec 045 or 048: one delivery PR, one integration owner, and worker branches staying local all stand.
-- Net word budget for the two skill files: no growth; offset additions by trimming restatement in the same sections.
+- Net word budget for the two skill files: minimal growth, offset by trimming restatement in the same sections (built: +56 words across both).
 
 **Exposure:** Markdown guidance in the existing skill distribution; no deployed service, API, write path, or authentication change.
 
