@@ -1,6 +1,6 @@
 # 045 — Native, observable sessions
 
-Status: accepted (2026-10-31)
+Status: implemented (2026-10-31)
 
 ## Problem Statement
 
