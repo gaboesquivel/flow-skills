@@ -39,7 +39,7 @@ Choose the lightest record that does the job:
 | Issue | Only when someone asks for one; it links a spec rather than copying it |
 | Pull request | One coherent deliverable with its evidence, normally one per spec |
 
-A record's status and its location are separate facts: a draft merged to `main` is still a draft, and an accepted change on a branch has not shipped ([`write-agents` Context freshness](../skills/write-agents/SKILL.md#context-freshness)).
+A record's status and its location are separate facts ([`write-agents` Context freshness](../skills/write-agents/SKILL.md#context-freshness)).
 
 Progress and ownership are Git evidence: branches, worktrees, pull requests, and spec status. Keep no tracked session registry or shared progress log ([0052](decisions/0052-git-first-coordination.md)).
 

@@ -27,7 +27,7 @@ Asking to build authorizes these steps with no confirmation. It does not authori
 
 Outside a Git repository, offer `git init` and stop on a no.
 
-Before the first write, inspect sibling work as `write-agents` Sessions describes: name the base, this worktree and branch, the integration owner, and any overlapping or unknown work. Stop before writing paths that open work also changes when that work belongs to another owner or its owner is unknown: report the overlap and ask the user whether to contribute to that delivery, wait for it, or proceed on this branch. Overlap with this delivery's own task branches is integration, not a conflict.
+Before the first write, refresh context as `write-agents` Context freshness describes and inspect sibling work as its Sessions describes: name the base, this worktree and branch, the integration owner, and any overlapping or unknown work. Stop before writing paths that open work also changes when that work belongs to another owner or its owner is unknown: report the overlap, led by `tldr`'s Handoff digest, and ask the user whether to contribute to that delivery, wait for it, or proceed on this branch. Overlap with this delivery's own task branches is integration, not a conflict.
 
 Work on a branch that is not the default branch. Commit only this work: no credentials, local logs, or generated secrets, and never rewrite unrelated commits. In GitHub mode, push and open a ready pull request, or update the open one. Then Verify. Report the branch or pull request, the review and its verdicts, checks, liveness, limitations, and work in flight, led by `tldr`'s Handoff digest.
 
