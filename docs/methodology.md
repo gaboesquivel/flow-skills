@@ -46,6 +46,10 @@ Use progressive disclosure: short routing in adopter instruction files when the 
 
 Documentation should preserve intent, constraints, and information that is difficult to rediscover. Avoid exhaustive trees and descriptions that duplicate readily discoverable code. Shared documents must remain readable by humans.
 
+Keep a document's status apart from where it sits: a draft on `main` is still a draft, and an accepted change on a branch has not shipped. Sessions refresh only the owner sections and branch changes their work touches, and newer accepted Git state outranks a recovery note ([`write-agents` Context freshness](../skills/write-agents/SKILL.md#context-freshness)).
+
+At major handoffs, lead with a short digest of outcome, scope, verification, and the next action, and link the full spec or diff rather than pasting it ([`tldr` Handoff digest](../skills/tldr/SKILL.md#handoff-digest)).
+
 Assess documentation impact during implementation and review. Code establishes observed behavior; accepted documentation establishes intended behavior and constraints. When they diverge, identify which needs correction rather than silently treating either as justification to change the other.
 
 ## Documentation responsibilities

@@ -1,6 +1,6 @@
 # 044 — Fresh agent context and visual human experience
 
-Status: **draft** (2026-10-31)  
+Status: **accepted** (2026-10-31)  
 Repository: `gaboesquivel/flow-skills`  
 Priority: **P2 — after coordination + scope policy**  
 Dependencies: specs 042 and 043's ownership, artifact and budget conventions.

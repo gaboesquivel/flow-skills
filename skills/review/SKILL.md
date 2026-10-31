@@ -40,4 +40,4 @@ For consequential changes, add proportional blast-radius checks when cheap tests
 
 ## Report
 
-Open spec reviews with the scenario verdicts, then findings. Note stale root docs as findings. Review is read-only unless fixes are requested.
+Open spec reviews with the scenario verdicts, then findings. Note stale root docs as findings, and label context by status and location (`write-agents` Context freshness). Review is read-only unless fixes are requested.

@@ -110,7 +110,7 @@ A stub for a later bet: the problem and the assumption it tests, written as a sp
 
 ## Human summary
 
-A visual presentation for a person. Prefer generative UI (GenUI) when the host actually provides it; otherwise Mermaid, tables, and a short statement. The [`tldr`](skills/tldr/SKILL.md) skill owns this, including session recaps and "show me". [`write-humans`](skills/write-humans/SKILL.md) drafts prose. There is no separate `human` skill; other skills, such as `align`, may lead their own reports with a visual. [Decision 0008](docs/decisions/0008-leading-words-and-visual-summaries.md).
+A visual presentation for a person. Prefer generative UI (GenUI) when the host actually provides it; otherwise Mermaid, tables, and a short statement. The [`tldr`](skills/tldr/SKILL.md) skill owns this, including session recaps and "show me". [`write-humans`](skills/write-humans/SKILL.md) drafts prose. There is no separate `human` skill; other skills, such as `align`, may lead their own reports with a visual, and delivery handoffs lead with `tldr`'s Handoff digest. [Decision 0008](docs/decisions/0008-leading-words-and-visual-summaries.md).
 
 ## Leading word
 

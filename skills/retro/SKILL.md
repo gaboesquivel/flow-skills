@@ -34,7 +34,7 @@ The user asked for a retrospective on how the agent environment could improve fu
 
    For each important candidate, state: evidence the mistake occurred, root cause, why the chosen prevention level fits, how to verify the correction, and whether an existing instruction is now redundant. A single occurrence is a candidate only; do not turn it into a permanent rule without recurrence or explicit user direction.
 
-5. Present candidates by severity. Implementation of recommendations requires explicit user authorization. This retrospective does not authorize file edits by itself.
+5. Present candidates by severity, led by `tldr`'s Handoff digest. Implementation of recommendations requires explicit user authorization. This retrospective does not authorize file edits by itself.
 
 ## Reference
 

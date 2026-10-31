@@ -49,7 +49,7 @@ Research is saved only when `competitors` ran; it owns that rule. Other choices 
 
 ## Spec-ready
 
-Report spec-ready when the brief or diff is confirmed and committed (or waiting for the bootstrap commit), and, for a new product, the riskiest assumption and kill criterion are named; a clearer outcome is spec-ready once its sharpened intent is stated. Otherwise say what is missing. Close with known facts, open assumptions, how many marked guesses were accepted unchanged, and the next step: "build it" builds the brief directly; for a tracked bet, `to-spec`, then `to-tasks` or "build it". Wait for the user.
+Report spec-ready when the brief or diff is confirmed and committed (or waiting for the bootstrap commit), and, for a new product, the riskiest assumption and kill criterion are named; a clearer outcome is spec-ready once its sharpened intent is stated. Otherwise say what is missing. Close with `tldr`'s Handoff digest: known facts, open assumptions, how many marked guesses were accepted unchanged, and the next step: "build it" builds the brief directly; for a tracked bet, `to-spec`, then `to-tasks` or "build it". Wait for the user.
 
 **New product specs.** Write specs only when the user asks ("spec it"). Write only spec 001 in full: the first bet, which tests the riskiest assumption, ships the main metric's instrumentation, and defines its capability contract-first as `to-spec` describes, including an MCP tool when the brief names agent users. Later bets become `candidate` stubs with `to-spec`, fleshed out only after spec 001 ships. In a new product, the brief, research, and any specs ship with the first build.
 

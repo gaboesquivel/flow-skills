@@ -38,7 +38,7 @@ A draft without an acceptance scenario, or without an **Exposure** line when it 
 
 2. Sketch test seams at the highest practical level. Prefer existing seams.
 
-3. Write the spec with status `draft` and the date, and any decision record it needs as **Proposed**, and commit them on the work's branch. "Spec it" publishes nothing. Do not show the text inline or ask before writing; report links to the files, open assumptions, and the next step: "build it", "accept the spec", or "share the draft".
+3. Write the spec with status `draft` and the date, and any decision record it needs as **Proposed**, and commit them on the work's branch. "Spec it" publishes nothing. Do not show the text inline or ask before writing; report, as `tldr`'s Handoff digest, links to the files, open assumptions, and the next step: "build it", "accept the spec", or "share the draft".
 
 <spec-template>
 

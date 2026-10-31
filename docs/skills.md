@@ -83,7 +83,7 @@ Code simplification, security audits, and performance work belong to host tools 
 | Skill | Say | When to use |
 | --- | --- | --- |
 | [write-humans](../skills/write-humans/SKILL.md) | "write this up" | Draft or edit clear prose for human readers. |
-| [write-agents](../skills/write-agents/SKILL.md) | "write agent instructions" | Draft or edit agent instructions so each fact has one home. Owns the shared Workers, Sessions, and Tools rules; Sessions covers independent sessions on one repository: own worktree, sibling inspection, one integration owner, unknowns reported ([0052](decisions/0052-git-first-coordination.md)). |
+| [write-agents](../skills/write-agents/SKILL.md) | "write agent instructions" | Draft or edit agent instructions so each fact has one home. Owns the shared Workers, Sessions, Context freshness, and Tools rules; Sessions covers independent sessions on one repository: own worktree, sibling inspection, one integration owner, unknowns reported ([0052](decisions/0052-git-first-coordination.md)). |
 
 ## Project start
 
@@ -95,7 +95,7 @@ Code simplification, security audits, and performance work belong to host tools 
 
 | Skill | Say | When to use |
 | --- | --- | --- |
-| [tldr](../skills/tldr/SKILL.md) | "tldr" | Visual human summary of named material, or a session recap and alignment check. Prose stays with `write-humans`. |
+| [tldr](../skills/tldr/SKILL.md) | "tldr" | Visual human summary of named material, or a session recap and alignment check. Owns the Handoff digest other skills lead their reports with, which needs no `tldr` run. Prose stays with `write-humans`. |
 | [board](../skills/board/SKILL.md) | "show the board" | Read-only kanban of specs by stage (Candidate, Specced, Ready, Building, Shipped), derived from spec files, checklists, branches, and merges in git; builds record nothing for it ([0044](decisions/0044-fast-delivery.md)). Shows Git evidence, never a live session roster. Opens a live local page, or a static snapshot with `--once`. |
 | [handoff](../skills/handoff/SKILL.md) | "hand off" | Compact the current conversation into a temporary handoff document so a fresh agent can continue. |
 
