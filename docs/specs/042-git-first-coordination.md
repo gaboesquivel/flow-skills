@@ -61,7 +61,7 @@ Existing accepted foundations: decisions 0029, 0037, 0042, 0044, 0048, 0050; `sk
 
 ## Decision and acceptance
 
-Decision: [0052](../decisions/0052-git-first-coordination.md), accepted with this implementation. Accept it with implementation, update only the affected historical status lines/index entries, and align current owning docs. Preserve 0048's build/ship semantics.
+Decision: [0052](../decisions/0052-git-first-coordination.md), accepted with this implementation, which updated only the affected historical status lines and index entries and aligned current owning docs. Preserve 0048's build/ship semantics.
 
 ## Deliverables and proof
 
