@@ -4,6 +4,7 @@ on:
   push:
     tags: ['v*']
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
   contents: read
@@ -15,6 +16,8 @@ concurrency:
 
 jobs:
   validate:
+    # Drafts run nothing; ready_for_review and later pushes run it (spec 048).
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     # One cell on pull requests; release tags run the OS x Node matrix and the release tests.
     strategy:
       matrix:
