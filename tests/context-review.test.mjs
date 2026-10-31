@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { buildContextReviewPrompt, gateContextReview, isOutage } from '../scripts/run-context-review.mjs'
+import { buildContextReviewPrompt, ciRefusal, gateContextReview, isOutage } from '../scripts/run-context-review.mjs'
 
 test('missing verdict blocks context review', () => {
   const gate = gateContextReview({ verdict: undefined, findings: [] })
@@ -41,4 +41,14 @@ test('only network failures, timeouts, 408, 429, and 5xx count as an outage', ()
   assert.equal(isOutage(http(400)), false, 'a content filter is an answer')
   assert.equal(isOutage(http(401)), false, 'a bad key must not pass silently')
   assert.equal(isOutage(new SyntaxError('bad json')), false)
+})
+
+test('refuses to call a model in CI', () => {
+  assert.match(ciRefusal({ CI: 'true' }), /CI/)
+  assert.match(ciRefusal({ GITHUB_ACTIONS: 'true' }), /CI/)
+  assert.match(ciRefusal({ CI: '1' }), /CI/)
+  assert.equal(ciRefusal({}), null)
+  assert.equal(ciRefusal({ CI: 'false' }), null)
+  assert.equal(ciRefusal({ CI: '0' }), null)
+  assert.equal(ciRefusal({ CI: ' false ' }), null)
 })
