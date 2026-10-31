@@ -28,4 +28,3 @@ This extends the existing delivery contract to independent sessions while keepin
 ## Consequences
 
 Users can coordinate across hosts without a new service, but simultaneous discovery can still race and disconnected sessions may be invisible. Unresolved overlap must serialize. Dogfooding must update maintainer routing as well as portable skills; adopters must update installed versions explicitly.
-
