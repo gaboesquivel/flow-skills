@@ -45,4 +45,4 @@ When a skill's value is uncertain or a meaningful change to it is proposed, the 
 
 ## Records
 
-Live and manual runs: [records/](records/). Latest live run: [2026-10-29 parallel workflow](records/2026-10-29-parallel-workflow-live.md). Structural index: [scenario-status.md](scenario-status.md).
+Live and manual runs: [records/](records/). Latest live run: [2026-10-31 E43 comparison](records/2026-10-31-e43-live.md). Structural index: [scenario-status.md](scenario-status.md).
