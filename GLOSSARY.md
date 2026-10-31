@@ -70,11 +70,19 @@ A task's `Area:` line: every package or directory it changes, comma-separated wh
 
 ## Frontier
 
-The tasks of a spec's task set whose blockers have all integrated. `build` runs them in parallel by default, each in its own worktree or on disjoint files in the shared checkout. There are no waves. Replaces the wave of [decision 0025](docs/decisions/0025-wave-checkpoints.md); [decision 0029](docs/decisions/0029-spec-issues.md); amended by [decision 0042](docs/decisions/0042-outcome-build-and-ship.md) and [spec 028](docs/specs/028-outcome-build-and-ship.md).
+The tasks of a spec's task set whose blockers have all integrated. `build` runs them in parallel when it pays ([decision 0053](docs/decisions/0053-delivery-appetite-and-scope.md)), each in its own worktree or on disjoint files in the shared checkout. There are no waves. Replaces the wave of [decision 0025](docs/decisions/0025-wave-checkpoints.md); [decision 0029](docs/decisions/0029-spec-issues.md); amended by [decision 0042](docs/decisions/0042-outcome-build-and-ship.md) and [spec 028](docs/specs/028-outcome-build-and-ship.md).
 
 ## Work in flight
 
 Work started but not yet on the default branch: worktrees, task branches, and unfinished tasks. Flow loses none of it. Every worktree has its own branch, finished work reaches the work branch, unfinished tasks are reported rather than dropped, a branch or worktree is removed only when its commits are on the default branch or the user dropped the work, and every report lists what is left. [`build`](skills/build/SKILL.md#work-in-flight) owns the rule; [decision 0044](docs/decisions/0044-fast-delivery.md).
+
+## Delivery appetite
+
+How much time (and, when material, model, evaluation, or infrastructure cost) an increment is worth, with its first verifiable slice and non-goals. A target and constraint, not a guarantee; recorded in the increment's spec (or, for work built without one, its brief or pull request), never in `PRODUCT.md`. [`to-spec`](skills/to-spec/SKILL.md) holds the Appetite section; [decision 0053](docs/decisions/0053-delivery-appetite-and-scope.md).
+
+## Scope trade-off
+
+The response to new scope that changes an accepted boundary, whether the user or an agent proposed it: defer, replace, reject, or expand the appetite, naming what changes. Blockers to correctness, security, or required checks are not scope. [`build`](skills/build/SKILL.md#scope-guard) owns the rule.
 
 ## Integration owner
 
@@ -98,7 +106,7 @@ Former name for [liveness](#liveness) after shipping.
 
 ## Candidate spec
 
-A stub for a later bet: the problem and the assumption it tests, written as a spec file with status `candidate` in both delivery modes. Fleshed out only when its turn comes, after the bet it depends on ships; `to-spec` then completes the same file. Decisions [0022](docs/decisions/0022-start-runs-explore.md), [0026](docs/decisions/0026-process-depth.md), and [0044](docs/decisions/0044-fast-delivery.md).
+A stub for a later bet worth triaging: the problem and the assumption it tests, written as a spec file with status `candidate` in both delivery modes. Fleshed out only when its turn comes, after the bet it depends on ships; `to-spec` then completes the same file. Decisions [0022](docs/decisions/0022-start-runs-explore.md), [0026](docs/decisions/0026-process-depth.md), and [0044](docs/decisions/0044-fast-delivery.md).
 
 ## Human summary
 

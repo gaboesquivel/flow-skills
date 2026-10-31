@@ -33,7 +33,7 @@ Run `build` unless the branch is verified: the review the size guard picked cove
 
 ## Merge
 
-**Gate.** Land automatically when preflight passed, checks are green, no findings block, and protection is satisfied. A required check that is pending or failing stops the landing, however close the work is: name each required check and its state. Never approve your own pull request and never bypass protection (for example `gh pr merge --admin`). When protection requires a human approval, stop.
+**Gate.** Land automatically when preflight passed, checks are green, no findings block, and protection is satisfied. A required check that is pending or failing stops the landing, however close the work or the deadline is: name each required check and its state. Never approve your own pull request and never bypass protection (for example `gh pr merge --admin`). When protection requires a human approval, stop.
 
 Update the branch from the default branch only when it conflicts or protection requires it to be up to date; the updated head needs its checks again, and its review only when resolving the conflict changed code. In local mode, when `main` moved since the branch was checked, run the suite once on the merge result before `main` moves; on red, fix as `build` describes.
 
@@ -59,4 +59,4 @@ Only the user's own request drops a spec ("drop the spec", naming it or with it 
 
 ## Output
 
-Stop on an unresolvable spec, a branch `build` could not verify, refused merge or push, or protection that cannot be met; never report shipped when a gate failed. Report delivery state, the verified head (checks and review), any `unresolved` scenario steps, landing result, liveness, and work in flight, including on a stop.
+Stop on an unresolvable spec, a branch `build` could not verify, refused merge or push, or protection that cannot be met; never report shipped when a gate failed. Report delivery state, shipped scope against accepted scope (deferred items, and any accepted behavior not delivered; `build`'s Scope guard), the verified head (checks and review), any `unresolved` scenario steps, landing result, liveness, and work in flight, including on a stop.

@@ -10,6 +10,12 @@ When commercial context affects the decision, use the known customer, buyer, bus
 
 Record bounded increments in `docs/specs/` when durable scope helps; record significant rationale in `docs/decisions/`. Small clear changes may need only conversation and code.
 
+## Defend the delivery boundary
+
+For a new product or substantial feature, settle the delivery appetite early: a time target (and a cost limit when model, evaluation, or infrastructure spend is material), the first verifiable increment, and non-goals. Recover what is known and ask only for what is missing, with a suggested default. A small, understood change gets none of this.
+
+During delivery, new scope gets a [scope trade-off](../GLOSSARY.md#scope-trade-off) whether the user or an agent proposed it: defer, replace, reject, or expand the appetite, naming what changes. Review flags both unrequested additions and accepted behavior that went missing. Blockers to correctness, security, or required checks are never traded away to meet a target. Parallel work pays only when it saves more elapsed time than it costs to brief, start, and integrate. Elapsed time and cost are reported when observed and marked "not measured" otherwise. [`explore`](../skills/explore/SKILL.md#proportion) and [`to-spec`](../skills/to-spec/SKILL.md) capture the appetite, [`build`'s Scope guard](../skills/build/SKILL.md#scope-guard) defends it, and [`write-agents` Workers](../skills/write-agents/SKILL.md#workers) owns when parallel work pays ([decision 0053](decisions/0053-delivery-appetite-and-scope.md)).
+
 ## Observe and revisit
 
 Use One Metric That Matters (OMTM) when a measurable focus can guide the current product decision. Explain the uncertainty it addresses, define the population, calculation, time window, and data source, and establish a baseline or mark it unknown. Set a justified target and review point with the intended decision response; retain supporting evidence and guardrails. Early discovery may need qualitative evidence before a useful metric can be selected. [`measure`](../skills/measure/SKILL.md) evaluates evidence against these definitions and names what blocks a conclusion.

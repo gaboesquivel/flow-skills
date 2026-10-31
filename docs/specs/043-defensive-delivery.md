@@ -1,6 +1,6 @@
 # 043 — Defensive, budget-aware delivery discipline
 
-Status: **draft** (2026-10-31)  
+Status: **implemented** (2026-10-31). Decision: [0053](../decisions/0053-delivery-appetite-and-scope.md) (Accepted).  
 Repository: `gaboesquivel/flow-skills`  
 Priority: **P1 — after coordination contract**  
 Dependency: spec 042 conventions; can be drafted in parallel but integrate after coordination.
@@ -63,12 +63,12 @@ Use Signal's Oct 30 log/PR history, including rapid first API/MCP slice followed
 
 ## Tasks
 
-- [ ] 01: Capture consequential delivery constraints with minimal questions. **Area:** skills, docs. **Blocked by:** landed 042. Proof: substantial work records appetite, proof and non-goals; a small fix needs no interview.
-- [ ] 02: Defend scope during delivery and review, including agent-invented additions and omitted requirements. **Area:** skills, docs. **Blocked by:** 01. Proof: the dashboard/refactor/blocker scenarios receive distinct, proportionate responses.
-- [ ] 03: Align artifact granularity and economical parallelism. **Area:** skills, docs, repository root. **Blocked by:** 02. Proof: tasks need no extra issues/PRs/waves, and current docs agree with the accepted policy.
+- [x] 01: Capture consequential delivery constraints with minimal questions. **Area:** skills, docs. **Blocked by:** landed 042. Proof: substantial work records appetite, proof and non-goals; a small fix needs no interview.
+- [x] 02: Defend scope during delivery and review, including agent-invented additions and omitted requirements. **Area:** skills, docs. **Blocked by:** 01. Proof: the dashboard/refactor/blocker scenarios receive distinct, proportionate responses.
+- [x] 03: Align artifact granularity and economical parallelism. **Area:** skills, docs, repository root. **Blocked by:** 02. Proof: tasks need no extra issues/PRs/waves, and current docs agree with the accepted policy.
 
 ## Decision and delivery
 
-Proposed decision: [0053](../decisions/0053-delivery-appetite-and-scope.md). Accept with this implementation, not when publishing the planning documents. Update affected historical pointers and current owner docs together. Preserve 0048's final-head review/check and build/ship contract.
+Decision: [0053](../decisions/0053-delivery-appetite-and-scope.md), accepted with this implementation together with its historical pointers and current owner docs. Preserve 0048's final-head review/check and build/ship contract.
 
-One bounded PR after 042 lands. Walk through the acceptance scenarios; add executable regression tests only where a real mechanism exists. Follow repository check policy. No mandatory baseline experiment, new eval harness or ecosystem rollout. Report unmeasured cost and elapsed time honestly. The Signal retrospective is reported evidence, not a fresh independent log/PR audit; see 042's evidence boundary.
+One bounded PR after 042 lands. Walk through the acceptance scenarios ([recorded walk](../../tests/smoke/2026-10-31-scope-guard-walk.md)); add executable regression tests only where a real mechanism exists. Follow repository check policy. No mandatory baseline experiment, new eval harness or ecosystem rollout. Report unmeasured cost and elapsed time honestly. The Signal retrospective is reported evidence, not a fresh independent log/PR audit; see 042's evidence boundary.

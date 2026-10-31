@@ -28,6 +28,17 @@ Default paths when a project has no existing convention:
 - `docs/specs/NNN-short-name.md` — bounded work and intent
 - `docs/decisions/NNN-short-name.md` — significant choices and rationale
 
+Choose the lightest record that does the job:
+
+| Record | Use when |
+|---|---|
+| Conversation and code | A small, understood change |
+| Spec | A bounded, verifiable bet whose scope is worth keeping ([`to-spec`](../skills/to-spec/SKILL.md) has the split and decision tests) |
+| Task | Delegation, dependencies, independent verification, or recovery need it ([`to-tasks`](../skills/to-tasks/SKILL.md)) |
+| Decision record | A cross-cutting or costly-to-reverse choice among real alternatives |
+| Issue | Only when someone asks for one; it links a spec rather than copying it |
+| Pull request | One coherent deliverable with its evidence, normally one per spec |
+
 Progress and ownership are Git evidence: branches, worktrees, pull requests, and spec status. Keep no tracked session registry or shared progress log ([0052](decisions/0052-git-first-coordination.md)).
 
 Keep the current product, design, architecture, and shared language in that project's root `PRODUCT.md`, `DESIGN.md`, `ARCHITECTURE.md`, and `GLOSSARY.md`. Use the [`flow`](../skills/flow/SKILL.md) skill or manual edits to align them after meaningful changes. Do not copy this repository's Flow identity into an adopter `PRODUCT.md`. Do not require PRD, PDR, or ADR parallel trees. Do not treat `flow` as a template initializer. Optional template initialization may use the [`start`](../skills/start/SKILL.md) skill ([0010](decisions/0010-optional-start-skill.md)) or GitHub **Use this template** on flow-next or flow-mono.
