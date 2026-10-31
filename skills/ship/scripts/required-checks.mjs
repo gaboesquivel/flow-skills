@@ -9,14 +9,21 @@ import { fileURLToPath } from 'node:url'
 
 export class ReadError extends Error {}
 
-const read = (api, path, { missingIs } = {}) => {
-  try { return api(path) } catch (e) {
-    if (missingIs !== undefined && /\b404\b/u.test(e.message)) return missingIs
-    throw new ReadError(`cannot read ${path}: ${e.message}`)
-  }
+const PAGE = 100
+
+const read = (api, path) => {
+  try { return api(path) } catch (e) { throw new ReadError(`cannot read ${path}: ${e.message}`) }
 }
 
-// A check run's state: success only when completed with conclusion success.
+// One page of a counted REST list; fail closed rather than judge on a partial list.
+const all = (api, path, key) => {
+  const body = read(api, `${path}${path.includes('?') ? '&' : '?'}per_page=${PAGE}`)
+  const items = body[key] ?? []
+  if ((body.total_count ?? items.length) > items.length) throw new ReadError(`more than ${items.length} entries at ${path}`)
+  return items
+}
+
+// A check run's or workflow run's state: success only when completed with conclusion success.
 const runState = (r) => (r.status !== 'completed' ? 'pending' : r.conclusion ?? 'pending')
 // A commit status's state, in check-run terms.
 const statusState = (s) => (s.state === 'error' ? 'failure' : s.state)
@@ -24,36 +31,49 @@ const statusState = (s) => (s.state === 'error' ? 'failure' : s.state)
 export function evaluate({ api, repo, number }) {
   const pr = read(api, `repos/${repo}/pulls/${number}`)
   const head = pr.head.sha
-  const branch = pr.base.ref
+  const branch = encodeURIComponent(pr.base.ref)
   const reasons = []
 
-  const rules = read(api, `repos/${repo}/rules/branches/${encodeURIComponent(branch)}`, { missingIs: [] })
-  const fromRules = rules.filter((r) => r.type === 'required_status_checks').flatMap((r) => r.parameters.required_status_checks.map((c) => c.context))
-  const classic = read(api, `repos/${repo}/branches/${encodeURIComponent(branch)}/protection/required_status_checks`, { missingIs: null })
-  const fromClassic = classic ? [...(classic.contexts ?? []), ...(classic.checks ?? []).map((c) => c.context)] : []
+  // Required checks from active rulesets and classic protection; both endpoints need only read access.
+  const rules = read(api, `repos/${repo}/rules/branches/${branch}`)
+  const fromRules = rules.filter((r) => r.type === 'required_status_checks').flatMap((r) => r.parameters.required_status_checks)
+  const classic = read(api, `repos/${repo}/branches/${branch}`).protection?.required_status_checks ?? {}
+  const fromClassic = [...(classic.checks ?? []), ...(classic.contexts ?? []).map((context) => ({ context }))]
 
-  // Latest result per context on this head: the highest check-run id wins; commit statuses are already latest per context.
-  const latest = new Map()
-  const runs = read(api, `repos/${repo}/commits/${head}/check-runs?per_page=100`).check_runs ?? []
-  for (const r of runs.filter((r) => r.head_sha === head).sort((a, b) => a.id - b.id)) latest.set(r.name, runState(r))
-  for (const s of read(api, `repos/${repo}/commits/${head}/status`).statuses ?? []) if (!latest.has(s.context)) latest.set(s.context, statusState(s))
-
-  let required = [...new Set([...fromRules, ...fromClassic])]
-  const source = [fromRules.length && 'rulesets', fromClassic.length && 'protection'].filter(Boolean).join('+') || 'none'
-  if (source === 'none') {
-    // A job skipped on a draft can report under another name (a matrix is not expanded), so its stale result is not a requirement.
-    required = [...latest.keys()].filter((context) => latest.get(context) !== 'skipped')
-    reasons.push(`no active protection on ${branch}: every check that ran on the head is treated as required`)
-    if (!required.length) reasons.push('no checks reported on the head')
+  const runs = all(api, `repos/${repo}/commits/${head}/check-runs?filter=all`, 'check_runs').filter((r) => r.head_sha === head)
+  const statuses = read(api, `repos/${repo}/commits/${head}/statuses?per_page=${PAGE}`)
+  // Latest result for a context on this head, from the app the rule names when it names one: highest check-run id, else newest status.
+  const resultFor = ({ context, integration_id: app }) => {
+    const run = runs.filter((r) => r.name === context && (app == null || r.app?.id === app)).sort((a, b) => b.id - a.id)[0]
+    if (run) return runState(run)
+    const status = statuses.find((s) => s.context === context)
+    return status ? statusState(status) : 'missing'
   }
 
-  const checks = required.map((context) => ({ context, state: latest.get(context) ?? 'missing' }))
+  const byContext = new Map()
+  for (const c of [...fromRules, ...fromClassic]) if (!byContext.has(c.context) || c.integration_id != null) byContext.set(c.context, c)
+  let checks = [...byContext.values()].map((c) => ({ context: c.context, state: resultFor(c) }))
+  const source = [fromRules.length && 'rulesets', fromClassic.length && 'protection'].filter(Boolean).join('+') || 'none'
+
+  if (source === 'none') {
+    // Without protection, judge each workflow by its latest run on the head (a skipped or failed-to-start run never passes,
+    // and a skipped matrix job's renamed check cannot hide it), plus every check from other apps and every status.
+    reasons.push(`no active protection on ${pr.base.ref}: every workflow and check on the head is treated as required`)
+    const latestByWorkflow = new Map()
+    for (const w of all(api, `repos/${repo}/actions/runs?head_sha=${head}`, 'workflow_runs').sort((a, b) => a.id - b.id)) latestByWorkflow.set(w.path ?? w.name, w)
+    checks = [...latestByWorkflow.values()].map((w) => ({ context: `workflow ${w.name}`, state: runState(w) }))
+    const others = [...new Set(runs.filter((r) => r.app?.slug !== 'github-actions').map((r) => r.name))]
+    checks.push(...others.map((context) => ({ context, state: resultFor({ context }) })))
+    checks.push(...[...new Set(statuses.map((s) => s.context))].map((context) => ({ context, state: resultFor({ context }) })))
+    if (!checks.length) reasons.push('no workflow or check reported on the head')
+  }
+
   if (pr.state !== 'open') reasons.push(`pull request #${number} is ${pr.state}`)
   if (pr.draft) reasons.push(`pull request #${number} is a draft; mark it ready so its checks run`)
   for (const c of checks) if (c.state !== 'success') reasons.push(`${c.context} is ${c.state} on ${head.slice(0, 7)}`)
 
   const ready = pr.state === 'open' && !pr.draft && checks.length > 0 && checks.every((c) => c.state === 'success')
-  return { ready, number, head, draft: Boolean(pr.draft), source, required, checks, reasons }
+  return { ready, number, head, draft: Boolean(pr.draft), source, checks, reasons }
 }
 
 function main(argv) {

@@ -35,17 +35,17 @@ Work on a branch that is not the default branch. Commit only this work: no crede
 
 One home for the delivery lifecycle; `ship`, `to-spec`, and `write-agents` link here.
 
-- **Branch.** A spec delivers on `spec/<number>-<slug>`, its file's number and slug. Unspecced work uses a short descriptive branch. One remote branch and one pull request per delivery; worker branches stay local (`write-agents` Sessions).
+- **Branch.** A spec delivers on the branch already open for it, else `spec/<number>-<slug>`, its file's number and slug. Unspecced work uses a short descriptive branch. One remote branch and one pull request per delivery; worker branches stay local (`write-agents` Sessions).
 - **Draft early.** After the first commit, reuse the open pull request for the branch or open one as a draft. It is the shared workspace: drafts run no CI and no automatic preview, so check focused work locally while it stays draft.
 - **Push safely.** Only the integration owner pushes to the delivery branch. Before each push, fetch and confirm the remote head is one it already contains; otherwise integrate the new commits first. Never force-push.
-- **Ready.** When implementation and its focused checks are complete and the review has no blocking findings, mark it ready (`gh pr ready`, or REST `PATCH pulls/{n}` with `draft: false`). That event runs the required checks; each later push runs them again.
+- **Ready.** When implementation and its focused checks are complete and the review has no blocking findings, mark it ready (`gh pr ready`; it is GraphQL-only, so where the host refuses GraphQL use its GitHub tools, else hand the user the one step "mark #N ready"). That event runs the required checks; each later push runs them again.
 - **Previews are explicit.** Branch deployments are off where the project follows this lifecycle; deploy a preview (for Vercel, `vercel deploy` from the branch) only when the user asks or a review step needs the running branch.
 
 ### Verify
 
-1. **Review.** Run the review the size guard picked on the head you will hand over. An `unmet` scenario step or a blocking finding is fixed on the branch, at most two fix rounds; re-review only what the fix touched. Try to resolve each `unresolved` step (run the test, read the preview); list the rest in the pull request body and the report. In GitHub mode, post the review on the pull request as a comment or COMMENT-type review, never an approval.
+1. **Review.** Run the review the size guard picked on the head you will hand over. An `unmet` scenario step or a blocking finding is fixed on the branch, at most two fix rounds; re-review only what the fix touched. Try to resolve each `unresolved` step (run the test, or check the running app); list the rest in the pull request body and the report. In GitHub mode, post the review on the pull request as a comment or COMMENT-type review, never an approval.
 2. **Checks.** Once, on the final head. **GitHub mode:** mark the pull request ready, then wait until `ship`'s Gate script reports the head ready; a pending or skipped check is never passing. **Local mode:** run the suite on the branch: the documented check commands from the instruction file's command table, else package scripts for test, lint, typecheck, and build; when there is none, say so and never claim checks passed. On red, fix and check the new head, at most two fix rounds.
-3. **Liveness** of the branch's head, as `ship`'s Liveness describes.
+3. **Liveness** of the branch's head, as `ship`'s Liveness describes; with branch deployments off and no preview requested, it is `pushed, no deployment reported`.
 
 Stop on blocking findings or red checks after the fix rounds; report the branch as not ready.
 
@@ -66,7 +66,7 @@ One home; `to-spec` and `review` link here. A testing policy stated in the proje
 
 - **Contracts are test-first.** When the change adds or changes a contract (an API route, an MCP tool, or the domain function behind them), write its focused check first, run only that check and see it fail, then implement until it passes. The check covers what a caller depends on: input, result, the errors an agent can act on, and permissions; one check per behavior, not per function.
 - **Other behavior** gets a focused check that fails without the change, written in any order. Internals behind a contract get no separate tests unless their logic is the risk.
-- **No UI tests by default.** Verify UI in the running preview. Add a UI or end-to-end test only when the user or spec asks, or when the same UI regression returns.
+- **No UI tests by default.** Verify UI in the running app: the local dev server, or a preview deployed on request. Add a UI or end-to-end test only when the user or spec asks, or when the same UI regression returns.
 - **Focused, then full once.** While working, including the first failing run, run only the focused check (its file or test name, with the project's one-file command), never the full suite; the full suite runs once, in Verify.
 - **Proportion.** Docs, configuration, copy, and prototypes get no new check; a small fix gets one focused check or `debug`'s reproduction.
 

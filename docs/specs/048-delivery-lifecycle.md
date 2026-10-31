@@ -44,7 +44,7 @@ One delivery branch and one draft pull request per spec are the shared workspace
   - Otherwise it opens a draft after the first commit.
   - Workers' local branches stay local.
 
-**Ready.** `build` marks the pull request ready once implementation, review, and focused checks are complete: `gh pr ready`, or REST `PATCH pulls/{n}` with `draft: false`. It then waits on the required checks of that head.
+**Ready.** `build` marks the pull request ready once implementation, review, and focused checks are complete: `gh pr ready` (GraphQL-only; where a host refuses GraphQL, its GitHub tools or a one-step hand-off to the user). It then waits on the required checks of that head.
 
 **Merge gate (deterministic).** `skills/ship/scripts/required-checks.mjs <owner/repo> <pr>` reads the pull request, the required check contexts, and the check runs and commit statuses for its head SHA, all through `gh api` REST.
 
