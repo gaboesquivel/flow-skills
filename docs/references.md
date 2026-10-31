@@ -176,6 +176,14 @@ User-selected references for the two planned writing skills; specific upstream r
 
 - [Native session capabilities](research/2026-10-31-native-sessions.md) — official Claude Code and Cursor documentation inspected 2026-10-31; candidate evidence for spec 045. Host execution, parent-child tree support and recovery remain unverified.
 
+## Code quality and review
+
+Candidate influences on [understandable change](principles.md#understandable-change); [assessment](research/2026-10-31-code-quality-talks.md), read 2026-10-31.
+
+- Max Kanat-Alexander — [talk transcript](https://ai.engineer/nyc/2026/talks/capital-one) and [essay](https://www.codesimplicity.com/post/does-code-quality-even-matter-anymore/) on understanding, compounding change risk, and rigor scaled to disposability. Argument without data.
+- Laurie Voss — [talk page](https://ai.engineer/talks/_mi3alkqy4s-death-code-review-what-data-actually-says) on review capacity, automated reviewers, and review manipulation. Most reported figures are untraced.
+- [METR — Many SWE-bench-passing PRs would not be merged](https://metr.org/notes/2026-03-10-many-swe-bench-passing-prs-would-not-be-merged-into-main/) — primary source for the mergeability gap; static, single-attempt review.
+
 ## Maintenance
 
 Add useful references here as they arise, with their purpose and a link to the relevant assessment. Record inspection dates, limitations, and any pinned revision in that assessment. Keep proposed influences distinct from accepted methodology; preserve source citations beside the claims they support.
