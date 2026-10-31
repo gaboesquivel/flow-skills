@@ -2,7 +2,6 @@ name: CI
 
 on:
   push:
-    branches: [main]
     tags: ['v*']
   pull_request:
 
@@ -16,7 +15,7 @@ concurrency:
 
 jobs:
   validate:
-    # One cell on pull requests and main; release tags run the OS x Node matrix and the release tests.
+    # One cell on pull requests; release tags run the OS x Node matrix and the release tests.
     strategy:
       matrix:
         os: ${{ fromJSON(startsWith(github.ref, 'refs/tags/') && '["ubuntu-latest", "macos-latest"]' || '["ubuntu-latest"]') }}
@@ -37,49 +36,3 @@ jobs:
       - run: pnpm test
       - if: startsWith(github.ref, 'refs/tags/')
         run: pnpm test:release
-
-  context-review:
-    # The reviewer and its contract come from the base commit; the pull request is only git data. A
-    # branch that wants another reviewer has to change this workflow, which shows in its diff.
-    # Off unless the repository variable CONTEXT_REVIEW is `on` (`gh variable set CONTEXT_REVIEW --body on`).
-    if: github.event_name == 'pull_request' && vars.CONTEXT_REVIEW == 'on'
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: read
-      issues: write
-      pull-requests: write
-    steps:
-      - name: Trusted reviewer (base)
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.base.sha }}
-          path: trusted
-          persist-credentials: false
-      - name: Pull request (data only)
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          path: pr
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: LLM context review
-        working-directory: pr
-        env:
-          FLOW_REVIEW_API_KEY: ${{ secrets.FLOW_REVIEW_API_KEY }}
-          FLOW_REVIEW_API_BASE: ${{ secrets.FLOW_REVIEW_API_BASE }}
-          FLOW_REVIEW_MODEL: ${{ secrets.FLOW_REVIEW_MODEL }}
-          FLOW_PR_TITLE: ${{ github.event.pull_request.title }}
-          FLOW_PR_BODY: ${{ github.event.pull_request.body }}
-          FLOW_PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          merge_base="$(git merge-base "$BASE_SHA" "$HEAD_SHA")"
-          node ../trusted/scripts/run-context-review.mjs --base "$merge_base" --head "$HEAD_SHA" --pr-number "$PR_NUMBER"

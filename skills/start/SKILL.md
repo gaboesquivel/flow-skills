@@ -67,7 +67,7 @@ Exit 0 means committed with a clean tree; otherwise `blockers` names what stoppe
 
 ## Verification
 
-Record each check as **passed**, **failed**, or **unavailable**. The template's CI and the deployment cover build and the running app; evals run only on demand.
+Record each check as **passed**, **failed**, or **unavailable**. The template's CI (one deterministic pass with no model calls) and the deployment cover build and the running app; evals run only on demand, and pre-commit keeps only the staged-secret guard.
 
 | Check | Command / action |
 | --- | --- |
