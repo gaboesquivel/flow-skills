@@ -36,7 +36,7 @@ Metadata and contract tests show the intended invocation split. They do not show
 
 "Set up Flow here" writes one Flow block between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->` in the instruction file Git tracks: `AGENTS.md` when tracked, otherwise `CLAUDE.md`, which then imports `@AGENTS.md` so Claude Code sees both ([decision 0020](decisions/0020-flow-mode.md); the [`flow`](../skills/flow/SKILL.md#flow-block) skill owns the layout). Every host that reads the file sees the phrases; this is the portable stand-in for a session-start hook. Re-running updates the block in place; deleting it opts out.
 
-Independent work runs in parallel when it pays, through subagents or parallel tool calls as the host allows; the rule lives in [`write-agents`](../skills/write-agents/SKILL.md#workers) ([decision 0053](decisions/0053-delivery-appetite-and-scope.md), amending [0044](decisions/0044-fast-delivery.md)). Hosts without workers run the same steps in sequence. The [delivery mode](../GLOSSARY.md#delivery-mode) is inferred, never asked; the block's `Delivery:` line or the request overrides it. The rule lives in [`build`](../skills/build/SKILL.md#delivery-mode). `build` ends with a reviewed, checked branch in both modes and [`ship`](../skills/ship/SKILL.md) lands it. Issues open only on request. [Liveness](../GLOSSARY.md#liveness) needs only Git, the host's deployment status, and one HTTP request; no browser tool.
+Independent work runs in parallel when it pays, through parallel tool calls, subagents, or native observable sessions as the host allows; the rule lives in [`write-agents`](../skills/write-agents/SKILL.md#workers) ([decision 0053](decisions/0053-delivery-appetite-and-scope.md), amending [0044](decisions/0044-fast-delivery.md); [decision 0054](decisions/0054-native-capability-first-sessions.md)). Hosts without workers run the same steps in sequence. The [delivery mode](../GLOSSARY.md#delivery-mode) is inferred, never asked; the block's `Delivery:` line or the request overrides it. The rule lives in [`build`](../skills/build/SKILL.md#delivery-mode). `build` ends with a reviewed, checked branch in both modes and [`ship`](../skills/ship/SKILL.md) lands it. Issues open only on request. [Liveness](../GLOSSARY.md#liveness) needs only Git, the host's deployment status, and one HTTP request; no browser tool.
 
 **Dogfooding in this repository.** `.claude/skills` is a symlink to `skills/`, so Claude Code sessions here load the working-tree skills; `pnpm validate` fails if the link breaks. Other hosts read the source tree directly or install it with the skills CLI.
 
@@ -69,6 +69,19 @@ Claude Code ships built-in skills that overlap with parts of the catalog. Flow o
 Flow retired `simplify`, `security`, and `performance` in favor of `/simplify`, `/security-review`, and host tooling ([decision 0019](decisions/0019-voice-first-invocation.md)). Flow avoids generic verbs: "review the code" reaches `/code-review`; "check it against the spec" reaches Flow `review`.
 
 Hosts offer no portable skill priority. To make your phrases reliable, you may copy the phrase table from [`flow-block.mjs`](../skills/flow/lib/flow-block.mjs) (`PHRASES`, the single source) into your own user-level instructions (for example `~/.claude/CLAUDE.md`), or opt the project into Flow mode so the block carries it. Flow never writes user-level files. The table maps phrases to skills; it does not chain them.
+
+## Native sessions
+
+`write-agents` prefers a native, observable session for a substantial vertical slice and falls back to subagents or sequential work ([decision 0054](decisions/0054-native-capability-first-sessions.md), [spec 045](specs/045-native-observable-sessions.md)). What each host exposes, as of 2026-10-31 ([research](research/2026-10-31-native-sessions.md)):
+
+| Host and surface | Exposed to the agent | Limits |
+| --- | --- | --- |
+| Claude Code Desktop | Start a session (fresh or forked, own worktree or shared), list sessions it started, message one by ID, hand its own task off. | The app's guidance sends pieces of one task to subagents unless the user asks for sessions; otherwise the agent proposes a session the user starts with one click. Desktop does not list every CLI or cloud session. A parent-child tree is not verified. |
+| Claude Code CLI | Resume by ID or name; `--fork-session`; `claude agents` monitors background sessions. | Agent-driven creation and UI linkage depend on the installed version. |
+| Cursor | CLI `/fork` and `/resume`. | No agent-callable session API, transcript access, or tree established; IDE agent surfaces not inspected. Work in sequence or subagents. |
+| Other hosts | — | Portable floor: isolated writers, honest limits, sequential fallback. |
+
+No host run has yet started, inspected, interrupted, and resumed a child session under these rules; the [spec's acceptance scenario](specs/045-native-observable-sessions.md#testing-decisions) remains open. Re-check the host's tools and version before relying on a row.
 
 ## Verification status
 

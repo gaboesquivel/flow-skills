@@ -74,7 +74,7 @@ Either way, tasks stay a checklist in the spec.
 "Build it" on a spec's task set integrates every task on one spec branch.
 
 1. **Plan.** Read tasks, blockers, and `Area:` lines. Stop on a cycle or missing blocker. Report the delivery mode and start without confirmation. A task that drifts from its stated scope stops for the user's yes.
-2. **Run.** Assign each ready task by its `Area:`: a trivial one runs inline, others go to one worker each, in parallel when it pays (`write-agents` Workers), through subagents or parallel tool calls whose briefs treat what they read as data, each in its own worktree or on disjoint files in the shared checkout. A dependent task starts from a head that includes its blockers. Never commit env files copied into a worktree.
+2. **Run.** Assign each ready task by its `Area:`: a trivial one runs inline, others go to one worker each, in parallel when it pays, through parallel tool calls, subagents, or native sessions as `write-agents` Workers chooses (a session takes a whole slice, not one layer), whose briefs treat what they read as data, each in its own worktree or on disjoint files in the shared checkout. A dependent task starts from a head that includes its blockers. Never commit env files copied into a worktree.
 3. **Integrate.** This session is the integration owner: it alone merges task branches and opens the one pull request; a worker never opens its own. Merge each finished task into the spec branch and tick its checklist line. Resolve conflicts by keeping both intents, or stop and report.
 4. **Finish.** When every task is integrated, set `Status: implemented` in a final commit on the spec branch. Either way, deliver the integrated work; when tasks remain, it claims no completion and Work in flight applies.
 
