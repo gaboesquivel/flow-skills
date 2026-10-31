@@ -53,7 +53,7 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [046-cloud-delivery.md](046-cloud-delivery.md) (accepted)
 - [047-shared-language-test-first.md](047-shared-language-test-first.md) (implemented)
 - [050-understandable-changes.md](050-understandable-changes.md) (accepted)
-- [051-code-quality-article.md](051-code-quality-article.md) (draft)
+- [051-code-quality-article.md](051-code-quality-article.md) (accepted)
 - [052-native-session-integration.md](052-native-session-integration.md) (implemented)
 - [053-native-session-adoption.md](053-native-session-adoption.md) (implemented)
 - [054-native-handoff.md](054-native-handoff.md) (implemented)

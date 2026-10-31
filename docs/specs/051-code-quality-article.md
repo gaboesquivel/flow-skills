@@ -1,6 +1,6 @@
 # 051 — First article: code quality when agents write the code
 
-Status: draft (2026-10-31). Was candidate (2026-10-31), split from [spec 050](050-understandable-changes.md), which has landed (#214).
+Status: accepted (2026-10-31). Was candidate (2026-10-31), split from [spec 050](050-understandable-changes.md), which has landed (#214).
 
 ## Problem Statement
 
