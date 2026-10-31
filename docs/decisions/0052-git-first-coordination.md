@@ -29,4 +29,3 @@ This extends the existing delivery contract to independent sessions while keepin
 
 Users can coordinate across hosts without a new service, but simultaneous discovery can still race and disconnected sessions may be invisible. Unresolved overlap must serialize. Dogfooding must update maintainer routing as well as portable skills; adopters must update installed versions explicitly.
 
-On acceptance with 042, update affected historical status lines/index entries and current owner docs in the same change; never rewrite historical decision bodies.
