@@ -945,7 +945,7 @@
         "build",
         "write-agents"
       ],
-      "behavior": "Native observable sessions take whole vertical slices, follow the host's guidance on starting them, leave a hand-started session's slice and worktree alone, resume only after checking ownership and current context, and integrate once",
+      "behavior": "Native observable sessions take whole vertical slices, follow the host's guidance on starting them, leave a hand-started session's slice and worktree alone, resume only after checking ownership and current context, report branch and head first, merge session branches only after one user yes, wait on checks without polling, and integrate once",
       "taskFile": "tests/evals/tasks/E41-task.md",
       "rubricFile": "tests/evals/rubrics/E41-rubric.md",
       "skillReferences": [
