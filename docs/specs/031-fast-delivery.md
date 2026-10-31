@@ -1,6 +1,6 @@
 # 031: Fast delivery
 
-Status: implemented (2026-10-29; amended 2026-10-29). Landed in [#158](https://github.com/gaboesquivel/flow-skills/pull/158). Issue: [#157](https://github.com/gaboesquivel/flow-skills/issues/157). Decision: [0044](../decisions/0044-fast-delivery.md) (Accepted). Amended by [spec 035](035-delivery-phrases.md) (build owns the CI wait and verifies the branch). Amended by [spec 042](042-git-first-coordination.md) (independent-session ownership and sibling inspection).
+Status: implemented (2026-10-29; amended 2026-10-29). Landed in [#158](https://github.com/gaboesquivel/flow-skills/pull/158). Issue: [#157](https://github.com/gaboesquivel/flow-skills/issues/157). Decision: [0044](../decisions/0044-fast-delivery.md) (Accepted). Amended by [spec 035](035-delivery-phrases.md) (build owns the CI wait and verifies the branch). Amended by [spec 042](042-git-first-coordination.md) (independent-session ownership and sibling inspection). Amended by [spec 043](043-defensive-delivery.md) (parallel when it pays).
 
 ## Goal
 

@@ -27,6 +27,7 @@ Read repository instructions and inspect Git status. Outside a Git repository, r
 Recover intent from the request, spec, tests, and decisions. Assess every axis the change can affect:
 
 - **Correctness:** intent match, regressions, failure paths, test coverage.
+- **Scope:** additions outside the accepted scope (unrelated refactors, dependencies, infrastructure, UI surfaces, test harnesses, new specs) and accepted behavior the change omits; both are findings (`build`'s Scope guard). Judge content, not a changed-file count.
 - **Readability and simplicity:** names, complexity, dead code.
 - **Architecture:** boundaries, duplication, conventions.
 - **Security:** trust boundaries, secrets, permissions.

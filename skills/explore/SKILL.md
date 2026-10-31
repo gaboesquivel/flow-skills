@@ -23,7 +23,7 @@ On the yes, changing an Accepted decision gets a new decision record with status
 Match the request; never ask for a depth.
 
 - **Fix or small change:** no questions and no writes beyond the direction-change gate; hand back to the requested work.
-- **Feature:** clear intent, the journeys it adds or changes (one line each), the agent lens (agent users and their journey, or "no agent users"), and the metric it should move, if any.
+- **Feature:** clear intent, the journeys it adds or changes (one line each), the agent lens (agent users and their journey, or "no agent users"), and the metric it should move, if any. Also the delivery constraint: the appetite (a time target, not a guarantee), the first verifiable increment, non-goals, and a model, evaluation, or infrastructure cost limit when one is material. Recover these first; ask only the one or two that are missing and consequential, each with a suggested default. They belong to the increment (`to-spec`'s Appetite), never to `PRODUCT.md`.
 - **New product:** the feature's items plus the riskiest assumption, a kill criterion, one main metric ("unknown, measure first" is acceptable) plus any supporting metrics the user names, alternatives including the status quo, and one pre-mortem (assume it failed six months from now; list the likeliest reasons).
 
 **Metrics.** Keep existing definitions. Tie each metric to the core journey outcome it observes, for human and agent users. Define a new or changed metric by what counts, population, calculation, window, likely source, baseline (or "unknown"), and target; a target without evidence is a hypothesis. Say whether collection exists or is proposed, and when the source is unknown, name the smallest step to find it. Early discovery may use qualitative evidence.

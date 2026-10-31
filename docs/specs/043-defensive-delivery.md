@@ -1,6 +1,6 @@
 # 043 — Defensive, budget-aware delivery discipline
 
-Status: **draft** (2026-10-31)  
+Status: **accepted** (2026-10-31)  
 Repository: `gaboesquivel/flow-skills`  
 Priority: **P1 — after coordination contract**  
 Dependency: spec 042 conventions; can be drafted in parallel but integrate after coordination.

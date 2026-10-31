@@ -20,6 +20,6 @@ Watch for answers that describe what a good answer sounds like rather than what 
 
 Stop asking when you can predict the user's reaction to the next three questions you would ask. If several rounds pass without confidence rising, say so and suggest stepping back rather than grinding on.
 
-Restate intent in the user's words, one line each: outcome, user, why now, success, constraint, out of scope. Always include out of scope. Note how many of your guesses were accepted unchanged. Ask for confirmation. "Sounds good", "sure", or silence are not a yes; ask what they would refine. Fold corrections in and restate until the user gives an explicit yes.
+Restate intent in the user's words, one line each: outcome, user, why now, success, constraint (for substantial work, the delivery appetite and first verifiable increment), out of scope. Always include out of scope. Note how many of your guesses were accepted unchanged. Ask for confirmation. "Sounds good", "sure", or silence are not a yes; ask what they would refine. Fold corrections in and restate until the user gives an explicit yes.
 
 On an explicit yes, return the confirmed statement of intent, offer sensible next steps (for example `grill`, `to-spec`, or saving the intent when the user wants it), and end the turn. Do not save, plan, or start downstream work in the same turn. A confirmed intent does not authorize implementation.

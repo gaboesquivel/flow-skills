@@ -1,6 +1,6 @@
 # 0031 — Fan out by default
 
-Status: **Accepted** (2026-10-28). Amends [0025](0025-wave-checkpoints.md) and [0029](0029-spec-issues.md) (one review worker per spec becomes one worker per axis plus a verifier). Spec: [019](../specs/019-delivery-choice.md). Amended by [0042](0042-outcome-build-and-ship.md) (parallel workers and one review worker per axis do not bind `build`, `ship`, or the review they run). Amended by [0043](0043-workers-when-they-pay.md) (item 1: workers only where they pay). Amended by [0044](0044-fast-delivery.md) (independent work runs in parallel by default again; the agent chooses how).
+Status: **Accepted** (2026-10-28). Amends [0025](0025-wave-checkpoints.md) and [0029](0029-spec-issues.md) (one review worker per spec becomes one worker per axis plus a verifier). Spec: [019](../specs/019-delivery-choice.md). Amended by [0042](0042-outcome-build-and-ship.md) (parallel workers and one review worker per axis do not bind `build`, `ship`, or the review they run). Amended by [0043](0043-workers-when-they-pay.md) (item 1: workers only where they pay). Amended by [0044](0044-fast-delivery.md) (independent work runs in parallel by default again; the agent chooses how). Amended by [0053](0053-delivery-appetite-and-scope.md) (parallel when it pays, not by default).
 
 ## Context
 

@@ -1,6 +1,6 @@
 # 0053 — Delivery appetite and scope protection
 
-Status: **Proposed** (2026-10-31). Spec: [043](../specs/043-defensive-delivery.md). Proposes amending [0044](0044-fast-delivery.md), amendment item 4 (parallel-by-default scheduling), which amended [0043](0043-workers-when-they-pay.md) and [0031](0031-fan-out-by-default.md). Preserves [0048](0048-delivery-phrases-are-approvals.md), protection requirements and issues-on-request.
+Status: **Accepted** (2026-10-31). Spec: [043](../specs/043-defensive-delivery.md). Amends [0044](0044-fast-delivery.md), amendment item 4 (parallel-by-default scheduling), which amended [0043](0043-workers-when-they-pay.md) and [0031](0031-fan-out-by-default.md). Preserves [0048](0048-delivery-phrases-are-approvals.md), protection requirements and issues-on-request.
 
 ## Context
 
@@ -30,4 +30,4 @@ Delivery speed depends on selecting a tractable outcome and limiting coordinatio
 
 Agents must challenge consequential scope expansion and report incomplete work candidly. Small fixes retain a direct path. Budget telemetry may be unavailable and must remain unknown rather than fabricated. Human judgment is still needed for meaningful trade-offs.
 
-Publishing this record does not accept it. Accept with 043, update affected historical status lines/index entries and current owner docs together, and leave other policies unchanged.
+Accepted with 043: update affected historical status lines/index entries and current owner docs together, and leave other policies unchanged.

@@ -44,8 +44,9 @@ Reduce the time and effort between human intent and verified product value. Proc
 | **Idea → prod** (main) | First prompt of the session where the work begins | Live: production deploy answers (apps), or merged to `main` (flow-skills) | Small change < 15 min; feature < 2 h |
 | Time to start | First prompt to `start` | First green deploy | < 5 min; flow-next and flow-mono ship Vercel-ready so `start` deploys with no extra setup |
 | Time to close PR | First commit on the branch | Merge | Median < 10 min (baseline 7.4 min, p90 60 min) |
+| Delivery within appetite | Increment accepted with an appetite | Shipped | Most increments ship within appetite with accepted scope intact; not yet measured ([decision 0053](docs/decisions/0053-delivery-appetite-and-scope.md)) |
 
-Diagnostics explain where the time goes: user turns and confirmations, local check runs, CI waits and failures, rework, skills invoked, cost, agent workers, and skill words loaded. What the logs cannot show is unknown, never zero ([spec 041](docs/specs/041-skill-evaluation.md)).
+Diagnostics explain where the time goes: scope added mid-flight, user turns and confirmations, local check runs, CI waits and failures, rework, skills invoked, cost, agent workers, and skill words loaded. What the logs cannot show is unknown, never zero ([spec 041](docs/specs/041-skill-evaluation.md)).
 
 Measured only on the dogfood repositories (flow-skills, flow-next, flow-mono) by a maintainer script that joins host session logs, git, GitHub, and deployment data. Nothing ships to adopters.
 

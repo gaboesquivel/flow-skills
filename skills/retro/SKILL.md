@@ -16,6 +16,7 @@ The user asked for a retrospective on how the agent environment could improve fu
 
 3. Look for improvement candidates:
 
+- **Delivery:** intent against what shipped (accepted, shipped, deferred, silently dropped), whether it shipped within its appetite, and cost per shipped change, each with its evidence quality; "not measured" when the evidence cannot show it. Scope added mid-flight and coordination overhead are candidate causes, not measured ones.
 - **Navigation:** difficulty finding files or hidden dependencies; whether a short pointer document would help.
 - **Automated checks:** lint, typecheck, tests, or CI the repo already defines but does not run; missing guardrails when mistakes were preventable.
 - **Coding standards:** recurring violations that deserve a mechanical check versus judgment-only guidance in a standards document.
