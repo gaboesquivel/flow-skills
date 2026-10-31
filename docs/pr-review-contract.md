@@ -64,12 +64,12 @@ Configure in the GitHub repository (not in the npm skills package):
 | `FLOW_REVIEW_API_BASE` | Optional base URL (default: `https://api.openai.com/v1`) |
 | `FLOW_REVIEW_MODEL` | Model id (default: `gpt-4o-mini` if unset) |
 
-The `context-review` workflow job runs on every pull request. When `FLOW_REVIEW_API_KEY` is present on same-repository pull requests, it calls the API with the PR title, body, and labels. Fork pull requests never receive repository secrets; the job skips the API call and passes.
+The `context-review` workflow job runs on pull requests only when the repository variable `CONTEXT_REVIEW` is `on` (`gh variable set CONTEXT_REVIEW --body on`); it is off by default. When `FLOW_REVIEW_API_KEY` is present on same-repository pull requests, it calls the API with the PR title, body, and labels. Fork pull requests never receive repository secrets; the job skips the API call and passes.
 
 ## Trust boundary
 
 The CI job runs the reviewer script and this contract from the pull request's base commit and reads the head only as git data, so editing either has no effect on its own review; a change takes effect on the next pull request after it merges ([decision 0047](decisions/0047-trusted-review-and-local-record-checks.md)). The workflow file itself runs from the pull request, so getting around the reviewer takes a workflow change, which reviewers see in the diff. Only rate limits, timeouts, and server errors count as an outage: after one retry the job warns, comments that it skipped, and passes. Any other API error, a refusal, or a response that is not a verdict fails.
 
-`main` requires a pull request and passing `validate (ubuntu-latest, 22)` and `context-review` checks. Direct pushes to `main` are rejected.
+`main` requires a pull request and passing `validate (ubuntu-latest, 22)` and `pr-title` checks; `context-review` is not required. Direct pushes to `main` are rejected.
 
 Review is read-only unless the author requests fixes. Automated comments do not authorize commits on behalf of the reviewer.
