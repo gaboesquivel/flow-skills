@@ -45,7 +45,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0039-build-never-requires-a-spec.md](0039-build-never-requires-a-spec.md) | Accepted (amended by 0042, 0044) | The size guard escalates review instead of stopping; specs only on request; "build it" after `explore` builds the brief; "build it local" on a protected repository stops at a branch commit |
 | [0040-ship-verifies-liveness.md](0040-ship-verifies-liveness.md) | Accepted (amended by 0044, 0048) | `ship` verifies only that the shipped commit's checks are green and its deployment answers; no scenario, browser, or preview run |
 | [0041-align-skill.md](0041-align-skill.md) | Accepted | Read-only `align` skill checks the product against its vision, problems, metrics, and roadmap |
-| [0042-outcome-build-and-ship.md](0042-outcome-build-and-ship.md) | Accepted (amended by 0044) | `build` and `ship` state outcomes, reasons, and proofs; workers, scheduling, and test order are choices |
+| [0042-outcome-build-and-ship.md](0042-outcome-build-and-ship.md) | Accepted (amended by 0044, 0056) | `build` and `ship` state outcomes, reasons, and proofs; workers, scheduling, and test order are choices |
 | [0043-workers-when-they-pay.md](0043-workers-when-they-pay.md) | Accepted (amended by 0044, 0053) | Workers only where they pay; one green run per head; re-review covers the fix |
 | [0044-fast-delivery.md](0044-fast-delivery.md) | Accepted (amended by 0048, 0052, 0053) | Checks once at PR time, review when it pays; one delivery shape, inferred mode, no spec issue, parallel by default, zero lost work, shipped means deployed |
 | [0045-templates-pin-flow-skills.md](0045-templates-pin-flow-skills.md) | Accepted | Template skills locks pin flow-skills; Flow owns workflow, overlapping third-party workflow skills dropped |
@@ -58,6 +58,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0052-git-first-coordination.md](0052-git-first-coordination.md) | Accepted | Git-first independent-session ownership, worktree boundaries and best-effort discovery |
 | [0053-delivery-appetite-and-scope.md](0053-delivery-appetite-and-scope.md) | Accepted | Bounded delivery appetite, scope protection and economical parallelism |
 | [0054-native-capability-first-sessions.md](0054-native-capability-first-sessions.md) | Accepted | Native observable sessions, Claude Code validation priority and portable fallback |
+| [0056-contract-first-tests.md](0056-contract-first-tests.md) | Accepted | API routes and MCP tools are test-first; no UI tests by default; `ARCHITECTURE.md` may set its own policy |
 
 ## Rules
 
