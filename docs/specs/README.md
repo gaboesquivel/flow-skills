@@ -51,13 +51,3 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [044-context-and-human-experience.md](044-context-and-human-experience.md) (implemented)
 
 Significant standalone decisions belong in `docs/decisions/`, not in a spec. See [decisions](../decisions/README.md).
-
-## Retrospective implementation order (042–044)
-
-Publish these drafts and proposed decisions 0052–0053 through a documentation PR first. Merging planning documents does not accept their policy or mark implementation complete. Keep existing accepted rules in force until each implementation accepts its own spec and linked decision.
-
-1. Session A builds 042; session B independently reviews its exact branch head and exercises overlap/recovery. One implementation PR; no concurrent edits in A's checkout.
-2. After 042 lands, fresh sessions load its source. A builds 043; B prepares 044 on its own branch/worktree and lists shared-file overlaps. B does not redefine 043's scope or scheduling policy.
-3. After 043 lands, B incorporates it without rewriting remote history, reconciles overlaps, and completes 044. A can independently review B's final head. Review and required checks cover the reconciled head before landing.
-
-Each writer owns one branch and one worktree inside the ignored project worktree directory. One integration owner per spec; `build it` delivers a ready PR and `ship it` lands it under existing protections. Do not launch all three implementations against the same base. Other repositories and starter version updates follow separately; this sequence changes flow-skills first.
