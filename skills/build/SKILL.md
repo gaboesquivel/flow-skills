@@ -17,7 +17,7 @@ Build never merges. Run what the work needs while implementing; the full checks 
 
 **Proof.** The pull request is open or the branch is committed; the review the size guard picked ran on the final head with no blocking findings left; checks are green on that head; branch liveness is reported; the report lists work in flight (see Work in flight).
 
-Read the request, repository instructions, and code. Name code, tests, and interfaces with the project's terms (`domain-modeling` Shared language). Preserve unrelated working-tree changes. Do not add scope just because it is nearby ([Scope guard](#scope-guard)). When the change touches what users see, follow `DESIGN.md` when present. When intent is unclear for a new product or substantial feature, suggest `explore` and wait; never start exploration unasked. When behavior or accepted context changes, update owning documentation; do not replace a project's product identity with Flow's methodology identity. Link to specs or decisions instead of duplicating rationale; do not open new spec or decision files unless the user asked or the work already uses that convention.
+Read the request, repository instructions, and code. Name code, tests, and interfaces with the project's terms; when the glossary, the code, and the request disagree or are silent on a meaning the change depends on, follow `domain-modeling` Shared language before writing. Preserve unrelated working-tree changes. Do not add scope just because it is nearby ([Scope guard](#scope-guard)). When the change touches what users see, follow `DESIGN.md` when present. When intent is unclear for a new product or substantial feature, suggest `explore` and wait; never start exploration unasked. When behavior or accepted context changes, update owning documentation; do not replace a project's product identity with Flow's methodology identity. Link to specs or decisions instead of duplicating rationale; do not open new spec or decision files unless the user asked or the work already uses that convention.
 
 "Build it" on a draft spec accepts it in the build's first commit (`to-spec`'s Status and acceptance).
 
@@ -54,10 +54,10 @@ One home. Judge once, at intake, before implementing; it never stops the work. E
 
 One home; `to-spec` and `review` link here. A testing policy stated in the project's `ARCHITECTURE.md` overrides this default.
 
-- **Contracts are test-first.** When the change adds or changes a contract (an API route, an MCP tool, or the domain function behind them), write its focused check first, run it and see it fail, then implement until it passes. The check covers what a caller depends on: input, result, the errors an agent can act on, and permissions; one check per behavior, not per function.
+- **Contracts are test-first.** When the change adds or changes a contract (an API route, an MCP tool, or the domain function behind them), write its focused check first, run only that check and see it fail, then implement until it passes. The check covers what a caller depends on: input, result, the errors an agent can act on, and permissions; one check per behavior, not per function.
 - **Other behavior** gets a focused check that fails without the change, written in any order. Internals behind a contract get no separate tests unless their logic is the risk.
 - **No UI tests by default.** Verify UI in the running preview. Add a UI or end-to-end test only when the user or spec asks, or when the same UI regression returns.
-- **Focused, then full once.** Run the focused check while working; the full suite runs once, in Verify.
+- **Focused, then full once.** While working, including the first failing run, run only the focused check (its file or test name, with the project's one-file command), never the full suite; the full suite runs once, in Verify.
 - **Proportion.** Docs, configuration, copy, and prototypes get no new check; a small fix gets one focused check or `debug`'s reproduction.
 
 ## Scope guard
