@@ -1,6 +1,6 @@
 # 055 — Claude Code host gate on local models
 
-Status: accepted (2026-10-31).
+Status: implemented (2026-10-31).
 Execution: spec/055-local-host-gate; isolated worktree `.worktrees/055-local-host-gate`. Integration owner: unassigned; the session that runs "build it" takes it.
 
 ## Problem Statement
@@ -42,13 +42,13 @@ A pass needs all of: local `POST /v1/messages` from 127.0.0.1 in the Ollama log;
 
 ## Tasks
 
-- [ ] Check templates and metadata for the shortlist; record which candidates qualify without download.
-- [ ] Run the gate on qualifying candidates, smallest first, stopping at the first pass.
-- [ ] Write the evidence record and add the host-gate repeat command to the eval README.
+- [x] Check templates and metadata for the shortlist; record which candidates qualify without download.
+- [x] Run the gate on qualifying candidates, smallest first, stopping at the first pass.
+- [x] Write the evidence record and add the host-gate repeat command to the eval README.
 
 ## Appetite
 
-One session, about 60 minutes excluding downloads, zero paid inference tokens. If no candidate qualifies or all fail, record the blocking measurement and stop.
+One session, about 60 minutes excluding downloads, zero paid inference tokens. If no candidate qualifies or all fail, record the blocking measurement and stop. Implementation elapsed time: not measured. Result: [2026-10-31 host gate](../../tests/evals/records/2026-10-31-local-host-gate.md).
 
 ## Out of Scope
 
