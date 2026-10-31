@@ -43,6 +43,17 @@ When a skill's value is uncertain or a meaningful change to it is proposed, the 
 - Record in `records/YYYY-MM-DD-<skill>-vs-no-skills.md` the model, host, starting commit, and isolation method. Report the fields `pnpm metrics` reports (elapsed time, user turns, CI failures, rework, cost), plus retries and unauthorized actions. Write `unknown` where a value is not observable, never zero.
 - Conclude only what the runs support: the skill lowered idea → prod with no more failures or unauthorized actions, it did not, or the evidence is insufficient. One run per condition is a start; repeat when the difference is small.
 
+### Local smoke (no paid inference)
+
+A pipeline check on a local Ollama model, not evidence about skill value ([spec 049](../../docs/specs/049-local-evaluation.md)). It runs E43 request 3 ("Fix the typo in README; build it.") once per condition. Never run it in CI.
+
+1. Start a loopback server for the session only: `OLLAMA_HOST=127.0.0.1:11434 OLLAMA_NO_CLOUD=1 ollama serve`. Its log must say `Ollama cloud disabled: true`. For a Claude Code run, add `OLLAMA_CONTEXT_LENGTH=65536`; the default is 4K and Ollama recommends 64K+ for the host.
+2. Copy the [E43 fixture](../fixtures/e43-shared-language/README.md) outside any repository, change `copies` to `copeis` in its README, and commit once. Copy that repository once per condition.
+3. Flow condition: system text is the fixture's `AGENTS.md` plus `skills/build/SKILL.md`. No-Flow: `AGENTS.md` without the Flow block. The user prompt in both is the README followed by the request.
+4. Run each condition in turn under a macOS sandbox that allows outbound network to localhost only (`(deny network-outbound)`, then `(allow network-outbound (remote ip "localhost:*"))`):
+   `node scripts/local-probe.mjs --model qwen2.5-coder:0.5b --prompt-file prompt.txt --system-file system-<condition>.txt --num-ctx 32768 --out probe-<condition>.json`
+5. Stop the server, keep traces in `.cache/local-eval/`, and write a record. A reply that does not name the `copeis` → `copies` fix is a failure.
+
 ## Records
 
 Live and manual runs: [records/](records/). Latest live run: [2026-10-31 E43 on Opus 5.5](records/2026-10-31-e43-opus.md). Structural index: [scenario-status.md](scenario-status.md).

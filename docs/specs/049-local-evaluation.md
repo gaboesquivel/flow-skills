@@ -1,6 +1,6 @@
 # 049 — Local evaluation on Apple Silicon
 
-Status: accepted (2026-10-31).
+Status: implemented (2026-10-31).
 Execution: spec/049-local-evaluation; isolated worktree `.worktrees/049-local-evaluation`. Integration owner: unassigned; the session that runs "build it" takes it.
 
 ## Problem Statement
@@ -65,13 +65,13 @@ Do not run the full repository test suite, all E43 requests, or the 43-scenario 
 
 ## Tasks
 
-- [ ] Inventory and configure local tooling; record model selection and local-only controls.
-- [ ] Verify the host gate or implement the small direct fallback, with focused checks where code is added.
-- [ ] Run the single paired typo smoke and record truthful partial evidence; document the repeat command in the eval README.
+- [x] Inventory and configure local tooling; record model selection and local-only controls.
+- [x] Verify the host gate or implement the small direct fallback, with focused checks where code is added.
+- [x] Run the single paired typo smoke and record truthful partial evidence; document the repeat command in the eval README.
 
 ## Appetite
 
-One local setup and smoke session, targeting 60 minutes excluding download time, zero paid inference tokens. Stop after one paired smoke; prioritize a working direct probe over forcing an unsuitable model into Claude Code. If setup cannot complete within the appetite, leave the exact blocked step and evidence. Implementation elapsed time: not measured; implementation has not started.
+One local setup and smoke session, targeting 60 minutes excluding download time, zero paid inference tokens. Stop after one paired smoke; prioritize a working direct probe over forcing an unsuitable model into Claude Code. If setup cannot complete within the appetite, leave the exact blocked step and evidence. Implementation elapsed time: not measured. Result: [2026-10-31 local smoke](../../tests/evals/records/2026-10-31-e43-local-smoke.md).
 
 ## Out of Scope
 
