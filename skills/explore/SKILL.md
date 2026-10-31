@@ -1,6 +1,6 @@
 ---
 name: explore
-description: Understand the problem, users, repository context, and consequential uncertainty before planning or building. Use when the user says "explore this", "help me understand", or "what are we missing".
+description: Understand the problem, the users, the project context, and the open questions that matter before planning or building. Use when the user says "explore this" or "what are we missing".
 disable-model-invocation: false
 ---
 

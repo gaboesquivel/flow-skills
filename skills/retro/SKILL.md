@@ -1,6 +1,6 @@
 ---
 name: retro
-description: Retrospective on the agent environment after a session; propose improvement candidates with evidence. Use when the user says "let's do a retro", "what went wrong", or "what should we improve".
+description: Run a retrospective on the agent environment after a session and propose improvements with evidence. Use when the user says "let's do a retro" or "what should we improve".
 disable-model-invocation: false
 ---
 

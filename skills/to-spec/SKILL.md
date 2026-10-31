@@ -1,6 +1,6 @@
 ---
 name: to-spec
-description: Turn the current conversation into a numbered draft specification using project conventions, and accept it when approved. Use when the user says "spec it", "write a spec", "turn this into a spec", "share the draft", or "accept the spec".
+description: Turn the conversation into a numbered draft spec using project conventions, and accept it when approved. Use when the user says "spec it", "write a spec", "share the draft", or "accept the spec".
 disable-model-invocation: false
 ---
 

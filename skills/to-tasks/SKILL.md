@@ -1,6 +1,6 @@
 ---
 name: to-tasks
-description: Break a plan, spec, or conversation into verifiable vertical-slice tasks with explicit blockers; list them in the spec's Tasks checklist. Use when the user says "break it down", "make tasks", or "split this into tasks".
+description: Break a plan, spec, or conversation into verifiable vertical-slice tasks with blockers, listed in the spec's Tasks checklist. Use when the user says "break it down" or "split this into tasks".
 disable-model-invocation: false
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: interview
-description: Interview the user, with a guess attached to each question, to extract what they actually want before any plan, spec, or code exists. Use when the user says "interview me", "ask me questions", or "figure out what I want".
+description: Interview the user, with a guess on each question, to learn what they want before any plan, spec, or code exists. Use when the user says "interview me", "ask me questions", or "figure out what I want".
 disable-model-invocation: false
 ---
 

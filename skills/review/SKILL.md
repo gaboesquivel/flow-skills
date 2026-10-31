@@ -1,6 +1,6 @@
 ---
 name: review
-description: Review work against intent, specs, and root context on five axes (correctness, readability, architecture, security, performance). Use when the user says "check it against the spec", "does this match the intent", or "alignment review".
+description: Review work against intent, specs, and root context on five axes (correctness, readability, architecture, security, performance). Use when the user says "check it against the spec" or "does this match the intent".
 disable-model-invocation: false
 ---
 
