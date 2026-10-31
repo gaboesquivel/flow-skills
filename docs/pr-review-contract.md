@@ -72,4 +72,4 @@ Run the reviewer script and this contract from the base commit and read the head
 
 `main` requires a pull request and passing `validate (ubuntu-latest, 22)` and `pr-title` checks; `context-review` is not required. Direct pushes to `main` are rejected.
 
-Review is read-only unless the author requests fixes. Automated comments do not authorize commits on behalf of the reviewer.
+The automated reviewer is read-only: its comments do not authorize commits. Repair belongs to the [`review` skill](../skills/review/SKILL.md#repair) and the delivery's integration owner.

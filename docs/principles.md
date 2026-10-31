@@ -1,6 +1,6 @@
 # Flow principles
 
-Status: elaboration, updated 2026-10-28. The eight official principles live in [PRODUCT.md](../PRODUCT.md#principles). The themes below are optional methodology judgment; they do not replace that list.
+Status: elaboration, updated 2026-10-31. The eight official principles live in [PRODUCT.md](../PRODUCT.md#principles). The themes below are optional methodology judgment; they do not replace that list.
 
 ## Validation
 
@@ -19,6 +19,12 @@ Plan the signals needed to see what people and agents attempt, where they succee
 Elaborates the official **Agent-first, API-first** principle ([decision 0023](decisions/0023-agent-first.md)). Build for agents and humans, with an API-first approach.
 
 Treat agent use as a first-class product interaction. Make relevant capabilities discoverable and usable through clear interfaces, including APIs, CLIs, and MCP where appropriate, alongside useful human experiences. Design permissions, errors, and results so an agent can act within the user's authority and understand the outcome. Contracts are tested first and UI is checked in the preview ([`build`](../skills/build/SKILL.md#tests) Tests, [decision 0056](decisions/0056-contract-first-tests.md)). Flow's own agent works the same way: it uses those interfaces first and hands people only what needs them ([`write-agents`](../skills/write-agents/SKILL.md#tools) Tools).
+
+## Understandable change
+
+Make software easy to understand and safe to change; require evidence proportional to what can go wrong.
+
+Agent output does not establish understanding. Know what the code actually does, through shared domain language, contracts, and checks, and weigh what a change costs later: who depends on it, how hard it is to replace, what breaks if it fails. Small, contained work stays light; consequential work earns more evidence. A responding deployment is liveness, not verified behavior, and verified behavior is not customer value.
 
 ## Lean
 

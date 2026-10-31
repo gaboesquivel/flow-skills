@@ -61,7 +61,7 @@ These apply to manual work and skill use. They are not a fixed sequence.
 | Exploration | Preserve worthwhile possibilities; link evidence when saving artifacts. |
 | Planning | Capture bounded scope in a spec file when the work warrants it; it is accepted before shipping ("build it" or "ship it" on a draft accepts it). Work without a spec is always allowed, in either delivery mode ([unspecced work](../GLOSSARY.md#unspecced-work)). The file is the record; in GitHub mode the pull request links it ([decision 0044](decisions/0044-fast-delivery.md)). |
 | Execution | Update root context and specs when behavior or accepted intent changes. |
-| Review | Record findings and update decisions or root docs when conclusions matter. |
+| Review | Repair confirmed defects with evidence, record what stays open, and update decisions or root docs when conclusions matter ([`review` Repair](../skills/review/SKILL.md#repair); [understandable change](principles.md#understandable-change)). |
 
 Create only the artifacts the work needs.
 
@@ -71,8 +71,8 @@ Use this when changing Flow. Apply the skills already in the catalog, in proport
 
 Keep the two kinds of evidence apart:
 
-- **Structural checks** — `pnpm validate`, `pnpm test`, smoke contracts, and (on pull requests) deterministic alignment in CI. They show that links, package metadata, and documentation path rules match the catalog; smoke contracts check safety rules by keyword, not skill wording ([decision 0044](decisions/0044-fast-delivery.md)).
-- **Live agent verification** — a person or agent used a skill in a host. Name the host, the date, and what was observed. A structural pass is not a live run. One agent is not an independent review. Optional LLM context review in CI follows the same [pr-review-contract](pr-review-contract.md) as the `review` skill but is not a substitute for human judgment on consequential changes.
+- **Structural checks** — `pnpm validate`, `pnpm test`, and smoke contracts, run in CI on ready pull requests ([decision 0057](decisions/0057-draft-workspace-ready-checks.md)). They show that links, package metadata, and documentation path rules match the catalog; smoke contracts check safety rules by keyword, not skill wording ([decision 0044](decisions/0044-fast-delivery.md)).
+- **Live agent verification** — a person or agent used a skill in a host. Name the host, the date, and what was observed. A structural pass is not a live run. One agent is not an independent review. CI makes no model calls; the optional LLM context review runs on request under the [pr-review-contract](pr-review-contract.md) and is not a substitute for human judgment on consequential changes.
 
 Do not add a dogfood skill, a required pipeline, or a second copy of the product statement for the record.
 
