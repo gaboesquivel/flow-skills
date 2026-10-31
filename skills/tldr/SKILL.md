@@ -1,6 +1,6 @@
 ---
 name: tldr
-description: Visual human summary and session alignment check. Use when the user says "tldr", "show me", "recap", or "are we still aligned".
+description: Visual summary for a person, or a session recap and alignment check. Use when the user says "tldr", "show me", "recap", or "are we still aligned".
 disable-model-invocation: false
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: board
-description: Read-only progress board of the project's specs by stage, derived from git. Use when the user says "show the board", "show progress", or "open the board".
+description: Show a read-only board of the project's specs by stage, built from git. Use when the user says "show the board" or "show progress".
 disable-model-invocation: false
 ---
 

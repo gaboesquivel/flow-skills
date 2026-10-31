@@ -1,6 +1,6 @@
 ---
 name: flow
-description: Align the current project's PRODUCT.md, DESIGN.md, GLOSSARY.md, and ARCHITECTURE.md after meaningful changes, and write the project Flow block on request. Use when the user says "update the docs", "sync the context", "keep the docs aligned", or "set up Flow here".
+description: Align the project's PRODUCT.md, DESIGN.md, GLOSSARY.md, and ARCHITECTURE.md after meaningful changes, and write the Flow block on request. Use when the user says "update the docs", "sync the docs", or "set up Flow here".
 disable-model-invocation: false
 ---
 

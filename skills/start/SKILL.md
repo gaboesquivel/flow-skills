@@ -1,6 +1,6 @@
 ---
 name: start
-description: Initialize a new project from flow-next or flow-mono in a template clone with verified setup, renamed identity, and an initial Git commit, while explore shapes the product. Use when the user says "start a Next.js project", "start a new project", or "start a monorepo".
+description: Start a new project from flow-next or flow-mono with verified setup, renamed identity, and an initial Git commit, while explore shapes the product. Use when the user says "start a Next.js project", "start a new project", or "start a monorepo".
 disable-model-invocation: false
 ---
 

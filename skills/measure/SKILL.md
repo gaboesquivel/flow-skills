@@ -1,6 +1,6 @@
 ---
 name: measure
-description: Evaluate a product's metrics and journeys against available evidence and name what blocks a conclusion; read-only. Use when the user says "measure our progress", "how are our metrics doing", or "are users completing this journey".
+description: Check a product's metrics and journeys against the evidence and name what blocks a conclusion; read-only. Use when the user says "measure our progress" or "how are our metrics doing".
 disable-model-invocation: false
 ---
 

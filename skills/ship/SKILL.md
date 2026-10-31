@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Land work on the default branch with no confirmation, building and verifying it first when needed, then merge and a liveness check of the shipped commit. Use when the user says "ship it" or "drop the spec".
+description: Land work on the default branch without asking: build and verify it first when needed, then merge and check the shipped commit is live. Use when the user says "ship it", or "drop the spec" to abandon one.
 disable-model-invocation: false
 ---
 
