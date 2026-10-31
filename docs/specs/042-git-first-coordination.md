@@ -1,6 +1,6 @@
 # 042 — Git-first coordination and delivery ownership
 
-Status: **implemented** (2026-10-31)  
+Status: **implemented** (2026-10-31). Decision: [0052](../decisions/0052-git-first-coordination.md) (Accepted).  
 Repository: `gaboesquivel/flow-skills`  
 Priority: **P0 — first**  
 Dependencies: none; preserve accepted safety and governance requirements.
@@ -61,7 +61,7 @@ Existing accepted foundations: decisions 0029, 0037, 0042, 0044, 0048, 0050; `sk
 
 ## Decision and acceptance
 
-Proposed decision: [0052](../decisions/0052-git-first-coordination.md). Publishing this draft does not accept that decision. Accept it with implementation, update only the affected historical status lines/index entries, and align current owning docs. Preserve 0048's build/ship semantics.
+Decision: [0052](../decisions/0052-git-first-coordination.md), accepted with this implementation, which updated only the affected historical status lines and index entries and aligned current owning docs. Preserve 0048's build/ship semantics.
 
 ## Deliverables and proof
 
