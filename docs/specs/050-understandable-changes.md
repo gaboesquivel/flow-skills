@@ -75,7 +75,7 @@ Run repository checks only on request or before an authorized PR, following repo
 
 ## Appetite
 
-Proposed target, not yet agreed: one focused implementation session of up to two hours for the guidance and `review` edits; validation may require a later session. No paid inference, CI runs, or deployments under the current instruction. First verifiable slice: the guidance and `review` edits reviewed against existing owners. If the target is exceeded, narrow examples and wording rather than add infrastructure or weaken proof. Observed elapsed time and cost: not measured.
+Thirty minutes at most for one implementation session (agreed 2026-10-31): the `review` rule change first, then the short quality elaboration in `docs/principles.md` and `docs/methodology.md` with the stale methodology links fixed. No paid inference, CI runs, or deployments under the current instruction. First verifiable slice: the `review` edit reviewed against existing owners. If time runs out, ship the `review` edit and cut wording from the principles and methodology elaboration; never add infrastructure or weaken proof. Live validation of the acceptance scenario is a later session, outside this budget. Observed elapsed time and cost: not measured.
 
 ## Direction changes
 
@@ -87,7 +87,7 @@ The blog article and its research note (candidate spec 051); blog routes, CMS, s
 
 ## Open Assumptions
 
-- The proposed two-hour implementation appetite is a planning default, not an accepted deadline.
+None. Review as repair, production checks only on request, the article split, and the appetite were confirmed on 2026-10-31.
 
 ## Sources
 
