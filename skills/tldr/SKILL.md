@@ -28,7 +28,7 @@ Short labels only. When words are required, lead with the point, use concrete no
 
 ## Handoff digest
 
-The one home for summaries at major handoffs: an `explore` brief, a spec ready, a build ready, a ship result, a retro. Those skills link here; using it needs no `tldr` run and no extra review step.
+The one home for summaries at major handoffs: an `explore` brief, a spec ready, a build ready or stopped before its first write, a ship result, a retro. Those skills link here; using it needs no `tldr` run and no extra review step.
 
 Lead with a few lines before any detail: the outcome, accepted versus deferred scope, appetite health only when measured, active work or conflicts that matter, verification status, and one next action. Link the spec, pull request, or diff instead of pasting it; give raw logs only on request. Use the visual rules above when structure helps; otherwise a compact table or a short paragraph. Keep it short, direct, and appropriately skeptical.
 
