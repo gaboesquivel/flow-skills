@@ -27,7 +27,7 @@ Asking to build authorizes these steps with no confirmation. It does not authori
 
 Outside a Git repository, offer `git init` and stop on a no.
 
-Before the first write, inspect sibling work as `write-agents` Sessions describes: name the base, this worktree and branch, the integration owner, and any overlapping or unknown work. Stop before writing paths another owner's open work changes, or whose owner is unknown, and say what would resolve it.
+Before the first write, inspect sibling work as `write-agents` Sessions describes: name the base, this worktree and branch, the integration owner, and any overlapping or unknown work. Stop before writing paths another owner's open work changes, or whose owner is unknown: report the overlap and ask the user whether to contribute to that delivery, wait for it, or proceed on this branch. Overlap with this delivery's own task branches is integration, not a conflict.
 
 Work on a branch that is not the default branch. Commit only this work: no credentials, local logs, or generated secrets, and never rewrite unrelated commits. In GitHub mode, push and open a ready pull request, or update the open one. Then Verify. Report the branch or pull request, the review and its verdicts, checks, liveness, limitations, and work in flight.
 
@@ -74,7 +74,7 @@ One home for keeping work from being lost or stranded; `ship` points here.
 
 - A worker in its own worktree, whether the host's isolation or one you created, starts from the delivery branch's head and commits on that worktree's branch before it finishes; never a detached head. Host isolation may start a worktree elsewhere (Claude Code starts from the default branch): move the worker's branch to the delivery head before it works. A worker in the shared checkout edits disjoint files and leaves committing to the main thread. Other sessions may share that checkout: confirm the delivery branch is checked out before each commit there.
 - Work counts as integrated only when it is in a commit on the delivery branch. Before the pull request or landing, merge every worker branch into it, commit every shared-checkout change, and confirm each worker branch is contained in the delivery branch (by ancestry, or by patch equivalence when the delivery branch was rebased or squash-landed and the work was cherry-picked onto its new base).
-- An unfinished task is reported with its path and branch, never dropped. A spec becomes `implemented` only when every task is integrated; otherwise its status stays and the pull request claims no completion.
+- An unfinished task is reported with its path and branch, never dropped. An uncommitted change no one explains, even in this session's worktree, is reported, never committed or discarded. A spec becomes `implemented` only when every task is integrated; otherwise its status stays and the pull request claims no completion.
 - Remove only worktrees and branches this work created, and only when their commits are on the default branch, or their tip was integrated into a branch whose pull request merged, or the user dropped the work; never with uncommitted changes in it.
 - A new session finds work in flight from worktrees, unmerged branches, open pull requests, and spec status before starting anything (`write-agents` Sessions), and treats another session's work as that session's.
 - Every report, including a stop, lists kept worktrees, uncommitted shared-checkout changes, branches with commits not on the default branch, local `main` ahead of its remote, and open pull requests, each with the step that finishes it.

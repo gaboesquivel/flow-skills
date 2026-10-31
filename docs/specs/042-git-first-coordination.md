@@ -1,6 +1,6 @@
 # 042 — Git-first coordination and delivery ownership
 
-Status: **accepted** (2026-10-31)  
+Status: **implemented** (2026-10-31)  
 Repository: `gaboesquivel/flow-skills`  
 Priority: **P0 — first**  
 Dependencies: none; preserve accepted safety and governance requirements.
@@ -56,8 +56,8 @@ Existing accepted foundations: decisions 0029, 0037, 0042, 0044, 0048, 0050; `sk
 
 ## Tasks
 
-- [ ] 01: Establish ownership, discovery and recovery in portable delivery skills and this repository's maintainer entry points. **Area:** skills, repository root, docs. **Blocked by:** none. Proof: a fresh session identifies its base, worktree, delivery owner and possible overlap without claiming a lock.
-- [ ] 02: Exercise integration and interruption recovery. **Area:** skills, tests, docs. **Blocked by:** 01. Proof: separate writers preserve each other's work; stopped work remains recoverable; pending CI never becomes passing.
+- [x] 01: Establish ownership, discovery and recovery in portable delivery skills and this repository's maintainer entry points. **Area:** skills, repository root, docs. **Blocked by:** none. Proof: a fresh session identifies its base, worktree, delivery owner and possible overlap without claiming a lock.
+- [x] 02: Exercise integration and interruption recovery. **Area:** skills, tests, docs. **Blocked by:** 01. Proof: separate writers preserve each other's work; stopped work remains recoverable; pending CI never becomes passing.
 
 ## Decision and acceptance
 
@@ -65,7 +65,7 @@ Proposed decision: [0052](../decisions/0052-git-first-coordination.md). Publishi
 
 ## Deliverables and proof
 
-One implementation PR, including portable skills and the maintainer guidance needed to dogfood them. Use one bounded two-session coordination exercise covering overlap and interrupted work. Add deterministic fixtures only for executable behavior; prose assertions do not prove host behavior. Follow repository check policy, and record actual evidence and limitations. No mandatory no-skill comparison or cross-host matrix; spec 041 remains the home for optional evaluation.
+One implementation PR, including portable skills and the maintainer guidance needed to dogfood them. Use one bounded two-session coordination exercise covering overlap and interrupted work ([recorded run](../../tests/smoke/2026-10-31-session-coordination.md)). Add deterministic fixtures only for executable behavior; prose assertions do not prove host behavior. Follow repository check policy, and record actual evidence and limitations. No mandatory no-skill comparison or cross-host matrix; spec 041 remains the home for optional evaluation.
 
 Fresh sessions must read the updated working-tree source. Adopters must explicitly update their installed/pinned Flow version; this repository's merge does not update other projects. Validate one adopter installation when available, otherwise report that rollout as unverified. Broader starter rollout is separate.
 
