@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Land work on the default branch without asking: build and verify it first when needed, then merge and check the shipped commit is live. Use when the user says "ship it", or "drop the spec" to abandon one.
+description: 'Land work on the default branch without asking: build and verify it first when needed, then merge and check the shipped commit is live. Use when the user says "ship it", or "drop the spec" to abandon one.'
 disable-model-invocation: false
 ---
 

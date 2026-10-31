@@ -61,7 +61,10 @@ export function validateSkills(root) {
       const match = /^([a-z][a-z-]*):\s*(.+)$/u.exec(line)
       if (!match) { errors.push(`${name}: frontmatter must use nonempty single-line fields`); continue }
       if (match[1] in fields) errors.push(`${name}: duplicate field ${match[1]}`)
-      fields[match[1]] = match[2]
+      // A plain YAML scalar cannot hold ': ' or ' #'; installers that parse YAML then drop the skill. Single-quote such values.
+      const quoted = /^'((?:[^']|'')*)'$/u.exec(match[2])
+      if (!quoted && /: | #/u.test(match[2])) errors.push(`${name}: frontmatter ${match[1]} contains ': ' or ' #'; wrap it in single quotes`)
+      fields[match[1]] = quoted ? quoted[1].replaceAll("''", "'") : match[2]
     }
     if (fields.name !== name) errors.push(`${name}: name mismatch`)
     if (!fields.description) errors.push(`${name}: missing description`)
