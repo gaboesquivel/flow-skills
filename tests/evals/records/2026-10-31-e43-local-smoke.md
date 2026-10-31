@@ -25,7 +25,20 @@ Isolation: `env -i` with only `PATH`, a fresh `HOME` and `CLAUDE_CONFIG_DIR`, ev
 
 Attempt 2 was run on a suspicion that the 4K default had truncated the prompt; the logs show it had not, so both attempts saw the same full prompt.
 
-Routing was local in both: Ollama logged one `POST /v1/messages` from 127.0.0.1 per attempt, and Claude Code reported no API key source. No read, edit, or command was observed, so the host gate failed. **Cause unresolved:** Claude Code counted 11,414 input tokens for the request, while Ollama received a 17,052-character prompt that tokenized to 3,946, with 22 tools declared at init. Either the model cannot call tools here, or the tool definitions did not reach it through Ollama's Anthropic-compatible layer; the traces do not separate the two. Per the spec, no second candidate was tried; Claude Code on local models remains unverified on this Mac.
+Routing was local in both: Ollama logged one `POST /v1/messages` from 127.0.0.1 per attempt, and Claude Code reported no API key source. No read, edit, or command was observed, so the host gate failed. Claude Code counted 11,414 input tokens for the request, while Ollama received a 17,052-character prompt that tokenized to 3,946, with 22 tools declared at init. Per the spec, no second candidate was tried; Claude Code on local models remains unverified on this Mac.
+
+**Cause (attempt 3, same day).** One more gate run with `OLLAMA_DEBUG_LOG_REQUESTS=1` (same command, fixture `5a4e726`, exit 0, no tool call) logged the request body. Claude Code sent 12 tools (30,350 characters of schemas) and two messages, `user` then a trailing `system` message (8,888 characters of environment text). The rendered prompt was 17,051 characters: the system text and messages without any tool definition. llama3.2's Ollama template renders tools only into the last message, and only when that message is from the user, so the trailing `system` message dropped every tool. Replays of the logged body, outside Claude Code:
+
+| Replay | Rendered prompt | Reply |
+| --- | --- | --- |
+| As sent | 17,051 chars | text |
+| Without `context_management`, `output_config`, `thinking`, or `metadata` (one at a time) | 17,051 | text |
+| Only Read, Edit, and Bash tools | 17,051 | text |
+| Trailing `system` message dropped | 37,496 | text |
+| Trailing `system` message moved into the system prompt | 46,412 | text |
+| Minimal request: one tool, one user message | 949 | `tool_use` |
+
+So both causes hold: the template interaction hid the tools from the model, and with tools rendered `llama3.2:1b` still answered in text on this request (one replay, 128-token cap). The minimal request shows the compatibility layer passes tools when the last message is from the user. Whether other models' templates handle a trailing `system` message was not tested.
 
 Gate fixture: a separate preparation of the same typo, commit `0d25125`. Command, from that copy (exit 0 both attempts):
 
@@ -60,18 +73,20 @@ Outcome is the rubric verdict; the helper's trace says `outcome: completed` for 
 ```sh
 sandbox-exec -f local-only.sb env -i PATH="$PATH" HOME=<copy> node scripts/local-probe.mjs --model qwen2.5-coder:0.5b \
   --prompt-file inputs/prompt.txt --system-file inputs/system-<flow|noflow>.txt --num-ctx 32768 --out probe-<flow|noflow>.json
-``` Retries: none. Unauthorized actions: none (a direct probe has no tools). User turns: 0.
+```
+
+Retries: none. Unauthorized actions: none (a direct probe has no tools). User turns: 0.
 
 ## Conclusions
 
 - The pipeline works: local-only routing (loopback bind, cloud disabled, requests only from 127.0.0.1), frozen inputs, and full traces.
-- `qwen2.5-coder:0.5b` did not fix this typo in either condition, so this smoke says nothing about Flow. No tool call was observed from `llama3.2:1b` in Claude Code; whether that is the model or lost tool definitions is unresolved.
+- `qwen2.5-coder:0.5b` did not fix this typo in either condition, so this smoke says nothing about Flow. No tool call was observed from `llama3.2:1b` in Claude Code. Claude Code's trailing `system` message kept llama3.2's template from rendering any tool, and with tools rendered in a replay the model still answered in text.
 - Context was not the cause: Ollama tokenized 3,946 prompt tokens with `truncated = 0` at both 4K and 64K (Claude Code counted 11,414). Multi-turn host runs still need the 64K+ Ollama recommends.
 
 ## Limitations
 
-One run per condition. Free memory measured two ways that disagree; memory figures and the sandbox check (`https://example.com` failed, loopback answered) were observed in the session but not kept as trace files. Traces (`gate-*.jsonl`, `probe-*.json`, `ollama-*.log`, inputs, sandbox profile) are local only in the ignored `.cache/local-eval/`. Machine identifiers and the user's credentials are not recorded. Elapsed time for the whole build: unknown.
+One run per condition. Free memory measured two ways that disagree; memory figures and the sandbox check (`https://example.com` failed, loopback answered) were observed in the session but not kept as trace files. Traces (`gate-*.jsonl`, `gate-3-request.json`, `probe-*.json`, `ollama-*.log`, inputs, sandbox profile) are local only in the ignored `.cache/local-eval/`. Machine identifiers and the user's credentials are not recorded. Elapsed time for the whole build: unknown.
 
 ## Next action
 
-To settle the gate's cause, rerun it once with `OLLAMA_DEBUG_LOG_REQUESTS=1` and check whether the rendered prompt contains the tool definitions. The spec allows a 1.5B model only after an observed capability failure (now observed) and a fresh capacity check. Running `qwen2.5-coder:1.5b` is a separate, explicit run. A comparison that could show Flow's value needs a task the conditions can differ on, as its own spec.
+Before trying another host candidate, check its Ollama template (`ollama show <model> --template`) renders tools when the last message is not from the user, and confirm from a logged request that the rendered prompt contains them. The spec allows a 1.5B model only after an observed capability failure (now observed) and a fresh capacity check. Running `qwen2.5-coder:1.5b` is a separate, explicit run. A comparison that could show Flow's value needs a task the conditions can differ on, as its own spec.
