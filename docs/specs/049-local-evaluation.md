@@ -78,7 +78,7 @@ Full-suite execution, full E43 verification, hosted inference, CI LLM jobs, dash
 
 ## Further Notes
 
-Drafted from latest fetched `main`, `4ab63838b011da59e3cec847bb1965586fadfad8`. Spec 048 and PR #208 are separate work in flight; this spec does not adopt their proposed delivery changes. The user subsequently requested spec only: no installation, inference, implementation, or tests were performed during drafting.
+Initially inspected `main` at `4ab63838b011da59e3cec847bb1965586fadfad8`; integrated updated `main` at `2a86867` after spec 048 / PR #208 merged during drafting. The other session's checkout and branch were left untouched. The user subsequently requested spec only: no installation, inference, implementation, or tests were performed during drafting.
 
 Official sources consulted 2026-10-31 (documentation evidence, not local execution evidence):
 
