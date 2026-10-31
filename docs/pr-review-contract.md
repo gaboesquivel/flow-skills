@@ -1,6 +1,6 @@
 # Pull request review contract
 
-Agent-agnostic checklist for reviewing a pull request in a Flow-shaped repository. Matches the obligations of the **`review`** and **`flow`** skills plus [maintain connected context](methodology.md#maintain-connected-context). Use this file in any IDE or host; GitHub Actions in this repository enforce a subset automatically.
+Agent-agnostic checklist for reviewing a pull request in a Flow-shaped repository. Matches the obligations of the **`review`** and **`flow`** skills plus [maintain connected context](methodology.md#maintain-connected-context). Use this file in any IDE or host; GitHub Actions in this repository run only the deterministic checks.
 
 ## Scope
 
@@ -28,7 +28,7 @@ When the change affects product intent, experience, architecture, or shared voca
 
 Bounded durable work should add or update a spec under `docs/specs/` when appropriate; significant rationale belongs in `docs/decisions/`.
 
-## Automated output (LLM and CI)
+## Automated output (LLM)
 
 When an automated reviewer runs this contract, respond with **only** JSON (no markdown fence):
 
@@ -48,13 +48,13 @@ When an automated reviewer runs this contract, respond with **only** JSON (no ma
 
 - `verdict`: `pass` or `fail`.
 - `findings[].severity`: `blocking` or `advisory`.
-- CI fails the check when `verdict` is `fail`, any finding has `severity: blocking`, the diff cannot be read, or the response is not a `pass` or `fail` verdict.
+- The reviewer fails when `verdict` is `fail`, any finding has `severity: blocking`, the diff cannot be read, or the response is not a `pass` or `fail` verdict.
 
 ## Deterministic checks (this repository)
 
 `pnpm validate` checks skills, documentation links, and that every spec and decision is well named, uniquely numbered, and linked from its index. Run it before opening a pull request.
 
-## LLM review secrets (maintainers)
+## LLM review on request (maintainers)
 
 Configure in the GitHub repository (not in the npm skills package):
 
@@ -64,11 +64,11 @@ Configure in the GitHub repository (not in the npm skills package):
 | `FLOW_REVIEW_API_BASE` | Optional base URL (default: `https://api.openai.com/v1`) |
 | `FLOW_REVIEW_MODEL` | Model id (default: `gpt-4o-mini` if unset) |
 
-The `context-review` workflow job runs on pull requests only when the repository variable `CONTEXT_REVIEW` is `on` (`gh variable set CONTEXT_REVIEW --body on`); it is off by default. When `FLOW_REVIEW_API_KEY` is present on same-repository pull requests, it calls the API with the PR title, body, and labels. Fork pull requests never receive repository secrets; the job skips the API call and passes.
+CI makes no model calls. Run the reviewer on request with these variables exported: `node scripts/run-context-review.mjs --base <merge-base> --head <sha> [--pr-number N]`. With `FLOW_PR_TITLE`, `FLOW_PR_BODY`, and `FLOW_PR_LABELS` set, it includes them in the prompt; with `--pr-number` and `GH_TOKEN`, it comments on the pull request.
 
 ## Trust boundary
 
-The CI job runs the reviewer script and this contract from the pull request's base commit and reads the head only as git data, so editing either has no effect on its own review; a change takes effect on the next pull request after it merges ([decision 0047](decisions/0047-trusted-review-and-local-record-checks.md)). The workflow file itself runs from the pull request, so getting around the reviewer takes a workflow change, which reviewers see in the diff. Only rate limits, timeouts, and server errors count as an outage: after one retry the job warns, comments that it skipped, and passes. Any other API error, a refusal, or a response that is not a verdict fails.
+Run the reviewer script and this contract from the base commit and read the head only as git data, so a pull request cannot change its own review ([decision 0047](decisions/0047-trusted-review-and-local-record-checks.md)). Only rate limits, timeouts, and server errors count as an outage: after one retry the reviewer warns, comments that it skipped, and passes. Any other API error, a refusal, or a response that is not a verdict fails.
 
 `main` requires a pull request and passing `validate (ubuntu-latest, 22)` and `pr-title` checks; `context-review` is not required. Direct pushes to `main` are rejected.
 
