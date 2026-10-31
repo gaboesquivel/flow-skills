@@ -3,6 +3,7 @@
     "allow": [
       "Shell(gh:pr view *)",
       "Shell(gh:pr checks *)",
+      "Shell(gh:pr ready *)",
       "Shell(gh:pr create *)",
       "Shell(gh:pr edit *)",
       "Shell(gh:pr merge *)",

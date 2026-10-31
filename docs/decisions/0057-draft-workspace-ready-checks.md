@@ -1,6 +1,6 @@
 # 0057 — Draft workspace, checks on ready
 
-Status: **Proposed** (2026-10-31). Amends [0025](0025-wave-checkpoints.md) (`build`, not `ship`, opens the draft pull request), [0034](0034-no-ceremony-without-a-spec.md) and [0044](0044-fast-delivery.md) (`build` ends at a pull request that is ready only when verified), [0048](0048-delivery-phrases-are-approvals.md) (CI runs on the ready head, not on every push), and [0050](0050-github-governance-preset.md) (`flow-skills` no longer requires `context-review`; branch previews are not automatic). Spec: [048](../specs/048-delivery-lifecycle.md).
+Status: **Accepted** (2026-10-31). Amends [0025](0025-wave-checkpoints.md) (`build`, not `ship`, opens the draft pull request), [0034](0034-no-ceremony-without-a-spec.md) and [0044](0044-fast-delivery.md) (`build` ends at a pull request that is ready only when verified), [0048](0048-delivery-phrases-are-approvals.md) (CI runs on the ready head, not on every push), and [0050](0050-github-governance-preset.md) (`flow-skills` no longer requires `context-review`; branch previews are not automatic). Spec: [048](../specs/048-delivery-lifecycle.md).
 
 ## Context
 

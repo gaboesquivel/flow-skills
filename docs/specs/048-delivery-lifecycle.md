@@ -1,8 +1,8 @@
 # 048 — Delivery lifecycle: one draft workspace, checks on ready
 
-Status: **draft** (2026-10-31)  
+Status: **accepted** (2026-10-31)  
 Repositories: `gaboesquivel/flow-skills`, `gaboesquivel/flow-next`, `gaboesquivel/flow-mono`  
-Decision: [0057](../decisions/0057-draft-workspace-ready-checks.md) (Proposed)  
+Decision: [0057](../decisions/0057-draft-workspace-ready-checks.md) (Accepted)  
 Builds on: [0044](../decisions/0044-fast-delivery.md), [0048](../decisions/0048-delivery-phrases-are-approvals.md), [0050](../decisions/0050-github-governance-preset.md), [0052](../decisions/0052-git-first-coordination.md), [0055](../decisions/0055-capability-based-github-and-host-triggered-builds.md); [spec 046](046-cloud-delivery.md) (cloud delivery)
 
 ## Problem Statement

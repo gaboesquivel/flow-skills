@@ -33,7 +33,7 @@ Run `build` unless the branch is verified: the review the size guard picked cove
 
 ## Merge
 
-**Gate.** Land automatically when preflight passed, checks are green, no findings block, and protection is satisfied. A required check that is pending or failing stops the landing, however close the work or the deadline is: name each required check and its state. Never approve your own pull request and never bypass protection (for example `gh pr merge --admin`). When protection requires a human approval, stop.
+**Gate.** Land automatically when preflight passed, checks are green, no findings block, and protection is satisfied. In GitHub mode, run `node <this skill's directory>/scripts/required-checks.mjs <owner>/<repo> <number>` and land only on exit 0: the pull request is not a draft and every required check's latest result on its head is `success`. A required check that is pending or failing stops the landing, however close the work or the deadline is, and so does one that is skipped, neutral, cancelled, missing, or reported for another head: a check skipped while the pull request was a draft never counts. Name each required check and its state from the script's report. Never approve your own pull request and never bypass protection (for example `gh pr merge --admin`). When protection requires a human approval, stop.
 
 Update the branch from the default branch only when it conflicts or protection requires it to be up to date; the updated head needs its checks again, and its review only when resolving the conflict changed code. In local mode, when `main` moved since the branch was checked, run the suite once on the merge result before `main` moves; on red, fix as `build` describes.
 

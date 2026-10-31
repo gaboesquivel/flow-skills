@@ -1,6 +1,6 @@
 # 0034 — No ceremony without a spec
 
-Status: **Accepted** (2026-10-28). Amends [0032](0032-local-build-lands-ship-verifies.md) (ad-hoc local work lands after the independent review) and [0029](0029-spec-issues.md) (one independent review per change). Spec: [021](../specs/021-demo-findings.md). Amended by [0039](0039-build-never-requires-a-spec.md). Amended by [0044](0044-fast-delivery.md) (checks once at pull request time; no wording pins).
+Status: **Accepted** (2026-10-28). Amends [0032](0032-local-build-lands-ship-verifies.md) (ad-hoc local work lands after the independent review) and [0029](0029-spec-issues.md) (one independent review per change). Spec: [021](../specs/021-demo-findings.md). Amended by [0039](0039-build-never-requires-a-spec.md). Amended by [0044](0044-fast-delivery.md) (checks once at pull request time; no wording pins). Amended by [0057](0057-draft-workspace-ready-checks.md) (`build` ends at a pull request marked ready once verified).
 
 ## Context
 
