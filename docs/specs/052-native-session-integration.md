@@ -1,6 +1,6 @@
 # 052 — Native session integration in Claude Code
 
-Status: draft (2026-10-31)
+Status: accepted (2026-10-31)
 
 ## Problem Statement
 
