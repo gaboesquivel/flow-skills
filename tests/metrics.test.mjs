@@ -134,18 +134,19 @@ test('fetchDelivery reads merged pull requests, commits, reviews, label events, 
     // Page 1 is full (100 closed, of which merged #1..#50); page 2 holds the rest.
     'repos/o/r/pulls?': (page) => page === 1
       ? Array.from({ length: 100 }, (_, i) => pull(i + 1, i < 50 ? { merged_at: `2026-10-29T01:${String(i).padStart(2, '0')}:00Z` } : {}))
-      : [pull(200, { merged_at: '2026-10-30T00:00:00Z', body: 'Closes #7\nFixes #8\nSession: https://claude.ai/code/session_abc' })],
+      : [pull(200, { created_at: '2026-10-29T23:10:00Z', merged_at: '2026-10-30T00:00:00Z', body: 'Closes #7\nFixes #8\nSession: https://claude.ai/code/session_abc' })],
     'repos/o/r/pulls/200/commits': [{ commit: { committer: { date: '2026-10-29T23:00:00Z' } } }],
     'repos/o/r/pulls/200/reviews': [{ submitted_at: '2026-10-29T23:30:00Z' }],
     'repos/o/r/issues/7/events': [{ event: 'labeled', label: { name: 'bug' }, created_at: '2026-10-29T20:00:00Z' }],
-    'repos/o/r/issues/8/events': [{ event: 'labeled', label: { name: 'build-it' }, created_at: '2026-10-29T22:00:00Z' }, { event: 'labeled', label: { name: 'build-it' }, created_at: '2026-10-29T22:30:00Z' }],
+    'repos/o/r/issues/8/events': [{ event: 'labeled', label: { name: 'build-it' }, created_at: '2026-10-29T22:00:00Z' }, { event: 'labeled', label: { name: 'build-it' }, created_at: '2026-10-29T22:30:00Z' }, { event: 'labeled', label: { name: 'build-it' }, created_at: '2026-10-29T23:40:00Z' }],
+    'repos/o/r/issues/9/events': () => { throw new Error('HTTP 404') },
     'repos/o/r/actions/runs?': { total_count: 1, workflow_runs: [{ conclusion: 'success', head_branch: 'b200', head_sha: 's', created_at: 'c', updated_at: 'u', extra: 1 }] },
   })
   const { prs, runs } = fetchDelivery({ repo: 'o/r', limit: 51, api })
   assert.equal(prs.length, 51)
   assert.deepEqual(prs[0], {
-    number: 200, createdAt: '2026-10-29T00:00:00Z', mergedAt: '2026-10-30T00:00:00Z', headRefName: 'b200', body: 'Closes #7\nFixes #8\nSession: https://claude.ai/code/session_abc',
-    commits: [{ committedDate: '2026-10-29T23:00:00Z' }], reviews: [{ submittedAt: '2026-10-29T23:30:00Z' }], mergeCommit: { oid: 'm200' }, closes: [7, 8], labeledAt: '2026-10-29T22:00:00Z',
+    number: 200, createdAt: '2026-10-29T23:10:00Z', mergedAt: '2026-10-30T00:00:00Z', headRefName: 'b200', body: 'Closes #7\nFixes #8\nSession: https://claude.ai/code/session_abc',
+    commits: [{ committedDate: '2026-10-29T23:00:00Z' }], reviews: [{ submittedAt: '2026-10-29T23:30:00Z' }], mergeCommit: { oid: 'm200' }, closes: [7, 8], labeledAt: '2026-10-29T22:30:00Z',
   })
   assert.equal(prs[1].labeledAt, undefined)
   assert.deepEqual(runs, [{ conclusion: 'success', headBranch: 'b200', headSha: 's', createdAt: 'c', updatedAt: 'u' }])

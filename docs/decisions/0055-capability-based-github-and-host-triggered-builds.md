@@ -21,4 +21,4 @@ The maintainer wants to direct delivery from a phone, with the same Flow behavio
 
 ## Consequences
 
-Delivery skills detect GitHub capability per operation instead of probing `gh auth status`. The trigger's authorization rests on GitHub's write permission to add labels; the routine must filter on that label. Routines are a research preview; their limits and authorization details need dated evidence in `docs/agent-compatibility.md`. Cloud cost is visible only through the host's OpenTelemetry export; without it, cost stays unknown.
+Delivery skills detect GitHub capability per operation instead of probing `gh auth status`. Triage accounts can add labels too, so the label alone authorizes nothing: `build` checks the labeler's `write` or `admin` permission, ignores text from lower accounts, and stops when such text changed after the label. The routine must filter on that label. Routines are a research preview; their limits and authorization details need dated evidence in `docs/agent-compatibility.md`. Cloud cost is visible only through the host's OpenTelemetry export; without it, cost stays unknown.

@@ -61,8 +61,9 @@ export const TRIGGER_LABEL = 'build-it'
 export const sessionLink = (body) => SESSION_LINK.exec(body ?? '')?.[0] ?? null
 export const closedIssues = (body) => [...new Set([...String(body ?? '').matchAll(CLOSES)].map((m) => Number(m[1])))]
 
-// Earliest `build-it` labeled event among issue events (REST `issues/{n}/events`).
-export const labeledAt = (events) => events.filter((e) => e.event === 'labeled' && e.label?.name === TRIGGER_LABEL).map((e) => e.created_at).sort()[0]
+// Latest `build-it` labeled event (REST `issues/{n}/events`) at or before `before`, the one a build authorizes on.
+export const labeledAt = (events, before) =>
+  events.filter((e) => e.event === 'labeled' && e.label?.name === TRIGGER_LABEL && (!before || e.created_at <= before)).map((e) => e.created_at).sort().at(-1)
 
 // Summed cost of the --usage entries for a session link; an entry names the session by URL or by its last path segment.
 export function usageCost(usage, link) {
@@ -231,7 +232,10 @@ export function fetchDelivery({ repo, limit, api }) {
     const commits = pages(api, `repos/${repo}/pulls/${pr.number}/commits`, { max: 3 }).map((c) => ({ committedDate: c.commit?.committer?.date }))
     const reviews = pages(api, `repos/${repo}/pulls/${pr.number}/reviews`, { max: 3 }).map((r) => ({ submittedAt: r.submitted_at }))
     const closes = closedIssues(pr.body)
-    const labeled = closes.map((n) => labeledAt(pages(api, `repos/${repo}/issues/${n}/events`, { max: 5 }))).filter(Boolean).sort()[0]
+    const events = (n) => {
+      try { return pages(api, `repos/${repo}/issues/${n}/events`, { max: 5 }) } catch { return [] }
+    }
+    const labeled = closes.map((n) => labeledAt(events(n), pr.created_at)).filter(Boolean).sort()[0]
     return {
       number: pr.number, createdAt: pr.created_at, mergedAt: pr.merged_at, headRefName: pr.head?.ref, body: pr.body ?? '',
       commits, reviews, mergeCommit: { oid: pr.merge_commit_sha }, closes, ...(labeled ? { labeledAt: labeled } : {}),
