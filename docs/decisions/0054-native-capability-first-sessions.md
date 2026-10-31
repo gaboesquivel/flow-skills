@@ -1,6 +1,6 @@
 # 0054 — Native capabilities before Flow machinery
 
-Status: **Proposed** (2026-10-31). Spec: [045](../specs/045-native-observable-sessions.md). Extends [0017](0017-claude-code-skill-coexistence.md), [0052](0052-git-first-coordination.md) and [0053](0053-delivery-appetite-and-scope.md); preserves portable distribution and existing authorization boundaries.
+Status: **Accepted** (2026-10-31). Spec: [045](../specs/045-native-observable-sessions.md). Extends [0017](0017-claude-code-skill-coexistence.md), [0052](0052-git-first-coordination.md) and [0053](0053-delivery-appetite-and-scope.md); preserves portable distribution and existing authorization boundaries.
 
 ## Context
 
@@ -21,4 +21,4 @@ Prioritize Claude Code for validation and examples, with minimal Cursor compatib
 
 ## Consequences
 
-Host-specific behavior needs dated evidence and honest fallbacks. Native history and session relationships assist recovery but never replace Git and accepted documents. No runtime dependency or tracked session registry is introduced. This remains a proposal until spec acceptance; current owner documents and historical back-pointers do not change in this draft.
+Host-specific behavior needs dated evidence and honest fallbacks. Native history and session relationships assist recovery but never replace Git and accepted documents. No runtime dependency or tracked session registry is introduced. A session's unit is a vertical slice, and sessions the user starts by hand stay sibling work under [`write-agents` Sessions](../../skills/write-agents/SKILL.md#sessions). A host's own guidance on when an agent may start sessions wins over this preference.

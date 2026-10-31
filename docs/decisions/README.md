@@ -57,7 +57,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0051-design-skill.md](0051-design-skill.md) | Accepted | `design` compares rendered visual directions, the user chooses, and `DESIGN.md` records the approved one |
 | [0052-git-first-coordination.md](0052-git-first-coordination.md) | Accepted | Git-first independent-session ownership, worktree boundaries and best-effort discovery |
 | [0053-delivery-appetite-and-scope.md](0053-delivery-appetite-and-scope.md) | Accepted | Bounded delivery appetite, scope protection and economical parallelism |
-| [0054-native-capability-first-sessions.md](0054-native-capability-first-sessions.md) | Proposed | Native observable sessions, Claude Code validation priority and portable fallback |
+| [0054-native-capability-first-sessions.md](0054-native-capability-first-sessions.md) | Accepted | Native observable sessions, Claude Code validation priority and portable fallback |
 
 ## Rules
 
