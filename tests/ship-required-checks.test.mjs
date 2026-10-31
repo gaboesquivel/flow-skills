@@ -83,6 +83,24 @@ test('no active protection: every check on the head is required, and none at all
   assert.equal(none.ready, false)
 })
 
+test('no active protection: a skipped draft-time job (matrix not expanded) does not block the ready run that replaced it', () => {
+  const result = check({
+    [`${R}/rules/branches/main`]: [],
+    [`${R}/commits/${HEAD}/check-runs`]: { check_runs: [run('validate', 'skipped', 2), run('pr-title', 'skipped', 3), run('validate (ubuntu-latest, 22)', 'success', 5), run('pr-title', 'success', 6)] },
+  })
+  assert.equal(result.ready, true)
+  assert.deepEqual(result.required, ['pr-title', 'validate (ubuntu-latest, 22)'])
+})
+
+test('with protection, a required matrix check is missing while only the skipped draft job reported', () => {
+  const result = check({
+    [`${R}/rules/branches/main`]: [{ type: 'required_status_checks', parameters: { required_status_checks: [{ context: 'validate (ubuntu-latest, 22)' }] } }],
+    [`${R}/commits/${HEAD}/check-runs`]: { check_runs: [run('validate', 'skipped', 2)] },
+  })
+  assert.equal(result.ready, false)
+  assert.equal(stateOf(result, 'validate (ubuntu-latest, 22)'), 'missing')
+})
+
 test('a closed pull request or an unreadable route is refused', () => {
   assert.equal(check({ [`${R}/pulls/9`]: { number: 9, state: 'closed', draft: false, head: { sha: HEAD }, base: { ref: 'main' } } }).ready, false)
   assert.throws(() => check({ [`${R}/pulls/9`]: () => { throw new Error('HTTP 403') } }), ReadError)

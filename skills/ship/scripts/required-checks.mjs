@@ -41,8 +41,9 @@ export function evaluate({ api, repo, number }) {
   let required = [...new Set([...fromRules, ...fromClassic])]
   const source = [fromRules.length && 'rulesets', fromClassic.length && 'protection'].filter(Boolean).join('+') || 'none'
   if (source === 'none') {
-    required = [...latest.keys()]
-    reasons.push(`no active protection on ${branch}: every check reported on the head is treated as required`)
+    // A job skipped on a draft can report under another name (a matrix is not expanded), so its stale result is not a requirement.
+    required = [...latest.keys()].filter((context) => latest.get(context) !== 'skipped')
+    reasons.push(`no active protection on ${branch}: every check that ran on the head is treated as required`)
     if (!required.length) reasons.push('no checks reported on the head')
   }
 
