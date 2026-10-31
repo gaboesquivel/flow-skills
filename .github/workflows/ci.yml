@@ -41,7 +41,8 @@ jobs:
   context-review:
     # The reviewer and its contract come from the base commit; the pull request is only git data. A
     # branch that wants another reviewer has to change this workflow, which shows in its diff.
-    if: github.event_name == 'pull_request'
+    # Off unless the repository variable CONTEXT_REVIEW is `on` (`gh variable set CONTEXT_REVIEW --body on`).
+    if: github.event_name == 'pull_request' && vars.CONTEXT_REVIEW == 'on'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

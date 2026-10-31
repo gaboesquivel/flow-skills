@@ -984,6 +984,35 @@
         "verified_second_host": "not_executed"
       },
       "claimsLiveRun": false
+    },
+    {
+      "id": "E43",
+      "skills": [
+        "build",
+        "domain-modeling",
+        "review"
+      ],
+      "behavior": "An ambiguous request word resolves to the glossary term in code, tests, and agent interfaces without a question; a changed API route or MCP tool gets its focused contract check first; UI gets no test by default; the full suite runs once; a code-glossary conflict gets one question; a docs fix gets no test",
+      "taskFile": "tests/evals/tasks/E43-task.md",
+      "rubricFile": "tests/evals/rubrics/E43-rubric.md",
+      "skillReferences": [
+        "skills/build/SKILL.md",
+        "skills/domain-modeling/SKILL.md",
+        "skills/review/SKILL.md"
+      ],
+      "fixtureReferences": [
+        "tests/fixtures/e43-shared-language/README.md",
+        "tests/fixtures/e43-shared-language/GLOSSARY.md",
+        "tests/fixtures/e43-shared-language/lib/holds.mjs"
+      ],
+      "evidence": {
+        "structural_contract": "not_executed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
     }
   ]
 }

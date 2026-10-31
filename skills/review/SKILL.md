@@ -26,9 +26,9 @@ Read repository instructions and inspect Git status. Outside a Git repository, r
 
 Recover intent from the request, spec, tests, and decisions. Assess every axis the change can affect:
 
-- **Correctness:** intent match, regressions, failure paths, test coverage.
+- **Correctness:** intent match, regressions, failure paths, and test evidence as `build` Tests describes: a changed contract has a check that would fail without the change; a missing UI test is a finding only when the user or spec asked for one.
 - **Scope:** additions outside the accepted scope (unrelated refactors, dependencies, infrastructure, UI surfaces, test harnesses, new specs) and accepted behavior the change omits (`build`'s Scope guard). A dependency, surface, or infrastructure the accepted scope does not need blocks until the user accepts it; omitted accepted behavior is an `unmet` step. Judge content, not a changed-file count.
-- **Readability and simplicity:** names, complexity, dead code.
+- **Readability and simplicity:** names (a second name for a glossary concept is a finding, per `domain-modeling` Shared language), complexity, dead code.
 - **Architecture:** boundaries, duplication, conventions.
 - **Security:** trust boundaries, secrets, permissions.
 - **Performance:** scaling, repeated I/O, blocking paths.

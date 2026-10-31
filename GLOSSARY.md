@@ -100,6 +100,10 @@ One verifiable outcome cut through every layer it needs: a `to-tasks` task, or a
 
 The one representative end-to-end journey a spec names in its Testing Decisions: the actor, the starting state with realistic data, and numbered steps with the observable result of each, plus the same journey through the agent interface when the spec names agent users. A draft without one is not accepted: acceptance, and a "build it" or "ship it" on that draft, stops and names what is missing. [`to-spec`](skills/to-spec/SKILL.md) owns the rule; decisions [0032](docs/decisions/0032-local-build-lands-ship-verifies.md) and [0044](docs/decisions/0044-fast-delivery.md).
 
+## Focused check
+
+The smallest test that proves one behavior: it fails without the change, passes with it, and runs on its own with one command. Contracts (API routes, MCP tools) get theirs before the implementation; UI gets none by default. [`build`](skills/build/SKILL.md#tests) owns the rule; [decision 0056](docs/decisions/0056-contract-first-tests.md).
+
 ## Requirement verdict
 
 The status a spec review gives each step of the spec's acceptance scenario: **satisfied**, **unmet**, or **unresolved**, with cited evidence. No evidence means unresolved; unmet blocks the merge. Other unmet requirements are ordinary findings. [`review`](skills/review/SKILL.md#inspect) owns the rule; [spec 022](docs/specs/022-requirement-verdicts.md).

@@ -18,7 +18,7 @@ Work from the conversation. If the user passes a spec path, issue, or URL, read 
 
 ### 2. Explore the codebase (optional)
 
-When you have not already explored the codebase, read the areas the work touches to see the current state (fan-out rule: `write-agents` Workers). Task titles and descriptions should use the project glossary and respect decision records in the area you touch.
+When you have not already explored the codebase, read the areas the work touches to see the current state (fan-out rule: `write-agents` Workers). Task titles and descriptions use the project's terms (`domain-modeling` Shared language) and respect decision records in the area you touch.
 
 Look for prefactors that make the implementation easier: make the change easy, then make the easy change.
 
@@ -63,8 +63,8 @@ Report where the tasks live, each task with what it delivers and its area, and t
 
 **Blocked by:** the numbers or titles of tasks that gate this one, or "None (can start immediately)".
 
-- [ ] Acceptance criterion 1
-- [ ] Acceptance criterion 2
+- [ ] Observable behavior 1, with its focused check when one exists
+- [ ] Observable behavior 2
 
 </task-template>
 
