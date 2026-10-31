@@ -606,16 +606,25 @@ test('only http(s) github.com URLs become links', () => {
   assert.doesNotMatch(renderHtml(raw), /javascript:/u)
 })
 
-test('fetchGithub: two gh calls with argument arrays; failures become reasons, never throws', () => withRepo(async ({ dir, git }) => {
+// REST-shaped `gh api` responses, routed by endpoint.
+const restPull = (number, fields = {}) => ({ number, title: `PR ${number}`, state: 'open', head: { ref: `b${number}` }, base: { ref: 'main' }, html_url: `https://github.com/o/r/pull/${number}`, merged_at: null, merge_commit_sha: 'test-merge', body: null, ...fields })
+const restIssue = (number, fields = {}) => ({ number, title: `Issue ${number}`, state: 'open', html_url: `https://github.com/o/r/issues/${number}`, ...fields })
+const restRun = ({ pulls = [], issues = [] } = {}) => (args) => JSON.stringify(/\/pulls\?/u.test(args[1]) ? pulls : /\/issues\?/u.test(args[1]) ? issues : [])
+
+test('fetchGithub: REST gh api calls with argument arrays; failures become reasons, never throws', () => withRepo(async ({ dir, git }) => {
   assert.deepEqual(fetchGithub(dir, { run: () => { throw new Error('must not run') } }), { available: false, reason: 'no GitHub remote' })
   await git('remote', 'add', 'origin', 'git@github.com:o/r.git')
   const calls = []
-  const ok = fetchGithub(dir, { run: (args, options) => { calls.push({ args, options }); return args[0] === 'pr' ? '[{"number":1}]' : '[]' } })
-  assert.deepEqual(ok, { available: true, prs: [{ number: 1 }], issues: [], truncated: { prs: false, issues: false } })
-  assert.deepEqual(calls.map((call) => call.args.slice(0, 4)), [['pr', 'list', '--repo', 'o/r'], ['issue', 'list', '--repo', 'o/r']])
+  const ok = fetchGithub(dir, { run: (args, options) => { calls.push({ args, options }); return restRun({ pulls: [restPull(1)] })(args) } })
+  assert.deepEqual(ok, { available: true, prs: [{ number: 1, title: 'PR 1', state: 'OPEN', headRefName: 'b1', baseRefName: 'main', url: 'https://github.com/o/r/pull/1', mergedAt: null, mergeCommit: null, body: '' }], issues: [], truncated: { prs: false, issues: false } })
+  assert.deepEqual(calls.map((call) => call.args), [
+    ['api', 'repos/o/r/pulls?state=all&sort=created&direction=desc&per_page=100&page=1'],
+    ['api', 'repos/o/r/issues?state=all&sort=created&direction=desc&per_page=100&page=1'],
+  ])
   const fail = (error) => fetchGithub(dir, { run: () => { throw Object.assign(new Error('x'), error) } }).reason
   assert.equal(fail({ code: 'ENOENT' }), 'gh not installed')
   assert.equal(fail({ status: 4, stderr: 'To get started with GitHub CLI, please run:  gh auth login' }), 'gh not authenticated')
+  assert.equal(fail({ status: 1, stderr: 'gh: Forbidden (HTTP 403)' }), 'GitHub refused the request (HTTP 403): the token or a proxy blocks this API')
   assert.equal(fail({ code: 'ETIMEDOUT', signal: 'SIGTERM' }), 'GitHub request timed out')
   assert.equal(fail({ status: 1, stderr: 'HTTP 502' }), 'gh request failed')
   assert.equal(fetchGithub(dir, { run: () => 'not json' }).reason, 'unexpected gh output')
@@ -782,12 +791,12 @@ test('parseGithubRemote accepts github.com remotes only', () => {
   for (const [url, expected] of cases) assert.equal(parseGithubRemote(url), expected, url)
 })
 
-test('fetchGithub: host aliases resolve through gh repo view; other hosts get their own note', () => withRepo(async ({ dir, git }) => {
+test('fetchGithub: host aliases resolve through gh api placeholders; other hosts get their own note', () => withRepo(async ({ dir, git }) => {
   await git('remote', 'add', 'origin', 'git@github.com-work:o/r.git')
   const calls = []
-  const runAs = (url) => (args) => { calls.push(args.slice(0, 2).join(' ')); return args[0] === 'repo' ? JSON.stringify({ nameWithOwner: 'o/r', url }) : '[]' }
+  const runAs = (url) => (args) => { calls.push(args[1].split('?')[0]); return args[1] === 'repos/{owner}/{repo}' ? JSON.stringify({ full_name: 'o/r', html_url: url }) : '[]' }
   assert.equal(fetchGithub(dir, { run: runAs('https://github.com/o/r') }).available, true)
-  assert.deepEqual(calls, ['repo view', 'pr list', 'issue list'])
+  assert.deepEqual(calls, ['repos/{owner}/{repo}', 'repos/o/r/pulls', 'repos/o/r/issues'])
   assert.equal(fetchGithub(dir, { run: runAs('https://ghe.example.com/o/r') }).reason, 'remote is on ghe.example.com, links support github.com only')
   assert.equal(fetchGithub(dir, { run: () => { throw Object.assign(new Error('x'), { code: 'ENOENT' }) } }).reason, 'no GitHub remote')
 }))
@@ -797,7 +806,7 @@ test('GitHub note: list limits and stale data after a failed refresh', () => wit
   assert.match(deriveBoard({ ...snapshot({}), github: full }).githubNote, /latest 200 pull requests.*latest 500 issues/u)
   await git('remote', 'add', 'origin', 'https://github.com/o/r.git')
   let fail = false
-  const reader = githubReader({ run: (args) => { if (fail) throw Object.assign(new Error('x'), { stderr: 'HTTP 502' }); return args[0] === 'issue' ? '[{"number":45,"state":"OPEN","url":"https://github.com/o/r/issues/45"}]' : '[]' } })
+  const reader = githubReader({ run: (args) => { if (fail) throw Object.assign(new Error('x'), { stderr: 'HTTP 502' }); return restRun({ issues: [restIssue(45)] })(args) } })
   assert.equal(reader(dir).issues.length, 1)
   fail = true
   const stale = reader(dir)
@@ -868,7 +877,7 @@ test('live server never waits on a slow gh; links appear after the refresh resol
   const run = async (args) => {
     pendingCalls++
     await gate
-    return args[0] === 'issue' ? '[{"number":45,"state":"OPEN","url":"https://github.com/o/r/issues/45"}]' : '[]'
+    return restRun({ issues: [restIssue(45)] })(args)
   }
   const source = githubSource({ run, ttlMs: 60_000 })
   const live = await startServer({ repoRoot: dir, port: 0, memoMs: 0, github: source })
@@ -999,10 +1008,40 @@ test('status dropped, or a branch-only spec whose pull request closed unmerged, 
   assert.deepEqual(deriveBoard(snap).dropped.map((card) => card.number), ['050'], 'without GitHub only the status drops a spec')
 })
 
-test('fetchGithub reads issues without labels or close reasons', () => withRepo(async ({ dir, git }) => {
+test('fetchGithub reads issues without labels or close reasons, and drops pull requests from the issues endpoint', () => withRepo(async ({ dir, git }) => {
   await git('remote', 'add', 'origin', 'https://github.com/o/r.git')
-  const calls = []
-  fetchGithub(dir, { run: (args) => { calls.push(args); return '[]' } })
-  assert.deepEqual(calls.find((args) => args[0] === 'issue').at(-1).split(','), ['number', 'title', 'state', 'url'])
+  const { issues } = fetchGithub(dir, { run: restRun({ issues: [restIssue(7, { state: 'closed', labels: [{ name: 'x' }], state_reason: 'completed' }), restIssue(8, { pull_request: {} })] }) })
+  assert.deepEqual(issues, [{ number: 7, title: 'Issue 7', state: 'CLOSED', url: 'https://github.com/o/r/issues/7' }])
 }))
+
+test('fetchGithub maps REST states and pages up to the limits', () => withRepo(async ({ dir, git }) => {
+  await git('remote', 'add', 'origin', 'https://github.com/o/r.git')
+  const { prs } = fetchGithub(dir, { run: restRun({ pulls: [restPull(1, { state: 'closed', merged_at: '2026-10-29T00:00:00Z' }), restPull(2, { state: 'closed' }), restPull(3)] }) })
+  assert.deepEqual(prs.map((pr) => [pr.number, pr.state, pr.mergeCommit]), [[1, 'MERGED', { oid: 'test-merge' }], [2, 'CLOSED', null], [3, 'OPEN', null]])
+  // Every page full: pull requests stop at PR_LIMIT; issues interleaved with pull requests stop at the page cap.
+  const pages = []
+  const full = fetchGithub(dir, { run: (args) => {
+    const page = Number(/page=(\d+)$/u.exec(args[1])[1])
+    pages.push(`${args[1].split('?')[0]} ${page}`)
+    const n = (i) => page * 1000 + i
+    return JSON.stringify(Array.from({ length: 100 }, (_, i) => /pulls/u.test(args[1]) ? restPull(n(i)) : restIssue(n(i), i % 2 ? { pull_request: {} } : {})))
+  } })
+  assert.equal(full.prs.length, 200)
+  assert.equal(full.issues.length, 350)
+  assert.deepEqual(full.truncated, { prs: true, issues: true })
+  assert.equal(pages.filter((p) => p.includes('pulls')).length, 2)
+  assert.equal(pages.filter((p) => p.includes('issues')).length, 7)
+  // A short page ends the listing without truncation.
+  let calls = 0
+  const short = fetchGithub(dir, { run: (args) => { calls++; return JSON.stringify(/pulls/u.test(args[1]) && args[1].endsWith('page=1') ? Array.from({ length: 100 }, (_, i) => restPull(i + 1)) : [restPull(500)].filter(() => /pulls/u.test(args[1]))) } })
+  assert.equal(short.prs.length, 101)
+  assert.deepEqual(short.truncated, { prs: false, issues: false })
+  assert.equal(calls, 3)
+}))
+
+test('a 403 from the GitHub proxy keeps the git-only board and explains it in the header', () => {
+  const board = deriveBoard({ ...snapshot({ '020-widget.md': spec('020: Widget', 'draft') }), github: { available: false, reason: 'GitHub refused the request (HTTP 403): the token or a proxy blocks this API' } })
+  assert.equal(stageOf(board, '020'), 'specced')
+  assert.match(board.githubNote, /^GitHub links unavailable: GitHub refused the request \(HTTP 403\)/u)
+})
 })

@@ -43,6 +43,7 @@
 | E39 | start, flow | rewritten | not_executed | not_executed | not_executed | not_executed |
 | E40 | build, ship, write-agents | new | not_executed | not_executed | not_executed | not_executed |
 | E41 | build, write-agents | new | not_executed | not_executed | not_executed | not_executed |
+| E42 | build, ship | new | not_executed | not_executed | not_executed | not_executed |
 | E43 | build, domain-modeling, review | new | not_executed | not_executed | not_executed | not_executed |
 
 **State.** `current`: unchanged and still valid. `rewritten`: task, rubric, and behavior updated on 2026-10-29 to the outcome the current skills promise after [spec 031](../../docs/specs/031-fast-delivery.md); its structural result reset to `not_executed` because the old one graded removed wording. `new`: added for spec 031. `retired`: superseded by [decision 0044](../../docs/decisions/0044-fast-delivery.md); its files and recorded evidence are history and it is not graded (see [README](README.md#retired-scenarios)).
