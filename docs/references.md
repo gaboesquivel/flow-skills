@@ -172,6 +172,10 @@ User-selected references for the two planned writing skills; specific upstream r
 - [October 27 pre-0004 reviews (archive)](archive/2026-10-27-reviews/README.md) — direction review, distribution review, and retired bootstrap smoke notes.
 - [October 27 direction review, fourteen-skill catalog](research/2026-10-27-direction-review-14.md) — advisory review of `main` after decisions 0004–0009. Not an adopted decision.
 
+## Native agent sessions
+
+- [Native session capabilities](research/2026-10-31-native-sessions.md) — official Claude Code and Cursor documentation inspected 2026-10-31; candidate evidence for spec 045. Host execution, parent-child tree support and recovery remain unverified.
+
 ## Maintenance
 
 Add useful references here as they arise, with their purpose and a link to the relevant assessment. Record inspection dates, limitations, and any pinned revision in that assessment. Keep proposed influences distinct from accepted methodology; preserve source citations beside the claims they support.
