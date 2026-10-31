@@ -16,6 +16,14 @@ function parseArgs(argv) {
   return out
 }
 
+// CI makes no paid model calls: refuse at run time, whatever a workflow wires up.
+export function ciRefusal(env) {
+  const set = (value) => Boolean(value) && !['0', 'false'].includes(String(value).toLowerCase())
+  return set(env.CI) || set(env.GITHUB_ACTIONS)
+    ? 'Refusing to run the LLM context review in CI: CI makes no model calls. Run it locally on request.'
+    : null
+}
+
 export function gateContextReview({ verdict, findings }) {
   const list = Array.isArray(findings) ? findings : []
   const known = verdict === 'pass' || verdict === 'fail'
@@ -133,7 +141,11 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const apiBase = process.env.FLOW_REVIEW_API_BASE ?? 'https://api.openai.com/v1'
   const model = process.env.FLOW_REVIEW_MODEL ?? 'gpt-4o-mini'
 
-  if (!base) {
+  const refusal = ciRefusal(process.env)
+  if (refusal) {
+    console.error(refusal)
+    process.exitCode = 1
+  } else if (!base) {
     console.error('Usage: node scripts/run-context-review.mjs --base <sha> --head <sha> [--pr-number N]')
     process.exitCode = 1
   } else if (!apiKey) {

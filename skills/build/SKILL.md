@@ -60,11 +60,15 @@ One home. Judge once, at intake, before implementing; it never stops the work. E
 - **Small:** build runs one single-agent self-check on `review`'s axes, UI included when the diff changes what users see, with fix rounds.
 - **Escalated, or the user asked ("review it"):** the independent `review`, run in Verify.
 
+### Data changes
+
+One home. A change to stored data's shape ships as a versioned migration committed with the code, never a forced schema sync against a shared or deployed database. A destructive step (dropping or renaming a table or column, narrowing a type, rewriting existing rows) follows `to-tasks`' expand–contract sequence or waits for the user's yes, with its rollback or backup named. A deployment never seeds, resets, or truncates a deployed environment's data; seeds run only against local or disposable databases.
+
 ## Tests
 
 One home; `to-spec` and `review` link here. A testing policy stated in the project's `ARCHITECTURE.md` overrides this default.
 
-- **Contracts are test-first.** When the change adds or changes a contract (an API route, an MCP tool, or the domain function behind them), write its focused check first, run only that check and see it fail, then implement until it passes. The check covers what a caller depends on: input, result, the errors an agent can act on, and permissions; one check per behavior, not per function.
+- **Contracts are test-first.** When the change adds or changes a contract (an API route, an MCP tool, or the domain function behind them), write its focused check first, run only that check and see it fail, then implement until it passes. The check covers what a caller depends on: input, result, the errors an agent can act on, and permissions; one check per behavior, not per function. When several adapters (an API route, an MCP tool, an agent tool) expose one behavior, test the behavior once at the domain function and each adapter only for agreement: the same result, errors, events, and access.
 - **Other behavior** gets a focused check that fails without the change, written in any order. Internals behind a contract get no separate tests unless their logic is the risk.
 - **No UI tests by default.** Verify UI in the running app: the local dev server, or a preview deployed on request. Add a UI or end-to-end test only when the user or spec asks, or when the same UI regression returns.
 - **Focused, then full once.** While working, including the first failing run, run only the focused check (its file or test name, with the project's one-file command), never the full suite; the full suite runs once, in Verify.
