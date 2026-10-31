@@ -1,6 +1,6 @@
 # 0050 — GitHub governance preset
 
-Status: **Accepted** (2026-10-29). Builds on [0028](0028-build-and-ship.md) (no self-approval, no bypass) and [0049](0049-agent-does-the-work.md) (protection changes need the user's explicit request).
+Status: **Accepted** (2026-10-29). Builds on [0028](0028-build-and-ship.md) (no self-approval, no bypass) and [0049](0049-agent-does-the-work.md) (protection changes need the user's explicit request). Amended by [0057](0057-draft-workspace-ready-checks.md) (`flow-skills` no longer requires `context-review`; branch previews off).
 
 ## Context
 

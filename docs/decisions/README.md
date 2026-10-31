@@ -28,7 +28,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0022-start-runs-explore.md](0022-start-runs-explore.md) | Accepted (amended by 0039, 0044) | Speakable `start` runs `explore` beside the bootstrap; spec 001 full, later slices as candidates |
 | [0023-agent-first.md](0023-agent-first.md) | Accepted (amended by 0049) | Agent-first, API-first becomes an official principle; explore and to-spec apply it |
 | [0024-gated-hand-offs.md](0024-gated-hand-offs.md) | Accepted (amended by 0028, 0029) | Named hand-offs; explicit yes before spec writes, task publishing, and merging or pushing `main`; `start` explores at Lite (depth amended by 0026) |
-| [0025-wave-checkpoints.md](0025-wave-checkpoints.md) | Accepted (amended by 0028, 0029, 0031, 0042) | `ship` runs task sets in waves with a draft pull request, preview checkpoints, and a `Deploy:` target |
+| [0025-wave-checkpoints.md](0025-wave-checkpoints.md) | Accepted (amended by 0028, 0029, 0031, 0042, 0057) | `ship` runs task sets in waves with a draft pull request, preview checkpoints, and a `Deploy:` target |
 | [0026-process-depth.md](0026-process-depth.md) | Accepted (amended by 0029, 0030; superseded in part by 0036) | Lite or Full process recorded in the Flow block; `start` is Flow setup plus bootstrap; spec–decision boundary; "Flow Lite" label retired |
 | [0027-progress-board-skill.md](0027-progress-board-skill.md) | Accepted (amended by 0029, 0044) | Read-only `board` skill derived from git, with a `ship` run overlay |
 | [0028-build-and-ship.md](0028-build-and-ship.md) | Accepted (amended by 0029, 0030, 0032, 0042, 0044) | `build` opens a pull request with green checks; `ship` lands accepted specs and hotfixes with no confirmation; spec acceptance; `Deploy:` retired |
@@ -37,7 +37,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0031-fan-out-by-default.md](0031-fan-out-by-default.md) | Accepted (amended by 0042, 0043, 0044, 0053) | Skills run independent steps as parallel workers by default; per-axis spec review; tasks declare an area |
 | [0032-local-build-lands-ship-verifies.md](0032-local-build-lands-ship-verifies.md) | Accepted (amended by 0033, 0034, 0040, 0044) | Local `build` reviews and merges into local `main`; `ship` publishes, then verifies the shipped commit's deployment with the spec's acceptance scenario; specs require one; discovery depth and delivery asked as independent questions (verification changed by 0040) |
 | [0033-shared-files-and-reviewed-head.md](0033-shared-files-and-reviewed-head.md) | Superseded by 0044 | Shared-file appends are committed on the spec branch and do not move the reviewed head |
-| [0034-no-ceremony-without-a-spec.md](0034-no-ceremony-without-a-spec.md) | Accepted (amended by 0039, 0044) | Unspecced work gets the local suite and one self-check, no spec gate or review workers; `build` owns the size guard |
+| [0034-no-ceremony-without-a-spec.md](0034-no-ceremony-without-a-spec.md) | Accepted (amended by 0039, 0044, 0057) | Unspecced work gets the local suite and one self-check, no spec gate or review workers; `build` owns the size guard |
 | [0035-spec-issue-on-acceptance.md](0035-spec-issue-on-acceptance.md) | Superseded by 0044 | "Spec it" publishes nothing; the spec issue opens at "accept the spec", or early on "share the draft" |
 | [0036-one-explore-depth.md](0036-one-explore-depth.md) | Accepted (amended by 0044) | One `explore` depth with a pre-mortem; `competitors` and `jtbd` on request; setup asks only for delivery |
 | [0037-git-for-delivery-github-for-github-mode.md](0037-git-for-delivery-github-for-github-mode.md) | Accepted (amended by 0044, 0055) | Thinking skills need nothing, the delivery chain needs Git, GitHub mode needs GitHub; no repository offers `git init`; `Delivery: github` or `local` |
@@ -47,19 +47,20 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0041-align-skill.md](0041-align-skill.md) | Accepted | Read-only `align` skill checks the product against its vision, problems, metrics, and roadmap |
 | [0042-outcome-build-and-ship.md](0042-outcome-build-and-ship.md) | Accepted (amended by 0044, 0056) | `build` and `ship` state outcomes, reasons, and proofs; workers, scheduling, and test order are choices |
 | [0043-workers-when-they-pay.md](0043-workers-when-they-pay.md) | Accepted (amended by 0044, 0053) | Workers only where they pay; one green run per head; re-review covers the fix |
-| [0044-fast-delivery.md](0044-fast-delivery.md) | Accepted (amended by 0048, 0052, 0053, 0055) | Checks once at PR time, review when it pays; one delivery shape, inferred mode, no spec issue, parallel by default, zero lost work, shipped means deployed |
+| [0044-fast-delivery.md](0044-fast-delivery.md) | Accepted (amended by 0048, 0052, 0053, 0055, 0057) | Checks once at PR time, review when it pays; one delivery shape, inferred mode, no spec issue, parallel by default, zero lost work, shipped means deployed |
 | [0045-templates-pin-flow-skills.md](0045-templates-pin-flow-skills.md) | Accepted | Template skills locks pin flow-skills; Flow owns workflow, overlapping third-party workflow skills dropped |
 | [0046-measurement-assistance.md](0046-measurement-assistance.md) | Accepted | Read-only `measure` skill; measurement defined in `explore`, made actionable in `to-spec`; assistance, not analytics or a ship gate |
 | [0047-trusted-review-and-local-record-checks.md](0047-trusted-review-and-local-record-checks.md) | Accepted | `context-review` runs base-commit code with the head as data; API outages do not block; record index checks move to `pnpm validate`; the `alignment` job is removed |
-| [0048-delivery-phrases-are-approvals.md](0048-delivery-phrases-are-approvals.md) | Accepted (amended by 0055) | "Push it", "build it", and "ship it" are approvals with narrow triggers; build reviews, checks, and verifies the branch; light liveness at every depth |
+| [0048-delivery-phrases-are-approvals.md](0048-delivery-phrases-are-approvals.md) | Accepted (amended by 0055, 0057) | "Push it", "build it", and "ship it" are approvals with narrow triggers; build reviews, checks, and verifies the branch; light liveness at every depth |
 | [0049-agent-does-the-work.md](0049-agent-does-the-work.md) | Accepted | The agent does the work: CLI, MCP, API, then browser; hands the user only sign-in, secrets, payment, consent, or permission changes, once |
-| [0050-github-governance-preset.md](0050-github-governance-preset.md) | Accepted | One GitHub governance preset: protected default branch, squash only, required checks, no bypass; `start` applies it |
+| [0050-github-governance-preset.md](0050-github-governance-preset.md) | Accepted (amended by 0057) | One GitHub governance preset: protected default branch, squash only, required checks, no bypass; `start` applies it |
 | [0051-design-skill.md](0051-design-skill.md) | Accepted | `design` compares rendered visual directions, the user chooses, and `DESIGN.md` records the approved one |
 | [0052-git-first-coordination.md](0052-git-first-coordination.md) | Accepted | Git-first independent-session ownership, worktree boundaries and best-effort discovery |
 | [0053-delivery-appetite-and-scope.md](0053-delivery-appetite-and-scope.md) | Accepted | Bounded delivery appetite, scope protection and economical parallelism |
 | [0054-native-capability-first-sessions.md](0054-native-capability-first-sessions.md) | Accepted | Native observable sessions, Claude Code validation priority and portable fallback |
 | [0055-capability-based-github-and-host-triggered-builds.md](0055-capability-based-github-and-host-triggered-builds.md) | Accepted | GitHub mode through any reachable route; optional label-triggered cloud builds; cloud-ready repository setup |
 | [0056-contract-first-tests.md](0056-contract-first-tests.md) | Accepted | API routes and MCP tools are test-first; no UI tests by default; `ARCHITECTURE.md` may set its own policy |
+| [0057-draft-workspace-ready-checks.md](0057-draft-workspace-ready-checks.md) | Accepted | One draft pull request per spec; drafts run no CI or previews; ready runs checks; `ship` counts only checks that ran; no git hooks |
 
 ## Rules
 
