@@ -47,11 +47,24 @@ When a skill's value is uncertain or a meaningful change to it is proposed, the 
 
 A pipeline check on a local Ollama model, not evidence about skill value ([spec 049](../../docs/specs/049-local-evaluation.md)). It runs E43 request 3 ("Fix the typo in README; build it.") once per condition. Never run it in CI.
 
-1. Start a loopback server for the session only: `OLLAMA_HOST=127.0.0.1:11434 OLLAMA_NO_CLOUD=1 ollama serve`. Its log must say `Ollama cloud disabled: true`. For a Claude Code run, add `OLLAMA_CONTEXT_LENGTH=65536`; the default is 4K and Ollama recommends 64K+ for the host.
-2. Copy the [E43 fixture](../fixtures/e43-shared-language/README.md) outside any repository, change `copies` to `copeis` in its README, and commit once. Copy that repository once per condition.
-3. Flow condition: system text is the fixture's `AGENTS.md` plus `skills/build/SKILL.md`. No-Flow: `AGENTS.md` without the Flow block. The user prompt in both is the README followed by the request.
-4. Run each condition in turn under a macOS sandbox that allows outbound network to localhost only (`(deny network-outbound)`, then `(allow network-outbound (remote ip "localhost:*"))`):
-   `node scripts/local-probe.mjs --model qwen2.5-coder:0.5b --prompt-file prompt.txt --system-file system-<condition>.txt --num-ctx 32768 --out probe-<condition>.json`
+The helper's own checks: `node --test tests/local-probe.test.mjs` (mocked transport, no model).
+
+1. Install Ollama (`brew install ollama`), start a loopback server for the session only with `OLLAMA_HOST=127.0.0.1:11434 OLLAMA_NO_CLOUD=1 ollama serve`, and confirm its log says `Ollama cloud disabled: true`. For a Claude Code run, add `OLLAMA_CONTEXT_LENGTH=65536`; the default is 4K and Ollama recommends 64K+ for the host. Then `ollama pull qwen2.5-coder:0.5b` and record digests with `ollama list`.
+2. Copy the [E43 fixture](../fixtures/e43-shared-language/README.md) outside any repository, change `copies` to `copeis` in its README, and commit once. Copy that repository once per condition; run each condition from its copy.
+3. Build the inputs from that commit:
+   - `prompt.txt`: `README.md:`, the README in a fenced block, a blank line, then `Fix the typo in README; build it.`
+   - `system-flow.txt`: the fixture's `AGENTS.md`, a line `---`, then `skills/build/SKILL.md`.
+   - `system-noflow.txt`: `sed '/<!-- BEGIN FLOW -->/,/<!-- END FLOW -->/d' AGENTS.md`.
+4. Save this profile as `local-only.sb`:
+   ```
+   (version 1)
+   (allow default)
+   (deny network-outbound)
+   (allow network-outbound (remote ip "localhost:*"))
+   (allow network-outbound (remote unix-socket))
+   ```
+   Check it: `sandbox-exec -f local-only.sb curl -sm5 https://example.com` must fail. Then run each condition in turn:
+   `sandbox-exec -f local-only.sb node scripts/local-probe.mjs --model qwen2.5-coder:0.5b --prompt-file prompt.txt --system-file system-<condition>.txt --num-ctx 32768 --out probe-<condition>.json`
 5. Stop the server, keep traces in `.cache/local-eval/`, and write a record. A reply that does not name the `copeis` → `copies` fix is a failure.
 
 ## Records

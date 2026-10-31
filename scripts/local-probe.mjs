@@ -19,7 +19,7 @@ export function checkEndpoint(endpoint) {
 }
 
 export function checkModel(model) {
-  if (!model || /(^|[:-])cloud$/u.test(model)) throw new Error(`model is not a local model: ${model}`)
+  if (!model || /(^|[:-])cloud$/iu.test(model)) throw new Error(`model is not a local model: ${model}`)
   return model
 }
 
@@ -28,19 +28,20 @@ export async function probe({ endpoint, model, system, prompt, timeoutMs = 300_0
   checkModel(model)
   const messages = [...(system ? [{ role: 'system', content: system }] : []), { role: 'user', content: prompt }]
   const request = { model, messages, stream: false, options: { temperature: 0, seed: 0, num_predict: numPredict, ...(numCtx ? { num_ctx: numCtx } : {}) } }
-  const trace = { endpoint: `${origin}/api/chat`, request, startedAt: new Date(now()).toISOString() }
+  const trace = { endpoint: `${origin}/api/chat`, request, timeoutMs, startedAt: new Date(now()).toISOString() }
   const started = now()
   try {
     const response = await fetchImpl(trace.endpoint, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(request), redirect: 'error', signal: AbortSignal.timeout(timeoutMs) })
     trace.status = response.status
     const text = await response.text()
     let body
-    try { body = JSON.parse(text) } catch { return { ...trace, elapsedMs: now() - started, outcome: 'failure', error: 'malformed response', raw: text } }
-    if (!response.ok || typeof body?.message?.content !== 'string') return { ...trace, elapsedMs: now() - started, outcome: 'failure', error: body?.error ?? 'no message content', response: body }
+    try { body = JSON.parse(text) } catch { return { ...trace, elapsedMs: now() - started, outcome: 'failure', error: response.ok ? 'malformed response' : `HTTP ${response.status}`, raw: text } }
+    if (!response.ok) return { ...trace, elapsedMs: now() - started, outcome: 'failure', error: `HTTP ${response.status}: ${body?.error ?? 'no error message'}`, response: body }
+    if (typeof body?.message?.content !== 'string') return { ...trace, elapsedMs: now() - started, outcome: 'failure', error: 'no message content', response: body }
     return { ...trace, elapsedMs: now() - started, outcome: 'completed', truncated: body.done_reason === 'length', response: body }
   } catch (error) {
     const timedOut = error?.name === 'TimeoutError' || error?.name === 'AbortError'
-    return { ...trace, elapsedMs: now() - started, outcome: 'failure', error: timedOut ? `timeout after ${timeoutMs} ms` : String(error?.message ?? error) }
+    return { ...trace, elapsedMs: now() - started, outcome: 'failure', error: timedOut ? `timeout after ${timeoutMs} ms` : [error?.message ?? String(error), error?.cause?.code].filter(Boolean).join(': ') }
   }
 }
 
@@ -54,11 +55,23 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     console.error('usage: node scripts/local-probe.mjs --model <local model> --prompt-file <file> --out <trace.json> [--system-file <file>]')
     process.exit(2)
   }
-  const trace = await probe({
+  const positive = (name) => {
+    const value = Number(values[name])
+    if (!Number.isInteger(value) || value <= 0) { console.error(`--${name} must be a positive integer`); process.exit(2) }
+    return value
+  }
+  const options = {
     endpoint: values.endpoint, model: values.model,
     prompt: readFileSync(values['prompt-file'], 'utf8'), system: values['system-file'] ? readFileSync(values['system-file'], 'utf8') : undefined,
-    timeoutMs: Number(values['timeout-ms']), numPredict: Number(values['num-predict']), numCtx: values['num-ctx'] ? Number(values['num-ctx']) : undefined,
-  })
+    timeoutMs: positive('timeout-ms'), numPredict: positive('num-predict'), numCtx: values['num-ctx'] ? positive('num-ctx') : undefined,
+  }
+  let trace
+  try { trace = await probe(options) } catch (error) {
+    trace = { endpoint: options.endpoint, model: options.model, outcome: 'rejected', error: error.message }
+    writeFileSync(values.out, `${JSON.stringify(trace, null, 2)}\n`)
+    console.error(`rejected: ${error.message} -> ${values.out}`)
+    process.exit(2)
+  }
   writeFileSync(values.out, `${JSON.stringify(trace, null, 2)}\n`)
   console.log(`${trace.outcome}${trace.error ? `: ${trace.error}` : ''} (${trace.elapsedMs} ms) -> ${values.out}`)
   process.exit(trace.outcome === 'completed' ? 0 : 1)
