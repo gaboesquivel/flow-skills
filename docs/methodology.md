@@ -80,6 +80,6 @@ Latest recorded run: [2026-10-27 start bootstrap](../tests/smoke/2026-10-27-star
 
 ## Maintain shared language
 
-Use [GLOSSARY.md](../GLOSSARY.md) for project-specific meanings. Apply discipline through discussion and examples, informed by [domain language research](research/2026-10-20-domain-language.md). When terms or consequential naming choices need active refinement, invoke the [`domain-modeling`](../skills/domain-modeling/SKILL.md) skill explicitly.
+Use [GLOSSARY.md](../GLOSSARY.md) for project-specific meanings. Apply discipline through discussion and examples, informed by [domain language research](research/2026-10-20-domain-language.md). Every skill names things with resolved glossary terms, in specs, interfaces, code, and tests ([`domain-modeling` Shared language](../skills/domain-modeling/SKILL.md#shared-language)). When terms or consequential naming choices need active refinement, invoke the [`domain-modeling`](../skills/domain-modeling/SKILL.md) skill explicitly.
 
 Add a term when local meaning or ambiguity cannot be safely inferred. Record a meaning when resolved and update affected documentation and skill instructions when present. Loading the glossary does not require editing it; routine clarification does not require a decision record.

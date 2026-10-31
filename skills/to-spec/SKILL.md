@@ -34,7 +34,7 @@ A draft without an acceptance scenario, or without an **Exposure** line when it 
 
 ## Process
 
-1. Explore the repository only for what the conversation does not already hold (fan-out rule: `write-agents` Workers): existing specs and decisions, code seams and tests, and the glossary. Use the project's domain vocabulary. Before writing, check for contradictions with accepted decisions, specs, and `PRODUCT.md` (a goal that would reverse or narrow an Accepted decision, an accepted spec, or a `PRODUCT.md` fact stops for an explicit yes, as `explore`'s Direction changes describes), asking only about conflicts not already confirmed in this conversation or in a Proposed record on the current branch.
+1. Explore the repository only for what the conversation does not already hold (fan-out rule: `write-agents` Workers): existing specs and decisions, code seams and tests, and the glossary. Name things with the project's terms (`domain-modeling` Shared language). Before writing, check for contradictions with accepted decisions, specs, and `PRODUCT.md` (a goal that would reverse or narrow an Accepted decision, an accepted spec, or a `PRODUCT.md` fact stops for an explicit yes, as `explore`'s Direction changes describes), asking only about conflicts not already confirmed in this conversation or in a Proposed record on the current branch.
 
 2. Sketch test seams at the highest practical level. Prefer existing seams.
 
@@ -71,6 +71,8 @@ When a prototype encodes a decision more precisely than prose (state machine, sc
 ## Testing Decisions
 
 What good tests mean here, which behavior is in scope, and prior art in the codebase.
+
+**Behavior and checks:** the observable behavior at the contract as concrete examples with realistic domain data, the invariants that must always hold, and the focused check that proves each (the seam, and the command that runs only it). State behavior, not implementation steps. UI is verified in the preview, not by UI tests, unless the user asks (`build` Tests).
 
 **Acceptance scenario** (required; `review` gives each step a verdict): one representative end-to-end journey. Name the actor, the starting state with realistic data, and numbered steps with the observable result of each. When the spec names agent users, give the same journey through the agent interface (MCP tool). When the work should move a defined metric or journey, reference its definition, name the source or instrumentation and calculation, and add a step proving an outcome is counted correctly: failures excluded, retries and duplicates counted once, human and agent attributed when that changes the count. Reuse existing collection; label unknowns instead of assuming infrastructure. Unrelated work gets no measurement.
 

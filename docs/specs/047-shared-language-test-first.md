@@ -45,7 +45,7 @@ Each rule gets one home; other skills link to it with a clause, never a copy.
 - **Decision record.** Item 3 prescribes test order for contracts, which amends 0042 items 1 and 5. [Decision 0056](../decisions/0056-contract-first-tests.md) records it as **Proposed**; back-pointers on 0042 land at acceptance.
 - **Glossary writes.** `build` and `to-spec` may add or update a resolved term in the same commit as the work that resolves it; `domain-modeling`'s format applies. Neither writes an entry for a term used once.
 - **Flow's own context.** [Methodology: Maintain shared language](../methodology.md#maintain-shared-language) links to the new `domain-modeling` section instead of restating it. [Principles: Agentic](../principles.md#agentic) gains one sentence linking contract-first tests to `build`. `GLOSSARY.md` gains **Focused check**. `PRODUCT.md` is unchanged: principles 5 and 8 already cover it.
-- **Smoke contracts.** `tests/smoke-contracts.test.mjs` pins the three homes, the contract test-first rule, the UI default, and the `ARCHITECTURE.md` override.
+- **Eval scenario.** E43 (`tests/evals/`) holds the task, rubric, and fixture for the acceptance scenario. `tests/smoke-contracts.test.mjs` stays limited to safety rules, as [spec 031](031-fast-delivery.md) left it, so these rules get no wording pins.
 - **Exposure:** none. This changes skill text only, with no deployable behavior.
 
 ## Testing Decisions
@@ -56,7 +56,7 @@ Structural pins catch a lost rule; they do not show an agent follows it. The pro
 - `GLOSSARY.md` defining **Hold** ("a member's claim on a copy that expires three days after it is placed; a hold can be extended once, by three days") and **Loan**;
 - `lib/holds.mjs` with `placeHold`, a `POST /holds` route, and a `place_hold` MCP tool;
 - a static holds page;
-- a `node --test` suite of about 20 tests in several files;
+- a small `node --test` suite in several files;
 - a test-command line in `AGENTS.md` that shows how to run one file.
 
 **Acceptance scenario.** Actor: a maintainer talking to an agent with Flow installed, starting on a clean branch of the fixture.
