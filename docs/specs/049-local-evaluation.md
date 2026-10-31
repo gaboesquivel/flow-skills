@@ -1,6 +1,6 @@
 # 049 — Local evaluation on Apple Silicon
 
-Status: draft (2026-10-31).
+Status: accepted (2026-10-31).
 Execution: spec/049-local-evaluation; isolated worktree `.worktrees/049-local-evaluation`. Integration owner: unassigned; the session that runs "build it" takes it.
 
 ## Problem Statement
