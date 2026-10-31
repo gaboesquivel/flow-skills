@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Shell(gh:pr view *)",
+      "Shell(gh:pr checks *)",
+      "Shell(gh:pr create *)",
+      "Shell(gh:pr edit *)",
+      "Shell(gh:pr merge *)",
+      "Shell(gh:run view *)",
+      "Shell(gh:run watch *)",
+      "Shell(pnpm:validate)",
+      "Shell(pnpm:test)",
+      "Shell(pnpm:metrics)",
+      "Shell(pnpm:metrics *)"
+    ],
+    "deny": []
+  }
+}
