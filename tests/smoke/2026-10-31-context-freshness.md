@@ -13,4 +13,6 @@ Scenario: [spec 044](../../docs/specs/044-context-and-human-experience.md) accep
 
 Fixes from the run: `write-agents` now places prompt logs beside the progress note and ignored, says how to redact (`[REDACTED]`, keeping the key name), and treats a note whose session or worktree is gone as unknown history; the Handoff digest also covers a build stopped before its first write.
 
+**Re-run after review.** The first run told the agent to read Context freshness. After `build` and `explore` were changed to route there, a second fresh agent got only `build` and the instruction to follow its references. It opened `write-agents` Sessions and Context freshness and `tldr`'s Handoff digest on its own. It labeled every relevant document by status and location, and stopped before the first write with a digest and a three-way question. Step 1 is satisfied without prompting.
+
 Limits: one model and host; the agent was told it was a fresh session; no live build followed the preflight.
