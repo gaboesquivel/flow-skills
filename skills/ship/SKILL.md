@@ -59,4 +59,4 @@ Only the user's own request drops a spec ("drop the spec", naming it or with it 
 
 ## Output
 
-Stop on an unresolvable spec, a branch `build` could not verify, refused merge or push, or protection that cannot be met; never report shipped when a gate failed. Report delivery state, shipped scope against accepted scope (deferred items, and any accepted behavior not delivered; `build`'s Scope guard), the verified head (checks and review), any `unresolved` scenario steps, landing result, liveness, and work in flight, including on a stop.
+Stop on an unresolvable spec, a branch `build` could not verify, refused merge or push, or protection that cannot be met; never report shipped when a gate failed. Report, led by `tldr`'s Handoff digest, delivery state, shipped scope against accepted scope (deferred items, and any accepted behavior not delivered; `build`'s Scope guard), the verified head (checks and review), any `unresolved` scenario steps, landing result, liveness, and work in flight, including on a stop.

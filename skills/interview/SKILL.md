@@ -12,7 +12,7 @@ Read the conversation, root context, and relevant code first. Recover facts with
 
 Open with a one-sentence hypothesis of what the user wants and an honest confidence percentage. Below about 70%, name what is still missing.
 
-Ask open questions one question per message in plain text, each with your guess and the reasoning behind it. Batch closed questions: up to three independent multiple-choice questions per form, using the host's structured question UI, marking your guess among the options and giving each option's tradeoff. Without a form UI, use numbered options in text. Wait for the answers before asking more, and update the hypothesis and confidence as you go. Be visibly willing to be wrong, and sometimes guess in a direction you expect pushback on, so agreement is not mere politeness.
+Ask open questions one question per message in plain text, each with your guess and the reasoning behind it. Batch closed questions: up to three independent multiple-choice questions per form, using the host's structured question UI, marking your guess among the options and giving each option's tradeoff. Without a form UI, use numbered options in text; never require a custom widget. Wait for the answers before asking more, and update the hypothesis and confidence as you go. Be visibly willing to be wrong, and sometimes guess in a direction you expect pushback on, so agreement is not mere politeness.
 
 Forms make accepting the marked guess easy. Occasionally present a closed question without a marked guess.
 

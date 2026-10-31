@@ -1,6 +1,6 @@
 # 044 — Fresh agent context and visual human experience
 
-Status: **draft** (2026-10-31)  
+Status: **implemented** (2026-10-31)  
 Repository: `gaboesquivel/flow-skills`  
 Priority: **P2 — after coordination + scope policy**  
 Dependencies: specs 042 and 043's ownership, artifact and budget conventions.
@@ -55,11 +55,11 @@ No hosted memory service, SQLite/MCP coordination layer inside Skills, mandatory
 
 ## Tasks
 
-- [ ] 01: Establish selective context refresh and separate document status from Git location. **Area:** skills, docs, repository root. **Blocked by:** landed 042; reconcile against 043 before final delivery. Proof: a draft on main does not override accepted policy, and recovery notes do not override current evidence.
-- [ ] 02: Apply concise handoff summaries and clarify optional logging safeguards. **Area:** skills, docs. **Blocked by:** 01. Proof: meaningful handoffs expose outcome, remaining work and evidence without duplicate documents or mandatory visual widgets.
+- [x] 01: Establish selective context refresh and separate document status from Git location. **Area:** skills, docs, repository root. **Blocked by:** landed 042; reconcile against 043 before final delivery. Proof: a draft on main does not override accepted policy, and recovery notes do not override current evidence.
+- [x] 02: Apply concise handoff summaries and clarify optional logging safeguards. **Area:** skills, docs. **Blocked by:** 01. Proof: meaningful handoffs expose outcome, remaining work and evidence without duplicate documents or mandatory visual widgets.
 
 ## Delivery and session boundary
 
-Session B may inspect and prepare this spec while session A implements 043. Do not independently rewrite 043's scope, budget, artifact or scheduling policy. Keep proposed shared-file edits on B's isolated branch and list overlaps. After 043 lands, incorporate its changes without rewriting remote history, reconcile the overlapping skills/docs, then review and check the final head. Land 044 only after 043.
+Delivered by session A after the maintainer made it the sole implementation owner for 042–044, with an independent session B review; the sequencing below is the original plan. Session B may inspect and prepare this spec while session A implements 043. Do not independently rewrite 043's scope, budget, artifact or scheduling policy. Keep proposed shared-file edits on B's isolated branch and list overlaps. After 043 lands, incorporate its changes without rewriting remote history, reconcile the overlapping skills/docs, then review and check the final head. Land 044 only after 043.
 
-Use existing context-ownership and visual-summary decisions unless a new cross-cutting choice emerges. No automatic third decision record. One bounded PR, representative context and handoff scenarios, and repository-required checks. Additional host trials are optional and report availability; no required UI screenshot matrix, baseline comparison or new logging infrastructure.
+Use existing context-ownership and visual-summary decisions unless a new cross-cutting choice emerges. No automatic third decision record. One bounded PR, representative context and handoff scenarios ([recorded run](../../tests/smoke/2026-10-31-context-freshness.md)), and repository-required checks. Additional host trials are optional and report availability; no required UI screenshot matrix, baseline comparison or new logging infrastructure.

@@ -39,6 +39,8 @@ Choose the lightest record that does the job:
 | Issue | Only when someone asks for one; it links a spec rather than copying it |
 | Pull request | One coherent deliverable with its evidence, normally one per spec |
 
+A record's status and its location are separate facts ([`write-agents` Context freshness](../skills/write-agents/SKILL.md#context-freshness)).
+
 Progress and ownership are Git evidence: branches, worktrees, pull requests, and spec status. Keep no tracked session registry or shared progress log ([0052](decisions/0052-git-first-coordination.md)).
 
 Keep the current product, design, architecture, and shared language in that project's root `PRODUCT.md`, `DESIGN.md`, `ARCHITECTURE.md`, and `GLOSSARY.md`. Use the [`flow`](../skills/flow/SKILL.md) skill or manual edits to align them after meaningful changes. Do not copy this repository's Flow identity into an adopter `PRODUCT.md`. Do not require PRD, PDR, or ADR parallel trees. Do not treat `flow` as a template initializer. Optional template initialization may use the [`start`](../skills/start/SKILL.md) skill ([0010](decisions/0010-optional-start-skill.md)) or GitHub **Use this template** on flow-next or flow-mono.

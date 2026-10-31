@@ -48,7 +48,7 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [041-skill-evaluation.md](041-skill-evaluation.md)
 - [042-git-first-coordination.md](042-git-first-coordination.md) (implemented)
 - [043-defensive-delivery.md](043-defensive-delivery.md) (implemented)
-- [044-context-and-human-experience.md](044-context-and-human-experience.md) (draft; after 042 and 043)
+- [044-context-and-human-experience.md](044-context-and-human-experience.md) (implemented)
 
 Significant standalone decisions belong in `docs/decisions/`, not in a spec. See [decisions](../decisions/README.md).
 

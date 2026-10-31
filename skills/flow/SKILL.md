@@ -23,7 +23,7 @@ This skill runs when the user asks or invokes `/flow`, or when `build` and `revi
 
 ## Process
 
-1. Read `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` when present, with parallel tool calls. Read relevant `docs/specs/` and `docs/decisions/` records only when they clarify the area you are aligning.
+1. Read `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` when present, with parallel tool calls. Read relevant `docs/specs/` and `docs/decisions/` records only when they clarify the area you are aligning. Align root files to accepted intent only; a draft spec or Proposed decision, even on the default branch, is labeled as a proposal, never written in as current (`write-agents` Context freshness).
 2. Update only sections affected by the change, with one writer per root file. Keep `DESIGN.md` consistent with what shipped; choosing a new visual direction is `design`'s. Keep one home per fact; link to specs, decisions, or code instead of duplicating detail that is cheap to rediscover.
 3. Create a root file only when it would hold meaningful content about the current project. Do not scaffold empty trees, Flow methodology boilerplate, or parallel trackers (no PRD/PDR/ADR folders).
 

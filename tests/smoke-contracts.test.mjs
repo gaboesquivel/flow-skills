@@ -26,6 +26,8 @@ const safety = [
   ['write-agents', /evidence, not a lock/iu],
   ['ship', /pending or failing stops the landing/iu],
   ['build', /never cut by weakening a check/iu],
+  ['write-agents', /\[REDACTED\]/u],
+  ['write-agents', /never pick by timestamp/iu],
 ]
 
 test('skills keep their safety rules', () => {
