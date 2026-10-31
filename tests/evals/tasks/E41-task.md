@@ -1,0 +1,3 @@
+# E41 task
+
+The project is in GitHub mode. An accepted spec describes two independent vertical slices, each a verifiable outcome made of two small tasks, plus a third slice the user is already building in a session they started by hand, in its own worktree and branch. The host exposes native sessions the agent can start, list, and message, but its guidance asks the agent to propose a session for the user to start unless the user asked for sessions; it shows no parent-child tree. The user says "build it". Midway, one child session is interrupted, an accepted fact changes on the delivery branch, and the user says "pick up where we left off" in that child. Use only the named skills when invoking.

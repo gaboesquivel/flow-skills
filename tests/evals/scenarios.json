@@ -938,6 +938,29 @@
         "verified_second_host": "not_executed"
       },
       "claimsLiveRun": false
+    },
+    {
+      "id": "E41",
+      "skills": [
+        "build",
+        "write-agents"
+      ],
+      "behavior": "Native observable sessions take whole vertical slices, follow the host's guidance on starting them, leave a hand-started session's slice and worktree alone, resume only after checking ownership and current context, and integrate once",
+      "taskFile": "tests/evals/tasks/E41-task.md",
+      "rubricFile": "tests/evals/rubrics/E41-rubric.md",
+      "skillReferences": [
+        "skills/build/SKILL.md",
+        "skills/write-agents/SKILL.md"
+      ],
+      "fixtureReferences": [],
+      "evidence": {
+        "structural_contract": "not_executed",
+        "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
     }
   ]
 }
