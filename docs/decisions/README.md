@@ -60,6 +60,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0054-native-capability-first-sessions.md](0054-native-capability-first-sessions.md) | Accepted | Native observable sessions, Claude Code validation priority and portable fallback |
 | [0055-capability-based-github-and-host-triggered-builds.md](0055-capability-based-github-and-host-triggered-builds.md) | Accepted | GitHub mode through any reachable route; optional label-triggered cloud builds; cloud-ready repository setup |
 | [0056-contract-first-tests.md](0056-contract-first-tests.md) | Accepted | API routes and MCP tools are test-first; no UI tests by default; `ARCHITECTURE.md` may set its own policy |
+| [0057-draft-workspace-ready-checks.md](0057-draft-workspace-ready-checks.md) | Proposed | One draft pull request per spec; drafts run no CI or previews; ready runs checks; `ship` counts only checks that ran; no git hooks |
 
 ## Rules
 
