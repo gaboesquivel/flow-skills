@@ -46,7 +46,7 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [039-design-skill.md](039-design-skill.md)
 - [040-site-refinement.md](040-site-refinement.md)
 - [041-skill-evaluation.md](041-skill-evaluation.md)
-- [042-git-first-coordination.md](042-git-first-coordination.md) (draft; first)
+- [042-git-first-coordination.md](042-git-first-coordination.md) (implemented)
 - [043-defensive-delivery.md](043-defensive-delivery.md) (draft; after 042)
 - [044-context-and-human-experience.md](044-context-and-human-experience.md) (draft; after 042 and 043)
 

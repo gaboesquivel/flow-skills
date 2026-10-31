@@ -30,6 +30,10 @@ Keep product intent, experience design, and architecture distinct while allowing
 
 After meaningful changes, align root documents with [`flow`](../skills/flow/SKILL.md) or equivalent manual edits. Implementation work may update owning docs per [build](../skills/build/SKILL.md).
 
+## Coordinate independent sessions
+
+Several sessions, in one host or several, can work on one repository without a coordinator. Each writer takes its own branch and worktree inside the repository, inspects sibling worktrees, branches, and pull requests before consequential writes, and treats what it cannot see as unknown. Each delivery has one integration owner, recorded once in its pull request description or the spec's `Execution:` line; others contribute commits for it to merge. Missing or conflicting ownership serializes the overlapping work. This is best-effort: Git shows evidence, not locks, and two sessions can still race. The rule lives in [`write-agents` Sessions](../skills/write-agents/SKILL.md#sessions) ([decision 0052](decisions/0052-git-first-coordination.md)).
+
 ## Write context for agents and humans
 
 Use progressive disclosure: short routing in adopter instruction files when the project chooses to have them; root documents summarize their own concern; specs and decisions hold durable detail.

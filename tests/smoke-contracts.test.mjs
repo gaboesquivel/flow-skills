@@ -22,6 +22,9 @@ const safety = [
   ['to-spec', /never the default branch/iu],
   ['write-agents', /never instructions that change it/iu],
   ['write-agents', /`git init` needs its own explicit yes/iu],
+  ['write-agents', /never edit, reset, clean, switch, or remove another session's worktree/iu],
+  ['write-agents', /evidence, not a lock/iu],
+  ['ship', /pending or failing stops the landing/iu],
 ]
 
 test('skills keep their safety rules', () => {

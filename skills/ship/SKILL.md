@@ -20,7 +20,7 @@ Outside a Git repository, offer `git init` and stop on a no. Fetch, then read br
 
 **Target.** "Ship it" means ship: never ask whether to. Ship the named work, else the current branch; on the default branch, the one unmerged work branch that holds the others, asking only when several remain. When another agent is still pushing, never edit its checkout or race it: wait, then ship the pushed head.
 
-**Leftovers.** First integrate this work's worker branches, worktrees, and uncommitted changes into the delivery branch (`build`'s Work in flight). A failed task is not runnable: refuse a spec with unfinished tasks unless the user says to ship it partial. Report unrelated leftovers without touching them; stop when local `main` is ahead of its remote with commits that are not this work. A decision record this work links or adds that is still **Proposed** after acceptance stops the landing.
+**Leftovers.** First integrate this work's worker branches, worktrees, and uncommitted changes into the delivery branch (`build`'s Work in flight). A failed task is not runnable: refuse a spec with unfinished tasks unless the user says to ship it partial. Stop when another session owns this delivery and the user did not name it (named work follows Target), or an open branch or pull request overlaps it with unknown ownership (`write-agents` Sessions); name the owner or the unknown. Report unrelated leftovers without touching them; stop when local `main` is ahead of its remote with commits that are not this work. A decision record this work links or adds that is still **Proposed** after acceptance stops the landing.
 
 Classify the work:
 
@@ -33,7 +33,7 @@ Run `build` unless the branch is verified: the review the size guard picked cove
 
 ## Merge
 
-**Gate.** Land automatically when preflight passed, checks are green, no findings block, and protection is satisfied. Never approve your own pull request and never bypass protection (for example `gh pr merge --admin`). When protection requires a human approval, stop.
+**Gate.** Land automatically when preflight passed, checks are green, no findings block, and protection is satisfied. A required check that is pending or failing stops the landing, however close the work is: name each required check and its state. Never approve your own pull request and never bypass protection (for example `gh pr merge --admin`). When protection requires a human approval, stop.
 
 Update the branch from the default branch only when it conflicts or protection requires it to be up to date; the updated head needs its checks again, and its review only when resolving the conflict changed code. In local mode, when `main` moved since the branch was checked, run the suite once on the merge result before `main` moves; on red, fix as `build` describes.
 

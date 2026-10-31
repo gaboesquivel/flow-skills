@@ -44,6 +44,6 @@ Markers flag what needs a human look:
 
 Report markers rather than fixing specs unasked.
 
-Limits: a merged branch ships a spec only when it changed something outside `docs/` and the spec's tasks are done. With GitHub links, a merged pull request counts the same way when its merge commit is in the local clone; a rebase merge is judged by its last commit only. Without them, fast-forward merges, and squash merges later edited on the default branch, may show as Building; a spec reads as Shipped for good once its `Status:` line says `implemented`, which `build` or `ship` sets.
+Limits: the board shows committed and pushed evidence, never who is working now. Uncommitted work, stopped sessions, and other clones are invisible; say so rather than infer a roster. A merged branch ships a spec only when it changed something outside `docs/` and the spec's tasks are done. With GitHub links, a merged pull request counts the same way when its merge commit is in the local clone; a rebase merge is judged by its last commit only. Without them, fast-forward merges, and squash merges later edited on the default branch, may show as Building; a spec reads as Shipped for good once its `Status:` line says `implemented`, which `build` or `ship` sets.
 
 The script exits nonzero with a message when it is not inside a git repository or finds no default branch (`main`, `origin/HEAD`, `master`, or `init.defaultBranch`); report that message and the command you ran. Outside a repository, offer `git init` and stop on a no.

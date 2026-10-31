@@ -1,6 +1,6 @@
 # 0052 — Git-first, best-effort coordination
 
-Status: **Proposed** (2026-10-31). Spec: [042](../specs/042-git-first-coordination.md). Proposes amendments to [0044](0044-fast-delivery.md), amendment item 5 (independent-session ownership and worktree boundaries), and its restriction of context inspection to the current branch (targeted sibling inspection at consequential writes). Preserves [0048](0048-delivery-phrases-are-approvals.md) and [0050](0050-github-governance-preset.md).
+Status: **Accepted** (2026-10-31). Spec: [042](../specs/042-git-first-coordination.md). Amends [0044](0044-fast-delivery.md): amendment item 5 (independent-session ownership and worktree boundaries) and its amendment of [0038](0038-direction-changes-are-confirmed-and-recorded.md), which dropped the scan of unmerged branches (targeted sibling inspection returns at consequential writes). Preserves [0048](0048-delivery-phrases-are-approvals.md) and [0050](0050-github-governance-preset.md).
 
 ## Context
 
@@ -28,5 +28,3 @@ This extends the existing delivery contract to independent sessions while keepin
 ## Consequences
 
 Users can coordinate across hosts without a new service, but simultaneous discovery can still race and disconnected sessions may be invisible. Unresolved overlap must serialize. Dogfooding must update maintainer routing as well as portable skills; adopters must update installed versions explicitly.
-
-Publishing this record does not accept it. On acceptance with 042, update affected historical status lines/index entries and current owner docs in the same change; never rewrite historical decision bodies.
