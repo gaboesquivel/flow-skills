@@ -64,7 +64,7 @@ Configure in the GitHub repository (not in the npm skills package):
 | `FLOW_REVIEW_API_BASE` | Optional base URL (default: `https://api.openai.com/v1`) |
 | `FLOW_REVIEW_MODEL` | Model id (default: `gpt-4o-mini` if unset) |
 
-CI makes no model calls. Run the reviewer on request with these variables exported: `node scripts/run-context-review.mjs --base <merge-base> --head <sha> [--pr-number N]`. With `FLOW_PR_TITLE`, `FLOW_PR_BODY`, and `FLOW_PR_LABELS` set, it includes them in the prompt; with `--pr-number` and `GH_TOKEN`, it comments on the pull request.
+CI makes no model calls. Run the reviewer on request with these variables exported: `node scripts/run-context-review.mjs --base <merge-base> --head <sha> [--pr-number N]`. With `FLOW_PR_TITLE`, `FLOW_PR_BODY`, and `FLOW_PR_LABELS` set, it includes them in the prompt; with `--pr-number` and `GH_TOKEN`, it comments on the pull request. The script exits 1 when `CI` or `GITHUB_ACTIONS` is set (and not `0` or `false`), so a workflow cannot call it by mistake.
 
 ## Trust boundary
 

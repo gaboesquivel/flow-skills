@@ -31,6 +31,7 @@ Recover intent from the request, spec, tests, and decisions, and actual behavior
 - **Readability and simplicity:** names (a second name for a glossary concept is a finding, per `domain-modeling` Shared language), complexity, dead code.
 - **Architecture:** boundaries, duplication, conventions.
 - **Security:** trust boundaries, secrets, permissions.
+- **Data:** a stored-data shape change follows `build` Data changes: a committed migration, and a destructive step with its rollback or backup named first.
 - **Performance:** scaling, repeated I/O, blocking paths.
 - **UI, only when the diff changes what users see:** consistency with `DESIGN.md` when present (tokens, canonical assets, usage rules, no retired marks), labels and roles, contrast through the design tokens, focus and keyboard use, layout at phone width without horizontal scroll, and heading and visual hierarchy. Read the code for small changes; for new screens or escalated work, also look at the preview at phone and desktop widths when one exists. This is behavior, never deployment liveness.
 
