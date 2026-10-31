@@ -88,6 +88,10 @@ The response to new scope that changes an accepted boundary, whether the user or
 
 The one session that integrates a delivery (a spec, or one unspecced change): it merges contributed branches and opens or updates the pull request. Recorded once, as a session role, in the pull request description or the spec's `Execution:` line. Missing or conflicting ownership is unknown, never assumed. [`write-agents`](skills/write-agents/SKILL.md#sessions) owns the rule; [decision 0052](docs/decisions/0052-git-first-coordination.md).
 
+## Vertical slice
+
+One verifiable outcome cut through every layer it needs: a `to-tasks` task, or a group of small tasks that must land together. The unit of parallel work: a worker or native session takes a whole slice and keeps its small steps inside it, never one technical layer. [`to-tasks`](skills/to-tasks/SKILL.md) drafts them; [`write-agents`](skills/write-agents/SKILL.md#workers) assigns them; [decision 0054](docs/decisions/0054-native-capability-first-sessions.md).
+
 ## Acceptance scenario
 
 The one representative end-to-end journey a spec names in its Testing Decisions: the actor, the starting state with realistic data, and numbered steps with the observable result of each, plus the same journey through the agent interface when the spec names agent users. A draft without one is not accepted: acceptance, and a "build it" or "ship it" on that draft, stops and names what is missing. [`to-spec`](skills/to-spec/SKILL.md) owns the rule; decisions [0032](docs/decisions/0032-local-build-lands-ship-verifies.md) and [0044](docs/decisions/0044-fast-delivery.md).
