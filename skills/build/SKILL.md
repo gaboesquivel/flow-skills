@@ -62,7 +62,7 @@ One home. Judge once, at intake, before implementing; it never stops the work. E
 
 ### Data changes
 
-One home. A change to stored data's shape ships as a versioned migration committed with the code; never push a schema straight to a shared or deployed database without a migration file. A destructive step loses data or breaks the running version (dropping, renaming, or narrowing a table or column). It follows `to-tasks`' expand–contract sequence, whose backfills are not destructive steps; when that sequence cannot apply, it waits for the user's yes. Either way, name its rollback or backup first. A deployment never seeds, resets, or truncates a shared or long-lived environment's data; seeds run only against local or disposable databases, such as a per-branch preview.
+One home. A change to stored data's shape ships as a versioned migration committed with the code; never apply a schema directly to a shared or deployed database without a migration file. A destructive step loses data or breaks the running version (dropping, renaming, or narrowing a table or column). It follows `to-tasks`' expand–contract sequence, whose backfills are not destructive steps; when that sequence cannot apply, it waits for the user's yes. Either way, name its rollback or backup first. A deployment never seeds, resets, or truncates a shared or long-lived environment's data; seeds run only against local or disposable databases, such as a per-branch preview.
 
 ## Tests
 

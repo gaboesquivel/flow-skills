@@ -50,4 +50,5 @@ test('refuses to call a model in CI', () => {
   assert.equal(ciRefusal({}), null)
   assert.equal(ciRefusal({ CI: 'false' }), null)
   assert.equal(ciRefusal({ CI: '0' }), null)
+  assert.equal(ciRefusal({ CI: ' false ' }), null)
 })
