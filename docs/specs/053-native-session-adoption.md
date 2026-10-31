@@ -1,7 +1,6 @@
 # 053 — Native-session adoption across the starters
 
-Status: accepted (2026-10-31)
-Execution: delivery branch `spec/053-native-session-adoption`; integration owner for `flow-skills`: the coordination session. Each starter's pull request is owned by that repository's child session.
+Status: implemented (2026-10-31)
 
 ## Problem Statement
 
