@@ -58,7 +58,7 @@ Where `ship` lands work: **local** (needs only Git; `build` ends with a committe
 
 ## Issue trigger
 
-The optional `build-it` label: added to an issue by an account with `write` permission or higher, it is that issue's "build it", and the host's trigger (a Claude Code routine) starts a cloud [`build`](skills/build/SKILL.md#issue-trigger) that ends at a pull request closing the issue. It never ships. Issues stay optional; Flow hosts no trigger ([decision 0055](docs/decisions/0055-capability-based-github-and-host-triggered-builds.md)).
+The optional `build-it` label: added to an issue by an account with `write` permission or higher, on an issue a writer opened, it is that issue's "build it", and the host's trigger (a Claude Code routine) starts a cloud [`build`](skills/build/SKILL.md#issue-trigger) that ends at a pull request closing the issue. It never ships. Issues stay optional; Flow hosts no trigger ([decision 0055](docs/decisions/0055-capability-based-github-and-host-triggered-builds.md)).
 
 ## Flow block
 

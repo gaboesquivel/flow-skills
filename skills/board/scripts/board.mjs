@@ -896,4 +896,4 @@ export async function main(argv = process.argv.slice(2), { error: report = conso
   return 0
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) process.exitCode = await main()
+if (process.argv[1] && realRoot(process.argv[1]) === realRoot(fileURLToPath(import.meta.url))) process.exitCode = await main()
