@@ -25,6 +25,7 @@ const safety = [
   ['write-agents', /never edit, reset, clean, switch, or remove another session's worktree/iu],
   ['write-agents', /evidence, not a lock/iu],
   ['ship', /pending or failing stops the landing/iu],
+  ['build', /never cut by weakening a check/iu],
 ]
 
 test('skills keep their safety rules', () => {

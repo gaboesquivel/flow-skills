@@ -30,4 +30,4 @@ Delivery speed depends on selecting a tractable outcome and limiting coordinatio
 
 Agents must challenge consequential scope expansion and report incomplete work candidly. Small fixes retain a direct path. Budget telemetry may be unavailable and must remain unknown rather than fabricated. Human judgment is still needed for meaningful trade-offs.
 
-Accepted with 043: update affected historical status lines/index entries and current owner docs together, and leave other policies unchanged.
+Accepted with 043, together with the affected historical status lines, index entries, and current owner docs; other policies are unchanged.
