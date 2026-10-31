@@ -72,7 +72,7 @@ When a prototype encodes a decision more precisely than prose (state machine, sc
 
 What good tests mean here, which behavior is in scope, and prior art in the codebase.
 
-**Behavior and checks:** the observable behavior at the contract as concrete examples with realistic domain data, the invariants that must always hold, and the focused check that proves each (the seam, and the command that runs only it). State behavior, not implementation steps. UI is verified in the preview, not by UI tests, unless the user asks (`build` Tests).
+**Behavior and checks:** the observable behavior at the contract as concrete examples with realistic domain data, the invariants that must always hold, and the focused check that proves each (the seam, and the command that runs only it). State behavior, not implementation steps. Which checks to write, and whether UI gets any, follows `build` Tests.
 
 **Acceptance scenario** (required; `review` gives each step a verdict): one representative end-to-end journey. Name the actor, the starting state with realistic data, and numbered steps with the observable result of each. When the spec names agent users, give the same journey through the agent interface (MCP tool). When the work should move a defined metric or journey, reference its definition, name the source or instrumentation and calculation, and add a step proving an outcome is counted correctly: failures excluded, retries and duplicates counted once, human and agent attributed when that changes the count. Reuse existing collection; label unknowns instead of assuming infrastructure. Unrelated work gets no measurement.
 

@@ -1,6 +1,6 @@
 # 047 — Shared language and contract-first tests
 
-Status: accepted (2026-10-31)
+Status: implemented (2026-10-31)
 
 ## Problem Statement
 
@@ -42,7 +42,7 @@ Each rule gets one home; other skills link to it with a clause, never a copy.
 | Behavior, examples, invariants, focused check in a spec (item 2) | `to-spec` Testing Decisions template, as a **Behavior and checks** paragraph before the acceptance scenario, beside its existing contract-first interfaces rule | `to-tasks` task template (acceptance criteria are observable behaviors, each with its focused check when one exists) |
 | Contract test-first, no UI tests by default, focused then full, proportion, `ARCHITECTURE.md` override (items 3–6) | `build`, a short **Tests** section | `review` Correctness axis ("a changed contract has a check that would fail without the change; UI tests are not expected by default"); `debug` keeps its own reproduction rule |
 
-- **Decision record.** Item 3 prescribes test order for contracts, which amends 0042 items 1 and 5. [Decision 0056](../decisions/0056-contract-first-tests.md) records it as **Proposed**; back-pointers on 0042 land at acceptance.
+- **Decision record.** Item 3 prescribes test order for contracts, which amends 0042 items 1 and 5. [Decision 0056](../decisions/0056-contract-first-tests.md) records it (Accepted), with back-pointers on 0042 and spec 028.
 - **Glossary writes.** `build` and `to-spec` may add or update a resolved term in the same commit as the work that resolves it; `domain-modeling`'s format applies. Neither writes an entry for a term used once.
 - **Flow's own context.** [Methodology: Maintain shared language](../methodology.md#maintain-shared-language) links to the new `domain-modeling` section instead of restating it. [Principles: Agentic](../principles.md#agentic) gains one sentence linking contract-first tests to `build`. `GLOSSARY.md` gains **Focused check**. `PRODUCT.md` is unchanged: principles 5 and 8 already cover it.
 - **Eval scenario.** E43 (`tests/evals/`) holds the task, rubric, and fixture for the acceptance scenario. `tests/smoke-contracts.test.mjs` stays limited to safety rules, as [spec 031](031-fast-delivery.md) left it, so these rules get no wording pins.
@@ -52,10 +52,10 @@ Each rule gets one home; other skills link to it with a clause, never a copy.
 
 Structural pins catch a lost rule; they do not show an agent follows it. The proof is one live run on a fixture project, recorded under `tests/evals/records/` with the procedure in [tests/evals/README.md](../../tests/evals/README.md). The run compares the current skills with this spec's skills, as [spec 041](041-skill-evaluation.md) asks for a meaningful skill change.
 
-**Fixture** (under `tests/evals/tasks/`). A small Node library-lending app with:
+**Fixture** (`tests/fixtures/e43-shared-language/`, task and rubric in `tests/evals/`). A small Node library-lending app with:
 - `GLOSSARY.md` defining **Hold** ("a member's claim on a copy that expires three days after it is placed; a hold can be extended once, by three days") and **Loan**;
 - `lib/holds.mjs` with `placeHold`, a `POST /holds` route, and a `place_hold` MCP tool;
-- a static holds page;
+- a holds page served by `npm start`;
 - a small `node --test` suite in several files;
 - a test-command line in `AGENTS.md` that shows how to run one file.
 
