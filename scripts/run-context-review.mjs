@@ -16,11 +16,12 @@ function parseArgs(argv) {
   return out
 }
 
-// CI makes no paid model calls: refuse at run time, whatever a workflow wires up.
+// CI makes no paid model calls: refuse at run time when the runner flags CI.
 export function ciRefusal(env) {
-  const set = (value) => Boolean(value) && !['0', 'false'].includes(String(value).toLowerCase())
-  return set(env.CI) || set(env.GITHUB_ACTIONS)
-    ? 'Refusing to run the LLM context review in CI: CI makes no model calls. Run it locally on request.'
+  const set = (value) => Boolean(value) && !['0', 'false'].includes(String(value).trim().toLowerCase())
+  const flag = ['CI', 'GITHUB_ACTIONS'].find((name) => set(env[name]))
+  return flag
+    ? `Refusing to run the LLM context review: ${flag}=${env[flag]} marks a CI run, and CI makes no model calls. Run it locally on request.`
     : null
 }
 
