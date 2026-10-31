@@ -274,7 +274,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   if (!fullRepo) throw new Error('origin is not a github.com remote; pass --repo owner/name')
   const api = (path) => JSON.parse(execFileSync('gh', ['api', path], { encoding: 'utf8', maxBuffer: 50 * 1024 * 1024 }))
   const { prs, runs } = fetchDelivery({ repo: fullRepo, limit, api })
-  const fmt = (n) => (n === null ? 'n/a' : n.toFixed(1))
+  const fmt = (n) => (n == null ? 'n/a' : n.toFixed(1))
   const pct = (n) => (n === null ? 'n/a' : `${Math.round(n * 100)}%`)
   const s = summarize({ prs, runs })
   console.log(`Last ${s.mergedPrs} merged pull requests${repo ? ` in ${repo}` : ''}`)
