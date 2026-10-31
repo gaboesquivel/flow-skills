@@ -10,7 +10,7 @@
 npx skills add gaboesquivel/flow-skills
 ```
 
-To pin a release, install from its tag: `npx skills add https://github.com/gaboesquivel/flow-skills/tree/<tag>`. Choose your agent and install scope in the installer. [Agent compatibility](docs/agent-compatibility.md) covers other install paths and metadata limits. Flow needs no changes to your instruction files; setting up Flow mode adds one removable block, and only when you ask.
+To pin a release, install from its tag: `npx skills add https://github.com/gaboesquivel/flow-skills/tree/<tag>`. Choose your agent and install scope in the installer; for cloud sessions (Claude Code on the web or the phone), install at project scope and commit it, since those sessions load only the repository ([agent compatibility](docs/agent-compatibility.md#claude-code-cloud)). [Agent compatibility](docs/agent-compatibility.md) covers other install paths and metadata limits. Flow needs no changes to your instruction files; setting up Flow mode adds one removable block, and only when you ask.
 
 ## Flow is Git-based
 
@@ -26,11 +26,11 @@ The rules Flow follows in a project live in Git too. "Set up Flow here" writes o
 
 ## Local or GitHub delivery
 
-Local and GitHub are delivery options, not separate methodologies: the skills, phrases, and steps are the same, and only where the work lands differs. Flow never asks which one. It uses GitHub when `origin` is a GitHub repository, and stops until `gh` is signed in rather than falling back; local otherwise. A default branch that requires pull requests always gets GitHub (decisions [0044](docs/decisions/0044-fast-delivery.md), [0048](docs/decisions/0048-delivery-phrases-are-approvals.md)).
+Local and GitHub are delivery options, not separate methodologies: the skills, phrases, and steps are the same, and only where the work lands differs. Flow never asks which one. It uses GitHub when `origin` is a GitHub repository, and reaches it through `gh`, the host's GitHub tools, or the REST API, stopping only when none works rather than falling back; local otherwise. A default branch that requires pull requests always gets GitHub (decisions [0044](docs/decisions/0044-fast-delivery.md), [0048](docs/decisions/0048-delivery-phrases-are-approvals.md)).
 
 | | Local | GitHub |
 | --- | --- | --- |
-| Needs | Git only. Works with GitLab, Bitbucket, or no remote at all. | Git plus a GitHub repository and an authenticated `gh`. |
+| Needs | Git only. Works with GitLab, Bitbucket, or no remote at all. | Git plus a GitHub repository and a route to it: `gh`, its REST API, or the host's GitHub tools. |
 | Spec | A file on its feature branch. | The same file; the pull request links it. |
 | Tasks | A checklist in the spec's Tasks section. | The same checklist. |
 | "Push it" | Commits and pushes the current or named branch. | The same; no pull request. |

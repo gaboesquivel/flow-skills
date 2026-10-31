@@ -1,6 +1,6 @@
 # Behavioral evaluation scenarios
 
-Scenarios E01–E41 describe realistic skill behavior to verify over time. Current skill text under `skills/` defines the behavior a scenario grades. **Structural contract** and **executable fixture** results come from `pnpm test`. They do not prove an LLM executed a skill in a host.
+Scenarios E01–E42 describe realistic skill behavior to verify over time. Current skill text under `skills/` defines the behavior a scenario grades. **Structural contract** and **executable fixture** results come from `pnpm test`. They do not prove an LLM executed a skill in a host.
 
 ## Evidence model
 

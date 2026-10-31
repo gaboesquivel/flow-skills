@@ -83,6 +83,18 @@ Hosts offer no portable skill priority. To make your phrases reliable, you may c
 
 No host run has yet started, inspected, interrupted, and resumed a child session under these rules; the [spec's acceptance scenario](specs/045-native-observable-sessions.md#testing-decisions) remains open. Re-check the host's tools and version before relying on a row.
 
+## Claude Code cloud
+
+Cloud sessions (Claude Code on the web, the mobile app, `claude --cloud`) run Flow with the same phrases ([decision 0055](decisions/0055-capability-based-github-and-host-triggered-builds.md), [spec 046](specs/046-cloud-delivery.md)). Host facts from Claude Code's [cloud environment](https://code.claude.com/docs/en/cloud-environments.md), [routines](https://code.claude.com/docs/en/routines.md), and [usage monitoring](https://code.claude.com/docs/en/monitoring-usage.md) docs, read 2026-10-31:
+
+- **GitHub through a proxy.** `gh` is installed and its token is proxy-injected; GraphQL is blocked, so `gh pr` and `gh issue` return 403 while `gh api` REST calls and the host's GitHub tools work. `build`'s [Reaching GitHub](../skills/build/SKILL.md#delivery-mode) takes the working route. The proxy refuses branch deletion; branch protection on GitHub still governs `main`.
+- **Only repository context loads.** `CLAUDE.md`, `.claude/settings.json`, and `.claude/skills` come from the clone; `~/.claude` (user instructions, user-scope skills and hooks) does not. Install Flow at project scope and commit it; a user-scope install never reaches a cloud session. Whether a symlinked `.claude/skills` loads is checked by the spec's live run.
+- **Setup.** An environment's setup script or a repository `SessionStart` hook installs dependencies; repository hooks do not run in multi-repository sessions. Flow itself needs nothing beyond Git and the skills.
+- **Moving between local and cloud.** `claude --teleport` continues a cloud session locally (clean tree, branch pushed); `claude --cloud "task"` starts one from the terminal. `build`'s Work in flight finds the branch and pull request either way.
+- **Cost.** Cloud sessions keep no local transcript; per-session cost comes only from OpenTelemetry (`claude_code.cost.usage`, keyed by session) set on the environment. `pnpm metrics --usage <file>` reads an export of it; otherwise cloud cost is unknown.
+
+**Issue trigger (optional).** A routine starts a cloud `build` when a repository writer adds the `build-it` label to an issue ([`build` Issue trigger](../skills/build/SKILL.md#issue-trigger)). Ask the agent to create it with the host's scheduling tools (`/schedule`); the sign-in and the GitHub App consent are yours. Its settings: the repository; a GitHub trigger on issues, action `labeled`, filtered to the label `build-it`; and the stored prompt `build it: issue #{number} in {owner}/{repo}, started by the build-it label`. The routine runs as your account and its runs push work branches. Its docs do not say who may fire the trigger, so `build` checks the labeler's permission itself and stops for anyone below `write`. Routines are a research preview with hourly caps.
+
 ## Verification status
 
 Structural checks (`pnpm validate`, which includes the eval schema check, and `pnpm test`) run in CI on every pull request and on `main`; the npm-pack and Agent Skills CLI listing checks (`pnpm test:release`, in `tests/release/`) run on release tags. Headless slash-command runs in Claude Code are recorded; interactive skill-picker runs and write paths remain open; see [smoke scenario status](../tests/smoke/2026-10-27-scenario-status.md) and [evaluation scenario status](../tests/evals/scenario-status.md).
