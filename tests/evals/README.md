@@ -67,6 +67,8 @@ The helper's own checks: `node --test tests/local-probe.test.mjs` (mocked transp
    `sandbox-exec -f local-only.sb node scripts/local-probe.mjs --model qwen2.5-coder:0.5b --prompt-file prompt.txt --system-file system-<condition>.txt --num-ctx 32768 --out probe-<condition>.json`
 5. Stop the server, keep traces in `.cache/local-eval/`, and write a record. A reply that does not name the `copeis` → `copies` fix is a failure.
 
+**Claude Code host gate** ([spec 055](../../docs/specs/055-local-host-gate.md)). Pick the model by the spec's candidate rule. Check its template first with `ollama show <model> --template` or the registry: it must render tools even when the last message is `system`, which Claude Code sends. Start the server with `OLLAMA_CONTEXT_LENGTH=65536 OLLAMA_DEBUG_LOG_REQUESTS=1` added. Then, from a fixture copy, run the gate command in the [2026-10-31 local smoke record](records/2026-10-31-e43-local-smoke.md#claude-code-gate-blocked) with the model swapped, using `--output-format stream-json`. A pass needs one Read, one Edit, and one `git diff --stat` result, and a fixture diff limited to the typo. Latest: [2026-10-31 host gate](records/2026-10-31-local-host-gate.md), failed.
+
 ## Records
 
 Live and manual runs: [records/](records/). Latest live run: [2026-10-31 E43 on Opus 5.5](records/2026-10-31-e43-opus.md). Structural index: [scenario-status.md](scenario-status.md).
