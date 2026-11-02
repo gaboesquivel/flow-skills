@@ -1,6 +1,6 @@
 # 056 — Lean agent context and checkable design rules
 
-Status: accepted (2026-11-02). Was draft (2026-11-02).
+Status: accepted (2026-11-02). Accepted, returned to draft to rewrite skill changes as outcomes rather than procedures, and accepted again for build the same day.
 
 ## Problem Statement
 
@@ -37,7 +37,9 @@ Measure context, then fix the largest costs, and make design rules checkable. Th
 
 - **Measure.** A free, local script reports what each repository loads at session start, what it loads on demand, install drift against the lock, description problems, and likely trigger collisions. It reports against budgets; it never blocks work. `retro` runs it as its context-bloat check.
 - **Trim at the source.** Fix the findings above in the repositories that own them: resync installs to locks, decide which design skills belong in the lock, split per-page design detail out of the always-read part of `DESIGN.md`, add the missing loader.
-- **Checkable design rules.** `design` records each rule as one sentence, its reason, and how to check it (a token, a lint, or a look at the render). Rules that can be checked mechanically get a check in the adopter repository, following the motion check gaboesquivel.com already has and Taste Skill's `lint.mjs`/`inspect.mjs` gate.
+- **Design rules an agent can follow and verify.** `design` leaves a `DESIGN.md` where an agent can tell why each rule exists and how to tell whether a screen meets it. Rules that can be checked mechanically get a check in the adopter repository, as gaboesquivel.com's motion check and Taste Skill's lint and browser gates already do.
+
+The skills change by stating outcomes, not by adding procedures. The sources' lessons enter Flow as the reasons behind those outcomes and as evidence, so an agent knows what good looks like and chooses how to get there.
 
 The assumption under test: **once context cost is visible as a number, the maintainer will act on it, and the always-loaded and design-change context in the two largest adopters (gaboesquivel.com, the templates) drops by at least half without losing rules an agent needs.** If the report changes nothing, drop the budgets and keep the script as a `retro` aid.
 
@@ -50,6 +52,25 @@ The assumption under test: **once context cost is visible as a number, the maint
 
 ## Implementation Decisions
 
+**How the skill changes are written.** Every skill edit in this spec follows [`write-agents`](../../skills/write-agents/SKILL.md): state the outcome and the constraint, name the behavioural failure it prevents, and prefer a check or a script over prose when one can prevent the failure. Anthropic's context-engineering guidance makes the same point: prompts at the "right altitude", neither hardcoded logic nor vague guidance. So in the edited skills:
+
+- No rule templates, fixed headings, mandated file paths, or numeric budgets. Examples may illustrate (a token, a lint, a render at named widths; a linked file or a path-scoped rule), labelled as examples.
+- Host-specific mechanisms (`disable-model-invocation`, `.claude/rules/` with `paths:`, `/context`) appear as one way to reach an outcome, never as the requirement.
+- Where a skill already states the outcome, add nothing; the lesson is evidence for the existing text.
+- Each edited skill grows by at most about 10% of its size, preferably less, by replacing text rather than adding it.
+
+How each lesson lands:
+
+| Lesson (source) | Failure it prevents | What changes |
+| --- | --- | --- |
+| Load little up front, the rest on demand (Anthropic docs, context-engineering post) | Agents read everything every session | Nothing in the skills: `write-agents` already says to keep always-loaded guidance short and disclose detail through references. The script measures it. |
+| Instructions alone are advisory; checks hold (Spotify) | A rule broken again despite prose | Nothing in the skills: `write-agents` already prefers a check, and `retro` has the prevention ladder. Cited as evidence. |
+| A rule carries its reason (rico) | The agent follows the letter and misses the intent in cases nobody wrote down | `design`: recorded rules say why they exist. |
+| Document only what exists (rico) | The agent reaches for a described but unbuilt variant | Nothing: `flow` already keeps `DESIGN.md` consistent with what shipped. |
+| A gate before "done" (Taste Skill) | A "looks fine" screen ships and breaks the identity | `design`: it is clear which rules a check enforces and which need someone to look; mechanical checks exist or are named as work for `build`. |
+| One source for installed skills (audit) | A fresh clone gets a different agent from the maintainer's | `write-agents`: the skills an agent gets come from the project's committed source, and skills only the user starts do not compete for automatic activation. |
+| Measure before trimming (audit) | Trim proposals based on impression | `retro`: instruction-size findings cite a measurement, labelled as an estimate. |
+
 **Measurement script (flow-skills).** `scripts/context.mjs`, run as `pnpm context [--repo <path>] [--json]`. Node only, no dependencies, no network. It reports:
 
 - *Always loaded:* `CLAUDE.md` and `AGENTS.md` with `@` imports resolved, plus `name` and `description` of every skill the host would list (committed and installed, from `.claude/skills`, `.agents/skills`, and `skills/` where the repository uses them).
@@ -59,7 +80,7 @@ The assumption under test: **once context cost is visible as a number, the maint
 
 The script complements what the host already shows. In Claude Code: `/context` (what is loaded now), `/doctor` (skill listing cost), and `/skill-doctor` (unused skills). Those see one session in one host; the script compares repositories, checks locks, and works for any host.
 
-Budgets are hypotheses, reported as over or under, never as a failure:
+The script holds its budgets as defaults: reference points drawn from host documentation and the audit, reported as over or under, never as a failure, and never copied into skill text. The agent or maintainer reading the report decides what to do:
 
 | Measure | Budget |
 | --- | --- |
@@ -71,11 +92,11 @@ Budgets are hypotheses, reported as over or under, never as a failure:
 
 `pnpm metrics` keeps its "skill words" line; the new script owns context figures. `pnpm validate` does not call it in this spec.
 
-**`retro`.** Its Instruction files candidate runs `pnpm context` when flow-skills is the working repository, or the same steps by hand elsewhere, and cites the numbers. It still proposes edits and never makes them.
+**`retro`.** Outcome: a finding about instruction or context size is backed by a measurement, labelled as an estimate, not by impression. `pnpm context`, the host's own context view, or a plain size count all qualify. It still proposes edits and never makes them.
 
-**`write-agents`.** State the budgets above as guidance once (this skill is their one home; the script reads the same numbers from a small exported table so they cannot drift). Add "every installed skill is in the lock" and "a skill only the user starts sets `disable-model-invocation: true`." Add the enforcement order the Spotify write-up shows in practice: a rule an agent keeps breaking moves to a hook or check, because a skill alone is advisory. This extends the existing prevention ladder in `retro`; it does not replace it.
+**`write-agents`.** Outcome: every clone of a project gets the same agent, because the skills it loads come from the project's committed source (for example its skills lock), and skills only the user starts stay out of automatic activation where the host allows it. No budgets in the skill; the existing guidance on short always-loaded context and stronger mechanisms stays as it is.
 
-**`design` and the `DESIGN.md` contract.** `design`'s Record step writes rules in the form *rule — reason — check*, where check is one of: a token the code must use, a command that fails on violation, or a render to inspect at named sizes. Rules without a check are marked as judgment. Route- or surface-specific detail goes in linked files (for example `docs/design/<surface>.md`) that the core links with "read when changing X". That pointer works in every host; where the project uses Claude Code, the same file can also be a path-scoped rule (`.claude/rules/*.md` with `paths:`), which loads only when a matching file is read or edited. `build` already runs the project's checks; it gains no new step. `flow` keeps `DESIGN.md` aligned and does not split it unasked.
+**`design`.** Outcome for its Record step: an agent reading `DESIGN.md` can tell why each rule exists and how to tell whether a screen meets it; rules that rely on judgment are visibly so; mechanical checks exist or are named as work for `build`; and detail for one surface is reachable without reading every other surface's detail. How the project writes and splits it is the project's. `build` already runs the project's checks and gains no step. `flow` keeps `DESIGN.md` aligned and does not split it unasked.
 
 **Adopter changes.** Each is a change in its own repository, proposed by this spec and owned there. Flow does not require adopter instruction changes ([PRODUCT.md](../../PRODUCT.md) Flow mode), so these land only with the maintainer's yes in each repository.
 
@@ -103,17 +124,18 @@ No decision record: the budgets are hypotheses in this spec, and the script is r
 2. Run it on `~/Code/gaboesquivel`. → It reports `AGENTS.md` with no `CLAUDE.md` as information, not as over budget.
 3. Run it on `~/Code/flow-factory`. → Every figure is under budget.
 4. Ask "let's do a retro" in flow-skills after a session. → The Instruction files candidate cites the report's numbers and proposes edits without making them.
-5. Ask "design this" for a new surface in a test project. → The recorded `DESIGN.md` rules each carry a reason and a check or a judgment label, and surface detail sits in a linked file.
+5. Ask "design this" for a new surface in a test project. → In the recorded `DESIGN.md`, a reader can tell for each rule why it exists and whether a check enforces it or it needs a look; detail for the new surface can be read without the rest.
 6. After the gaboesquivel.com change lands there, run step 1 again. → Zero drift, no description over the limit, no overlap pair left unexplained, core `DESIGN.md` under 3,000 tokens, and the mechanical identity bans fail a check when violated in a test edit.
 7. Compare steps 1 and 6. → Always-loaded plus core design context is at least 50% lower, or the spec records why not (the kill check).
+8. Read the diff of `retro`, `write-agents`, and `design`. → Each added sentence states an outcome or constraint and the failure behind it; none prescribes a template, heading set, file path, budget, or host-only flag as a requirement; each skill grew by about 10% or less.
 
 ## Tasks
 
-- [ ] **T1 — Context report.** `scripts/context.mjs`, `pnpm context`, fixtures and tests. Done when steps 1–3 pass on the real repositories. Blocks T2, T5–T7.
-- [ ] **T2 — `retro` uses the report.** Done when step 4 passes. Blocked by T1.
-- [ ] **T3 — `write-agents` budgets and enforcement order.** One home for the numbers, exported for the script. Done when the script and the skill cite the same table. Can run alongside T1 if T1 reads the table.
-- [ ] **T4 — `design` writes checkable rules.** Rule — reason — check, judgment label, linked surface files. Done when step 5 passes.
-- [ ] **T5 — gaboesquivel.com.** Resync, design-skill decision, overlap pairs, `DESIGN.md` split, identity-ban check. Its own PR in that repository. Done when step 6 passes. Blocked by T1 (to measure), T4 (rule form).
+- [ ] **T1 — Context report.** `scripts/context.mjs`, `pnpm context`, fixtures and tests. Done when steps 1–3 pass on the real repositories. Blocks T2, T5, and T6.
+- [ ] **T2 — `retro` measures before proposing trims.** Done when steps 4 and 8 pass. Blocked by T1.
+- [ ] **T3 — `write-agents` install-source outcome.** Done when step 8 passes for it. Independent.
+- [ ] **T4 — `design` leaves followable, verifiable rules.** Done when steps 5 and 8 pass.
+- [ ] **T5 — gaboesquivel.com.** Resync, design-skill decision, overlap pairs, `DESIGN.md` split, identity-ban check. Its own PR in that repository. Done when step 6 passes. Blocked by T1 (to measure) and T4 (outcome to meet).
 - [ ] **T6 — Templates.** flow-next and flow-mono stack-skill review with keep, pin, or drop per skill. Their own PRs. Blocked by T1.
 - [ ] **T7 — Description voice experiment.** Using the existing skill evals ([041](041-skill-evaluation.md), [049](049-local-evaluation.md)), compare imperative and third-person descriptions on three Flow skills. Change `write-agents` and the catalog only if third person triggers at least as well. Blocked by nothing.
 - [x] **T8 — Article draft.** `docs/blog/designing-with-ai.md`, on this branch.

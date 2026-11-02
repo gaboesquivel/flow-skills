@@ -56,9 +56,11 @@ Anthropic's guidance on skills points the same way from the context side. Load t
 
 [Spec 056](../specs/056-lean-context-checkable-design.md) is a draft. None of this is in Flow yet.
 
-**Every design rule says how it is checked.** `design` would record each rule as *rule, reason, check*. The check is one of three things: a token the code must use, a command that fails on violation, or a render to inspect at named sizes. A rule with no mechanical check is labelled as judgment, so everyone knows which rules a script enforces and which rely on someone looking.
+First, a note on how. Flow's skills tell an agent what a good result looks like and leave the method to the agent. A skill that dictated a rule template or a folder layout would be one more thing to load and one more thing to follow by rote. So the lessons above go into Flow as outcomes and the reasons behind them, not as procedures.
 
-**The core stays small; detail loads when needed.** `DESIGN.md` keeps the identity, tokens, and rules that apply everywhere. Page- and surface-specific guidance moves to linked files the agent reads only when it changes that surface. In Claude Code, those files can also be path-scoped rules that load only when a matching file is touched.
+**Every design rule can be followed and verified.** After `design` runs, an agent reading `DESIGN.md` should be able to tell why each rule exists and how to tell whether a screen meets it. Where a script can check a rule, the check exists or is named as work. Where only a person can judge, the rule says so. How the project writes that down is up to the project. A token the code must use, a lint that fails, and a screenshot at phone width are all good examples, and none is required.
+
+**The core stays small; detail is there when needed.** An agent changing one page should not have to read the rules for every other page. Linked files are one way to do that. In Claude Code, path-scoped rules that load only when a matching file is touched are another.
 
 **Measure before trimming.** A small, free script reports what each repository loads before the agent starts, what it loads on demand, which installed skills are missing from the lock, and which skills compete for the same request. `retro` would use it to back a proposal with numbers instead of taste.
 
