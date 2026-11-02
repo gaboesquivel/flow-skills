@@ -9,7 +9,7 @@ pnpm install
 pnpm dev
 ```
 
-`pnpm dev` and `pnpm build` first run `pnpm content`, which reads the repository's Markdown (`../skills`, `../docs`, `../PRODUCT.md`, `../README.md`, `../GLOSSARY.md`) and the starter READMEs into `content/generated/content.json`. That file is gitignored; edit the source Markdown, never the generated output. The build fails, naming the file to fix, when a skill has no row in `docs/skills.md` or a decision has no recognizable status.
+`pnpm dev` and `pnpm build` first run `pnpm content`, which reads the repository's Markdown (`../skills`, `../docs`, `../PRODUCT.md`, `../README.md`, `../GLOSSARY.md`) and the starter READMEs into `content/generated/content.json`. That file is gitignored; edit the source Markdown, never the generated output. The build fails, naming the file to fix, when a skill has no row in `docs/skills.md`, a decision has no recognizable status, a curated capability or article has invalid front matter ([`docs/capabilities/README.md`](../docs/capabilities/README.md)), or a repository Mermaid diagram is unsafe, lacks `accTitle:`, or uses syntax outside the checked flowchart and sequence subset.
 
 | Script | Purpose |
 | --- | --- |
@@ -22,7 +22,9 @@ pnpm dev
 
 | Path | Owns |
 | --- | --- |
-| `scripts/build-content.mjs` | Which repository files become pages, link rewriting, search sections |
+| `scripts/build-content.mjs` | Which repository files become pages, including the curated `CAPABILITIES` and `ARTICLES` lists |
+| `scripts/content-lib.mjs` | Markdown rendering, link rewriting, search sections, static Mermaid images, and the publishing contract; pure, tested by `lib/content-publishing.test.ts` |
+| `lib/docs-groups.ts` | Task-oriented docs groups shared by the sidebar, docs hub, and guide order |
 | `lib/content.ts` | Typed access to generated content |
 | `lib/search.ts`, `lib/ask.ts` | In-memory search and source-grounded Ask |
 | `lib/mcp/`, `lib/markdown-pages.ts`, `lib/openapi.ts` | Agent interfaces |

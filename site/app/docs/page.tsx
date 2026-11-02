@@ -4,10 +4,11 @@ import Link from "next/link";
 import { decisionStatus, decisionsNewestFirst, displayTitle, docHref } from "@/components/docs/doc-meta";
 import { StatusBadge } from "@/components/docs/status-badge";
 import { ArrowUpRight, Eyebrow, Headline, Lede, TextLink } from "@/components/ui";
-import { guides } from "@/lib/content";
+import { articles, capabilities } from "@/lib/content";
+import { docsTaskGroups } from "@/lib/docs-groups";
 
 const description =
-  "Guides to the practice, the skills, and the starters, plus the decisions behind them. Every page is also available as Markdown.";
+  "Start from what you are trying to do. Each entry leads to the page that owns it, and every page is also available as Markdown.";
 
 export const metadata: Metadata = {
   title: "Field guide",
@@ -23,27 +24,41 @@ export default function DocsHub() {
       <Headline lead="Build with" accent="intention." className="mt-6" />
       <Lede className="mt-7">{description}</Lede>
 
-      <section aria-labelledby="guides-heading" className="mt-16">
-        <h2 id="guides-heading" className="eyebrow">
-          Guides
-        </h2>
-        <ul className="mt-5 border-t border-line">
-          {guides.map((guide) => (
-            <li key={guide.slug} className="border-b border-line">
-              <Link
-                href={docHref(guide)}
-                className="group -mx-3 flex items-start justify-between gap-6 rounded-lg px-3 py-7 transition-colors hover:bg-panel"
-              >
-                <span>
-                  <span className="block text-2xl font-bold tracking-[-0.04em] text-fg group-hover:text-lavender-soft">{guide.title}</span>
-                  <span className="mt-2 block text-[0.95rem] text-fg-muted">{guide.description}</span>
-                </span>
-                <ArrowUpRight className="mt-1.5 size-4 shrink-0 text-lavender transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
+      {docsTaskGroups().map((group) => {
+        const id = `group-${group.title.toLowerCase().replace(/[^a-z]+/gu, "-")}`;
+        return (
+          <section key={group.title} aria-labelledby={id} className="mt-16">
+            <h2 id={id} className="eyebrow">
+              {group.title}
+            </h2>
+            <p className="mt-3 text-[0.95rem] text-fg-muted">{group.summary}</p>
+            <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+              {group.items
+                .filter((item) => item.href !== "/docs")
+                .map((item) => (
+                  <li key={item.href}>
+                    <Link href={item.href} className="card card-link group flex h-full items-start justify-between gap-4 p-5">
+                      <span>
+                        <span className="block font-semibold text-fg group-hover:text-lavender-soft">{item.label}</span>
+                        <span className="mt-1.5 block text-sm text-fg-muted">{item.description}</span>
+                      </span>
+                      <ArrowUpRight className="mt-1 size-4 shrink-0 text-lavender" />
+                    </Link>
+                  </li>
+                ))}
+            </ul>
+          </section>
+        );
+      })}
+
+      {capabilities.length || articles.length ? (
+        <p className="mt-12 text-[0.95rem] text-fg-muted">
+          Want the reasoning behind a practice?{" "}
+          {capabilities.length ? <TextLink href="/capabilities">Browse capabilities</TextLink> : null}
+          {capabilities.length && articles.length ? " or " : null}
+          {articles.length ? <TextLink href="/blog">read the articles</TextLink> : null}.
+        </p>
+      ) : null}
 
       <section aria-labelledby="decisions-heading" className="mt-16">
         <div className="flex flex-wrap items-baseline justify-between gap-4">

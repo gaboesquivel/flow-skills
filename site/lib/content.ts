@@ -41,7 +41,29 @@ export type StarterReadme = {
   headings: Heading[];
 };
 
-export type ChunkKind = "skill" | "doc" | "decision" | "starter";
+/** A curated explanation published from docs/capabilities or docs/blog (spec 057). */
+type Explanation = {
+  slug: string;
+  source: string;
+  title: string;
+  description: string;
+  published: string;
+  updated: string;
+  html: string;
+  markdown: string;
+  headings: Heading[];
+};
+
+export type Capability = Explanation & { kind: "capability"; group: string };
+
+export type Article = Explanation & {
+  kind: "article";
+  capability: string;
+  video: { url: string; embed: string } | null;
+  transcript: { source: string; html: string; markdown: string } | null;
+};
+
+export type ChunkKind = "skill" | "doc" | "decision" | "starter" | "capability" | "article";
 
 export type Chunk = {
   id: string;
@@ -61,6 +83,9 @@ type Content = {
   skills: Skill[];
   docs: Doc[];
   decisions: Doc[];
+  capabilityGroups: string[];
+  capabilities: Capability[];
+  articles: Article[];
   starters: StarterReadme[];
   chunks: Chunk[];
 };
@@ -71,12 +96,24 @@ export const repo = content.repo;
 export const skills = content.skills;
 export const guides = content.docs;
 export const decisions = content.decisions;
+/** Published capabilities in curated order, and published articles newest first. */
+export const capabilities = content.capabilities;
+export const articles = content.articles;
 export const catalogGroups = content.catalogGroups;
 export const chunks = content.chunks;
 
 export const getSkill = (name: string) => skills.find((s) => s.name === name);
 export const getDoc = (slug: string) =>
   guides.find((d) => d.slug === slug) ?? decisions.find((d) => d.slug === slug);
+export const getCapability = (slug: string) => capabilities.find((c) => c.slug === slug);
+export const getArticle = (slug: string) => articles.find((a) => a.slug === slug);
+export const capabilityPath = (c: Pick<Capability, "slug">) => `/capabilities/${c.slug}`;
+export const articlePath = (a: Pick<Article, "slug">) => `/blog/${a.slug}`;
+
+/** Editorial groups in display order (defined by the content build), each with its published capabilities. */
+export const capabilitiesByGroup = () =>
+  content.capabilityGroups.map((name) => ({ name, items: capabilities.filter((c) => c.group === name) })).filter((g) => g.items.length);
+
 export const getStarterReadme = (slug: string) => content.starters.find((s) => s.slug === slug);
 
 /** GitHub URL for a file in this repository at the built revision's branch. */

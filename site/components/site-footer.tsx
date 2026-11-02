@@ -15,6 +15,16 @@ export function SiteFooter() {
         <p className="text-sm text-fg-muted">From intent to verified software.</p>
         <ul className="flex flex-wrap gap-x-6 gap-y-2 text-xs font-medium uppercase tracking-[0.12em] text-fg-muted">
           <li>
+            <Link href="/capabilities" className="hover:text-fg">
+              Capabilities
+            </Link>
+          </li>
+          <li>
+            <Link href="/blog" className="hover:text-fg">
+              Articles
+            </Link>
+          </li>
+          <li>
             <Link href="/agents" className="hover:text-fg">
               For agents
             </Link>

@@ -18,6 +18,15 @@ describe("search ranking", () => {
     expect(urls.some((u) => u.startsWith("/skills/flow") || u.includes("align"))).toBe(true);
   });
 
+  it("finds published capabilities and articles by kind, and never drafts", () => {
+    const [top] = search("scope cost control", { kinds: ["capability"] });
+    expect(top?.url.startsWith("/capabilities/scope-cost-control")).toBe(true);
+    const anyKind = search("scope cost control", { limit: 5 }).map((r) => r.url);
+    expect(anyKind.some((u) => u.startsWith("/capabilities/"))).toBe(true);
+    expect(search("verified delivery", { kinds: ["article"] }).every((r) => r.url.startsWith("/blog/"))).toBe(true);
+    expect(search("Does Code Quality Still Matter When Agents Write the Code", { limit: 25 }).some((r) => r.url.includes("code-quality-agents"))).toBe(false);
+  });
+
   it("filters by kind and dedupes pages", () => {
     const results = search("spec", { kinds: ["decision"], limit: 10 });
     expect(results.length).toBeGreaterThan(0);

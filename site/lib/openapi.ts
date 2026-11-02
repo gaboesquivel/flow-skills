@@ -14,7 +14,7 @@ const rateLimited = {
   headers: { "Retry-After": { description: "Seconds to wait before retrying.", schema: { type: "integer" } } },
 };
 
-const kind = { enum: ["skill", "doc", "decision", "starter"], type: "string" };
+const kind = { enum: ["skill", "doc", "decision", "starter", "capability", "article"], type: "string" };
 
 /** OpenAPI 3.1 for the public HTTP API: search, ask, and the MCP endpoint. */
 export const buildOpenApiDocument = (origin: string) => ({
@@ -30,7 +30,7 @@ export const buildOpenApiDocument = (origin: string) => ({
     "/api/search": {
       get: {
         operationId: "search",
-        summary: "Search Flow skills, guides, decisions, and starters",
+        summary: "Search Flow skills, guides, capabilities, articles, decisions, and starters",
         parameters: [
           { in: "query", name: "q", required: true, schema: { maxLength: 200, minLength: 1, type: "string" }, example: "ship it" },
           { in: "query", name: "limit", required: false, schema: { default: 10, maximum: 25, minimum: 1, type: "integer" } },

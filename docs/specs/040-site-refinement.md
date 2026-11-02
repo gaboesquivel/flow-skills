@@ -1,6 +1,6 @@
 # 040: Website editorial and UX refinement
 
-**Status:** implemented (2026-10-30). Builds on [032](032-prism-website.md) and [038](038-throughline-identity.md).
+**Status:** implemented (2026-10-30). Builds on [032](032-prism-website.md) and [038](038-throughline-identity.md). Amended by [057](057-content-architecture.md): capability and article pages, task-oriented docs navigation.
 
 ## Problem Statement
 

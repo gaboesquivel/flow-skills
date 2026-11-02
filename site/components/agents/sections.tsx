@@ -103,9 +103,9 @@ export function PillarsSection() {
 type Contract = { method: string; path: string; href?: string; text: ReactNode };
 
 const CONTRACTS: Contract[] = [
-  { href: "/llms.txt", method: "GET", path: "/llms.txt", text: "Curated entry point: every skill, guide, decision, starter, and interface, with Markdown links." },
-  { href: "/llms-full.txt", method: "GET", path: "/llms-full.txt", text: "Every guide and skill as one Markdown document, with source paths and the content commit." },
-  { href: "/api/search?q=ship", method: "GET", path: "/api/search?q=", text: "Ranked results with canonical URLs and excerpts. Optional limit (1–25) and kind (skill, doc, decision, starter)." },
+  { href: "/llms.txt", method: "GET", path: "/llms.txt", text: "Curated entry point: every skill, guide, capability, article, decision, starter, and interface, with Markdown links." },
+  { href: "/llms-full.txt", method: "GET", path: "/llms-full.txt", text: "Every guide, capability, article, and skill as one Markdown document, with source paths and the content commit." },
+  { href: "/api/search?q=ship", method: "GET", path: "/api/search?q=", text: "Ranked results with canonical URLs and excerpts. Optional limit (1–25) and kind (skill, doc, decision, starter, capability, article)." },
   { method: "POST", path: "/api/ask", text: <>Source-grounded answer with numbered citations. Send {'{"question": "…"}'}; add ?stream=1 to stream text.</> },
   {
     method: "MCP",

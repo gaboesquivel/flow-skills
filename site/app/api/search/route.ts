@@ -3,7 +3,7 @@ import type { ChunkKind } from "@/lib/content";
 import { search } from "@/lib/search";
 import { resolveSiteOrigin } from "@/lib/site";
 
-const KINDS: ChunkKind[] = ["skill", "doc", "decision", "starter"];
+const KINDS: ChunkKind[] = ["skill", "doc", "decision", "starter", "capability", "article"];
 const limited = createRateLimiter({ limit: 120, name: "search", windowSeconds: 60 });
 
 export const OPTIONS = corsPreflight;
@@ -17,7 +17,7 @@ export function GET(request: Request) {
     return jsonError({
       code: "missing_query",
       message: "Query parameter `q` is required.",
-      resolution: "Call /api/search?q=ship%20it (optional: limit=1-25, kind=skill|doc|decision|starter).",
+      resolution: "Call /api/search?q=ship%20it (optional: limit=1-25, kind=skill|doc|decision|starter|capability|article).",
       status: 400,
     });
   if (query.length > 200)

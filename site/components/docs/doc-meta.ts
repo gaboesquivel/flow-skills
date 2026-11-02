@@ -1,4 +1,5 @@
-import { decisions, guides, type Doc, type Heading } from "@/lib/content";
+import { decisions, getDoc, type Doc, type Heading } from "@/lib/content";
+import { guideOrder } from "@/lib/docs-groups";
 
 export const STATUSES = ["Accepted", "Proposed", "Amended", "Superseded", "Deprecated", "Rejected", "Withdrawn", "Unknown"] as const;
 export type DecisionStatus = (typeof STATUSES)[number];
@@ -55,9 +56,12 @@ export const decisionsNewestFirst = () => [...decisions].sort((a, b) => Number(b
 
 export const docHref = (doc: Doc) => `/docs/${doc.slug}`;
 
-/** Previous and next documents within the same section (guides in curated order, decisions by number). */
+/** Previous and next documents within the same section (guides in task-group order, decisions by number). */
 export const neighbours = (doc: Doc) => {
-  const list = doc.section === "decision" ? [...decisions].sort((a, b) => Number(a.number) - Number(b.number)) : guides;
+  const list =
+    doc.section === "decision"
+      ? [...decisions].sort((a, b) => Number(a.number) - Number(b.number))
+      : guideOrder().flatMap((slug) => getDoc(slug) ?? []);
   const i = list.findIndex((d) => d.slug === doc.slug);
   return { prev: i > 0 ? list[i - 1] : undefined, next: i >= 0 ? list[i + 1] : undefined };
 };

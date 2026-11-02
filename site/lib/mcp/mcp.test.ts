@@ -50,6 +50,27 @@ describe("Flow MCP", () => {
     expect((await call("get_doc", { slug: "/docs/decisions/0004-portable-skill-catalog.md" })).structuredContent.section).toBe("decision");
   });
 
+  it("get_doc resolves published capabilities and articles with existing fields", async () => {
+    const capability = await call("get_doc", { slug: "capabilities/security-human-control" });
+    expect(capability.isError).toBeFalsy();
+    expect(capability.structuredContent).toMatchObject({ section: "capability", slug: "capabilities/security-human-control", url: "http://flow.test/capabilities/security-human-control" });
+    expect(Object.keys(capability.structuredContent).sort()).toEqual(["description", "markdown", "section", "slug", "source", "status", "title", "url"]);
+    const article = await call("get_doc", { slug: "/blog/intent-to-verified-delivery.md" });
+    expect(article.structuredContent).toMatchObject({ section: "article", url: "http://flow.test/blog/intent-to-verified-delivery" });
+    expect(String(article.structuredContent.source)).toContain("docs/blog/intent-to-verified-delivery.md");
+  });
+
+  it("get_doc reports drafts and unknown slugs as tool errors", async () => {
+    for (const slug of ["blog/code-quality-agents", "capabilities/multi-agent-collaboration", "capabilities/nope"]) expect((await call("get_doc", { slug })).isError).toBe(true);
+  });
+
+  it("search_flow accepts the capability kind", async () => {
+    const found = await call("search_flow", { kind: "capability", query: "security human control" });
+    const results = found.structuredContent.results as { kind: string; url: string }[];
+    expect(results[0]?.url).toBe("http://flow.test/capabilities/security-human-control");
+    expect(results.every((r) => r.kind === "capability")).toBe(true);
+  });
+
   it("list_skills and search_flow return results", async () => {
     expect((await call("list_skills", {})).structuredContent.total).toBe(skills.length);
     const found = await call("search_flow", { kind: "skill", limit: 3, query: "ship" });

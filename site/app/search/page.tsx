@@ -7,7 +7,7 @@ import { search } from "@/lib/search";
 
 export const metadata: Metadata = {
   title: "Search",
-  description: "Search Flow's skills, guides, decisions, and starters.",
+  description: "Search Flow's skills, guides, capabilities, articles, decisions, and starters.",
   alternates: { canonical: "/search" },
   robots: { index: false },
 };

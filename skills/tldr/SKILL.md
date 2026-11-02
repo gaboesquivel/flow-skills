@@ -22,7 +22,7 @@ For an explanation, plan, or result, include only what that material supports.
 - When it does not, use Mermaid for sequence, structure, flow, or containment, and a Markdown table for comparisons or a few labeled facts.
 - Use a short statement when the material is a single fact, a limitation, or has no legitimate visual structure.
 
-Chart only quantities the source states. Keep missing numbers and uncertainty visible. Do not imply controls the host does not provide.
+Each visual keeps its evidence: link the source it summarizes, and give a one-line prose equivalent when the reader may not see the diagram. Chart only quantities the source states. Keep missing numbers and uncertainty visible. Do not imply controls the host does not provide.
 
 Short labels only. When words are required, lead with the point, use concrete nouns, and do not invent facts or promises.
 
