@@ -14,9 +14,9 @@ Recover intent from the PR title and description, relevant specs under `docs/spe
 
 Assess the change on the five review axes the [`review` skill](../skills/review/SKILL.md) defines: correctness, readability, architecture, security, and performance. Skip any the change cannot affect.
 
-Distinguish confirmed defects from risks and preferences. A passing structural test suite is not proof of intent alignment.
+A passing structural test suite is not proof of intent alignment.
 
-For consequential changes, state observable behavior, affected callers beyond the diff, the safety-critical assumption, and executable evidence when practical. Label findings as confirmed, plausible risk, or preference. Qualify assumptions that were not verified.
+For consequential changes, state observable behavior, affected callers beyond the diff, the safety-critical assumption, and executable evidence when practical. Use the [`review`](../skills/review/SKILL.md) labels: Important (blocks), Nit (at most three), and Pre-existing, each with `file:line` evidence; drop findings a second read cannot confirm, and skip style or lint-only findings. Qualify assumptions that were not verified. In the JSON below, Important maps to `blocking` and the others to `advisory`.
 
 ## Align
 
@@ -64,7 +64,7 @@ Configure in the GitHub repository (not in the npm skills package):
 | `FLOW_REVIEW_API_BASE` | Optional base URL (default: `https://api.openai.com/v1`) |
 | `FLOW_REVIEW_MODEL` | Model id (default: `gpt-4o-mini` if unset) |
 
-CI makes no model calls. Run the reviewer on request with these variables exported: `node scripts/run-context-review.mjs --base <merge-base> --head <sha> [--pr-number N]`. With `FLOW_PR_TITLE`, `FLOW_PR_BODY`, and `FLOW_PR_LABELS` set, it includes them in the prompt; with `--pr-number` and `GH_TOKEN`, it comments on the pull request.
+CI makes no model calls. Run the reviewer on request with these variables exported: `node scripts/run-context-review.mjs --base <merge-base> --head <sha> [--pr-number N]`. With `FLOW_PR_TITLE`, `FLOW_PR_BODY`, and `FLOW_PR_LABELS` set, it includes them in the prompt; with `--pr-number` and `GH_TOKEN`, it comments on the pull request. The script exits 1 when `CI` or `GITHUB_ACTIONS` is set (and not `0` or `false`), so a workflow cannot call it by mistake.
 
 ## Trust boundary
 

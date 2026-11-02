@@ -1,6 +1,6 @@
 # 0053 — Delivery appetite and scope protection
 
-Status: **Accepted** (2026-10-31). Spec: [043](../specs/043-defensive-delivery.md). Amends [0044](0044-fast-delivery.md), amendment item 4 (parallel-by-default scheduling), which amended [0043](0043-workers-when-they-pay.md) and [0031](0031-fan-out-by-default.md). Preserves [0048](0048-delivery-phrases-are-approvals.md), protection requirements and issues-on-request.
+Status: **Accepted** (2026-10-31). Spec: [043](../specs/043-defensive-delivery.md). Amends [0044](0044-fast-delivery.md), amendment item 4 (parallel-by-default scheduling), which amended [0043](0043-workers-when-they-pay.md) and [0031](0031-fan-out-by-default.md). Preserves [0048](0048-delivery-phrases-are-approvals.md), protection requirements and issues-on-request. Amended by [0060](0060-slice-by-area.md) (`build` slices by area; every slice of a multi-area change goes to a worker).
 
 ## Context
 

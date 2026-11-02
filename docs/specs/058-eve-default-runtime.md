@@ -1,6 +1,6 @@
 # 058: Eve as Flow's default agent runtime
 
-**Status:** accepted (2026-11-02)
+**Status:** implemented (2026-11-02)
 
 **Repositories:** [flow-next](https://github.com/gaboesquivel/flow-next), [flow-mono](https://github.com/gaboesquivel/flow-mono), [flow-skills](https://github.com/gaboesquivel/flow-skills)
 

@@ -66,7 +66,7 @@ The removable section between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->` that
 
 ## Unspecced work
 
-Work that resolves to no spec or task, from a one-line fix to a feature built from an `explore` brief. It never needs a spec. "Build it" ends with a reviewed, checked branch as for any work, and "ship it" lands it. A size guard, judged once, picks the review and never stops the work: one self-check against the request for small work, or the independent review when the guard escalates it. [`build`](skills/build/SKILL.md#unspecced-work) owns the guard; decisions [0034](docs/decisions/0034-no-ceremony-without-a-spec.md), [0039](docs/decisions/0039-build-never-requires-a-spec.md), and [0044](docs/decisions/0044-fast-delivery.md).
+Work that resolves to no spec or task, from a one-line fix to a feature built from an `explore` brief. It never needs a spec. "Build it" ends with a reviewed, checked branch as for any work, and "ship it" lands it. A size guard, judged once, sets the risk tier and never stops the work: a fresh-context review against the request at Quick, Standard, or Deep effort, and a person's yes for human-tier paths. [`build`](skills/build/SKILL.md#size-guard) owns the guard; decisions [0034](docs/decisions/0034-no-ceremony-without-a-spec.md), [0039](docs/decisions/0039-build-never-requires-a-spec.md), [0044](docs/decisions/0044-fast-delivery.md), and [0058](docs/decisions/0058-review-passes-and-risk-tiers.md).
 
 ## Area
 
@@ -74,7 +74,7 @@ A task's `Area:` line: every package or directory it changes, comma-separated wh
 
 ## Frontier
 
-The tasks of a spec's task set whose blockers have all integrated. `build` runs them in parallel when it pays ([decision 0053](docs/decisions/0053-delivery-appetite-and-scope.md)), each in its own worktree or on disjoint files in the shared checkout. There are no waves. Replaces the wave of [decision 0025](docs/decisions/0025-wave-checkpoints.md); [decision 0029](docs/decisions/0029-spec-issues.md); amended by [decision 0042](docs/decisions/0042-outcome-build-and-ship.md) and [spec 028](docs/specs/028-outcome-build-and-ship.md).
+The tasks of a spec's task set whose blockers have all integrated. `build` runs them as workers per its [Slices](skills/build/SKILL.md#slices) ([decision 0060](docs/decisions/0060-slice-by-area.md)), each in its own worktree or on disjoint files in the shared checkout. There are no waves. Replaces the wave of [decision 0025](docs/decisions/0025-wave-checkpoints.md); [decision 0029](docs/decisions/0029-spec-issues.md); amended by [decision 0042](docs/decisions/0042-outcome-build-and-ship.md) and [spec 028](docs/specs/028-outcome-build-and-ship.md).
 
 ## Work in flight
 
@@ -98,7 +98,7 @@ The one remote branch for a delivery: `spec/<number>-<slug>` for a spec, a short
 
 ## Vertical slice
 
-One verifiable outcome cut through every layer it needs: a `to-tasks` task, or a group of small tasks that must land together. The unit of parallel work: a worker or native session takes a whole slice and keeps its small steps inside it, never one technical layer. [`to-tasks`](skills/to-tasks/SKILL.md) drafts them; [`write-agents`](skills/write-agents/SKILL.md#workers) assigns them; [decision 0054](docs/decisions/0054-native-capability-first-sessions.md).
+One verifiable outcome cut through every layer it needs: a `to-tasks` task, or a group of small tasks that must land together. The unit of parallel work: a worker or native session takes a whole slice and keeps its small steps inside it, never one technical layer. [`to-tasks`](skills/to-tasks/SKILL.md) drafts them; [`write-agents`](skills/write-agents/SKILL.md#workers) assigns them, and [`build`'s Slices](skills/build/SKILL.md#slices) sends each to a worker; [decision 0054](docs/decisions/0054-native-capability-first-sessions.md).
 
 ## Acceptance scenario
 

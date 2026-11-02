@@ -25,18 +25,19 @@ jobs:
         os: ${{ fromJSON(startsWith(github.ref, 'refs/tags/') && '["ubuntu-latest", "macos-latest"]' || '["ubuntu-latest"]') }}
         node: ${{ fromJSON(startsWith(github.ref, 'refs/tags/') && '[22, 24]' || '[22]') }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 10
+    timeout-minutes: 5
     steps:
+      # Shallow clone: the checks read the working tree, not history.
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
         with:
-          version: 9
+          persist-credentials: false
+      # The root package has no dependencies, so there is nothing to install or cache:
+      # no pnpm setup, no install, no cache restore or save. npm runs the same package scripts.
+      # If a dependency is ever added, a missing module fails loudly here; restore install and cache then.
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile --ignore-scripts
-      - run: pnpm validate
-      - run: pnpm test
+      - run: npm run validate
+      - run: npm test
       - if: startsWith(github.ref, 'refs/tags/')
-        run: pnpm test:release
+        run: npm run test:release
