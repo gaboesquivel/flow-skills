@@ -14,7 +14,7 @@ Recover intent from the PR title and description, relevant specs under `docs/spe
 
 Assess the change on the five review axes the [`review` skill](../skills/review/SKILL.md) defines: correctness, readability, architecture, security, and performance. Skip any the change cannot affect.
 
-Distinguish confirmed defects from risks and preferences. A passing structural test suite is not proof of intent alignment.
+A passing structural test suite is not proof of intent alignment.
 
 For consequential changes, state observable behavior, affected callers beyond the diff, the safety-critical assumption, and executable evidence when practical. Use the [`review`](../skills/review/SKILL.md) labels: Important (blocks), Nit (at most three), and Pre-existing, each with `file:line` evidence; drop findings a second read cannot confirm, and skip style or lint-only findings. Qualify assumptions that were not verified. In the JSON below, Important maps to `blocking` and the others to `advisory`.
 

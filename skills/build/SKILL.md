@@ -38,7 +38,7 @@ One home for the delivery lifecycle; `ship`, `to-spec`, and `write-agents` link 
 - **Branch.** A spec delivers on the branch already open for it, else `spec/<number>-<slug>`, its file's number and slug. Unspecced work uses a short descriptive branch. One remote branch and one pull request per delivery; worker branches stay local (`write-agents` Sessions).
 - **Draft early.** After the first commit, reuse the open pull request for the branch or open one as a draft. It is the shared workspace: drafts run no CI and no automatic preview, so check focused work locally while it stays draft.
 - **Push safely.** Only the integration owner pushes to the delivery branch. Before each push, fetch and confirm the remote head is one it already contains; otherwise integrate the new commits first. Never force-push.
-- **Ready.** When implementation and its focused checks are complete and the review has no blocking findings, mark it ready (`gh pr ready`; it is GraphQL-only, so where the host refuses GraphQL use its GitHub tools, else hand the user the one step "mark #N ready"). That event runs the required checks; each later push runs them again.
+- **Ready.** When implementation and its focused checks are complete and the review has no open Important finding, mark it ready (`gh pr ready`; it is GraphQL-only, so where the host refuses GraphQL use its GitHub tools, else hand the user the one step "mark #N ready"). That event runs the required checks; each later push runs them again.
 - **Previews are explicit.** Branch deployments are off where the project follows this lifecycle; deploy a preview (for Vercel, `vercel deploy` from the branch) only when the user asks or a review step needs the running branch.
 
 ### Verify

@@ -750,7 +750,7 @@
         "ship",
         "review"
       ],
-      "behavior": "Ship runs the independent review only when the size guard escalated or the user asked, posts it without approving, and an unmet acceptance verdict or blocking finding blocks landing",
+      "behavior": "Ship relies on build's fresh-context review at the risk tier's effort, posts it without approving, and an unmet acceptance verdict or open Important finding blocks landing",
       "taskFile": "tests/evals/tasks/E33-task.md",
       "rubricFile": "tests/evals/rubrics/E33-rubric.md",
       "skillReferences": [
@@ -845,7 +845,7 @@
       "skills": [
         "build"
       ],
-      "behavior": "Build integrates parallel tasks with containment checks, and unspecced work ends on a committed branch: a copy fix after a self-check, a public API change escalated to ship's review without a spec",
+      "behavior": "Build integrates parallel tasks with containment checks, and unspecced work ends on a committed branch: a copy fix after a Quick review, a public API change after a Deep review, without a spec",
       "taskFile": "tests/evals/tasks/E37-task.md",
       "rubricFile": "tests/evals/rubrics/E37-rubric.md",
       "skillReferences": [

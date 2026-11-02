@@ -10,7 +10,7 @@ disable-model-invocation: false
 
 An independent read of the change against intent, the spec when there is one, and root context, ending in repaired work: confirmed defects fixed and verified, or left `unresolved` with the reason. The implementing agent is not this review.
 
-**Proof.** For a spec, a verdict per acceptance scenario step: `satisfied`, `unmet`, or `unresolved`, each with evidence; without evidence it is `unresolved`, never `satisfied`. An `unmet` step is a blocking finding. Other unmet requirements are findings. Findings are ranked by impact.
+**Proof.** For a spec, a verdict per acceptance scenario step: `satisfied`, `unmet`, or `unresolved`, each with evidence; without evidence it is `unresolved`, never `satisfied`. An `unmet` step is an Important finding. Other unmet requirements are findings. Findings are ranked by impact.
 
 The reviewer is a second agent in a fresh context (a subagent or separate session given the diff, the request or spec, and repository instructions, never the author's conversation). Without separate execution, assess the axes in order and label the review **single-agent**; never claim independence or model diversity without it.
 

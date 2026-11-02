@@ -10,7 +10,7 @@ disable-model-invocation: false
 
 **"Ship it"** is the approval: no confirmation after it. It runs `build` when the branch is not verified, then merges the pull request (GitHub mode) or merges into `main` and pushes when a remote exists (local mode). Then it reports whether the shipped commit is live.
 
-**Proof.** Spec accepted; checks green on the landed head; no blocking findings; protection satisfied; when a remote exists, its default branch contains the shipped commit. Liveness is reported, never a gate.
+**Proof.** Spec accepted; checks green on the landed head; no open Important finding; protection satisfied; when a remote exists, its default branch contains the shipped commit. Liveness is reported, never a gate.
 
 Asking to ship authorizes these steps with no confirmation. It does not authorize destructive Git, security bypasses, production promotion or rollback unless explicitly asked, or unrelated changes. Ship's landing is the only commit, push, or merge to the default branch, apart from `push` on the current or named branch. Never force-push or rewrite remote branches. Never push other people's work. Never approve your own pull request. Never skip, disable, or weaken a check.
 
