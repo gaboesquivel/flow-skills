@@ -21,7 +21,7 @@ When you write agent instructions, keep **one authoritative home** for each fact
 
 ## Skill packaging
 
-For skills, use [skill mechanics](SKILL-MECHANICS.md) to distinguish activation from supporting-reference reads. Repeat the skill's catalog leading word in the description or body so invocation and execution share one token. Bundle required resources, preserve applicable notices, and ensure local paths resolve in the installed artifact. A copied skill must work without retrieving another author's skill package.
+For skills, use [skill mechanics](SKILL-MECHANICS.md) to distinguish activation from supporting-reference reads. Repeat the skill's catalog leading word in the description or body so invocation and execution share one token. Bundle required resources, preserve applicable notices, and ensure local paths resolve in the installed artifact. A copied skill must work without retrieving another author's skill package. A skill installed by hand gives one machine a different agent from every fresh clone: install from the project's committed source (for example its skills lock), and keep skills only the user starts out of automatic activation where the host allows it (in Claude Code, `disable-model-invocation: true`).
 
 Communicate, as relevant: purpose, activation, leading word, executable procedure, boundaries, completion evidence, and failure fallback. These are quality dimensions, not a mandatory heading template.
 
