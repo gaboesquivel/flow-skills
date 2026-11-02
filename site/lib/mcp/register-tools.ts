@@ -2,7 +2,19 @@ import type { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
 
 import { buildSources, extractiveAnswer, toCitations } from "@/lib/ask";
-import { catalogGroups, type ChunkKind, getDoc, getSkill, installCommand, skillsInCatalogOrder, sourceUrl } from "@/lib/content";
+import {
+  articlePath,
+  capabilityPath,
+  catalogGroups,
+  type ChunkKind,
+  getArticle,
+  getCapability,
+  getDoc,
+  getSkill,
+  installCommand,
+  skillsInCatalogOrder,
+  sourceUrl,
+} from "@/lib/content";
 import { docPath } from "@/lib/markdown-pages";
 import { search } from "@/lib/search";
 import { absolutizeMarkdown } from "@/lib/site";
@@ -14,7 +26,7 @@ const readOnly = { destructiveHint: false, idempotentHint: true, openWorldHint: 
 
 const describe = (name: (typeof mcpToolCatalog)[number]["name"]) => mcpToolCatalog.find((t) => t.name === name)?.description ?? "";
 
-const KINDS = ["skill", "doc", "decision", "starter"] as const satisfies readonly ChunkKind[];
+const KINDS = ["skill", "doc", "decision", "starter", "capability", "article"] as const satisfies readonly ChunkKind[];
 
 export const registerFlowTools = (server: McpServer, origin: string) => {
   const abs = (path: string) => `${origin}${path}`;
@@ -90,16 +102,40 @@ export const registerFlowTools = (server: McpServer, origin: string) => {
   server.registerTool(
     "get_doc",
     {
-      annotations: { ...readOnly, title: "Get a Flow guide or decision" },
+      annotations: { ...readOnly, title: "Get a Flow guide, decision, capability, or article" },
       description: describe("get_doc"),
       inputSchema: z.object({
-        slug: z.string().min(1).max(160).describe("Guide slug (methodology, principles, get-started) or decisions/NNNN-name."),
+        slug: z.string().min(1).max(160).describe(
+          "Guide slug (methodology, principles, get-started), decisions/NNNN-name, capabilities/<slug>, or blog/<slug>.",
+        ),
       }),
     },
     ({ slug }) => {
       const clean = slug.trim().replace(/^\/?(docs\/)?/u, "").replace(/(\.md)?\/?$/u, "");
+      const explanation = clean.startsWith("capabilities/")
+        ? getCapability(clean.slice("capabilities/".length))
+        : clean.startsWith("blog/")
+          ? getArticle(clean.slice("blog/".length))
+          : undefined;
+      if (explanation) {
+        const path = explanation.kind === "capability" ? capabilityPath(explanation) : articlePath(explanation);
+        return asToolResult({
+          description: explanation.description,
+          markdown: absolutizeMarkdown(explanation.markdown, origin),
+          section: explanation.kind,
+          slug: path.slice(1),
+          source: sourceUrl(explanation.source),
+          status: null,
+          title: explanation.title,
+          url: abs(path),
+        });
+      }
       const doc = getDoc(clean);
-      if (!doc) return asToolError(`No guide or decision with slug "${slug}".`, "Use search_flow with kind 'doc' or 'decision' to find slugs.");
+      if (!doc)
+        return asToolError(
+          `No published guide, decision, capability, or article with slug "${slug}".`,
+          "Use search_flow with kind 'doc', 'decision', 'capability', or 'article' to find slugs; drafts are not published.",
+        );
       return asToolResult({
         description: doc.description,
         markdown: absolutizeMarkdown(doc.markdown, origin),

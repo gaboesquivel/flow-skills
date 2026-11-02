@@ -1,9 +1,16 @@
 import type { ChunkKind } from "@/lib/content";
 
 /** Human labels for search result kinds (client-safe: no content import). */
-export const KIND_LABEL: Record<ChunkKind, string> = { decision: "Decision", doc: "Guide", skill: "Skill", starter: "Starter" };
+export const KIND_LABEL: Record<ChunkKind, string> = {
+  article: "Article",
+  capability: "Capability",
+  decision: "Decision",
+  doc: "Guide",
+  skill: "Skill",
+  starter: "Starter",
+};
 
-export const KIND_ORDER: ChunkKind[] = ["skill", "doc", "decision", "starter"];
+export const KIND_ORDER: ChunkKind[] = ["skill", "doc", "capability", "article", "decision", "starter"];
 
 const norm = (s: string) => s.toLowerCase().replace(/^\d+[.\s—-]*/u, "").replace(/[^\p{L}\p{N}]+/gu, "");
 

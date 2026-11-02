@@ -2,9 +2,10 @@
 // Output: content/generated/content.json (gitignored; regenerated on every dev start and build).
 import { execSync } from 'node:child_process'
 import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs'
-import { dirname, join, posix, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { Marked } from 'marked'
+
+import { createRenderer, parseFrontmatter, plain, readCollection, sections, videoEmbedUrl } from './content-lib.mjs'
 
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const repoRoot = resolve(siteRoot, '..')
@@ -25,38 +26,25 @@ const DOCS = [
   { slug: 'glossary', source: 'GLOSSARY.md', title: 'Glossary', nav: 'Glossary', description: 'Project-specific meanings and essential distinctions.' },
 ]
 
-// ---------- helpers ----------
+/**
+ * Curated explanations (spec 057). A file publishes only when it is listed here and its front matter says
+ * `status: published`; listed drafts stay out of every surface. Contract: docs/capabilities/README.md.
+ */
+const CAPABILITIES = ['docs/capabilities/verified-delivery.md', 'docs/capabilities/security-human-control.md', 'docs/capabilities/scope-cost-control.md']
+const ARTICLES = ['docs/blog/intent-to-verified-delivery.md']
 
-export const slugify = (text) =>
-  text
-    .toLowerCase()
-    .trim()
-    .replace(/<[^>]+>/gu, '')
-    .replace(/[^\p{L}\p{N}\s_-]/gu, '')
-    .replace(/\s/gu, '-')
+const readIfExists = (rel) => (existsSync(join(repoRoot, rel)) ? read(rel) : null)
+const problems = []
 
-const stripFrontmatter = (text) => {
-  const match = text.match(/^---\n([\s\S]*?)\n---\n?/u)
-  if (!match) return { data: {}, body: text }
-  const data = {}
-  for (const line of match[1].split('\n')) {
-    const i = line.indexOf(':')
-    if (i > 0) data[line.slice(0, i).trim()] = line.slice(i + 1).trim().replace(/^["']|["']$/gu, '')
-  }
-  return { data, body: text.slice(match[0].length) }
-}
-
-const plain = (md) =>
-  md
-    .replace(/```[\s\S]*?```/gu, ' ')
-    .replace(/!\[[^\]]*\]\([^)]*\)/gu, '')
-    .replace(/\[([^\]]+)\]\([^)]*\)/gu, '$1')
-    .replace(/<[^>]+>/gu, '')
-    .replace(/[`*]/gu, '')
-    .replace(/[>#|]/gu, ' ')
-    .replace(/-{3,}/gu, ' ')
-    .replace(/\s+/gu, ' ')
-    .trim()
+const capabilityCollection = readCollection({ kind: 'capability', sources: CAPABILITIES, read: readIfExists })
+const articleCollection = readCollection({
+  kind: 'article',
+  sources: ARTICLES,
+  read: readIfExists,
+  exists: (rel) => existsSync(join(repoRoot, rel)),
+  capabilitySlugs: new Set(capabilityCollection.entries.map((e) => e.slug)),
+})
+problems.push(...capabilityCollection.problems, ...articleCollection.problems)
 
 const skillNames = readdirSync(join(repoRoot, 'skills'), { withFileTypes: true })
   .filter((e) => e.isDirectory() && existsSync(join(repoRoot, 'skills', e.name, 'SKILL.md')))
@@ -68,11 +56,19 @@ const decisionFiles = readdirSync(join(repoRoot, 'docs/decisions'))
   .sort()
 
 const docBySource = new Map(DOCS.map((d) => [d.source, d]))
+const publishedRoutes = new Map([
+  ...capabilityCollection.entries.map((e) => [e.source, `/capabilities/${e.slug}`]),
+  ...articleCollection.entries.map((e) => [e.source, `/blog/${e.slug}`]),
+])
 
 /** Map a repository path (posix, relative to repo root) to a site route, or null. */
 const siteRouteFor = (repoPath) => {
   const doc = docBySource.get(repoPath)
   if (doc) return `/docs/${doc.slug}`
+  const published = publishedRoutes.get(repoPath)
+  if (published) return published
+  if (repoPath === 'docs/capabilities/README.md' && capabilityCollection.entries.length) return '/capabilities'
+  if (repoPath === 'docs/blog/README.md' && articleCollection.entries.length) return '/blog'
   if (repoPath === 'skills' || repoPath === 'skills/') return '/skills'
   let m = repoPath.match(/^skills\/([a-z0-9-]+)\/SKILL\.md$/u)
   if (m && skillNames.includes(m[1])) return `/skills/${m[1]}`
@@ -84,104 +80,10 @@ const siteRouteFor = (repoPath) => {
   return null
 }
 
-const rewriteHref = (href, sourcePath, githubBase = `${repoUrl}/blob/${REPO.branch}`) => {
-  if (!href || /^(?:[a-z][a-z0-9+.-]*:|\/\/)/iu.test(href)) return href
-  if (href.startsWith('#')) return href
-  const [pathPart, hash] = href.split('#')
-  const resolved = posix.normalize(posix.join(posix.dirname(sourcePath), pathPart))
-  const route = githubBase.includes(REPO.name) ? siteRouteFor(resolved) : null
-  if (route) return hash ? `${route}#${hash}` : route
-  const isDir = !/\.[a-z0-9]+$/iu.test(resolved)
-  const base = isDir ? githubBase.replace('/blob/', '/tree/') : githubBase
-  return `${base}/${resolved}${hash ? `#${hash}` : ''}`
-}
-
-const escapeHtml = (s) => s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;')
-
-/** Render markdown to HTML with GitHub-compatible heading ids and site-aware links. */
-const render = (markdown, sourcePath, opts = {}) => {
-  const headings = []
-  const seen = new Map()
-  const marked = new Marked({ gfm: true })
-  marked.use({
-    walkTokens(token) {
-      if (token.type === 'link') token.href = rewriteHref(token.href, sourcePath, opts.githubBase)
-    },
-    renderer: {
-      heading({ tokens, depth, text }) {
-        const inner = this.parser.parseInline(tokens)
-        const base = slugify(text.replace(/\[([^\]]+)\]\([^)]*\)/gu, '$1').replace(/[`*_]/gu, ''))
-        const n = seen.get(base) ?? 0
-        seen.set(base, n + 1)
-        const id = n ? `${base}-${n}` : base
-        if (depth === 1 && opts.dropH1) return ''
-        if (depth <= 3) headings.push({ id, text: plain(text), depth })
-        return `<h${depth} id="${id}"><a class="anchor" href="#${id}" aria-hidden="true" tabindex="-1">#</a>${inner}</h${depth}>\n`
-      },
-      code({ text, lang }) {
-        if (lang === 'mermaid') {
-          return `<p class="diagram-note">This section includes a diagram. <a href="${repoUrl}/blob/${REPO.branch}/${sourcePath}">View it on GitHub</a>.</p>\n`
-        }
-        const label = lang ? `<span class="code-lang">${escapeHtml(lang)}</span>` : ''
-        return `<div class="code-block">${label}<pre><code${lang ? ` class="language-${escapeHtml(lang)}"` : ''}>${escapeHtml(text)}</code></pre></div>\n`
-      },
-      table(token) {
-        const html = marked.Renderer.prototype.table.call(this, token)
-        return `<div class="table-wrap" role="region" aria-label="Table" tabindex="0">${html}</div>\n`
-      },
-      // Raw HTML is shown as text, never rendered: starter READMEs come from other repositories.
-      html({ text, block }) {
-        const anchor = text.trim().match(/^<a id="([\w-]+)">(<\/a>)?$/u)
-        if (anchor) return `<a id="${anchor[1]}">${anchor[2] ?? ''}`
-        if (text.trim() === '</a>') return '</a>'
-        if (/^\s*<!--[\s\S]*-->\s*$/u.test(text)) return ''
-        return block ? `<p>${escapeHtml(text.trim())}</p>\n` : escapeHtml(text)
-      },
-      link({ href, title, tokens }) {
-        const inner = this.parser.parseInline(tokens)
-        if (!/^(?:https?:|mailto:|\/|#)/iu.test(href)) return inner
-        const external = /^https?:/u.test(href)
-        const t = title ? ` title="${escapeHtml(title)}"` : ''
-        return external
-          ? `<a href="${escapeHtml(href)}"${t} rel="noopener">${inner}</a>`
-          : `<a href="${escapeHtml(href)}"${t}>${inner}</a>`
-      },
-    },
-  })
-  const html = marked.parse(markdown)
-  // Markdown with links rewritten the same way, for agent-facing Markdown and llms-full.txt.
-  const md = markdown.replace(/(\]\()([^)\s]+)((?:\s+"[^"]*")?\))/gu, (_, a, href, b) => `${a}${rewriteHref(href, sourcePath, opts.githubBase)}${b}`)
-  return { html, headings, markdown: md }
-}
-
-/** Split markdown into heading sections for search. */
-const sections = (markdown) => {
-  const out = []
-  let current = { heading: null, lines: [] }
-  let inFence = false
-  for (const line of markdown.split('\n')) {
-    if (line.startsWith('```')) inFence = !inFence
-    const m = !inFence && line.match(/^(#{2,3})\s+(.*)$/u)
-    if (m) {
-      out.push(current)
-      current = { heading: plain(m[2]), lines: [] }
-    } else current.lines.push(line)
-  }
-  out.push(current)
-  const seen = new Map()
-  return out
-    .map((s) => {
-      let anchor = null
-      if (s.heading) {
-        const base = slugify(s.heading)
-        const n = seen.get(base) ?? 0
-        seen.set(base, n + 1)
-        anchor = n ? `${base}-${n}` : base
-      }
-      return { heading: s.heading, anchor, text: plain(s.lines.join('\n')) }
-    })
-    .filter((s) => s.text.length > 20)
-}
+const { render: renderMarkdown } = createRenderer({ repoUrl, branch: REPO.branch, repoName: REPO.name, siteRouteFor })
+// Repository diagrams that fail to render are collected as build problems, never replaced with a note.
+const render = (markdown, sourcePath, opts = {}) => renderMarkdown(markdown, sourcePath, { problems, ...opts })
+const stripFrontmatter = parseFrontmatter
 
 // ---------- skills ----------
 
@@ -287,6 +189,28 @@ const decisions = decisionFiles.map((file) => {
   }
 })
 
+// ---------- capabilities and articles ----------
+
+const renderEntry = (e) => {
+  const rendered = render(e.body, e.source, { dropH1: true, requireDiagramTitles: true, lineOffset: e.lineOffset })
+  const { title, description, published, updated } = e.data
+  return { kind: e.kind, slug: e.slug, source: e.source, title, description, published, updated, html: rendered.html, markdown: rendered.markdown, headings: rendered.headings }
+}
+
+const capabilities = capabilityCollection.entries.map((e) => ({ ...renderEntry(e), group: e.data.group }))
+
+const articles = articleCollection.entries
+  .map((e) => {
+    const transcript = e.data.transcript ? render(read(e.data.transcript), e.data.transcript, { dropH1: true }) : null
+    return {
+      ...renderEntry(e),
+      capability: e.data.capability,
+      video: e.data.video_url ? { url: e.data.video_url, embed: videoEmbedUrl(e.data.video_url) } : null,
+      transcript: transcript ? { source: e.data.transcript, html: transcript.html, markdown: transcript.markdown } : null,
+    }
+  })
+  .sort((a, b) => b.published.localeCompare(a.published) || a.slug.localeCompare(b.slug))
+
 // ---------- starters ----------
 
 const STARTERS = ['flow-next', 'flow-mono']
@@ -335,17 +259,19 @@ const pushChunks = ({ kind, url, title, markdown, lead }) => {
 for (const s of skills) pushChunks({ kind: 'skill', url: `/skills/${s.name}`, title: s.name, markdown: s.markdown, lead: `${s.summary} Say "${s.say ?? ''}". ${s.phrases.map((p) => `"${p}"`).join(' ')} ${plain(s.whenMarkdown ?? '')}` })
 for (const d of docs) pushChunks({ kind: 'doc', url: `/docs/${d.slug}`, title: d.title, markdown: d.markdown, lead: d.description })
 for (const d of decisions) pushChunks({ kind: 'decision', url: `/docs/${d.slug}`, title: `${d.number} — ${d.title}`, markdown: d.markdown, lead: d.description })
+for (const c of capabilities) pushChunks({ kind: 'capability', url: `/capabilities/${c.slug}`, title: c.title, markdown: c.markdown, lead: c.description })
+for (const a of articles) pushChunks({ kind: 'article', url: `/blog/${a.slug}`, title: a.title, markdown: a.markdown, lead: a.description })
 for (const s of starters) if (s.markdown) pushChunks({ kind: 'starter', url: `/starters/${s.slug}`, title: s.slug, markdown: s.markdown })
 
 // ---------- invariants ----------
 // Fail the build (and the Vercel check on the pull request) when a source format drifts from what this script parses.
 
-const problems = [
+problems.push(
   ...skills.filter((s) => s.group === 'Other').map((s) => `skills/${s.name}: no row in docs/skills.md (| [name](../skills/name/SKILL.md) | "phrase" | when |)`),
   ...skills.filter((s) => !s.summary || !s.phrases.length).map((s) => `${s.source}: description needs a summary and 'Use when the user says "…"' phrases`),
   ...decisions.filter((d) => d.status === 'Unknown').map((d) => `${d.source}: no recognizable status (front matter "status:" or a "Status:" line)`),
   ...decisions.filter((d) => !d.title).map((d) => `${d.source}: missing "# NNNN — Title" heading`),
-]
+)
 if (problems.length) {
   console.error(`content: source format drift\n${problems.map((p) => `  - ${p}`).join('\n')}`)
   process.exit(1)
@@ -374,8 +300,10 @@ const content = {
   skills,
   docs,
   decisions,
+  capabilities,
+  articles,
   starters,
   chunks,
 }
 writeFileSync(join(outDir, 'content.json'), JSON.stringify(content))
-console.log(`content: ${skills.length} skills, ${docs.length} docs, ${decisions.length} decisions, ${starters.filter((s) => s.html).length}/${starters.length} starter READMEs, ${chunks.length} search chunks`)
+console.log(`content: ${skills.length} skills, ${docs.length} docs, ${decisions.length} decisions, ${capabilities.length} capabilities, ${articles.length} articles, ${starters.filter((s) => s.html).length}/${starters.length} starter READMEs, ${chunks.length} search chunks`)

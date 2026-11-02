@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { decisions, guides, skills } from "@/lib/content";
+import { articles, capabilities, decisions, guides, skills } from "@/lib/content";
 import { buildLlmsFullTxt, buildLlmsTxt, markdownForPath, pagePaths } from "@/lib/markdown-pages";
 import { starters } from "@/lib/starters";
 import { prefersMarkdown } from "@/proxy";
@@ -19,8 +19,35 @@ describe("markdownForPath", () => {
     expect(markdownForPath(`/starters/${starters[0]?.slug}`, origin)).not.toBeNull();
   });
 
+  it("covers published capabilities and articles with source and status caveats", () => {
+    expect(capabilities.length).toBeGreaterThan(0);
+    expect(articles.length).toBeGreaterThan(0);
+    for (const entry of [...capabilities, ...articles]) {
+      const path = entry.kind === "capability" ? `/capabilities/${entry.slug}` : `/blog/${entry.slug}`;
+      const md = markdownForPath(path, origin) ?? "";
+      expect(md, path).toContain(`Canonical: ${origin}${path}`);
+      expect(md, path).toContain(`Source: https://github.com/`);
+      expect(md, path).toContain("defines none itself");
+      expect(pagePaths()).toContain(path);
+    }
+    expect(markdownForPath("/capabilities", origin)).toContain("## Delivery & Execution");
+    expect(markdownForPath("/blog", origin)).toContain(`(${origin}/blog/${articles[0]?.slug})`);
+  });
+
+  it("keeps diagram source and its prose in Markdown", () => {
+    const withDiagram = [...capabilities, ...articles].filter((e) => e.markdown.includes("```mermaid"));
+    expect(withDiagram.length).toBeGreaterThan(0);
+    for (const e of withDiagram) expect(e.html).toContain('<figure class="diagram">');
+  });
+
+  it("groups the docs hub by reader task and keeps guide URLs", () => {
+    const hub = markdownForPath("/docs", origin) ?? "";
+    for (const group of ["Start", "Workflows", "Engineering practices", "Reference", "Agents"]) expect(hub).toContain(`## ${group}`);
+    for (const g of guides) expect(hub).toContain(`${origin}/docs/${g.slug}`);
+  });
+
   it("returns null for unknown paths", () => {
-    for (const path of ["/nope", "/skills/nope", "/docs/nope", "/starters/nope", "/api/search"]) expect(markdownForPath(path, origin)).toBeNull();
+    for (const path of ["/nope", "/skills/nope", "/docs/nope", "/starters/nope", "/api/search", "/capabilities/nope", "/blog/nope", "/blog/code-quality-agents", "/capabilities/multi-agent-collaboration"]) expect(markdownForPath(path, origin)).toBeNull();
   });
 
   it("absolutizes site links", () => {
@@ -37,9 +64,16 @@ describe("llms.txt", () => {
   it("lists every skill with its Markdown URL", () => {
     for (const s of skills) expect(txt).toContain(`(${origin}/skills/${s.name}.md)`);
   });
+  it("lists published capabilities and articles, never drafts", () => {
+    for (const c of capabilities) expect(txt).toContain(`(${origin}/capabilities/${c.slug}.md)`);
+    for (const a of articles) expect(txt).toContain(`(${origin}/blog/${a.slug}.md)`);
+    expect(txt).not.toContain("code-quality-agents");
+    expect(txt).not.toContain("transcripts/");
+  });
   it("llms-full.txt includes every skill and the content commit", () => {
     const full = buildLlmsFullTxt(origin);
     for (const s of skills) expect(full).toContain(`Source path: \`${s.source}\``);
+    for (const e of [...capabilities, ...articles]) expect(full).toContain(`(\`${e.source}\`)`);
     expect(full).toContain("commit ");
   });
 });

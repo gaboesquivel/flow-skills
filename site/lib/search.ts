@@ -32,7 +32,7 @@ type Hit = Chunk & { score: number; terms: string[] };
 const rank = (hits: Hit[]) =>
   hits.map((r) => ({ ...r, score: r.score * KIND_WEIGHT[r.kind] })).sort((a, b) => b.score - a.score);
 
-const KIND_WEIGHT: Record<ChunkKind, number> = { decision: 0.8, doc: 1, skill: 1.15, starter: 0.95 };
+const KIND_WEIGHT: Record<ChunkKind, number> = { article: 0.9, capability: 1, decision: 0.8, doc: 1, skill: 1.15, starter: 0.95 };
 
 const excerptFor = (text: string, terms: string[], length = 220) => {
   const lower = text.toLowerCase();

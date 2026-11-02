@@ -7,8 +7,11 @@ import { cn } from "@/lib/cn";
 
 export type NavGroup = { title: string; items: { href: string; label: string }[] };
 
+/** Index pages whose children have no nav entry of their own stay current on those children. */
+const SECTION_INDEXES = new Set(["/docs/decisions", "/blog"]);
+
 const isCurrent = (href: string, pathname: string) =>
-  href === "/docs/decisions" ? pathname === href || pathname.startsWith(`${href}/`) : pathname === href;
+  pathname === href || (SECTION_INDEXES.has(href) && pathname.startsWith(`${href}/`));
 
 function NavList({ groups, pathname }: { groups: NavGroup[]; pathname: string }) {
   return (
@@ -20,7 +23,7 @@ function NavList({ groups, pathname }: { groups: NavGroup[]; pathname: string })
             {group.items.map((item) => {
               const current = isCurrent(item.href, pathname);
               return (
-                <li key={item.href}>
+                <li key={`${group.title}-${item.href}`}>
                   <Link
                     href={item.href}
                     aria-current={current ? "page" : undefined}

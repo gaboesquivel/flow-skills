@@ -1,6 +1,14 @@
 import {
+  type Article,
+  articlePath,
+  articles,
+  type Capability,
+  capabilitiesByGroup,
+  capabilityPath,
   catalogGroups,
   content,
+  getArticle,
+  getCapability,
   decisions,
   type Doc,
   getDoc,
@@ -13,6 +21,7 @@ import {
   skillsInCatalogOrder,
   sourceUrl,
 } from "@/lib/content";
+import { docsTaskGroups } from "@/lib/docs-groups";
 import { mcpToolCatalog } from "@/lib/mcp/tool-catalog";
 import { search } from "@/lib/search";
 import { type Starter, starters } from "@/lib/starters";
@@ -32,6 +41,8 @@ const frame = (title: string, path: string, origin: string, body: string, summar
       .join("\n\n"),
     origin,
   ) + "\n";
+
+const shiftHeadings = (markdown: string) => markdown.replace(/^(#{1,5}) /gmu, "#$1 ");
 
 /** Drop a leading H1 so a page header can replace it. */
 const withoutTitle = (markdown: string) => markdown.replace(/^\s*# [^\n]*\n+/u, "");
@@ -150,15 +161,67 @@ const docsHub = (origin: string) =>
     "/docs",
     origin,
     `
-## Guides
-
-${guides.map((d) => `- [${d.title}](${docPath(d)}): ${d.description}`).join("\n")}
+${docsTaskGroups()
+  .map(
+    (g) =>
+      `## ${g.title}\n\n${g.summary}\n\n${g.items
+        .filter((i) => i.href !== "/docs")
+        .map((i) => `- [${i.label}](${i.href}): ${i.description}`)
+        .join("\n")}`,
+  )
+  .join("\n\n")}
 
 ## Decisions
 
 ${decisions.length} decision records. See the [decisions index](/docs/decisions).
 `,
-    "The Flow field guide: how to install, practice, and extend Flow.",
+    "The Flow field guide, organized by what you are trying to do.",
+  );
+
+/** Shared header lines for a published capability or article. */
+const explanationFacts = (entry: Capability | Article) =>
+  [
+    entry.kind === "capability" ? `- Group: ${entry.group}` : null,
+    entry.kind === "article" && getCapability(entry.capability) ? `- Capability: [${getCapability(entry.capability)?.title}](${capabilityPath({ slug: entry.capability })})` : null,
+    `- Published: ${entry.published}`,
+    entry.updated !== entry.published ? `- Updated: ${entry.updated}` : null,
+    `- Source: ${sourceUrl(entry.source)}`,
+    entry.kind === "article" && entry.video ? `- Recording: ${entry.video.url}` : null,
+    "- Status: an explanation that links to the skills, docs, and decisions owning each rule; it defines none itself.",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+const capabilitiesIndex = (origin: string) =>
+  frame(
+    "Capabilities",
+    "/capabilities",
+    origin,
+    capabilitiesByGroup()
+      .map((g) => `## ${g.name}\n\n${g.items.map((c) => `- [${c.title}](${capabilityPath(c)}): ${c.description}`).join("\n")}`)
+      .join("\n\n"),
+    "What Flow contributes to delivery, trust, and shared knowledge, with links to the owning skills and decisions.",
+  );
+
+const capabilityPage = (c: Capability, origin: string) =>
+  frame(c.title, capabilityPath(c), origin, `${explanationFacts(c)}\n\n---\n\n${withoutTitle(c.markdown)}`, c.description);
+
+const blogIndex = (origin: string) =>
+  frame(
+    "Articles",
+    "/blog",
+    origin,
+    articles.length ? articles.map((a) => `- [${a.title}](${articlePath(a)}) (${a.published}): ${a.description}`).join("\n") : "No published articles yet.",
+    "Longer explanations of Flow's practices with real examples.",
+  );
+
+const articlePage = (a: Article, origin: string) =>
+  frame(
+    a.title,
+    articlePath(a),
+    origin,
+    `${explanationFacts(a)}\n\n---\n\n${withoutTitle(a.markdown)}${a.transcript ? `\n\n## Transcript of the recording\n\n${shiftHeadings(withoutTitle(a.transcript.markdown))}` : ""}`,
+    a.description,
   );
 
 const decisionsIndex = (origin: string) =>
@@ -187,7 +250,7 @@ const searchPage = (origin: string, query?: string | null) => {
     "/search",
     origin,
     `
-Lexical search over every skill, guide, decision, and starter README, plus Ask: answers grounded in those sources with numbered citations.
+Lexical search over every skill, guide, capability, article, decision, and starter README, plus Ask: answers grounded in those sources with numbered citations.
 
 - Search API: \`GET ${origin}/api/search?q=<query>\`
 - Ask API: \`POST ${origin}/api/ask\` with \`{"question": "..."}\`
@@ -198,7 +261,7 @@ ${
     : `\nAdd \`?q=<query>\` to this Markdown URL to include results.`
 }
 `,
-    "Find a skill, guide, or decision, or ask a question answered from Flow's sources.",
+    "Find a skill, guide, capability, article, or decision, or ask a question answered from Flow's sources.",
   );
 };
 
@@ -213,8 +276,8 @@ Every page is a semantic HTML page and a Markdown document. No login is needed.
 ## Discover
 
 ${list([
-  `\`GET ${origin}/llms.txt\`: curated index of skills, guides, decisions, and interfaces`,
-  `\`GET ${origin}/llms-full.txt\`: every guide and skill as Markdown`,
+  `\`GET ${origin}/llms.txt\`: curated index of skills, guides, capabilities, articles, decisions, and interfaces`,
+  `\`GET ${origin}/llms-full.txt\`: every guide, capability, article, and skill as Markdown`,
   `\`GET ${origin}/sitemap.xml\`: every page`,
   `\`GET ${origin}/.well-known/mcp.json\`, \`${origin}/.well-known/mcp/server-card.json\`, \`${origin}/.well-known/ai-catalog.json\`: MCP discovery`,
   `\`GET ${origin}/openapi.json\`: OpenAPI 3.1 for the HTTP API`,
@@ -224,7 +287,7 @@ ${list([
 
 ${list([
   `Markdown for any page: append \`.md\` (home is \`${origin}/index.md\`) or send \`Accept: text/markdown\``,
-  `\`GET ${origin}/api/search?q=<query>&limit=1-25&kind=skill|doc|decision|starter\`: ranked results with canonical URLs and excerpts`,
+  `\`GET ${origin}/api/search?q=<query>&limit=1-25&kind=skill|doc|decision|starter|capability|article\`: ranked results with canonical URLs and excerpts`,
 ])}
 
 ## Understand
@@ -256,6 +319,18 @@ export const markdownForPath = (path: string, origin: string, searchParams?: URL
   if (clean === "/docs/decisions") return decisionsIndex(origin);
   if (clean === "/search") return searchPage(origin, searchParams?.get("q"));
   if (clean === "/agents") return agentsPage(origin);
+  if (clean === "/capabilities") return capabilitiesIndex(origin);
+  if (clean === "/blog") return blogIndex(origin);
+  const capability = clean.match(/^\/capabilities\/([^/]+)$/u)?.[1];
+  if (capability) {
+    const c = getCapability(capability);
+    return c ? capabilityPage(c, origin) : null;
+  }
+  const article = clean.match(/^\/blog\/([^/]+)$/u)?.[1];
+  if (article) {
+    const a = getArticle(article);
+    return a ? articlePage(a, origin) : null;
+  }
   const skill = clean.match(/^\/skills\/([^/]+)$/u)?.[1];
   if (skill) {
     const s = getSkill(skill);
@@ -297,6 +372,10 @@ export const pagePaths = () => [
   ...guides.map(docPath),
   "/docs/decisions",
   ...decisions.map(docPath),
+  "/capabilities",
+  ...capabilitiesByGroup().flatMap((g) => g.items.map(capabilityPath)),
+  "/blog",
+  ...articles.map(articlePath),
   "/search",
   "/agents",
 ];
@@ -326,7 +405,7 @@ Source: ${repo.url} · version ${content.version}${content.commit ? ` · commit 
 - [Get started](${md("/docs/get-started")}): install Flow and use your existing agent
 - [Methodology](${md("/methodology")}): the practice, not a pipeline
 - [Skills catalog](${md("/skills")}): every skill grouped, with phrases and install commands
-- [Full content](${origin}/llms-full.txt): every guide and skill as one Markdown file
+- [Full content](${origin}/llms-full.txt): every guide, capability, article, and skill as one Markdown file
 
 ## Skills
 
@@ -336,13 +415,23 @@ ${skillLines.join("\n")}
 
 ${guides.map((d) => `- [${d.title}](${md(docPath(d))}): ${d.description}`).join("\n")}
 
+## Capabilities
+
+${capabilitiesByGroup()
+  .flatMap((g) => g.items.map((c) => `- [${c.title}](${md(capabilityPath(c))}): ${c.description} (${g.name})`))
+  .join("\n")}
+
+## Articles
+
+${articles.map((a) => `- [${a.title}](${md(articlePath(a))}): ${a.description} (${a.published})`).join("\n")}
+
 ## Starters
 
 ${starters.map((s) => `- [${s.title}](${md(`/starters/${s.slug}`)}): ${s.tagline} Repository: ${s.repository}`).join("\n")}
 
 ## Agent interfaces
 
-- [Search API](${origin}/api/search?q=ship): \`GET /api/search?q=&limit=1-25&kind=skill|doc|decision|starter\`, ranked results with canonical URLs
+- [Search API](${origin}/api/search?q=ship): \`GET /api/search?q=&limit=1-25&kind=skill|doc|decision|starter|capability|article\`, ranked results with canonical URLs
 - Ask API: \`POST ${origin}/api/ask\` with \`{"question": "..."}\`, source-grounded answer with citations
 - MCP (Streamable HTTP, read-only, no auth): ${origin}/api/mcp; tools: ${MCP_TOOLS.join(", ")}
 - [MCP discovery](${origin}/.well-known/mcp.json), [server card](${origin}/.well-known/mcp/server-card.json), [AI catalog](${origin}/.well-known/ai-catalog.json)
@@ -357,15 +446,23 @@ ${decisions.map((d) => `- [${d.title}](${md(docPath(d))})`).join("\n")}
 `;
 };
 
-const shiftHeadings = (markdown: string) => markdown.replace(/^(#{1,5}) /gmu, "#$1 ");
-
-/** llms-full.txt: every guide and skill as Markdown with sources and the content commit. */
+/** llms-full.txt: every guide, capability, article, and skill as Markdown with sources and the content commit. */
 export const buildLlmsFullTxt = (origin: string) => {
   const sections = [
     `# Flow — full content\n\n> ${SITE_DESCRIPTION}\n\nSource: ${repo.url} · version ${content.version} · commit ${content.commit ?? "unknown"} · generated ${content.generatedAt}\n\nIndex: ${origin}/llms.txt`,
     "# Guides",
     ...guides.map(
       (d) => `## ${d.title}\n\nURL: ${origin}${docPath(d)}\nSource: ${sourceUrl(d.source)} (\`${d.source}\`)\n\n${shiftHeadings(d.markdown.replace(/^\s*# [^\n]*\n+/u, ""))}`,
+    ),
+    "# Capabilities",
+    ...capabilitiesByGroup().flatMap((g) =>
+      g.items.map(
+        (c) => `## ${c.title}\n\nURL: ${origin}${capabilityPath(c)}\nSource: ${sourceUrl(c.source)} (\`${c.source}\`)\nGroup: ${c.group}\n\n${shiftHeadings(withoutTitle(c.markdown))}`,
+      ),
+    ),
+    "# Articles",
+    ...articles.map(
+      (a) => `## ${a.title}\n\nURL: ${origin}${articlePath(a)}\nSource: ${sourceUrl(a.source)} (\`${a.source}\`)\nPublished: ${a.published}\n\n${shiftHeadings(withoutTitle(a.markdown))}`,
     ),
     "# Skills",
     ...skillsInCatalogOrder().map(

@@ -12,7 +12,7 @@ export const GET = (request: Request) => {
       description: "Flow public API: read-only, no authentication.",
       documentation: `${origin}/agents`,
       endpoints: [
-        { description: "Ranked search over skills, guides, decisions, and starters.", method: "GET", url: `${origin}/api/search?q={query}&limit={1-25}&kind={skill|doc|decision|starter}` },
+        { description: "Ranked search over skills, guides, capabilities, articles, decisions, and starters.", method: "GET", url: `${origin}/api/search?q={query}&limit={1-25}&kind={skill|doc|decision|starter|capability|article}` },
         { description: "Source-grounded answer with citations; ?stream=1 streams text.", method: "POST", url: `${origin}/api/ask` },
         { description: "MCP Streamable HTTP (JSON-RPC 2.0).", method: "POST", tools: mcpToolCatalog.map((t) => t.name), url: `${origin}/api/mcp` },
       ],
