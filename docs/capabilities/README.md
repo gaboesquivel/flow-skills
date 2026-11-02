@@ -2,7 +2,7 @@
 
 Curated explanations of what Flow contributes to a delivery outcome, written for people deciding whether and how to use it. Each page explains a coordinated practice and links to the skills, methodology, glossary entries, and decisions that own its rules. These pages define no rules of their own: when a page and its owner disagree, the owner wins and the page is corrected. Scope and taxonomy: [spec 057](../specs/057-content-architecture.md).
 
-A page is published on the site only when it is listed in the site's curated content list **and** its frontmatter says `status: published`. Anything else in this folder, including drafts, stays out of the site, search, and agent discovery.
+A page is published on the site only when it is listed in the site's curated content list (`CAPABILITIES` in [`site/scripts/build-content.mjs`](../../site/scripts/build-content.mjs)) **and** its frontmatter says `status: published`. Anything else in this folder, including drafts, stays out of the site, search, and agent discovery.
 
 ## Frontmatter
 

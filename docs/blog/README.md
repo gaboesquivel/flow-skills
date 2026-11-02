@@ -1,6 +1,6 @@
 # Articles
 
-Articles explaining Flow's positions for people directing coding agents. They describe and link to the documents that own each rule (`PRODUCT.md`, [principles](../principles.md), skills, decisions) and define nothing themselves. An article is published on the site only when it is listed in the site's curated content list and its frontmatter says `status: published`; everything else here stays a draft.
+Articles explaining Flow's positions for people directing coding agents. They describe and link to the documents that own each rule (`PRODUCT.md`, [principles](../principles.md), skills, decisions) and define nothing themselves. An article is published on the site only when it is listed in the site's curated content list (`ARTICLES` in [`site/scripts/build-content.mjs`](../../site/scripts/build-content.mjs)) and its frontmatter says `status: published`; everything else here stays a draft.
 
 | Article | Status |
 | --- | --- |
