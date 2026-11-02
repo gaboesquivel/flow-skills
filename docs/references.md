@@ -184,6 +184,16 @@ Candidate influences on [understandable change](principles.md#understandable-cha
 - Laurie Voss — [talk page](https://ai.engineer/talks/_mi3alkqy4s-death-code-review-what-data-actually-says) on review capacity, automated reviewers, and review manipulation. Most reported figures are untraced.
 - [METR — Many SWE-bench-passing PRs would not be merged](https://metr.org/notes/2026-03-10-many-swe-bench-passing-prs-would-not-be-merged-into-main/) — primary source for the mergeability gap; static, single-attempt review.
 
+## Skills design and agent context
+
+Candidate influences on [spec 056](specs/056-lean-context-checkable-design.md); [assessment](research/2026-11-02-skills-and-agent-context.md), read 2026-11-02.
+
+- Anthropic — [Agent Skills best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices) and Claude Code [skills](https://code.claude.com/docs/en/skills) and [memory](https://code.claude.com/docs/en/memory) docs: progressive disclosure, description and body limits, listing budget, path-scoped rules. Vendor guidance.
+- Barry Zhang and Mahesh Murag — ["Don't Build Agents, Build Skills Instead"](https://www.youtube.com/watch?v=CEvIs9y1uog): skills as versioned, tested folders of expertise. No measured results.
+- [Spotify — Portal cut Claude Code token usage by 90%](https://engineering.atspotify.com/2026/9/portal-by-spotify-cut-my-claude-code-token-usage-by-90): reading dominates; hooks enforce what instructions only suggest. The routed worker is a paid platform; not adopted.
+- rico — [design system and skills an agent can follow](https://x.com/_heyrico/status/2116953958279479760): rules as one sentence plus reason; document only what exists.
+- [Taste Skill](https://github.com/Leonxlnx/taste-skill) (MIT): a design skill packaged with versioned releases, gallery-derived rules, and lint and browser gates.
+
 ## Maintenance
 
 Add useful references here as they arise, with their purpose and a link to the relevant assessment. Record inspection dates, limitations, and any pinned revision in that assessment. Keep proposed influences distinct from accepted methodology; preserve source citations beside the claims they support.
