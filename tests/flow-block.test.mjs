@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
-import { BEGIN, END, PHRASES, TOOL_RULE, alignTable, buildFlowBlock, describeLayout, ensureImport, instructionFile, readDelivery, upsertFlowBlock, removeFlowBlock, writeFlowBlock } from '../skills/flow/lib/flow-block.mjs'
+import { BEGIN, END, PHRASES, REVIEW_RULE, TOOL_RULE, alignTable, buildFlowBlock, describeLayout, ensureImport, instructionFile, readDelivery, upsertFlowBlock, removeFlowBlock, writeFlowBlock } from '../skills/flow/lib/flow-block.mjs'
 
 const skillsRoot = join(dirname(fileURLToPath(import.meta.url)), '..', 'skills')
 
@@ -18,8 +18,8 @@ test('block has markers, the flow pointer, a Delivery line only when a mode is g
   assert.doesNotMatch(block, /^Process:/mu)
   assert.match(block, /`flow` skill/u)
   assert.match(block, /"ship it".*`ship`/u)
-  assert.ok(block.includes(TOOL_RULE))
-  assert.ok(block.split('\n').length <= 25)
+  assert.ok(block.includes(TOOL_RULE) && block.includes(REVIEW_RULE))
+  assert.ok(block.split('\n').length <= 27)
 })
 
 test('the phrase table is aligned the way Markdown formatters write it', () => {
