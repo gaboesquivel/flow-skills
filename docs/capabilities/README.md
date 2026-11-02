@@ -21,7 +21,7 @@ Articles in [`docs/blog/`](../blog/README.md) share `title`, `description`, `sta
 
 ## Writing a page
 
-Each page answers, in order: the problem the reader has; what Flow contributes; how to start in ordinary language; one concrete example; evidence and owners; limitations and trade-offs. Separate implemented behavior, accepted intent, and host-dependent behavior. Describe the intended benefit of a convention without promising measured gains, and attribute framework, authentication, migration, and deployment behavior to the tools that provide it. A diagram needs adjacent prose that explains the same relationships.
+Each page answers, in order: the problem the reader has; what Flow contributes; how to start in ordinary language; one concrete example; evidence and owners; limitations and trade-offs. Separate implemented behavior, accepted intent, and host-dependent behavior. Describe the intended benefit of a convention without promising measured gains, and attribute framework, authentication, migration, and deployment behavior to the tools that provide it. A diagram needs adjacent prose that explains the same relationships. Every diagram the site renders (here, in articles, and in rendered guides) is a `flowchart` or `sequenceDiagram` within the subset the content build checks, and declares `accTitle:` (its accessible name) and usually `accDescr:` (its caption); anything else fails the build with the file and line.
 
 ## Index
 

@@ -55,7 +55,7 @@ Say a phrase and the matching skill runs. There is no required order: start anyw
 ```mermaid
 flowchart LR
   accTitle: Flow's skills from a new project to shipped work
-  accDescr: start leads into explore; shaping runs through to-spec and to-tasks, or straight to build; delivery runs build, review, then ship.
+  accDescr: start leads into explore; shaping runs through to-spec and to-tasks, or straight to build; delivery runs build, then ship, with review when the change is large or you ask.
   start["start<br/>new project"] ==> explore
   subgraph shapeGroup [Shape]
     explore["explore<br/>+ interview, grill"]

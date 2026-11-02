@@ -9,7 +9,7 @@ pnpm install
 pnpm dev
 ```
 
-`pnpm dev` and `pnpm build` first run `pnpm content`, which reads the repository's Markdown (`../skills`, `../docs`, `../PRODUCT.md`, `../README.md`, `../GLOSSARY.md`) and the starter READMEs into `content/generated/content.json`. That file is gitignored; edit the source Markdown, never the generated output. The build fails, naming the file to fix, when a skill has no row in `docs/skills.md`, a decision has no recognizable status, a curated capability or article has invalid front matter ([`docs/capabilities/README.md`](../docs/capabilities/README.md)), or a repository Mermaid diagram is unsafe or does not render.
+`pnpm dev` and `pnpm build` first run `pnpm content`, which reads the repository's Markdown (`../skills`, `../docs`, `../PRODUCT.md`, `../README.md`, `../GLOSSARY.md`) and the starter READMEs into `content/generated/content.json`. That file is gitignored; edit the source Markdown, never the generated output. The build fails, naming the file to fix, when a skill has no row in `docs/skills.md`, a decision has no recognizable status, a curated capability or article has invalid front matter ([`docs/capabilities/README.md`](../docs/capabilities/README.md)), or a repository Mermaid diagram is unsafe, lacks `accTitle:`, or uses syntax outside the checked flowchart and sequence subset.
 
 | Script | Purpose |
 | --- | --- |

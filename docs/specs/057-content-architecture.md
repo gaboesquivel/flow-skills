@@ -1,6 +1,6 @@
 # 057 — Capability pages, article publishing, and human documentation
 
-Status: accepted (2026-11-02).
+Status: implemented (2026-11-02).
 
 ## Problem Statement
 
@@ -171,10 +171,10 @@ Do not invoke `pnpm --dir site test` just to select a file: its pre-step rebuild
 
 ## Tasks and dependencies
 
-- [ ] Deliver the P1 reading path: content schema/curation, three capability pages, one delivery article, indexes, rendering, canonical links, and source attribution. Area: `docs/capabilities`, `docs/blog`, `site`. Blockers: none; verify claims against current owners before writing.
-- [ ] Complete the same reading path for agents and search: kinds, Markdown, sitemap, llms, MCP, discovery descriptions, and focused contract checks. Area: `site`. Blockers: published-content contract from the first task.
-- [ ] Complete human navigation and visual access: five task groups, Mermaid/text alternatives, media fallback contract, minimal writing guidance, and browser acceptance. Area: `site`, `skills/write-humans`, `skills/tldr`, `docs`. Blockers: first task; integrate with agent surfaces before release.
-- [ ] Reconcile current context, record requirement verdicts, and deliver P1 together. Area: root context, `docs`. Blockers: all preceding tasks. Update `docs/README.md`, content indexes, spec index, and affected `DESIGN.md`/`PRODUCT.md` descriptions without duplicating content. P2/P3 are not completion tasks.
+- [x] Deliver the P1 reading path: content schema/curation, three capability pages, one delivery article, indexes, rendering, canonical links, and source attribution. Area: `docs/capabilities`, `docs/blog`, `site`. Blockers: none; verify claims against current owners before writing.
+- [x] Complete the same reading path for agents and search: kinds, Markdown, sitemap, llms, MCP, discovery descriptions, and focused contract checks. Area: `site`. Blockers: published-content contract from the first task.
+- [x] Complete human navigation and visual access: five task groups, Mermaid/text alternatives, media fallback contract, minimal writing guidance, and browser acceptance. Area: `site`, `skills/write-humans`, `skills/tldr`, `docs`. Blockers: first task; integrate with agent surfaces before release.
+- [x] Reconcile current context, record requirement verdicts, and deliver P1 together. Area: root context, `docs`. Blockers: all preceding tasks. Update `docs/README.md`, content indexes, spec index, and affected `DESIGN.md`/`PRODUCT.md` descriptions without duplicating content. P2/P3 are not completion tasks.
 
 Reuse the existing content pipeline, Prism components, search engine, and MCP server. No starter repository change is required. A static Mermaid renderer/sanitizer is the only anticipated new rendering dependency; assess its local build footprint and license at implementation. If it cannot fit the appetite, surface the trade-off rather than silently dropping diagram accessibility or safety.
 
