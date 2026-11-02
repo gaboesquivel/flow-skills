@@ -55,6 +55,7 @@ Canonical gradient: `linear-gradient(92deg, #9ea6f8 0%, #c6a8f6 48%, #f0a6cf 100
 - Show product goals and actual capabilities faithfully. Do not use fabricated counters, testimonials, scores, speed claims or agent-readiness badges without evidence.
 - There is one search surface: the palette. No separate Ask landing or embedded search boxes; entry points open the palette.
 - Preserve the current live Prism information architecture, responsive layouts, source-backed content pipeline and machine-readable endpoints unless there is a separate, confirmed product change.
+- Docs are organized by reader task (Start, Workflows, Engineering practices, Reference, Agents). Capability pages and articles explain and link to owning skills, docs, and decisions; they never redefine rules ([spec 057](docs/specs/057-content-architecture.md)). The homepage and hero are unchanged.
 - Ensure typography, navigation, loading, error, empty, focus and mobile states are deliberate. Use semantic content for human and agent readers; imagery is supplementary rather than a text substitute.
 - The hero diagram must not preserve the retired diamond as a competing logo. Use Throughline in brand-bearing surfaces.
 

@@ -1,6 +1,6 @@
 # 057 — Capability pages, article publishing, and human documentation
 
-Status: draft (2026-11-02).
+Status: accepted (2026-11-02).
 
 ## Problem Statement
 

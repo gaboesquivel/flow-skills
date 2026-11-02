@@ -61,5 +61,6 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [049-local-evaluation.md](049-local-evaluation.md) (implemented)
 - [055-local-host-gate.md](055-local-host-gate.md) (implemented)
 - [056-lean-context-checkable-design.md](056-lean-context-checkable-design.md) (accepted)
+- [057-content-architecture.md](057-content-architecture.md) (accepted)
 
 Significant standalone decisions belong in `docs/decisions/`, not in a spec. See [decisions](../decisions/README.md).
