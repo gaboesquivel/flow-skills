@@ -34,7 +34,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0028-build-and-ship.md](0028-build-and-ship.md) | Accepted (amended by 0029, 0030, 0032, 0042, 0044, 0058) | `build` opens a pull request with green checks; `ship` lands accepted specs and hotfixes with no confirmation; spec acceptance; `Deploy:` retired |
 | [0029-spec-issues.md](0029-spec-issues.md) | Accepted (amended by 0030, 0031, 0032, 0034, 0035, 0042, 0044; spec-issue rules superseded by 0044) | One issue per spec with tasks as sub-issues and one pull request; the spec file is the source of truth; frontier builds, one review per spec, automatic merge, tests that never sleep |
 | [0030-asked-delivery-and-local-mode.md](0030-asked-delivery-and-local-mode.md) | Accepted (amended by 0032, 0036, 0037, 0039, 0044) | Depth and delivery asked together once; local mode keeps the spec branch, needs no remote, pushes only on request; clean task worktrees removed on integration (local landing and push changed by 0032) |
-| [0031-fan-out-by-default.md](0031-fan-out-by-default.md) | Accepted (amended by 0042, 0043, 0044, 0053) | Skills run independent steps as parallel workers by default; per-axis spec review; tasks declare an area |
+| [0031-fan-out-by-default.md](0031-fan-out-by-default.md) | Accepted (amended by 0042, 0043, 0044, 0053, 0060) | Skills run independent steps as parallel workers by default; per-axis spec review; tasks declare an area |
 | [0032-local-build-lands-ship-verifies.md](0032-local-build-lands-ship-verifies.md) | Accepted (amended by 0033, 0034, 0040, 0044) | Local `build` reviews and merges into local `main`; `ship` publishes, then verifies the shipped commit's deployment with the spec's acceptance scenario; specs require one; discovery depth and delivery asked as independent questions (verification changed by 0040) |
 | [0033-shared-files-and-reviewed-head.md](0033-shared-files-and-reviewed-head.md) | Superseded by 0044 | Shared-file appends are committed on the spec branch and do not move the reviewed head |
 | [0034-no-ceremony-without-a-spec.md](0034-no-ceremony-without-a-spec.md) | Accepted (amended by 0039, 0044, 0057, 0058) | Unspecced work gets the local suite and one self-check, no spec gate or review workers; `build` owns the size guard |
@@ -56,13 +56,14 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0050-github-governance-preset.md](0050-github-governance-preset.md) | Accepted (amended by 0057) | One GitHub governance preset: protected default branch, squash only, required checks, no bypass; `start` applies it |
 | [0051-design-skill.md](0051-design-skill.md) | Accepted | `design` compares rendered visual directions, the user chooses, and `DESIGN.md` records the approved one |
 | [0052-git-first-coordination.md](0052-git-first-coordination.md) | Accepted | Git-first independent-session ownership, worktree boundaries and best-effort discovery |
-| [0053-delivery-appetite-and-scope.md](0053-delivery-appetite-and-scope.md) | Accepted | Bounded delivery appetite, scope protection and economical parallelism |
+| [0053-delivery-appetite-and-scope.md](0053-delivery-appetite-and-scope.md) | Accepted (amended by 0060) | Bounded delivery appetite, scope protection and economical parallelism |
 | [0054-native-capability-first-sessions.md](0054-native-capability-first-sessions.md) | Accepted | Native observable sessions, Claude Code validation priority and portable fallback |
 | [0055-capability-based-github-and-host-triggered-builds.md](0055-capability-based-github-and-host-triggered-builds.md) | Accepted | GitHub mode through any reachable route; optional label-triggered cloud builds; cloud-ready repository setup |
 | [0056-contract-first-tests.md](0056-contract-first-tests.md) | Accepted | API routes and MCP tools are test-first; no UI tests by default; `ARCHITECTURE.md` may set its own policy |
 | [0057-draft-workspace-ready-checks.md](0057-draft-workspace-ready-checks.md) | Accepted | One draft pull request per spec; drafts run no CI or previews; ready runs checks; `ship` counts only checks that ran; no git hooks |
 | [0058-review-passes-and-risk-tiers.md](0058-review-passes-and-risk-tiers.md) | Accepted | Fresh-context review on every build; risk tiers set Quick, Standard, or Deep effort; verify pass, Important/Nit/Pre-existing labels, every finding answered, three-round cap; human-tier paths ship on the user's yes |
 | [0059-github-actions-over-vercel-ci.md](0059-github-actions-over-vercel-ci.md) | Accepted | Stay on GitHub Actions standard runners; Vercel CI and paid third-party runners not adopted; pricing notes and revisit triggers |
+| [0060-slice-by-area.md](0060-slice-by-area.md) | Accepted | `build` splits work into slices by area at intake; every slice of a multi-area change goes to a worker |
 
 ## Rules
 
