@@ -56,13 +56,14 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0050-github-governance-preset.md](0050-github-governance-preset.md) | Accepted (amended by 0057) | One GitHub governance preset: protected default branch, squash only, required checks, no bypass; `start` applies it |
 | [0051-design-skill.md](0051-design-skill.md) | Accepted | `design` compares rendered visual directions, the user chooses, and `DESIGN.md` records the approved one |
 | [0052-git-first-coordination.md](0052-git-first-coordination.md) | Accepted | Git-first independent-session ownership, worktree boundaries and best-effort discovery |
-| [0053-delivery-appetite-and-scope.md](0053-delivery-appetite-and-scope.md) | Accepted | Bounded delivery appetite, scope protection and economical parallelism |
+| [0053-delivery-appetite-and-scope.md](0053-delivery-appetite-and-scope.md) | Accepted (amended by 0060, proposed) | Bounded delivery appetite, scope protection and economical parallelism |
 | [0054-native-capability-first-sessions.md](0054-native-capability-first-sessions.md) | Accepted | Native observable sessions, Claude Code validation priority and portable fallback |
 | [0055-capability-based-github-and-host-triggered-builds.md](0055-capability-based-github-and-host-triggered-builds.md) | Accepted | GitHub mode through any reachable route; optional label-triggered cloud builds; cloud-ready repository setup |
 | [0056-contract-first-tests.md](0056-contract-first-tests.md) | Accepted | API routes and MCP tools are test-first; no UI tests by default; `ARCHITECTURE.md` may set its own policy |
 | [0057-draft-workspace-ready-checks.md](0057-draft-workspace-ready-checks.md) | Accepted | One draft pull request per spec; drafts run no CI or previews; ready runs checks; `ship` counts only checks that ran; no git hooks |
 | [0058-review-passes-and-risk-tiers.md](0058-review-passes-and-risk-tiers.md) | Accepted | Fresh-context review on every build; risk tiers set Quick, Standard, or Deep effort; verify pass, Important/Nit/Pre-existing labels, every finding answered, three-round cap; human-tier paths ship on the user's yes |
 | [0059-github-actions-over-vercel-ci.md](0059-github-actions-over-vercel-ci.md) | Accepted | Stay on GitHub Actions standard runners; Vercel CI and paid third-party runners not adopted; pricing notes and revisit triggers |
+| [0060-slice-by-area.md](0060-slice-by-area.md) | Proposed | `build` splits work into slices by area at intake; every slice of a multi-area change goes to a worker |
 
 ## Rules
 
