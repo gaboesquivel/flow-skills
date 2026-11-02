@@ -66,7 +66,7 @@ The removable section between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->` that
 
 ## Unspecced work
 
-Work that resolves to no spec or task, from a one-line fix to a feature built from an `explore` brief. It never needs a spec. "Build it" ends with a reviewed, checked branch as for any work, and "ship it" lands it. A size guard, judged once, picks the review and never stops the work: one self-check against the request for small work, or the independent review when the guard escalates it. [`build`](skills/build/SKILL.md#unspecced-work) owns the guard; decisions [0034](docs/decisions/0034-no-ceremony-without-a-spec.md), [0039](docs/decisions/0039-build-never-requires-a-spec.md), and [0044](docs/decisions/0044-fast-delivery.md).
+Work that resolves to no spec or task, from a one-line fix to a feature built from an `explore` brief. It never needs a spec. "Build it" ends with a reviewed, checked branch as for any work, and "ship it" lands it. A size guard, judged once, sets the risk tier and never stops the work: a fresh-context review against the request at Quick, Standard, or Deep effort, and a person's yes for human-tier paths. [`build`](skills/build/SKILL.md#size-guard) owns the guard; decisions [0034](docs/decisions/0034-no-ceremony-without-a-spec.md), [0039](docs/decisions/0039-build-never-requires-a-spec.md), [0044](docs/decisions/0044-fast-delivery.md), and [0058](docs/decisions/0058-review-passes-and-risk-tiers.md).
 
 ## Area
 

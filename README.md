@@ -38,13 +38,13 @@ Local and GitHub are delivery options, not separate methodologies: the skills, p
 | "Ship it" | Builds if needed, merges into `main`, and pushes when a remote exists. | Builds if needed and merges the pull request. |
 | [Liveness](GLOSSARY.md#liveness) | Each phrase ends with a light check that its commit is on the remote and, for an app, deployed. | The same. |
 
-Each phrase is the approval; nothing asks again after it. `build` runs the independent review only when the size guard escalates or you say "review it". To override the inferred mode, add a `Delivery:` line to the Flow block, or say so for one run: "ship it local" or "ship it with GitHub". The full rule lives in [`build`](skills/build/SKILL.md#delivery-mode); the glossary defines [delivery mode](GLOSSARY.md#delivery-mode).
+Each phrase is the approval; nothing asks again after it. `build` has every change reviewed by a second agent in a fresh context, at Quick, Standard, or Deep effort by risk; CI, Git hook, auth, billing, and release changes ship only on your yes. To override the inferred mode, add a `Delivery:` line to the Flow block, or say so for one run: "ship it local" or "ship it with GitHub". The full rule lives in [`build`](skills/build/SKILL.md#delivery-mode); the glossary defines [delivery mode](GLOSSARY.md#delivery-mode).
 
 ## Work without a spec
 
 Specs are for bets worth tracking, not a toll on every change. In either mode, nothing writes a spec or tasks unless you say "spec it" or "break it down" ([decision 0039](docs/decisions/0039-build-never-requires-a-spec.md)).
 
-- **Say "build it".** With no spec behind it, `build` treats the change as [unspecced work](GLOSSARY.md#unspecced-work) and ends with a reviewed, checked branch: a committed branch, or an open pull request. Its [size guard](skills/build/SKILL.md#size-guard) adds the independent review only for a larger or riskier change; "ship it" lands it.
+- **Say "build it".** With no spec behind it, `build` treats the change as [unspecced work](GLOSSARY.md#unspecced-work) and ends with a reviewed, checked branch: a committed branch, or an open pull request. Its [size guard](skills/build/SKILL.md#size-guard) sets the review's effort from the change's risk; "ship it" lands it.
 - **Explore, then build.** After "explore this", "build it" builds the confirmed brief directly. The brief's branch is the work branch, so the brief lands with the code. For a new product, `explore` stops at the brief; spec 001 comes only when you ask. `explore` skips fixes and clearly small changes entirely: no questions, no writes.
 - **Just ask your agent.** Flow skills run when your request matches their phrases. A plain request ("rename this prop") is handled as your agent would without Flow.
 
