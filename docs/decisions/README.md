@@ -61,6 +61,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0055-capability-based-github-and-host-triggered-builds.md](0055-capability-based-github-and-host-triggered-builds.md) | Accepted | GitHub mode through any reachable route; optional label-triggered cloud builds; cloud-ready repository setup |
 | [0056-contract-first-tests.md](0056-contract-first-tests.md) | Accepted | API routes and MCP tools are test-first; no UI tests by default; `ARCHITECTURE.md` may set its own policy |
 | [0057-draft-workspace-ready-checks.md](0057-draft-workspace-ready-checks.md) | Accepted | One draft pull request per spec; drafts run no CI or previews; ready runs checks; `ship` counts only checks that ran; no git hooks |
+| [0061-eve-default-agent-runtime.md](0061-eve-default-agent-runtime.md) | Accepted | Eve is the default agent runtime in flow-next and flow-mono; AI SDK for lightweight HTTP; Flow Skills stay host-side |
 
 ## Rules
 
