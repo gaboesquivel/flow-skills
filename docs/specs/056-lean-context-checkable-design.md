@@ -71,7 +71,7 @@ How each lesson lands:
 | One source for installed skills (audit) | A fresh clone gets a different agent from the maintainer's | `write-agents`: the skills an agent gets come from the project's committed source, and skills only the user starts do not compete for automatic activation. |
 | Measure before trimming (audit) | Trim proposals based on impression | `retro`: instruction-size findings cite a measurement, labelled as an estimate. |
 
-**Measurement script (flow-skills).** `scripts/context.mjs`, run as `pnpm context [--repo <path>] [--json]`. Node only, no dependencies, no network. It reports:
+**Measurement script.** `skills/retro/context.mjs`, bundled with `retro` so every repository that installs Flow's skills has it (`node <retro folder>/context.mjs [--repo <path>] [--json]`; `pnpm context` in flow-skills). It measures the working tree, which is what the agent sees, including gitignored installs. Node only, no dependencies, no network. It reports:
 
 - *Always loaded:* `CLAUDE.md` and `AGENTS.md` with `@` imports resolved, plus `name` and `description` of every skill the host would list (committed and installed, from `.claude/skills`, `.agents/skills`, and `skills/` where the repository uses them).
 - *On demand:* each `SKILL.md` body, each root context file (`PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md`), and the Flow block, measured as one block wherever it appears.
@@ -116,11 +116,11 @@ No decision record: the budgets are hypotheses in this spec, and the script is r
 
 ## Testing Decisions
 
-`scripts/context.mjs` gets node tests on fixtures under `tests/fixtures/` (the pattern `validate` already uses): an `@` import counted once, a skill outside the lock, an over-long description, a missing "Use when", a `CLAUDE.md`-less repository, and a Flow block measured on its own. Tests assert on `--json` output, not on wording. Skill text changes are reviewed against this spec; `pnpm validate` covers links.
+`context.mjs` gets node tests on fixtures under `tests/fixtures/` (the pattern `validate` already uses): an `@` import counted once, a skill outside the lock, an over-long description, a missing "Use when", a `CLAUDE.md`-less repository, and a Flow block measured on its own. Tests assert on `--json` output, not on wording. Skill text changes are reviewed against this spec; `pnpm validate` covers links.
 
 **Acceptance scenario.** Actor: the maintainer. Starting state: the six repositories as audited on 2026-11-02 (gaboesquivel.com with 87 installed skills and 46 locked; the package without `CLAUDE.md`).
 
-1. Run `pnpm context --repo ~/Code/gaboesquivel.com`. → The report lists always-loaded instructions near 2.1k tokens, listed skill metadata near 7.2k (over budget), 41 skills outside the lock, `upstash-redis-js` over the description limit, at least the six overlap pairs above, and `DESIGN.md` near 9.2k (over the core budget).
+1. Run `pnpm context --repo ~/Code/gaboesquivel.com`. → The report lists always-loaded instructions near 2.1k tokens, listed skill metadata over budget, the skills installed outside the lock (41 against `main`'s lock on 2026-11-02; the count follows the checked-out branch), `upstash-redis-js` over the description limit, possible overlaps its heuristic can see (for example `tdd` / `test-driven-development`; overlaps by meaning, such as `debug` / `diagnosing-bugs`, need a reader), and `DESIGN.md` near 9.2k (over the core budget).
 2. Run it on `~/Code/gaboesquivel`. → It reports `AGENTS.md` with no `CLAUDE.md` as information, not as over budget.
 3. Run it on `~/Code/flow-factory`. → Every figure is under budget.
 4. Ask "let's do a retro" in flow-skills after a session. → The Instruction files candidate cites the report's numbers and proposes edits without making them.
@@ -131,10 +131,10 @@ No decision record: the budgets are hypotheses in this spec, and the script is r
 
 ## Tasks
 
-- [ ] **T1 — Context report.** `scripts/context.mjs`, `pnpm context`, fixtures and tests. Done when steps 1–3 pass on the real repositories. Blocks T2, T5, and T6.
-- [ ] **T2 — `retro` measures before proposing trims.** Done when steps 4 and 8 pass. Blocked by T1.
-- [ ] **T3 — `write-agents` install-source outcome.** Done when step 8 passes for it. Independent.
-- [ ] **T4 — `design` leaves followable, verifiable rules.** Done when steps 5 and 8 pass.
+- [x] **T1 — Context report.** `skills/retro/context.mjs`, `pnpm context`, fixtures and tests. Done when steps 1–3 pass on the real repositories. Blocks T2, T5, and T6.
+- [x] **T2 — `retro` measures before proposing trims.** Done when steps 4 and 8 pass. Blocked by T1. Step 4 not yet run in a live retro.
+- [x] **T3 — `write-agents` install-source outcome.** Done when step 8 passes for it. Independent.
+- [x] **T4 — `design` leaves followable, verifiable rules.** Done when steps 5 and 8 pass. Step 5 not yet run in a live design session.
 - [ ] **T5 — gaboesquivel.com.** Resync, design-skill decision, overlap pairs, `DESIGN.md` split, identity-ban check. Its own PR in that repository. Done when step 6 passes. Blocked by T1 (to measure) and T4 (outcome to meet).
 - [ ] **T6 — Templates.** flow-next and flow-mono stack-skill review with keep, pin, or drop per skill. Their own PRs. Blocked by T1.
 - [ ] **T7 — Description voice experiment.** Using the existing skill evals ([041](041-skill-evaluation.md), [049](049-local-evaluation.md)), compare imperative and third-person descriptions on three Flow skills. Change `write-agents` and the catalog only if third person triggers at least as well. Blocked by nothing.
