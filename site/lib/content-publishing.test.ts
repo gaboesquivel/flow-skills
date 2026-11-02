@@ -85,13 +85,14 @@ describe("renderDiagram", () => {
 
   it("renders a static image with an accessible name, description, and source", () => {
     const html = renderDiagram(flow, { requireTitle: true });
-    expect(html).toMatch(/^<figure class="diagram"><img src="data:image\/svg\+xml;base64,/u);
-    expect(html).toContain('alt="Trust boundary: Rules inform the agent."');
+    expect(html).toMatch(/^<figure class="diagram"><div class="diagram-scroll"[^>]*><img src="data:image\/svg\+xml;base64,/u);
+    expect(html).toContain('alt="Trust boundary"');
+    expect(html).toContain('class="diagram-scroll" role="region" aria-label="Trust boundary, scrollable" tabindex="0"');
     expect(html).toContain("<figcaption>Rules inform the agent.</figcaption>");
     expect(html).toContain("Diagram source");
     const svg = Buffer.from(html.match(/base64,([^"]+)"/u)?.[1] ?? "", "base64").toString();
     expect(svg).toContain("<svg");
-    expect(svg).not.toMatch(/@import|<script|foreignObject|\son[a-z]+=/iu);
+    expect(svg).not.toMatch(/@import|display=swap|<script|foreignObject|\son[a-z]+=/iu);
   });
 
   it("rejects interactions, directives, HTML labels, missing titles, and invalid Mermaid", () => {

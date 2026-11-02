@@ -49,7 +49,7 @@ const DIAGRAM_COLORS = { bg: '#1a1725', fg: '#f5f3fb', accent: '#c9b8ff', line: 
 /** Strip anything active from renderer output; the SVG is also only ever shown through <img>, which runs no script and loads nothing. */
 export const sanitizeSvg = (svg) =>
   svg
-    .replace(/@import[^;]*;/gu, '')
+    .replace(/@import\s+(?:url\([^)]*\)|"[^"]*"|'[^']*')[^;]*;?/giu, '')
     .replace(/<script[\s\S]*?<\/script\s*>/giu, '')
     .replace(/<foreignObject[\s\S]*?<\/foreignObject\s*>/giu, '')
     .replace(/\s(?:on[a-z]+)\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/giu, '')
@@ -74,10 +74,12 @@ export const renderDiagram = (source, { requireTitle = false } = {}) => {
   svg = sanitizeSvg(String(svg))
   const width = svg.match(/<svg[^>]*\swidth="(\d+(?:\.\d+)?)"/u)?.[1]
   const height = svg.match(/<svg[^>]*\sheight="(\d+(?:\.\d+)?)"/u)?.[1]
-  const alt = accTitle ? `${accTitle}${accDescr ? `: ${accDescr}` : ''}` : 'Diagram, explained in the surrounding text'
+  // The image is named by its title; the caption carries the description once, so it is not read twice.
+  const alt = accTitle ?? 'Diagram, explained in the surrounding text'
   const size = width && height ? ` width="${Math.round(Number(width))}" height="${Math.round(Number(height))}"` : ''
   const src = `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`
-  return `<figure class="diagram"><img src="${src}" alt="${escapeHtml(alt)}"${size} loading="lazy" decoding="async" />${
+  // Drawn at its natural size; a wide diagram scrolls inside a focusable region instead of shrinking or widening the page.
+  return `<figure class="diagram"><div class="diagram-scroll" role="region" aria-label="${escapeHtml(alt)}, scrollable" tabindex="0"><img src="${src}" alt="${escapeHtml(alt)}"${size} loading="lazy" decoding="async" /></div>${
     accDescr ? `<figcaption>${escapeHtml(accDescr)}</figcaption>` : ''
   }<details class="diagram-source"><summary>Diagram source</summary><pre><code class="language-mermaid">${escapeHtml(source)}</code></pre></details></figure>\n`
 }

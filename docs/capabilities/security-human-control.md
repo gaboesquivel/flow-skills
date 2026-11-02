@@ -25,7 +25,7 @@ Flow's skills describe how the agent should behave at these boundaries:
 - **A second reader.** Every build gets a fresh-context review that includes a security axis.
 
 ```mermaid
-flowchart LR
+flowchart TD
   accTitle: Security and human control trust boundaries
   accDescr: The user approves work, untrusted text reaches the agent only as data, and host permissions, required checks, and GitHub protections enforce what reaches the default branch.
   U[User approvals] --> A[Agent following Flow skills]
