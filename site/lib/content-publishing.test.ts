@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { createRenderer, readCollection, renderDiagram, sanitizeSvg, videoLinks } from "@/scripts/content-lib.mjs";
+import { createRenderer, createSiteRoutes, diagramSyntaxProblems, readCollection, renderDiagram, sanitizeSvg, videoLinks } from "@/scripts/content-lib.mjs";
 
 const page = (fields: Record<string, string>, body = "# Title\n\nBody text that explains the page.\n") =>
   `---\n${Object.entries(fields)
@@ -105,6 +105,27 @@ describe("renderDiagram", () => {
     expect(() => renderDiagram(`flowchart LR\n${t}  A[one<br/>two]-->B`)).not.toThrow();
   });
 
+  it("fails malformed diagrams the renderer would silently drop", () => {
+    const t = "  accTitle: T\n";
+    for (const bad of [
+      `flowchart TD\n${t}  A[unclosed --> B`,
+      `flowchart TD\n${t}  A -->>>> `,
+      `flowchart LR\n${t}  A --> B\n  }}}}`,
+      `flowchart LR\n${t}  subgraph S [Group]\n  A --> B`,
+      `sequenceDiagram\n${t}  participant A\n  A->>: oops`,
+      `sequenceDiagram\n${t}  A->>B no text`,
+      `stateDiagram-v2\n${t}  [*] --> A`,
+    ])
+      expect(() => renderDiagram(bad), bad).toThrow(/invalid Mermaid/u);
+  });
+
+  it("accepts the supported flowchart and sequence statements", () => {
+    const flow = `flowchart LR\n  accTitle: T\n  start["start<br/>new"] ==> explore\n  subgraph g [Shape]\n    explore["explore"]\n  end\n  A -.-> B -.-> C\n  T[Text] -. data only .-> A\n  A -- label --> B\n  A -->|yes| B\n  classDef x fill:#fff\n  class A,B x`;
+    const seq = `sequenceDiagram\n  accTitle: T\n  participant M as Maintainer\n  M->>A: build it\n  A-->>M: done\n  Note over M,A: a note\n  loop each push\n    A->>G: push\n  end`;
+    expect(diagramSyntaxProblems(flow)).toEqual([]);
+    expect(diagramSyntaxProblems(seq)).toEqual([]);
+  });
+
   it("keeps small message labels at AA contrast", () => {
     const html = renderDiagram("sequenceDiagram\n  accTitle: T\n  A->>B: hello");
     const svg = Buffer.from(html.match(/base64,([^"]+)"/u)?.[1] ?? "", "base64").toString();
@@ -117,6 +138,33 @@ describe("renderDiagram", () => {
     expect(clean).not.toMatch(/@import|<script|onclick|foreignObject|https:\/\/x/u);
     expect(clean).toContain('href="#m"');
     expect(clean).toContain('stroke="url(#g)"');
+  });
+});
+
+describe("createSiteRoutes", () => {
+  const routes = createSiteRoutes({
+    articles: [{ slug: "post", source: "docs/blog/post.md" }],
+    capabilities: [{ slug: "security", source: "docs/capabilities/security.md" }],
+    docs: [{ slug: "get-started", source: "README.md" }],
+    skillNames: ["build"],
+  });
+
+  it("routes published entries, their indexes, and existing sources; drafts and other files stay on GitHub", () => {
+    expect(routes("docs/capabilities/security.md")).toBe("/capabilities/security");
+    expect(routes("docs/blog/post.md")).toBe("/blog/post");
+    expect(routes("docs/capabilities/README.md")).toBe("/capabilities");
+    expect(routes("docs/blog/README.md")).toBe("/blog");
+    expect(routes("docs/capabilities/draft.md")).toBeNull();
+    expect(routes("docs/blog/code-quality-agents.md")).toBeNull();
+    expect(routes("README.md")).toBe("/docs/get-started");
+    expect(routes("skills/build/SKILL.md")).toBe("/skills/build");
+    expect(routes("docs/decisions/0057-draft-workspace-ready-checks.md")).toBe("/docs/decisions/0057-draft-workspace-ready-checks");
+  });
+
+  it("does not route collection indexes while nothing in them is published", () => {
+    const none = createSiteRoutes({ docs: [], skillNames: [] });
+    expect(none("docs/capabilities/README.md")).toBeNull();
+    expect(none("docs/blog/README.md")).toBeNull();
   });
 });
 
@@ -144,7 +192,7 @@ describe("createRenderer", () => {
 
   it("reports an invalid repository diagram with its location instead of a fallback note", () => {
     const problems: string[] = [];
-    const { html } = render("# T\n\ntext\n\n```mermaid\nnot a diagram\n  accTitle: T\n```\n", "docs/x.md", { problems });
+    const { html } = render("# T\n\ntext\n\n```mermaid\nflowchart LR\n  accTitle: T\n  A[unclosed --> B\n```\n", "docs/x.md", { problems });
     expect(problems).toEqual([expect.stringMatching(/^docs\/x\.md:6: invalid Mermaid/u)]);
     expect(html).not.toContain("diagram-note");
   });

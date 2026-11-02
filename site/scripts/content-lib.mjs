@@ -58,6 +58,36 @@ export const sanitizeSvg = (svg) =>
     .replace(/\s(?:xlink:)?href\s*=\s*(?:"(?!#)[^"]*"|'(?!#)[^']*'|(?!["'#])[^\s>]+)/giu, '')
     .replace(/url\(\s*(?!["']?#)[^)]*\)/giu, 'none')
 
+// The renderer drops statements it cannot parse instead of failing, so each statement is checked against the
+// supported subset first: flowcharts and sequence diagrams. Anything unrecognized is invalid, never silently lost.
+const NODE = String.raw`[A-Za-z_][\w-]*(?:\[\[[^\]]*\]\]|\[\([^)]*\)\]|\(\[[^\]]*\]\)|\(\([^)]*\)\)|\{\{[^}]*\}\}|\[[^\]]*\]|\([^)]*\)|\{[^}]*\}|>[^\]]*\])?`
+const EDGE = String.raw`(?:<?(?:-{2,}|={2,}|-\.+-)[>ox]?(?:\|[^|]*\|)?|--\s[^-<>|]+?\s--[>ox-]|==\s[^=<>|]+?\s==[>=]|-\.\s[^.<>|]+?\s\.-[>-])`
+const FLOW_CHAIN = new RegExp(String.raw`^${NODE}(?:\s*${EDGE}\s*${NODE})*;?$`, 'u')
+const FLOW_OTHER = /^(?:subgraph\s+\S.*|end|direction\s+(?:TB|TD|BT|LR|RL)|classDef\s+\S+\s+\S.*|class\s+[\w,-]+\s+\S+|style\s+\S+\s+\S.*|linkStyle\s+\S+\s+\S.*)$/u
+const SEQ_STATEMENT =
+  /^(?:(?:participant|actor)\s+[\w-]+(?:\s+as\s+\S.*)?|[\w-]+\s*(?:-{1,2}>>|-{1,2}>|-{1,2}x|-{1,2}\))\s*[+-]?[\w-]+\s*:\s*\S.*|Note\s+(?:left of|right of|over)\s+[\w-]+(?:\s*,\s*[\w-]+)?\s*:\s*\S.*|(?:loop|alt|else|opt|par|and|critical|break|rect)(?:\s+\S.*)?|end|(?:activate|deactivate)\s+[\w-]+|autonumber)$/u
+
+/** Reasons a diagram uses syntax outside the supported subset, as "line N: statement" (block-relative). */
+export const diagramSyntaxProblems = (source) => {
+  const lines = source.split('\n')
+  const header = lines.findIndex((l) => l.trim() && !/^\s*%%/u.test(l))
+  const head = lines[header]?.trim() ?? ''
+  const kind = /^(?:flowchart|graph)\s+(?:TB|TD|BT|LR|RL)$/u.test(head) ? 'flow' : head === 'sequenceDiagram' ? 'sequence' : null
+  if (!kind) return [`unsupported diagram type "${head}" (use flowchart or sequenceDiagram)`]
+  const problems = []
+  let depth = 0
+  lines.forEach((raw, i) => {
+    const line = raw.trim()
+    if (i <= header || !line || line.startsWith('%%') || /^acc(?:Title|Descr)\s*:/u.test(line)) return
+    const ok = kind === 'flow' ? FLOW_CHAIN.test(line) || FLOW_OTHER.test(line) : SEQ_STATEMENT.test(line)
+    if (/^(?:subgraph|loop|alt|opt|par|critical|break|rect)\b/u.test(line)) depth++
+    if (line === 'end' && --depth < 0) problems.push(`line ${i + 1}: "end" without an open block`)
+    else if (!ok) problems.push(`line ${i + 1}: unrecognized statement "${line.slice(0, 60)}"`)
+  })
+  if (depth > 0) problems.push(`${depth} block(s) never closed with "end"`)
+  return problems
+}
+
 /** Render one Mermaid block to a static, accessible figure. Throws with a reason when the source is unsafe or invalid. */
 export const renderDiagram = (source, { requireTitle = true } = {}) => {
   const lines = source.split('\n')
@@ -67,6 +97,8 @@ export const renderDiagram = (source, { requireTitle = true } = {}) => {
   if (lines.some((l) => /^\s*click\s/u.test(l))) throw new Error('diagram interactions ("click") are not allowed')
   if (/%%\{/u.test(source)) throw new Error('diagram directives ("%%{...}%%") are not allowed')
   if (/<(?!br\s*\/?>)[a-z/!]/iu.test(source)) throw new Error('HTML in diagram labels is not allowed')
+  const syntax = diagramSyntaxProblems(source)
+  if (syntax.length) throw new Error(`invalid Mermaid: ${syntax.join('; ')}`)
   const drawable = lines.filter((l) => !/^\s*acc(Title|Descr)\s*:/u.test(l)).join('\n')
   let svg
   try {
@@ -213,6 +245,35 @@ export const sections = (markdown) => {
       return { heading: s.heading, anchor, text: plain(s.lines.join('\n')) }
     })
     .filter((s) => s.text.length > 20)
+}
+
+// ---------- site routes ----------
+
+/**
+ * Repository path → site route, or null (then links go to GitHub). `published` lists only published capability and
+ * article entries, so a draft, even a listed one, always links to its GitHub source.
+ * @param {{ docs: { slug: string, source: string }[], skillNames: string[], capabilities?: { slug: string, source: string }[], articles?: { slug: string, source: string }[] }} options
+ */
+export const createSiteRoutes = ({ docs, skillNames, capabilities = [], articles = [] }) => {
+  const docBySource = new Map(docs.map((d) => [d.source, d]))
+  const published = new Map([...capabilities.map((e) => [e.source, `/capabilities/${e.slug}`]), ...articles.map((e) => [e.source, `/blog/${e.slug}`])])
+  return (repoPath) => {
+    const doc = docBySource.get(repoPath)
+    if (doc) return `/docs/${doc.slug}`
+    const route = published.get(repoPath)
+    if (route) return route
+    if (repoPath === 'docs/capabilities/README.md' && capabilities.length) return '/capabilities'
+    if (repoPath === 'docs/blog/README.md' && articles.length) return '/blog'
+    if (repoPath === 'skills' || repoPath === 'skills/') return '/skills'
+    let m = repoPath.match(/^skills\/([a-z0-9-]+)\/SKILL\.md$/u)
+    if (m && skillNames.includes(m[1])) return `/skills/${m[1]}`
+    m = repoPath.match(/^skills\/([a-z0-9-]+)\/?$/u)
+    if (m && skillNames.includes(m[1])) return `/skills/${m[1]}`
+    m = repoPath.match(/^docs\/decisions\/(\d{4}-[a-z0-9-]+)\.md$/u)
+    if (m) return `/docs/decisions/${m[1]}`
+    if (repoPath === 'docs/decisions/README.md' || repoPath === 'docs/decisions/' || repoPath === 'docs/decisions') return '/docs/decisions'
+    return null
+  }
 }
 
 // ---------- publishing contract (spec 057) ----------

@@ -5,7 +5,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSy
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { CAPABILITY_GROUPS, createRenderer, parseFrontmatter, plain, readCollection, sections, videoLinks } from './content-lib.mjs'
+import { CAPABILITY_GROUPS, createRenderer, createSiteRoutes, parseFrontmatter, plain, readCollection, sections, videoLinks } from './content-lib.mjs'
 
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const repoRoot = resolve(siteRoot, '..')
@@ -55,30 +55,7 @@ const decisionFiles = readdirSync(join(repoRoot, 'docs/decisions'))
   .filter((f) => /^\d{4}-.+\.md$/u.test(f))
   .sort()
 
-const docBySource = new Map(DOCS.map((d) => [d.source, d]))
-const publishedRoutes = new Map([
-  ...capabilityCollection.entries.map((e) => [e.source, `/capabilities/${e.slug}`]),
-  ...articleCollection.entries.map((e) => [e.source, `/blog/${e.slug}`]),
-])
-
-/** Map a repository path (posix, relative to repo root) to a site route, or null. */
-const siteRouteFor = (repoPath) => {
-  const doc = docBySource.get(repoPath)
-  if (doc) return `/docs/${doc.slug}`
-  const published = publishedRoutes.get(repoPath)
-  if (published) return published
-  if (repoPath === 'docs/capabilities/README.md' && capabilityCollection.entries.length) return '/capabilities'
-  if (repoPath === 'docs/blog/README.md' && articleCollection.entries.length) return '/blog'
-  if (repoPath === 'skills' || repoPath === 'skills/') return '/skills'
-  let m = repoPath.match(/^skills\/([a-z0-9-]+)\/SKILL\.md$/u)
-  if (m && skillNames.includes(m[1])) return `/skills/${m[1]}`
-  m = repoPath.match(/^skills\/([a-z0-9-]+)\/?$/u)
-  if (m && skillNames.includes(m[1])) return `/skills/${m[1]}`
-  m = repoPath.match(/^docs\/decisions\/(\d{4}-[a-z0-9-]+)\.md$/u)
-  if (m) return `/docs/decisions/${m[1]}`
-  if (repoPath === 'docs/decisions/README.md' || repoPath === 'docs/decisions/' || repoPath === 'docs/decisions') return '/docs/decisions'
-  return null
-}
+const siteRouteFor = createSiteRoutes({ docs: DOCS, skillNames, capabilities: capabilityCollection.entries, articles: articleCollection.entries })
 
 const { render: renderMarkdown } = createRenderer({ repoUrl, branch: REPO.branch, repoName: REPO.name, siteRouteFor })
 // Repository diagrams that fail to render are collected as build problems, never replaced with a note.

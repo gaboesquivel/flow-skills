@@ -41,7 +41,7 @@ Text alternative: you approve the work, and the agent follows Flow's skills to c
 
 ## How to start
 
-Say "build it" or "ship it" when you mean it; those are the approvals. Expect one question after "build it" when the change touches a human-tier path: `ship` waits for your yes after reading the report. Say "review it" to raise a build's review to its deepest tier.
+Say "build it" or "ship it" when you mean it; those are the approvals. When a change touches a human-tier path, `build` lists those paths in its report, and `ship` lands them only on a yes you give after reading it; a "ship it" said before that report stops and asks for that one yes. Say "review it" to raise a build's review to its deepest tier.
 
 ## Example
 

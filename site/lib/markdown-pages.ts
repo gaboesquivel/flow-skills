@@ -457,12 +457,12 @@ export const buildLlmsFullTxt = (origin: string) => {
     "# Capabilities",
     ...capabilitiesByGroup().flatMap((g) =>
       g.items.map(
-        (c) => `## ${c.title}\n\nURL: ${origin}${capabilityPath(c)}\nSource: ${sourceUrl(c.source)} (\`${c.source}\`)\nGroup: ${c.group}\n\n${shiftHeadings(withoutTitle(c.markdown))}`,
+        (c) => `## ${c.title}\n\nURL: ${origin}${capabilityPath(c)}\n${explanationFacts(c)}\n\n${shiftHeadings(withoutTitle(c.markdown))}`,
       ),
     ),
     "# Articles",
     ...articles.map(
-      (a) => `## ${a.title}\n\nURL: ${origin}${articlePath(a)}\nSource: ${sourceUrl(a.source)} (\`${a.source}\`)\nPublished: ${a.published}\n\n${shiftHeadings(withoutTitle(a.markdown))}`,
+      (a) => `## ${a.title}\n\nURL: ${origin}${articlePath(a)}\n${explanationFacts(a)}\n\n${shiftHeadings(withoutTitle(a.markdown))}`,
     ),
     "# Skills",
     ...skillsInCatalogOrder().map(

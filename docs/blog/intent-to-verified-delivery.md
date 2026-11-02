@@ -88,7 +88,7 @@ Human control: "build it" and "ship it" were the approvals. Steps they cover did
 
 ## What this does and does not prove
 
-Put together, the delivery left four kinds of evidence, each tied to a commit: acceptance steps judged in review, findings fixed and answered, required checks that ran and passed on the merged head, and a liveness report. That is what Flow means by verified delivery.
+Put together, the delivery left three kinds of evidence, each tied to a commit: acceptance steps judged in review, findings fixed and answered, and required checks that ran and passed on the merged head. A liveness report is the fourth kind Flow expects after landing; this record does not contain one, as noted above. Together they are what Flow means by verified delivery.
 
 It does not prove the change was worth making. Whether skipping draft CI saved meaningful time or money was not measured; the spec says so. Checks prove only what they test, and a reviewer can miss what the author missed. The draft-skipping workflows and disabled previews are this repository's configuration, not something Flow does for every adopter. A project that wants the same behavior configures its own workflows and hosting.
 
