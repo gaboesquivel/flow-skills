@@ -80,6 +80,7 @@ export function ExplanationPage({
                 title={`Recording: ${entry.title}`}
                 className="size-full"
                 loading="lazy"
+                sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
                 referrerPolicy="strict-origin-when-cross-origin"
                 allow="encrypted-media; picture-in-picture; fullscreen"
                 allowFullScreen

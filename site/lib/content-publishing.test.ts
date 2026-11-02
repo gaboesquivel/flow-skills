@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { createRenderer, readCollection, renderDiagram, sanitizeSvg, videoEmbedUrl } from "@/scripts/content-lib.mjs";
+import { createRenderer, readCollection, renderDiagram, sanitizeSvg, videoLinks } from "@/scripts/content-lib.mjs";
 
 const page = (fields: Record<string, string>, body = "# Title\n\nBody text that explains the page.\n") =>
   `---\n${Object.entries(fields)
@@ -96,19 +96,27 @@ describe("renderDiagram", () => {
   });
 
   it("rejects interactions, directives, HTML labels, missing titles, and invalid Mermaid", () => {
-    expect(() => renderDiagram("flowchart LR\n  A-->B\n  click A \"javascript:alert(1)\"")).toThrow(/click/u);
-    expect(() => renderDiagram("%%{init: {}}%%\nflowchart LR\n  A-->B")).toThrow(/directives/u);
-    expect(() => renderDiagram("flowchart LR\n  A[<img src=x onerror=alert(1)>]-->B")).toThrow(/HTML/u);
-    expect(() => renderDiagram("flowchart LR\n  A-->B", { requireTitle: true })).toThrow(/accTitle/u);
-    expect(() => renderDiagram("not a diagram\n  A")).toThrow(/invalid Mermaid/u);
-    expect(() => renderDiagram("flowchart LR\n  A[one<br/>two]-->B")).not.toThrow();
+    const t = "  accTitle: T\n";
+    expect(() => renderDiagram(`flowchart LR\n${t}  A-->B\n  click A "javascript:alert(1)"`)).toThrow(/click/u);
+    expect(() => renderDiagram(`%%{init: {}}%%\nflowchart LR\n${t}  A-->B`)).toThrow(/directives/u);
+    expect(() => renderDiagram(`flowchart LR\n${t}  A[<img src=x onerror=alert(1)>]-->B`)).toThrow(/HTML/u);
+    expect(() => renderDiagram("flowchart LR\n  A-->B")).toThrow(/accTitle/u);
+    expect(() => renderDiagram(`not a diagram\n${t}  A`)).toThrow(/invalid Mermaid/u);
+    expect(() => renderDiagram(`flowchart LR\n${t}  A[one<br/>two]-->B`)).not.toThrow();
+  });
+
+  it("keeps small message labels at AA contrast", () => {
+    const html = renderDiagram("sequenceDiagram\n  accTitle: T\n  A->>B: hello");
+    const svg = Buffer.from(html.match(/base64,([^"]+)"/u)?.[1] ?? "", "base64").toString();
+    expect(svg).toContain("--muted:#b5afc6");
   });
 
   it("sanitizes active SVG content", () => {
-    const dirty = `<svg><style>@import url('https://x');</style><script>alert(1)</script><a href="https://x" onclick="y()"><foreignObject><div/></foreignObject><use href="#m"/></a></svg>`;
+    const dirty = `<svg><style>@import url('https://x');</style><script>alert(1)</script><a href="https://x" onclick="y()"><foreignObject><div/></foreignObject><use href="#m"/><use href=https://x/#a /><rect fill="url(https://x/p.png)" stroke="url(#g)"/></a></svg>`;
     const clean = sanitizeSvg(dirty);
     expect(clean).not.toMatch(/@import|<script|onclick|foreignObject|https:\/\/x/u);
     expect(clean).toContain('href="#m"');
+    expect(clean).toContain('stroke="url(#g)"');
   });
 });
 
@@ -130,18 +138,23 @@ describe("createRenderer", () => {
     expect(other).toContain("language-mermaid");
   });
 
+  it("does not treat protocol-relative links as internal", () => {
+    expect(render("[x](//evil.example/a)", "docs/x.md").html).not.toContain("href=");
+  });
+
   it("reports an invalid repository diagram with its location instead of a fallback note", () => {
     const problems: string[] = [];
-    const { html } = render("# T\n\ntext\n\n```mermaid\nnot a diagram\n```\n", "docs/x.md", { problems });
+    const { html } = render("# T\n\ntext\n\n```mermaid\nnot a diagram\n  accTitle: T\n```\n", "docs/x.md", { problems });
     expect(problems).toEqual([expect.stringMatching(/^docs\/x\.md:6: invalid Mermaid/u)]);
     expect(html).not.toContain("diagram-note");
   });
 });
 
-describe("videoEmbedUrl", () => {
-  it("maps supported providers to embeds and rejects everything else", () => {
-    expect(videoEmbedUrl("https://youtu.be/abcdefghijk")).toBe("https://www.youtube-nocookie.com/embed/abcdefghijk");
-    expect(videoEmbedUrl("https://vimeo.com/123456789")).toBe("https://player.vimeo.com/video/123456789");
-    for (const bad of ["http://youtu.be/abcdefghijk", "https://example.com/v.mp4", "data:text/html,x", "nonsense"]) expect(videoEmbedUrl(bad)).toBeNull();
+describe("videoLinks", () => {
+  it("maps supported providers to privacy-enhanced embeds and canonical watch URLs, and rejects everything else", () => {
+    expect(videoLinks("https://youtu.be/abcdefghijk")).toEqual({ embed: "https://www.youtube-nocookie.com/embed/abcdefghijk", watch: "https://www.youtube.com/watch?v=abcdefghijk" });
+    expect(videoLinks("https://vimeo.com/123456789")).toEqual({ embed: "https://player.vimeo.com/video/123456789?dnt=1", watch: "https://vimeo.com/123456789" });
+    for (const bad of ["http://youtu.be/abcdefghijk", "https://user:pw@youtube.com/watch?v=abcdefghijk", "https://youtube.com/watch?v=abcdefghijk&v=other12", "https://example.com/v.mp4", "data:text/html,x", "nonsense"])
+      expect(videoLinks(bad)).toBeNull();
   });
 });

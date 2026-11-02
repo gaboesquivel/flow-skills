@@ -12,7 +12,7 @@ Lead with the point the reader needs. Use familiar words, concrete nouns, and ac
 
 Remove filler, repetition, inflated claims, canned transitions, and jargon the audience does not need. Keep technical terms when they improve precision. Match the requested tone and length without inventing facts, citations, urgency, endorsements, or promises.
 
-When the writing explains a practice or a claim, link each material claim to the evidence or document that owns it, and say whether it is implemented, intended, or host-dependent. Add a visual only when it carries structure prose cannot (a sequence for hand-offs, a boundary diagram for trust or ownership, a table for comparisons), and keep an adjacent prose explanation so the text stands without it.
+When the writing explains a practice or a claim, link each material claim to the evidence or document that owns it, and say whether it is implemented, intended, or host-dependent. Add a visual only when it carries structure prose cannot (`tldr` owns which visual fits), and keep an adjacent prose explanation so the text stands without it.
 
 When editing, preserve meaningful nuance and constraints. Keep one authoritative version of shared documentation; improve its readability without creating a second human-only copy. Check that names, numbers, links, and the requested next action remain accurate.
 

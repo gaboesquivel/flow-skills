@@ -5,7 +5,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSy
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { createRenderer, parseFrontmatter, plain, readCollection, sections, videoEmbedUrl } from './content-lib.mjs'
+import { CAPABILITY_GROUPS, createRenderer, parseFrontmatter, plain, readCollection, sections, videoLinks } from './content-lib.mjs'
 
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const repoRoot = resolve(siteRoot, '..')
@@ -192,7 +192,7 @@ const decisions = decisionFiles.map((file) => {
 // ---------- capabilities and articles ----------
 
 const renderEntry = (e) => {
-  const rendered = render(e.body, e.source, { dropH1: true, requireDiagramTitles: true, lineOffset: e.lineOffset })
+  const rendered = render(e.body, e.source, { dropH1: true, lineOffset: e.lineOffset })
   const { title, description, published, updated } = e.data
   return { kind: e.kind, slug: e.slug, source: e.source, title, description, published, updated, html: rendered.html, markdown: rendered.markdown, headings: rendered.headings }
 }
@@ -205,7 +205,7 @@ const articles = articleCollection.entries
     return {
       ...renderEntry(e),
       capability: e.data.capability,
-      video: e.data.video_url ? { url: e.data.video_url, embed: videoEmbedUrl(e.data.video_url) } : null,
+      video: e.data.video_url ? (({ embed, watch }) => ({ embed, url: watch }))(videoLinks(e.data.video_url)) : null,
       transcript: transcript ? { source: e.data.transcript, html: transcript.html, markdown: transcript.markdown } : null,
     }
   })
@@ -300,6 +300,7 @@ const content = {
   skills,
   docs,
   decisions,
+  capabilityGroups: CAPABILITY_GROUPS,
   capabilities,
   articles,
   starters,

@@ -281,9 +281,18 @@
     background: var(--color-panel);
     padding: 1rem;
   }
+  /* A styled scrollbar stays visible (overlay scrollbars hide), so a wide diagram shows it continues. */
   .prose-flow .diagram-scroll {
     overflow-x: auto;
     border-radius: 8px;
+    scrollbar-color: var(--color-line-strong) transparent;
+  }
+  .prose-flow .diagram-scroll::-webkit-scrollbar {
+    height: 8px;
+  }
+  .prose-flow .diagram-scroll::-webkit-scrollbar-thumb {
+    background: var(--color-line-strong);
+    border-radius: 4px;
   }
   .prose-flow .diagram-scroll:focus-visible {
     outline: 2px solid var(--color-lavender);

@@ -155,3 +155,7 @@ A shared representation of hypotheses, risky assumptions, experiments, evidence,
 ## Progress board
 
 The read-only kanban of a project's specs by stage that the [`board`](skills/board/SKILL.md) skill derives from git. It shows where work stands, not hypotheses or evidence; distinct from a [validation board](#validation-board). [Decision 0027](docs/decisions/0027-progress-board-skill.md).
+
+## Capability page
+
+A published explanation of what Flow contributes in one area (delivery, trust, or shared knowledge) on the website, sourced from `docs/capabilities/`. It links to the skills, docs, and decisions that own each rule and defines none itself. Distinct from a host's capabilities, which decide how a skill reaches GitHub or sessions ([decision 0055](docs/decisions/0055-capability-based-github-and-host-triggered-builds.md)). Contract and index: [`docs/capabilities/README.md`](docs/capabilities/README.md); [spec 057](docs/specs/057-content-architecture.md).

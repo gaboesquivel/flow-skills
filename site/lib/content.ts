@@ -83,6 +83,7 @@ type Content = {
   skills: Skill[];
   docs: Doc[];
   decisions: Doc[];
+  capabilityGroups: string[];
   capabilities: Capability[];
   articles: Article[];
   starters: StarterReadme[];
@@ -109,10 +110,9 @@ export const getArticle = (slug: string) => articles.find((a) => a.slug === slug
 export const capabilityPath = (c: Pick<Capability, "slug">) => `/capabilities/${c.slug}`;
 export const articlePath = (a: Pick<Article, "slug">) => `/blog/${a.slug}`;
 
-/** Editorial groups in display order, each with its published capabilities. */
-export const CAPABILITY_GROUPS = ["Delivery & Execution", "Trust & Reliability", "Knowledge & Architecture"] as const;
+/** Editorial groups in display order (defined by the content build), each with its published capabilities. */
 export const capabilitiesByGroup = () =>
-  CAPABILITY_GROUPS.map((name) => ({ name, items: capabilities.filter((c) => c.group === name) })).filter((g) => g.items.length);
+  content.capabilityGroups.map((name) => ({ name, items: capabilities.filter((c) => c.group === name) })).filter((g) => g.items.length);
 
 export const getStarterReadme = (slug: string) => content.starters.find((s) => s.slug === slug);
 

@@ -44,7 +44,9 @@ export const escapeHtml = (s) => s.replaceAll('&', '&amp;').replaceAll('<', '&lt
 
 // ---------- diagrams ----------
 
-const DIAGRAM_COLORS = { bg: '#1a1725', fg: '#f5f3fb', accent: '#c9b8ff', line: '#8f88a3' }
+// Prism token values (styles/globals.css: panel, fg, fg-muted, lavender, fg-subtle): an image cannot read CSS variables.
+// `muted` is set explicitly so small message labels keep AA contrast instead of the renderer's 40% blend.
+const DIAGRAM_COLORS = { bg: '#1a1725', fg: '#f5f3fb', muted: '#b5afc6', accent: '#c9b8ff', line: '#8f88a3' }
 
 /** Strip anything active from renderer output; the SVG is also only ever shown through <img>, which runs no script and loads nothing. */
 export const sanitizeSvg = (svg) =>
@@ -53,10 +55,11 @@ export const sanitizeSvg = (svg) =>
     .replace(/<script[\s\S]*?<\/script\s*>/giu, '')
     .replace(/<foreignObject[\s\S]*?<\/foreignObject\s*>/giu, '')
     .replace(/\s(?:on[a-z]+)\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/giu, '')
-    .replace(/\s(?:xlink:)?href\s*=\s*(?:"(?!#)[^"]*"|'(?!#)[^']*')/giu, '')
+    .replace(/\s(?:xlink:)?href\s*=\s*(?:"(?!#)[^"]*"|'(?!#)[^']*'|(?!["'#])[^\s>]+)/giu, '')
+    .replace(/url\(\s*(?!["']?#)[^)]*\)/giu, 'none')
 
 /** Render one Mermaid block to a static, accessible figure. Throws with a reason when the source is unsafe or invalid. */
-export const renderDiagram = (source, { requireTitle = false } = {}) => {
+export const renderDiagram = (source, { requireTitle = true } = {}) => {
   const lines = source.split('\n')
   const accTitle = lines.map((l) => l.match(/^\s*accTitle\s*:\s*(.+)$/u)?.[1]).find(Boolean)?.trim()
   const accDescr = lines.map((l) => l.match(/^\s*accDescr\s*:\s*(.+)$/u)?.[1]).find(Boolean)?.trim()
@@ -106,7 +109,7 @@ export const createRenderer = ({ repoUrl, branch, repoName, siteRouteFor }) => {
   /**
    * Render markdown to HTML with GitHub-compatible heading ids and site-aware links.
    * Options: dropH1; githubBase (another repository: diagrams stay escaped source); problems (array that collects
-   * diagram failures as "path:line: reason"); requireDiagramTitles.
+   * diagram failures as "path:line: reason"); lineOffset (front matter lines before `markdown`).
    */
   const render = (markdown, sourcePath, opts = {}) => {
     const headings = []
@@ -137,7 +140,7 @@ export const createRenderer = ({ repoUrl, branch, repoName, siteRouteFor }) => {
             // Diagrams from other repositories are never rendered: escaped source plus the surrounding explanation.
             if (trusted) {
               try {
-                return renderDiagram(text, { requireTitle: opts.requireDiagramTitles })
+                return renderDiagram(text)
               } catch (error) {
                 const reason = `${sourcePath}:${lineOf(text)}: ${error instanceof Error ? error.message : String(error)}`
                 if (opts.problems) opts.problems.push(reason)
@@ -164,7 +167,8 @@ export const createRenderer = ({ repoUrl, branch, repoName, siteRouteFor }) => {
         },
         link({ href, title, tokens }) {
           const inner = this.parser.parseInline(tokens)
-          if (!/^(?:https?:|mailto:|\/|#)/iu.test(href)) return inner
+          // A leading "//" or "/\\" leaves the site, so it is not treated as an internal link.
+          if (!/^(?:https?:|mailto:|\/(?![/\\])|#)/iu.test(href)) return inner
           const external = /^https?:/u.test(href)
           const t = title ? ` title="${escapeHtml(title)}"` : ''
           return external
@@ -222,21 +226,22 @@ const KEYS = {
 
 const isIsoDate = (s) => /^\d{4}-\d{2}-\d{2}$/u.test(s ?? '') && !Number.isNaN(Date.parse(`${s}T00:00:00Z`)) && new Date(`${s}T00:00:00Z`).toISOString().startsWith(s)
 
-/** Supported video providers become a privacy-enhanced embed URL; anything else is rejected. */
-export const videoEmbedUrl = (url) => {
+/** Supported video providers: a privacy-enhanced embed URL and a canonical watch URL rebuilt from the id; anything else is null. */
+export const videoLinks = (url) => {
   let u
   try {
     u = new URL(url)
   } catch {
     return null
   }
-  if (u.protocol !== 'https:') return null
+  if (u.protocol !== 'https:' || u.username || u.password) return null
   const host = u.hostname.replace(/^www\./u, '')
   const id = /^[\w-]{6,20}$/u
-  if (host === 'youtube.com' && u.pathname === '/watch' && id.test(u.searchParams.get('v') ?? '')) return `https://www.youtube-nocookie.com/embed/${u.searchParams.get('v')}`
-  if (host === 'youtu.be' && id.test(u.pathname.slice(1))) return `https://www.youtube-nocookie.com/embed/${u.pathname.slice(1)}`
+  const youtube = (v) => ({ embed: `https://www.youtube-nocookie.com/embed/${v}`, watch: `https://www.youtube.com/watch?v=${v}` })
+  if (host === 'youtube.com' && u.pathname === '/watch' && u.searchParams.getAll('v').length === 1 && id.test(u.searchParams.get('v') ?? '')) return youtube(u.searchParams.get('v'))
+  if (host === 'youtu.be' && id.test(u.pathname.slice(1))) return youtube(u.pathname.slice(1))
   const vimeo = host === 'vimeo.com' && u.pathname.match(/^\/(\d{6,12})$/u)
-  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}`
+  if (vimeo) return { embed: `https://player.vimeo.com/video/${vimeo[1]}?dnt=1`, watch: `https://vimeo.com/${vimeo[1]}` }
   return null
 }
 
@@ -298,7 +303,7 @@ export const readCollection = ({ kind, sources, read, capabilitySlugs = new Set(
     else if (isIsoDate(data.published) && data.updated < data.published) fail('updated is before published')
     if (kind === 'capability' && !CAPABILITY_GROUPS.includes(data.group)) fail(`group must be one of: ${CAPABILITY_GROUPS.join(', ')}`)
     if (kind === 'article' && !capabilitySlugs.has(data.capability)) fail(`capability "${data.capability ?? ''}" is not a published capability`)
-    if (data.video_url && !videoEmbedUrl(data.video_url)) fail('video_url must be an HTTPS YouTube or Vimeo video URL')
+    if (data.video_url && !videoLinks(data.video_url)) fail('video_url must be an HTTPS YouTube or Vimeo video URL')
     if (data.transcript && !/^docs\/blog\/transcripts\/[a-z0-9-]+\.md$/u.test(data.transcript)) fail('transcript must be a path under docs/blog/transcripts/')
     else if (data.transcript && !exists(data.transcript)) fail(`transcript ${data.transcript} does not exist`)
     const offset = text.slice(0, text.length - body.length).split('\n').length - 1
