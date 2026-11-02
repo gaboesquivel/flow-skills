@@ -1,6 +1,6 @@
 # 056 — Lean agent context and checkable design rules
 
-Status: draft (2026-11-02).
+Status: accepted (2026-11-02). Was draft (2026-11-02).
 
 ## Problem Statement
 
