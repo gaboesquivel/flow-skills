@@ -5,7 +5,7 @@
  * Tokens are estimated as characters / 4 (no key, no network). Spec 056.
  */
 import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs'
-import { basename, dirname, join, resolve } from 'node:path'
+import { basename, dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 // Reference points from host documentation and the 2026-11-02 audit, not rules for skill text.
@@ -18,15 +18,15 @@ export const BUDGETS = {
   designCoreTokens: 3000,
 }
 
-const SKILL_DIRS = ['.claude/skills', '.agents/skills']
+const SKILL_DIRS = ['.claude/skills', '.agents/skills', 'skills']
 const ROOT_DOCS = ['PRODUCT.md', 'DESIGN.md', 'GLOSSARY.md', 'ARCHITECTURE.md']
-const STOP = new Set('about after agent agents also before build code describe does each from have into made make more only other over requests says skill skills some such than that their them then there these they this those through when where which while with work would your user users asks says said used uses using'.split(' '))
+const STOP = new Set('about after agent agents also before build code describe does each from have into made make more only other over requests skill skills some such than that their them then there these they this those through when where which while with work would your user users asks says said used uses using'.split(' '))
 
 export const tokens = (text) => Math.ceil(text.length / 4)
 
 /** `name` and `description` from SKILL.md front matter, including folded and literal block scalars. */
 export function frontMatter(text) {
-  const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---/u)
+  const match = text.replace(/^\uFEFF/u, '').match(/^---\r?\n([\s\S]*?)\r?\n---/u)
   const fields = {}
   if (!match) return fields
   const lines = match[1].split(/\r?\n/u)
@@ -34,11 +34,10 @@ export function frontMatter(text) {
     const field = lines[i].match(/^([\w-]+):\s*(.*)$/u)
     if (!field) continue
     let value = field[2].trim()
-    if (/^[>|][-+]?$/u.test(value) || value === '') {
-      const block = []
-      while (i + 1 < lines.length && (/^\s+\S/u.test(lines[i + 1]) || lines[i + 1].trim() === '')) block.push(lines[++i].trim())
-      value = block.filter(Boolean).join(' ')
-    }
+    // Indented lines that follow continue the value: block scalars, wrapped plain or quoted text.
+    const more = []
+    while (i + 1 < lines.length && (/^\s+\S/u.test(lines[i + 1]) || (lines[i + 1].trim() === '' && /^\s/u.test(lines[i + 2] ?? '')))) more.push(lines[++i].trim())
+    value = (/^[>|][-+]?$/u.test(value) ? more : [value, ...more]).filter(Boolean).join(' ')
     fields[field[1]] = value.replace(/^(['"])([\s\S]*)\1$/u, '$2')
   }
   return fields
@@ -52,8 +51,10 @@ export function instructionFiles(root) {
     const full = resolve(root, path)
     if (seen.has(full) || !existsSync(full) || depth > 4) return
     const text = readFileSync(full, 'utf8')
-    seen.set(full, { path: full.slice(root.length + 1) || path, chars: text.length, tokens: tokens(text) })
-    for (const [, ref] of text.matchAll(/(?:^|\s)@([\w./-]+\.md)\b/gu)) visit(join(dirname(full).slice(root.length + 1), ref), depth + 1)
+    seen.set(full, { path: relative(root, full), chars: text.length, tokens: tokens(text) })
+    // Imports inside code blocks and code spans are not loaded.
+    const prose = text.replace(/^(```|~~~)[\s\S]*?^\1/gmu, '').replace(/`[^`\n]*`/gu, '')
+    for (const [, ref] of prose.matchAll(/(?:^|\s)@([\w./~-]+\.md)\b/gu)) visit(resolve(dirname(full), ref), depth + 1)
   }
   if (start) visit(start, 0)
   return [...seen.values()]
@@ -76,7 +77,7 @@ export function installedSkills(root) {
         path: join(rel, name, 'SKILL.md'),
         declaredName: fm.name ?? '',
         description: fm.description ?? '',
-        listed: fm['disable-model-invocation'] !== 'true',
+        listed: String(fm['disable-model-invocation']).toLowerCase() !== 'true',
         lines: text.split(/\r?\n/u).length,
         tokens: tokens(text),
       })
@@ -110,8 +111,13 @@ export function overlaps(skills, threshold = 0.5) {
 function lockNames(root) {
   const file = join(root, 'skills-lock.json')
   if (!existsSync(file)) return null
-  const lock = JSON.parse(readFileSync(file, 'utf8'))
-  return Object.keys(lock.skills ?? lock)
+  try {
+    const lock = JSON.parse(readFileSync(file, 'utf8'))
+    const skills = lock.skills ?? lock
+    return Array.isArray(skills) ? skills.map((s) => (typeof s === 'string' ? s : s.name)).filter(Boolean) : Object.keys(skills)
+  } catch {
+    return 'unreadable'
+  }
 }
 
 /** Skills a root document calls user-invoked while the host can still start them on its own. */
@@ -141,7 +147,8 @@ export function measure(root) {
   })
   const agents = existsSync(join(root, 'AGENTS.md')) ? readFileSync(join(root, 'AGENTS.md'), 'utf8') : ''
   const block = agents.match(/<!-- BEGIN FLOW -->[\s\S]*?<!-- END FLOW -->/u)?.[0]
-  const lock = lockNames(root)
+  const read = lockNames(root)
+  const lock = Array.isArray(read) ? read : null
   const installed = skills.map((s) => s.name)
   const alwaysTokens = instructions.reduce((sum, f) => sum + f.tokens, 0)
   const design = docs.find((d) => d.path === 'DESIGN.md')
@@ -156,6 +163,7 @@ export function measure(root) {
       skills: skills.map(({ name, path, lines, tokens: t }) => ({ name, path, lines, tokens: t })).sort((a, b) => b.tokens - a.tokens),
     },
     hygiene: {
+      lockUnreadable: read === 'unreadable',
       notInLock: lock ? installed.filter((n) => !lock.includes(n)) : [],
       lockedNotInstalled: lock && installed.length ? lock.filter((n) => !installed.includes(n)) : [],
       longDescriptions: skills.filter((s) => s.description.length > BUDGETS.descriptionChars).map((s) => ({ name: s.name, chars: s.description.length })),
@@ -189,6 +197,7 @@ export function report(m) {
   out.push(`  skill bodies over ${BUDGETS.skillBodyLines} lines or ~${BUDGETS.skillBodyTokens}: ${list(m.over.skillBodies)}`)
   const h = m.hygiene
   out.push('', 'Hygiene')
+  if (h.lockUnreadable) out.push('  skills-lock.json is not valid JSON; drift not checked')
   out.push(`  installed, not in skills-lock.json (${h.notInLock.length}): ${list(h.notInLock)}`)
   out.push(`  locked, not installed (${h.lockedNotInstalled.length}): ${list(h.lockedNotInstalled)}`)
   out.push(`  descriptions over ${BUDGETS.descriptionChars} characters: ${list(h.longDescriptions.map((d) => `${d.name} ${d.chars}`))}`)
@@ -200,10 +209,11 @@ export function report(m) {
   return out.join('\n')
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+// Compare real paths: installed skills are usually reached through a linked folder.
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
   const args = process.argv.slice(2)
   const at = args.indexOf('--repo')
-  const root = at >= 0 ? args[at + 1] : process.cwd()
+  const root = (at >= 0 && args[at + 1] && !args[at + 1].startsWith('--') ? args[at + 1] : null) ?? process.cwd()
   const result = measure(root)
   console.log(args.includes('--json') ? JSON.stringify(result, null, 2) : report(result))
 }
