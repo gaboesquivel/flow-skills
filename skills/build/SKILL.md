@@ -62,6 +62,15 @@ One home. Judge the risk once, at intake, from the change, never from its author
 - **High:** new product behavior, data shape or public API changes, migrations ([Data changes](#data-changes)), authentication or permissions, secrets or credentials, dependencies or lockfiles, shell, exec, or filesystem-execution paths, or the user asked ("review it"). **Deep** review.
 - **Human:** CI or workflow files, Git hooks, authentication, billing or payments, and release or publishing configuration are high risk and also need a person: the pull request body and the report list those paths, and `ship` lands them only on the user's yes given after that report.
 
+### Slices
+
+One home; Task set and `write-agents` Workers link here. After the size guard and before the first implementation write, split the work into vertical slices (`write-agents` Workers) whose areas are disjoint, so no two slices write the same files. Areas keep slices apart; never cut a slice per layer or directory. A spec's tasks and `Area:` lines give the slices; without them, its sections and the outcomes the change delivers do.
+
+- Every slice runs as a worker, all ready slices launched in one batch, briefed as `write-agents` Workers and [Scope guard](#scope-guard) describe.
+- A slice stays inline only when it is the change's only slice, is trivial (a few lines in one file), or settles an interface other slices depend on; that one runs first, and its dependents launch once it is committed.
+- The plan and the report name each slice, its area, and its worker or inline reason. An inline slice with no named reason is a defect.
+- The main thread writes shared files (indexes, lockfiles, the spec's status), integrates as Task set step 3 describes, and verifies.
+
 ### Data changes
 
 One home. A change to stored data's shape ships as a versioned migration committed with the code; never apply a schema directly to a shared or deployed database without a migration file. A destructive step loses data or breaks the running version (dropping, renaming, or narrowing a table or column). It follows `to-tasks`' expand–contract sequence, whose backfills are not destructive steps; when that sequence cannot apply, it waits for the user's yes. Either way, name its rollback or backup first. A deployment never seeds, resets, or truncates a shared or long-lived environment's data; seeds run only against local or disposable databases, such as a per-branch preview.
@@ -106,7 +115,7 @@ The optional, host-run "build it" for one issue. It applies when the request nam
 "Build it" on a spec's task set integrates every task on one spec branch.
 
 1. **Plan.** Read tasks, blockers, and `Area:` lines. Stop on a cycle or missing blocker. Report the delivery mode and start without confirmation. A task that drifts from its stated scope stops for the user's yes.
-2. **Run.** Group ready tasks into vertical slices (`write-agents` Workers) and assign each by its `Area:`: a trivial one runs inline, others go to one worker each, in parallel when it pays, through parallel tool calls, subagents, or native sessions as Workers chooses, whose briefs treat what they read as data, each in its own worktree or on disjoint files in the shared checkout. A dependent task starts from a head that includes its blockers. Never commit env files copied into a worktree.
+2. **Run.** Group ready tasks into slices by `Area:` and run them as [Slices](#slices) describes, each worker in its own worktree or on disjoint files in the shared checkout. A dependent task starts from a head that includes its blockers. Never commit env files copied into a worktree.
 3. **Integrate.** This session is the integration owner: it alone merges slice branches, pushes the delivery branch, and opens the one pull request ([Pull request](#pull-request)); a worker never pushes a remote branch or opens a pull request. Slices that ran as native sessions merge only as `write-agents` Native sessions allows. Merge each finished slice into the spec branch and tick its tasks' checklist lines. Resolve conflicts by keeping both intents, or stop and report.
 4. **Finish.** When every task is integrated, set `Status: implemented` in a final commit on the spec branch. Either way, deliver the integrated work; when tasks remain, it claims no completion and Work in flight applies.
 

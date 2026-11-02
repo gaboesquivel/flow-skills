@@ -74,7 +74,7 @@ A task's `Area:` line: every package or directory it changes, comma-separated wh
 
 ## Frontier
 
-The tasks of a spec's task set whose blockers have all integrated. `build` runs them in parallel when it pays ([decision 0053](docs/decisions/0053-delivery-appetite-and-scope.md)), each in its own worktree or on disjoint files in the shared checkout. There are no waves. Replaces the wave of [decision 0025](docs/decisions/0025-wave-checkpoints.md); [decision 0029](docs/decisions/0029-spec-issues.md); amended by [decision 0042](docs/decisions/0042-outcome-build-and-ship.md) and [spec 028](docs/specs/028-outcome-build-and-ship.md).
+The tasks of a spec's task set whose blockers have all integrated. `build` runs them as workers per its [Slices](skills/build/SKILL.md#slices) ([decision 0060](docs/decisions/0060-slice-by-area.md)), each in its own worktree or on disjoint files in the shared checkout. There are no waves. Replaces the wave of [decision 0025](docs/decisions/0025-wave-checkpoints.md); [decision 0029](docs/decisions/0029-spec-issues.md); amended by [decision 0042](docs/decisions/0042-outcome-build-and-ship.md) and [spec 028](docs/specs/028-outcome-build-and-ship.md).
 
 ## Work in flight
 
@@ -98,7 +98,7 @@ The one remote branch for a delivery: `spec/<number>-<slug>` for a spec, a short
 
 ## Vertical slice
 
-One verifiable outcome cut through every layer it needs: a `to-tasks` task, or a group of small tasks that must land together. The unit of parallel work: a worker or native session takes a whole slice and keeps its small steps inside it, never one technical layer. [`to-tasks`](skills/to-tasks/SKILL.md) drafts them; [`write-agents`](skills/write-agents/SKILL.md#workers) assigns them; [decision 0054](docs/decisions/0054-native-capability-first-sessions.md).
+One verifiable outcome cut through every layer it needs: a `to-tasks` task, or a group of small tasks that must land together. The unit of parallel work: a worker or native session takes a whole slice and keeps its small steps inside it, never one technical layer. [`to-tasks`](skills/to-tasks/SKILL.md) drafts them; [`write-agents`](skills/write-agents/SKILL.md#workers) assigns them, and [`build`'s Slices](skills/build/SKILL.md#slices) sends each to a worker; [decision 0054](docs/decisions/0054-native-capability-first-sessions.md).
 
 ## Acceptance scenario
 
