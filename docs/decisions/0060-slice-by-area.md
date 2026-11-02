@@ -10,7 +10,7 @@ The rule has moved between "parallel by default" (0031, 0044) and "when it pays"
 
 ## Decision
 
-1. **Slice at intake.** Before the first implementation write, `build` splits the work into slices by area: one verifiable outcome writing files no other slice writes. A spec's tasks and `Area:` lines give the slices when present; otherwise its sections and the files the change touches do.
+1. **Slice at intake.** Before the first implementation write, `build` splits the work into vertical slices whose areas are disjoint, so no two slices write the same files; areas keep slices apart and never cut a slice per layer. A spec's tasks and `Area:` lines give the slices when present; otherwise its sections and the outcomes the change delivers do.
 2. **Each slice goes to a worker.** Every slice runs as a subagent, or a native session where `write-agents` Workers chooses one, launched together in one batch. A slice stays inline only when it is the change's only slice, when it is trivial (a few lines in one file), or when other slices depend on an interface it is still settling; that slice runs first, and its dependents launch once it is committed.
 3. **The call is visible.** The plan and the report name each slice, its area, and its worker, or the reason it ran inline. An inline slice with no named reason is a defect in the build.
 4. **The main thread integrates.** It writes shared files (indexes, lockfiles, the spec's status), merges slices, and runs Verify. Without workers, slices run in order and the report says so.

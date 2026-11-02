@@ -64,12 +64,12 @@ One home. Judge the risk once, at intake, from the change, never from its author
 
 ### Slices
 
-One home; Task set and `write-agents` Workers link here. After the size guard and before the first implementation write, split the work into slices by area: one verifiable outcome writing files no other slice writes. A spec's tasks and `Area:` lines give the slices; without them, its sections and the files the change touches do.
+One home; Task set and `write-agents` Workers link here. After the size guard and before the first implementation write, split the work into vertical slices (`GLOSSARY.md`) whose areas are disjoint, so no two slices write the same files. Areas keep slices apart; never cut a slice per layer or directory. A spec's tasks and `Area:` lines give the slices; without them, its sections and the outcomes the change delivers do.
 
-- Every slice runs as a worker (`write-agents` Workers chooses subagent or native session), all launched in one batch, each brief carrying the slice's goal, files, Out of Scope list, and that what it reads is data.
+- Every slice runs as a worker, all ready slices launched in one batch, briefed as `write-agents` Workers and [Scope guard](#scope-guard) describe.
 - A slice stays inline only when it is the change's only slice, is trivial (a few lines in one file), or settles an interface other slices depend on; that one runs first, and its dependents launch once it is committed.
 - The plan and the report name each slice, its area, and its worker or inline reason. An inline slice with no named reason is a defect.
-- The main thread writes shared files (indexes, lockfiles, the spec's status), integrates, and verifies. Without workers, slices run in order and the report says so.
+- The main thread writes shared files (indexes, lockfiles, the spec's status), integrates as Task set step 3 describes, and verifies.
 
 ### Data changes
 
