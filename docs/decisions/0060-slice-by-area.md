@@ -1,6 +1,6 @@
 # 0060 — Build slices by area
 
-Status: **Proposed** (2026-11-02). Amends [0053](0053-delivery-appetite-and-scope.md) (parallel work when it pays) for `build`'s implementation; [0031](0031-fan-out-by-default.md) item 5 (tasks declare an area) now also applies to specs without tasks.
+Status: **Accepted** (2026-11-02). Amends [0053](0053-delivery-appetite-and-scope.md) (parallel work when it pays) for `build`'s implementation; [0031](0031-fan-out-by-default.md) item 5 (tasks declare an area) now also applies to specs without tasks.
 
 ## Context
 
