@@ -506,27 +506,37 @@ export function evaluate(command, cwd, depth = 0, dir = cwd) {
 
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')
 
-// A command the guard cannot parse is allowed, unless its raw text plainly runs git/gh push, commit, merge, or rebase
-// with a dangerous token; then it is denied, since the guard cannot tell what it would do.
+// A command the guard cannot parse is allowed, unless one of its segments plainly runs git push/commit/merge/rebase
+// with a dangerous flag, git with core.hooksPath, a push to the default branch, or gh pr merge (other than toggling
+// auto-merge); then it is denied, since the guard cannot tell what it would do. Quotes and backslashes are dropped
+// first so `--for''ce` reads as `--force`; segments start at a command position so prose in a message is not matched.
+const GIT_OPTS = String.raw`(?:\s+(?:-[Cc]\s+\S+|--?[\w-]+(?:=\S+)?))*`
 export function riskyUnparseable(command, cwd) {
-  if (!/\b(?:git|gh)\b[\s\S]*?\b(?:push|commit|merge|rebase)\b/u.test(command)) return null
-  const PUSH = String.raw`\bpush\b[^\n;&|]*\s`
-  const risky = [
-    /(?:^|[\s"'])--(?:forc|force[\w=:/-]*|no-v[\w-]*|adm\w*|mirr\w*)(?=$|[\s"'`)])/u,
-    /core\.hookspath/iu,
-    new RegExp(`${PUSH}-[A-Za-z]*f[A-Za-z]*(?=$|[\\s"'\`)])`, 'u'),
-    new RegExp(`${PUSH}\\+\\S`, 'u'),
-    /\bcommit\b[^\n;&|]*\s-[A-Za-z]*n[A-Za-z]*(?=$|[\s"'`)])/u,
-  ]
-  let why = risky.some((re) => re.test(command)) ? 'it skips hooks or forces a push' : null
-  // A merge whose pull request cannot be parsed cannot have its required checks confirmed.
-  if (!why && /\bgh\b[\s\S]*?\bpr\s+merge\b/u.test(command)) why = 'it merges a pull request whose checks cannot be confirmed'
-  if (!why) {
-    const main = escapeRe(defaultBranch(cwd))
-    const toMain = new RegExp(`${PUSH}(?:\\S*:)?(?:refs/heads/)?${main}(?=$|[\\s"'\`)])`, 'u')
-    if (toMain.test(command.replace(/["']/gu, '')) && deliveryMode(cwd) !== 'local') why = 'it pushes to the default branch'
+  const text = command.replace(/["'\\]/gu, '')
+  if (!/\b(?:git|gh)\b/u.test(text)) return null
+  const lead = String.raw`^(?:[\w]+=\S*\s+)*(?:(?:sudo|command|exec|env|nohup|time)\s+)*`
+  const sub = (name) => new RegExp(`${lead}git${GIT_OPTS}\\s+${name}\\b(.*)$`, 'u')
+  const flag = (args, re) => args.split(/\s+/u).some((a) => re.test(a))
+  const main = escapeRe(defaultBranch(cwd))
+  for (const segment of text.split(/[;&|\n()`]/u).map((s) => s.trim()).filter(Boolean)) {
+    let why = null
+    if (new RegExp(`${lead}git\\b`, 'u').test(segment) && /core\.hookspath/iu.test(segment)) why = 'it skips hooks'
+    const push = sub('push').exec(segment)?.[1]
+    if (!why && push !== undefined) {
+      if (flag(push, /^(?:--(?:forc|force[\w=:/-]*|mirr\w*)|-[A-Za-z]*f[A-Za-z]*|\+\S+)$/u)) why = 'it forces a push'
+      else if (flag(push, /^--no-v[\w-]*$/u)) why = 'it skips hooks'
+      else if (flag(push, new RegExp(`^(?:\\S*:)?(?:refs/heads/)?${main}$`, 'u')) && deliveryMode(cwd) !== 'local') why = 'it pushes to the default branch'
+    }
+    const commit = sub('commit').exec(segment)?.[1]
+    if (!why && commit !== undefined && flag(commit, /^(?:--no-v[\w-]*|-[A-Za-z]*n[A-Za-z]*)$/u)) why = 'it skips hooks'
+    const other = sub('(?:merge|rebase)').exec(segment)?.[1]
+    if (!why && other !== undefined && flag(other, /^--no-v[\w-]*$/u)) why = 'it skips hooks'
+    // A merge whose pull request cannot be parsed cannot have its required checks confirmed.
+    const ghMerge = new RegExp(`${lead}gh\\s+pr\\s+merge\\b(.*)$`, 'u').exec(segment)?.[1]
+    if (!why && ghMerge !== undefined && (flag(ghMerge, /^--adm\w*$/u) || !flag(ghMerge, /^--(?:auto|disable-auto)$/u))) why = 'it merges a pull request whose checks cannot be confirmed'
+    if (why) return deny(`Flow guard: this command could not be parsed and ${why}; split it into simpler commands without the dangerous flag, or ask the user to run it.`)
   }
-  return why && deny(`Flow guard: this command could not be parsed and ${why}; split it into simpler commands without the dangerous flag, or ask the user to run it.`)
+  return null
 }
 
 function main() {

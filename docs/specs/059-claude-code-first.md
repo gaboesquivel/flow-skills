@@ -1,6 +1,6 @@
 # 059 — Claude Code first
 
-Status: accepted (2026-11-03).
+Status: implemented (2026-11-03).
 
 Decision: [0062](../decisions/0062-claude-code-first.md) (Accepted).
 
@@ -129,7 +129,7 @@ Confirmed by the maintainer on 2026-11-03 and recorded in [0062](../decisions/00
   - `claude plugin eval` is available for the on-trial skills. The docs and the host disagree, so fall back to spec 041's manual comparison.
   - The cloud has no documented auto-merge, so `ship` keeps a `gh` merge path.
   - The word estimates come from an audit, not a measurement.
-- Next: "build it".
+- Results: [Flow vs no skills, 2026-11-03](../../tests/evals/records/2026-11-03-build-vs-no-skills.md). Final catalog: 13 skills, 9,182 SKILL.md words. The rerun found and fixed one regression (the work-in-flight report now names changed areas).
 
 ## Tasks
 
@@ -137,13 +137,13 @@ Sequencing note (2026-11-03): task 02's baseline worktrees are pinned to the pre
 
 
 - [x] 01: Guard hook in a plugin shell
-- [ ] 02: Baseline: current Flow vs no skills
+- [x] 02: Baseline: current Flow vs no skills
 - [x] 03: Hand the session and worktree layer to the host
 - [x] 04: Move GitHub and merge procedure into scripts
 - [x] 05: Review on `/code-review`
-- [ ] 06: Merge the discovery skills (merges landed in 4ea5a65; on-trial comparisons pending CLI sign-in)
+- [x] 06: Merge the discovery skills (on-trial `jtbd`, `competitors`, `write-humans` tied with no skill and were removed)
 - [x] 07: Retire host-covered skills and sweep the catalog
-- [ ] 08: Rerun the comparison and close
+- [x] 08: Rerun the comparison and close
 
 ### 01: Guard hook in a plugin shell
 

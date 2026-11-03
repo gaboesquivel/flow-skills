@@ -31,7 +31,7 @@ The assumption under test: a source-backed article that keeps reported practice,
 
 **Drafting material.** Prose recovered from the conversation "Analyze Flow Principle Fit" (`6ae642fa-b4cc-83e8-a85b-46e9170fe2d6`) may be reused as drafting material only. It is not in this machine's Claude Code session logs; if it cannot be retrieved, draft from the sources and spec 050 without it.
 
-**Writing.** Apply [`write-humans`](../../skills/write-humans/SKILL.md) to the article and the note. Plain, concise, professional; no personal motivations or private context ([AGENTS.md](../../AGENTS.md)).
+**Writing.** Apply `write-humans` (retired) to the article and the note. Plain, concise, professional; no personal motivations or private context ([AGENTS.md](../../AGENTS.md)).
 
 **Exposure:** no deployable behaviour. The site renders only the curated `DOCS` list in `site/scripts/build-content.mjs`, so `docs/blog/` is not published by this spec; nothing is pushed beyond the spec branch, and nothing is deployed.
 

@@ -14,13 +14,11 @@ export const EXPLICIT_SKILL_NAMES = new Set([])
 
 export const EXPECTED_SKILL_NAMES = [
   'build',
-  'competitors',
   'council',
   'design',
   'domain-modeling',
   'explore',
   'flow',
-  'jtbd',
   'product',
   'review',
   'ship',
@@ -28,7 +26,6 @@ export const EXPECTED_SKILL_NAMES = [
   'to-spec',
   'to-tasks',
   'write-agents',
-  'write-humans',
 ].sort()
 
 export function validateSkills(root) {

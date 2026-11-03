@@ -84,6 +84,16 @@ test('lists kept worktrees and unmerged branches, never the main worktree or mer
   assert.deepEqual(snapshot(dir), before, 'the hook never writes')
 })
 
+test('names the areas each branch changes so overlap shows before a write', (t) => {
+  const dir = repoInFlight(t)
+  const spec = join(dir, '.worktrees', 'spec-1')
+  mkdirSync(join(spec, 'scripts'), { recursive: true })
+  writeFileSync(join(spec, 'scripts', 'next-number.mjs'), 'x\n')
+  gitIn(spec)('add', '.')
+  gitIn(spec)('commit', '-q', '-m', 'three')
+  assert.match(runWip(dir), /- spec\/1-x: 3 commits not on origin\/main \(worktree \.worktrees\/spec-1\); changes scripts\/next-number\.mjs/u)
+})
+
 test('marks the session\'s own worktree', (t) => {
   const dir = repoInFlight(t)
   assert.match(runWip(join(dir, '.worktrees', 'spec-1')), /^- \.worktrees\/spec-1 \(spec\/1-x, this session\)$/mu)
