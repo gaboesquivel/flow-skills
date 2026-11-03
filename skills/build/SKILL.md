@@ -41,7 +41,7 @@ Judge risk once, at intake, from the change, never its author. It sets `review`'
 
 ### Slices
 
-Before implementing, split the work into vertical slices by disjoint area so no two write the same files; never cut per layer. `Area:` lines give the slices; the host sizes fan-out. Shared interfaces land first. Name each slice and its area. The main thread writes shared files (indexes, lockfiles, the spec's status) and verifies.
+Work with several outcomes gets vertical slices, never cut per layer; `Area:` lines give them when present, and slices running at once write disjoint files. Parallelism is the host's call (native sessions, worktrees, subagents), only when the elapsed time saved beats briefing, integrating, and reviewing the result. Shared interfaces land first. Name each slice and its area. The main thread writes shared files (indexes, lockfiles, the spec's status) and verifies.
 
 ### Data changes
 

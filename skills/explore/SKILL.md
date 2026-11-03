@@ -23,8 +23,8 @@ On the yes, changing an Accepted decision gets a new decision record with status
 Match the request; never ask for depth.
 
 - **Fix or small change:** no questions and no writes beyond the gate; hand back.
-- **Feature:** clear intent, the journeys it changes (one line each), agent users or "none", the metric it should move, and the delivery constraint: appetite (a time target), first verifiable increment, non-goals, and any material model or infrastructure cost limit. Ask at most two questions, for what is missing and consequential. They belong to the increment, never to `PRODUCT.md`.
-- **New product:** the feature's items plus a stress test (below), one main metric ("unknown, measure first" is acceptable), and alternatives including the status quo.
+- **Feature:** clear intent, the journeys it changes (one line each), agent users or "none", the metric it should move, if any, and the delivery constraint: appetite (a time target), first verifiable increment, non-goals, and any material model or infrastructure cost limit. Ask at most two questions, for what is missing and consequential. They belong to the increment, never to `PRODUCT.md`.
+- **New product:** the feature's items plus the vision and core journeys, which may be broad; the **first useful release**, the outcome that makes it worth using; a stress test (below), short when the vision is settled; one main metric ("unknown, measure first" is acceptable); and alternatives including the status quo.
 
 **Metrics.** Keep existing definitions. Define a new one by the journey outcome it observes, what counts, population, window, source, baseline (or "unknown"), and target; an unevidenced target is a hypothesis.
 
@@ -54,7 +54,7 @@ End in one outcome, all valid: **brief**, **clearer** (intent sharpened; writes 
 
 For a brief, show the exact text once and ask once:
 
-- **New product:** the full `PRODUCT.md` brief: problem, who (including agent users or "none"), why now, riskiest assumptions with confidence, main metric and kill criterion, core journeys (one line each; steps belong in `DESIGN.md`), alternatives, out of scope.
+- **New product:** the full `PRODUCT.md` brief: problem, who (including agent users or "none"), why now, riskiest assumptions with confidence, main metric and kill criterion, core journeys (one line each; steps belong in `DESIGN.md`), first useful release, alternatives, out of scope.
 - **Feature:** a diff of durable product facts only (a new user, journey, or metric); with no `PRODUCT.md`, propose creating it.
 
 Label unproven items hypotheses. An explicit yes to the shown text authorizes that write in the same turn; fold corrections in and show it again.
@@ -65,8 +65,8 @@ Label unproven items hypotheses. An explicit yes to the shown text authorizes th
 
 ## Spec-ready
 
-Spec-ready when the brief is confirmed and committed and, for a new product, the riskiest assumption and kill criterion are named; otherwise say what is missing. Close with known facts, open assumptions, guesses accepted unchanged, and the next step ("build it", or `to-spec` for a tracked bet), and wait.
+Spec-ready when the brief is confirmed and committed and, for a new product, the first useful release and riskiest assumption are named; otherwise say what is missing. Close with known facts, open assumptions, guesses accepted unchanged, and the next step ("build it", or `to-spec` for a tracked bet), and wait.
 
-**New product specs.** Only on "spec it", write spec 001 in full: the first bet tests the riskiest assumption, ships the main metric's instrumentation, and defines its capability contract-first, with an MCP tool when the brief names agent users. Later bets become `candidate` stubs.
+**New product specs.** Only on "spec it", `to-spec` bounds the first useful release: the active spec in full, later ones as `candidate` stubs. A spec tests an assumption when one is consequential, and metric instrumentation is proportional: manual or existing measurement can come first. With agent users in the brief, name their capabilities and an MCP tool.
 
 Discussion, interviews, and stress tests do not authorize implementation.

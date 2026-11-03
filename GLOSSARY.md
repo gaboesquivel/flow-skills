@@ -34,7 +34,7 @@ Retired. Earlier records call it **process depth**: a Lite or Full setting recor
 
 ## Spec
 
-One bet: a numbered document that tests one assumption and ships as one unit, with tasks as the slices inside it. A bet that depends on how another one does gets its own spec, stubbed as a [candidate](#candidate-spec) until its turn. The file is the record in both delivery modes; in GitHub mode the pull request links it, and an issue opens only on request. Its `Status:` line moves `candidate → draft → accepted → implemented`, or ends `dropped` only at the user's request. Acceptance is "accept the spec", or "build it" or "ship it" on a draft. The file is written on the work's branch and merges with the work. [`to-spec`](skills/to-spec/SKILL.md) owns the rules; decisions [0028](docs/decisions/0028-build-and-ship.md) and [0044](docs/decisions/0044-fast-delivery.md).
+One independently deliverable increment: a numbered document stating the outcome, its acceptance boundary, and what is out of scope, with tasks as the slices inside it. Work that should wait on what another spec teaches gets its own spec, stubbed as a [candidate](#candidate-spec) until its turn. The file is the record in both delivery modes; in GitHub mode the pull request links it, and an issue opens only on request. Its `Status:` line moves `candidate → draft → accepted → implemented`, or ends `dropped` only at the user's request. Acceptance is "accept the spec", or "build it" or "ship it" on a draft. The file is written on the work's branch and merges with the work. [`to-spec`](skills/to-spec/SKILL.md) owns the rules; decisions [0028](docs/decisions/0028-build-and-ship.md) and [0044](docs/decisions/0044-fast-delivery.md).
 
 ## Spec issue
 
@@ -70,7 +70,7 @@ Work that resolves to no spec or task, from a one-line fix to a feature built fr
 
 ## Area
 
-A task's `Area:` line: every package or directory it changes, comma-separated when there are several (such as `lib/feedback/connect, app/opportunities`), coarse and never a file path. [`to-tasks`](skills/to-tasks/SKILL.md) assigns it. [`build`](skills/build/SKILL.md#task-set) uses it to keep tasks that change the same files from landing as if they were independent. [Decision 0031](docs/decisions/0031-fan-out-by-default.md); [spec 026](docs/specs/026-clean-baseline-and-worktrees.md); amended by [decision 0042](docs/decisions/0042-outcome-build-and-ship.md) and [spec 028](docs/specs/028-outcome-build-and-ship.md).
+A task's `Area:` line: every package or directory it changes, comma-separated when there are several (such as `lib/feedback/connect, app/opportunities`), never a file path, and fine enough to show independence inside a shared app. [`to-tasks`](skills/to-tasks/SKILL.md) assigns it. [`build`](skills/build/SKILL.md#task-set) uses it to keep tasks that change the same files from landing as if they were independent. [Decision 0031](docs/decisions/0031-fan-out-by-default.md); [spec 026](docs/specs/026-clean-baseline-and-worktrees.md); amended by [decision 0042](docs/decisions/0042-outcome-build-and-ship.md) and [spec 028](docs/specs/028-outcome-build-and-ship.md).
 
 ## Frontier
 
@@ -79,6 +79,10 @@ The tasks of a spec's task set whose blockers have all integrated. `build` slice
 ## Work in flight
 
 Work started but not yet on the default branch: kept worktrees, branches with commits not on the default branch, and open pull requests. With the plugin, the SessionStart report ([`hooks/wip.mjs`](hooks/wip.mjs)) lists it when a session opens. Claude Code manages the worktrees; `build` reports unfinished work with its branch and never drops it, and the guard hook blocks removing or resetting another session's worktree. Decisions [0044](docs/decisions/0044-fast-delivery.md) and [0062](docs/decisions/0062-claude-code-first.md).
+
+## First useful release
+
+The outcome that makes a new product worth using: the bound on active work while the product vision stays broad. It is a statement in the brief, not a document. [`explore`](skills/explore/SKILL.md#proportion) names it and [`to-spec`](skills/to-spec/SKILL.md) delivers it through one spec or several; [decision 0066](docs/decisions/0066-specs-sized-by-delivery.md).
 
 ## Delivery appetite
 
@@ -122,7 +126,7 @@ Former name for [liveness](#liveness) after shipping.
 
 ## Candidate spec
 
-A stub for a later bet worth triaging: the problem and the assumption it tests, written as a spec file with status `candidate` in both delivery modes. Fleshed out only when its turn comes, after the bet it depends on ships; `to-spec` then completes the same file. Decisions [0022](docs/decisions/0022-start-runs-explore.md), [0026](docs/decisions/0026-process-depth.md), and [0044](docs/decisions/0044-fast-delivery.md).
+A stub for later work worth triaging: the problem and what it waits on, written as a spec file with status `candidate` in both delivery modes. Fleshed out only when its turn comes, after the work it depends on ships; `to-spec` then completes the same file. Decisions [0022](docs/decisions/0022-start-runs-explore.md), [0026](docs/decisions/0026-process-depth.md), and [0044](docs/decisions/0044-fast-delivery.md).
 
 ## Human summary
 
