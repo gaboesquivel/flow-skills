@@ -13,13 +13,13 @@ Risk is judged by what a change could break and how hard that is to undo. Ordina
 ## Decisions
 
 - [0065](../decisions/0065-proportional-verification.md) amends [0056](../decisions/0056-contract-first-tests.md) and [0058](../decisions/0058-review-passes-and-risk-tiers.md).
-- Security-relevant High triggers stay: authentication, permissions, secrets, payments, shell or exec paths, dependencies and lockfiles. Only novelty, additive routes, and additive schema move to Standard.
+- Security-relevant High triggers stay: authentication, permissions, secrets, payments, shell or exec paths, dependencies and lockfiles. Only novelty, additive routes, and additive schema move to Standard. A new route's or tool's access rule still gets a check first.
 
 ## Acceptance
 
 Scenario: a developer building an MVP with the Flow plugin, in a repository with no `ARCHITECTURE.md` testing policy.
 
-1. "Build it" for a new notes page with an additive table and route behind existing sign-in. `build` judges it Standard and runs Standard review. It adds no test per route; it shows evidence by running the journey and adds a focused check only where a regression would be costly.
+1. "Build it" for a new notes page with an additive table and route behind existing sign-in. `build` judges it Standard and runs Standard review. It writes the access-rule check first (a user cannot read another user's notes) and adds no other test per route; it records the output of running the journey, and adds a focused check only where a regression would be costly.
 2. "Build it" for a change to who can read another user's notes. `build` judges it High, writes the permission check first, sees it fail, and runs Deep review.
 3. "Build it" for a migration that drops a column. High, and `build`'s Data changes rule still applies.
 4. "Build it" on a CI workflow change. The Human tier still lists the path, and `ship` still waits for the user's yes.

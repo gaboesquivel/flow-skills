@@ -58,7 +58,7 @@ A confirmed direction change without a record: the file, old position, new one.
 
 **Acceptance scenario** (required; `review` gives each step a verdict): the actor, the starting state with realistic data, and numbered steps with observable results; for agent users, also through the MCP tool. A metric the work should move gets a step proving it counts correctly.
 
-Then invariants, each with the focused check proving it (seam and command), per `build` Tests.
+Then consequential invariants, each with the evidence proving it, per `build` Tests.
 
 ## Out of Scope
 

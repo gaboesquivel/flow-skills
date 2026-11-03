@@ -1,6 +1,6 @@
 ---
 name: review
-description: Review work in a fresh context against intent, the spec, and root context, on top of /code-review, and repair confirmed defects; "review only" stays read-only. Use when the user says "review it", "check it against the spec", or "does this match the intent".
+description: Review work in a fresh context against intent, the spec, and root context, on top of /code-review, and repair confirmed defects; "review only" stays read-only. Use when the user says "review it", "deep review", "check it against the spec", or "does this match the intent".
 disable-model-invocation: false
 ---
 

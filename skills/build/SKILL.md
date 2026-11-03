@@ -35,8 +35,8 @@ Otherwise stop and report the branch as not ready.
 Judge risk once, at intake, from the change, never its author: what it could break and how hard that is to undo, never how new it is. It sets `review`'s tier and never stops work; when unsure, pick higher.
 
 - **Low:** docs, copy, or configuration with no behavior change, or additive behind a flag. **Quick** review.
-- **Standard:** other code, including ordinary feature work that stays inside existing trust boundaries and that a revert undoes, such as additive routes or schema. **Standard** review.
-- **High:** a trust boundary (authentication, permissions, secrets, payments, shell or exec paths), an irreversible step (a migration that rewrites or removes stored data), wide blast radius (an existing public API, dependencies or lockfiles), complexity or uncertainty where a wrong guess is costly, or "deep review". **Deep** review.
+- **Standard:** other code, including ordinary feature work that stays inside existing trust boundaries and is easy to undo, such as additive routes or schema. **Standard** review.
+- **High:** a trust boundary (authentication, permissions, secrets, payments, shell or exec paths), a non-additive data change (a migration that rewrites, renames, narrows, constrains, or removes stored data), wide blast radius (an existing public API, dependencies or lockfiles), complexity or uncertainty where a wrong guess is costly, or "deep review". **Deep** review.
 - **Human:** CI or workflow files, Git hooks, authentication, billing or payments, and release or publishing configuration also need a person: list those paths in the pull request and report; `ship` lands them only on the user's yes after that report.
 
 ### Slices
@@ -51,8 +51,8 @@ A stored-data shape change ships as a versioned migration with the code, never a
 
 Agents judge what needs evidence; the project's scripts run the checks. A testing policy in the project's `ARCHITECTURE.md` overrides this default.
 
-- **Consequential contracts are test-first.** For security, permissions, payments, migrations, and contracts other systems or agents depend on, write the focused check first and see it fail, covering the behaviors whose failure would matter.
-- **Other behavior needs evidence, not necessarily a test:** running it, an existing check, or a focused check where the logic is easy to get wrong or a regression would be costly. Docs, configuration, copy, and prototypes get none.
+- **Consequential contracts are test-first.** For security, permissions (including a new route's or tool's own access rule), payments, non-additive migrations, MCP tools, and other contracts systems or agents depend on, write the focused check first and see it fail, covering the behaviors whose failure would matter.
+- **Other behavior needs evidence, not necessarily a test:** running it, an existing check, or a focused check where the logic is easy to get wrong or a regression would be costly. Record what you ran and its output in the pull request or report. Docs, configuration, copy, and prototypes get none.
 - **No UI tests by default.** Verify UI in the running app; add one only when asked or a regression returns.
 - **Focused, then full once:** focused checks while working; the full suite once, in Verify.
 
