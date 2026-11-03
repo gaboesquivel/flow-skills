@@ -192,6 +192,26 @@ export const decisionStatus = (text) => {
   return raw.replace(/[*_`]/gu, '').match(/^[a-z]+/iu)?.[0]?.toLowerCase() ?? ''
 }
 
+// Spec 061: specs numbered 061 or later stay within this many words (whitespace-split, as `wc -w` counts).
+export const SPEC_WORD_LIMIT = 1_000
+export const SPEC_WORD_LIMIT_FROM = 61
+
+export function collectSpecLengthErrors(file, text, limit = SPEC_WORD_LIMIT) {
+  const number = Number(/^(\d{3})-/u.exec(file)?.[1] ?? Number.NaN)
+  if (!(number >= SPEC_WORD_LIMIT_FROM)) return []
+  const words = text.split(/\s+/u).filter(Boolean).length
+  return words > limit ? [`docs/specs/${file}: ${words} words, over the ${limit}-word limit; link instead of restating, or split the spec`] : []
+}
+
+// Spec 061: an accepted spec whose Tasks checklist is all ticked has shipped without its status changing.
+export function collectSpecStatusErrors(file, text) {
+  if (decisionStatus(text) !== 'accepted') return []
+  const tasks = /^##[ \t]+Tasks[ \t]*\r?\n([\s\S]*?)(?=^##[ \t]|(?![\s\S]))/mu.exec(text)?.[1] ?? ''
+  const boxes = [...tasks.matchAll(/^[ \t]*[-*+][ \t]+\[([ xX])\]/gmu)].map((match) => match[1])
+  if (!boxes.length || boxes.some((box) => box === ' ')) return []
+  return [`docs/specs/${file}: every task is ticked but the spec is still accepted; set \`Status: implemented\``]
+}
+
 // Specs and decisions: well-formed names, unique numbers (parallel sessions pick "next free number"
 // independently), an index entry, and a known decision status, so a missing link fails locally instead of in CI.
 export function collectRecordErrors(docsDir) {
@@ -210,6 +230,10 @@ export function collectRecordErrors(docsDir) {
       if (index !== null && !index.includes(file)) errors.push(`docs/${folder}/${file}: link it from docs/${folder}/README.md`)
       if (folder === 'decisions' && !DECISION_STATUSES.includes(decisionStatus(readFileSync(join(path, file), 'utf8')))) {
         errors.push(`docs/${folder}/${file}: start with a status line, for example "Status: **Accepted** (YYYY-MM-DD)", using one of ${DECISION_STATUSES.join(', ')}`)
+      }
+      if (folder === 'specs') {
+        const text = readFileSync(join(path, file), 'utf8')
+        errors.push(...collectSpecLengthErrors(file, text), ...collectSpecStatusErrors(file, text))
       }
     }
   }
@@ -330,5 +354,5 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const errors = validateRepository(repoRoot)
   for (const warning of collectShadowedSkillWarnings(repoRoot)) console.warn(`warning: ${warning}`)
   if (errors.length) { console.error(errors.join('\n')); process.exitCode = 1 }
-  else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills, documentation links, local references, adapters, record names and indexes, catalog phrases, brand mark geometry, fixture layout, the plugin manifest, hooks, and agents, start's check table, and the ${SKILL_WORD_BUDGET}-word skill budget (${skillWords(join(repoRoot, 'skills')).total} words).`)
+  else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills, documentation links, local references, adapters, record names and indexes, spec length and status, catalog phrases, brand mark geometry, fixture layout, the plugin manifest, hooks, and agents, start's check table, and the ${SKILL_WORD_BUDGET}-word skill budget (${skillWords(join(repoRoot, 'skills')).total} words).`)
 }

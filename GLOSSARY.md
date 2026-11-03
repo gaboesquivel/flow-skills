@@ -42,11 +42,11 @@ Retired. Earlier records describe a GitHub issue per spec that linked the file a
 
 ## Exposure
 
-A spec's line under Implementation Decisions saying where the slice runs, who can reach it, and how writes behave when it is deployed without authentication; with authentication out of scope and a deployable slice, write paths fail closed on deployment. [`to-spec`](skills/to-spec/SKILL.md) owns the template; [spec 021](docs/specs/021-demo-findings.md).
+A spec's line under Decisions saying where the slice runs, who can reach it, and how writes behave when it is deployed without authentication; with authentication out of scope and a deployable slice, write paths fail closed on deployment. [`to-spec`](skills/to-spec/SKILL.md) owns the template; [spec 021](docs/specs/021-demo-findings.md).
 
 ## Decision record
 
-A numbered document under `docs/decisions/` that preserves the context, decision, and rationale for a choice among real alternatives that reaches beyond one spec or is costly to reverse. Other choices live in the spec's Implementation Decisions. Never holds scope or tasks. Accepted records are historical evidence; superseding or amending creates a new record and, once accepted, adds only a back-pointer to the old record's Status line and index row. Current product, design, and architecture documents reflect the accepted position today. [Decision 0026](docs/decisions/0026-process-depth.md).
+A numbered document under `docs/decisions/` that preserves the context, decision, and rationale for a choice among real alternatives that reaches beyond one spec or is costly to reverse. Other choices live in the spec's Decisions. Never holds scope or tasks. Accepted records are historical evidence; superseding or amending creates a new record and, once accepted, adds only a back-pointer to the old record's Status line and index row. Current product, design, and architecture documents reflect the accepted position today. [Decision 0026](docs/decisions/0026-process-depth.md).
 
 ## Flow skill
 
@@ -82,7 +82,7 @@ Work started but not yet on the default branch: kept worktrees, branches with co
 
 ## Delivery appetite
 
-How much time (and, when material, model, evaluation, or infrastructure cost) an increment is worth, with its first verifiable slice and non-goals. A target and constraint, not a guarantee; recorded in the increment's spec (or, for work built without one, its brief or pull request), never in `PRODUCT.md`. [`to-spec`](skills/to-spec/SKILL.md) holds the Appetite section; [decision 0053](docs/decisions/0053-delivery-appetite-and-scope.md).
+How much time (and, when material, model, evaluation, or infrastructure cost) an increment is worth, with its first verifiable slice and non-goals. A target and constraint, not a guarantee; recorded in the increment's spec (or, for work built without one, its brief or pull request), never in `PRODUCT.md`. [`to-spec`](skills/to-spec/SKILL.md) records it as an optional clause on the spec's status line; [decision 0053](docs/decisions/0053-delivery-appetite-and-scope.md).
 
 ## Scope trade-off
 
@@ -102,7 +102,7 @@ One verifiable outcome cut through every layer it needs: a `to-tasks` task, or a
 
 ## Acceptance scenario
 
-The one representative end-to-end journey a spec names in its Testing Decisions: the actor, the starting state with realistic data, and numbered steps with the observable result of each, plus the same journey through the agent interface when the spec names agent users. A draft without one is not accepted: acceptance, and a "build it" or "ship it" on that draft, stops and names what is missing. [`to-spec`](skills/to-spec/SKILL.md) owns the rule; decisions [0032](docs/decisions/0032-local-build-lands-ship-verifies.md) and [0044](docs/decisions/0044-fast-delivery.md).
+The one representative end-to-end journey a spec names in its Acceptance section: the actor, the starting state with realistic data, and numbered steps with the observable result of each, plus the same journey through the agent interface when the spec names agent users. A draft without one is not accepted: acceptance, and a "build it" or "ship it" on that draft, stops and names what is missing. [`to-spec`](skills/to-spec/SKILL.md) owns the rule; decisions [0032](docs/decisions/0032-local-build-lands-ship-verifies.md) and [0044](docs/decisions/0044-fast-delivery.md).
 
 ## Focused check
 

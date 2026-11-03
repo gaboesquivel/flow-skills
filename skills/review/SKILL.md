@@ -21,7 +21,7 @@ Generic bug-hunting belongs to Claude Code's `/code-review`, and trust boundarie
 Scope defaults to the working tree; it may be a branch, pull request, or a whole spec. Run `flow-reviewer` with the head, the tier, and the spec or request. On top of `/code-review`, it checks:
 
 - the scenario verdicts, where no evidence means `unresolved` and an `unmet` step is Important
-- scope against the spec's acceptance scenario, Out of Scope, and Appetite (`build`'s Scope guard)
+- scope against the spec's acceptance scenario, Out of Scope, and the appetite on its status line (`build`'s Scope guard)
 - names against `GLOSSARY.md` (`domain-modeling` Shared language)
 - `DESIGN.md` and the UI basics, when the diff changes what users see
 
