@@ -12,6 +12,7 @@ const STEP_MS = 1500
 const TOTAL_MS = 2500
 const MAX_BRANCHES = 40
 const MAX_LINES = 15
+const MAX_AREAS = 12
 
 const real = (path) => { try { return realpathSync(path) } catch { return resolve(path) } }
 
@@ -63,7 +64,12 @@ export function report(cwd, { started = Date.now() } = {}) {
     const count = Number(git('rev-list', '--count', `${base}..refs/heads/${branch}`))
     if (!count) continue
     const where = worktreeOf.get(branch)
-    branches.push(`- ${branch}: ${count} commit${count === 1 ? '' : 's'} not on ${base}${where ? ` (worktree ${where})` : ''}`)
+    // The areas a branch changes make overlap visible before a write, not only at merge.
+    const files = (git('diff', '--name-only', `${base}...refs/heads/${branch}`) ?? '').split('\n').filter(Boolean)
+    const fine = [...new Set(files.map((f) => f.split('/').slice(0, 2).join('/')))]
+    const areas = fine.length <= MAX_AREAS ? fine : [...new Set(files.map((f) => f.includes('/') ? `${f.split('/')[0]}/` : f))]
+    const touches = areas.length ? `; changes ${areas.slice(0, MAX_AREAS).join(', ')}${areas.length > MAX_AREAS ? `, +${areas.length - MAX_AREAS} more` : ''}` : ''
+    branches.push(`- ${branch}: ${count} commit${count === 1 ? '' : 's'} not on ${base}${where ? ` (worktree ${where})` : ''}${touches}`)
   }
 
   const prs = []
@@ -84,7 +90,7 @@ export function report(cwd, { started = Date.now() } = {}) {
   ].filter(Boolean)
   if (!sections.length) return ''
   return [
-    'Flow: work in flight in this repository. Treat work you did not start as another session\'s; check it for overlap before writing.',
+    'Flow: work in flight in this repository. Treat work you did not start as another session\'s. Before writing a file in a listed area, check that branch\'s diff for the same file (`git diff <base>...<branch> -- <path>`); on overlap, stop and ask.',
     ...sections.flat(),
   ].join('\n')
 }
