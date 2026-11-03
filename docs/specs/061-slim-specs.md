@@ -1,6 +1,6 @@
 # 061 — Slim specs
 
-Status: accepted (2026-11-03). Appetite: one session.
+Status: implemented (2026-11-03). Appetite: one session.
 
 ## Problem
 
@@ -50,5 +50,5 @@ Invariants: the acceptance scenario stays required before acceptance, and Exposu
 
 ## Tasks
 
-- [ ] 01: Slim the `to-spec` template and `to-tasks` task format, and update the glossary. Area: skills/to-spec, skills/to-tasks, GLOSSARY.md.
-- [ ] 02: Spec length and stale-status checks in `pnpm validate`, with tests. Area: scripts, tests.
+- [x] 01: Slim the `to-spec` template and `to-tasks` task format, and update the glossary. Area: skills/to-spec, skills/to-tasks, GLOSSARY.md.
+- [x] 02: Spec length and stale-status checks in `pnpm validate`, with tests. Area: scripts, tests.
