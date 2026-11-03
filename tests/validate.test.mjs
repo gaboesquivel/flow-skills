@@ -12,6 +12,7 @@ import {
   collectBareFilenameErrors,
   collectCheckTableErrors,
   collectFixtureNestedGitErrors,
+  collectPluginErrors,
   collectRecordErrors,
   collectSkillsLinkErrors,
   stripFencedCode,
@@ -187,4 +188,24 @@ test('user-level skill copies that differ from skills/ are reported', () => {
   writeFileSync(join(home, 'ship', 'SKILL.md'), 'old')
   assert.match(collectShadowedSkillWarnings(repoRoot, home)[0], /ship/)
   assert.deepEqual(collectShadowedSkillWarnings(repoRoot, join(home, 'missing')), [])
+})
+
+test('plugin check catches a renamed or drifted manifest and a hook pointing at a missing script', (t) => {
+  const dir = tempDir(t, 'flow-plugin-')
+  mkdirSync(join(dir, '.claude-plugin'))
+  mkdirSync(join(dir, 'hooks'))
+  writeFileSync(join(dir, 'package.json'), JSON.stringify({ version: '1.2.3' }))
+  writeFileSync(join(dir, '.claude-plugin', 'plugin.json'), JSON.stringify({ name: 'other', version: '1.0.0' }))
+  const command = 'node "${CLAUDE_PLUGIN_ROOT}/hooks/guard.mjs"'
+  writeFileSync(join(dir, 'hooks', 'hooks.json'), JSON.stringify({ hooks: { PreToolUse: [{ matcher: 'Bash', hooks: [{ type: 'command', command }] }] } }))
+  assert.deepEqual(collectPluginErrors(dir), [
+    '.claude-plugin/plugin.json: name must be "flow", found "other"',
+    '.claude-plugin/plugin.json: version 1.0.0 must match package.json 1.2.3',
+    'hooks/hooks.json: PreToolUse references missing hooks/guard.mjs',
+  ])
+  writeFileSync(join(dir, 'hooks', 'guard.mjs'), '')
+  writeFileSync(join(dir, '.claude-plugin', 'plugin.json'), JSON.stringify({ name: 'flow', version: '1.2.3' }))
+  assert.deepEqual(collectPluginErrors(dir), [])
+  writeFileSync(join(dir, 'hooks', 'hooks.json'), JSON.stringify({ PreToolUse: [] }))
+  assert.deepEqual(collectPluginErrors(dir), ['hooks/hooks.json: must wrap the event map in a top-level "hooks" key'])
 })

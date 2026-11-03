@@ -264,6 +264,37 @@ export function collectFixtureNestedGitErrors(repoRoot) {
   return errors
 }
 
+// Claude Code plugin shell: the manifest names the plugin `flow` at package.json's version, and every hook
+// command that runs a script under ${CLAUDE_PLUGIN_ROOT} points at a file that exists.
+export function collectPluginErrors(repoRoot) {
+  const errors = []
+  const readJson = (rel) => {
+    const path = join(repoRoot, rel)
+    if (!existsSync(path)) { errors.push(`${rel}: missing`); return null }
+    try { return JSON.parse(readFileSync(path, 'utf8')) } catch (e) { errors.push(`${rel}: invalid JSON (${e.message})`); return null }
+  }
+  const pkg = readJson('package.json')
+  const manifest = readJson('.claude-plugin/plugin.json')
+  if (manifest) {
+    if (manifest.name !== 'flow') errors.push(`.claude-plugin/plugin.json: name must be "flow", found ${JSON.stringify(manifest.name)}`)
+    if (pkg && manifest.version !== pkg.version) errors.push(`.claude-plugin/plugin.json: version ${manifest.version} must match package.json ${pkg.version}`)
+  }
+  const hooks = readJson('hooks/hooks.json')
+  if (hooks) {
+    if (!hooks.hooks || typeof hooks.hooks !== 'object') errors.push('hooks/hooks.json: must wrap the event map in a top-level "hooks" key')
+    else for (const [event, groups] of Object.entries(hooks.hooks)) {
+      if (!Array.isArray(groups)) { errors.push(`hooks/hooks.json: ${event} must be an array of matcher groups`); continue }
+      for (const group of groups) for (const handler of group?.hooks ?? []) {
+        const line = [handler.command, ...(handler.args ?? [])].join(' ')
+        const scripts = [...line.matchAll(/\$\{CLAUDE_PLUGIN_ROOT\}"?\/([^\s"']+)/gu)].map((m) => m[1])
+        if (handler.type === 'command' && !scripts.length) errors.push(`hooks/hooks.json: ${event} command must run a script under \${CLAUDE_PLUGIN_ROOT}`)
+        for (const script of scripts) if (!existsSync(join(repoRoot, script))) errors.push(`hooks/hooks.json: ${event} references missing ${script}`)
+      }
+    }
+  }
+  return errors
+}
+
 export function validateRepository(repoRoot) {
   const errors = validateSkills(join(repoRoot, 'skills'))
   errors.push(...collectDocLinkErrors(join(repoRoot, 'docs')))
@@ -275,6 +306,7 @@ export function validateRepository(repoRoot) {
   errors.push(...collectCatalogPhraseErrors(repoRoot))
   errors.push(...collectBrandMarkErrors(repoRoot))
   errors.push(...collectFixtureNestedGitErrors(repoRoot))
+  errors.push(...collectPluginErrors(repoRoot))
   return errors
 }
 
@@ -283,5 +315,5 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const errors = validateRepository(repoRoot)
   for (const warning of collectShadowedSkillWarnings(repoRoot)) console.warn(`warning: ${warning}`)
   if (errors.length) { console.error(errors.join('\n')); process.exitCode = 1 }
-  else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills, documentation links, local references, adapters, record names and indexes, catalog phrases, brand mark geometry, fixture layout, and start's check table.`)
+  else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills, documentation links, local references, adapters, record names and indexes, catalog phrases, brand mark geometry, fixture layout, the plugin manifest and hooks, and start's check table.`)
 }
