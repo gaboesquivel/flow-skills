@@ -111,6 +111,16 @@ test('no protection: other apps\' checks and statuses count too', () => {
   assert.equal(result.ready, false)
 })
 
+test('a private repository without rulesets on its plan is judged by its workflows', () => {
+  const upgrade = () => { throw new Error('gh: Upgrade to GitHub Pro or make this repository public to enable this feature. (HTTP 403)') }
+  const result = check({ [`${R}/rules/branches/main`]: upgrade })
+  assert.equal(result.ready, true)
+  assert.equal(result.source, 'none')
+  assert.match(result.reasons.join(' '), /unavailable on this plan/u)
+  const failing = check({ [`${R}/rules/branches/main`]: upgrade, [`${R}/actions/runs`]: { total_count: 1, workflow_runs: [wf('ci', 'failure', 50)] } })
+  assert.equal(failing.ready, false)
+})
+
 test('a closed pull request, a partial list, or an unreadable route is refused', () => {
   assert.equal(check({ [`${R}/pulls/9`]: pull({ state: 'closed' }) }).ready, false)
   assert.throws(() => check({ [`${R}/commits/${HEAD}/check-runs`]: { total_count: 101, check_runs: [run('pr-title', 'success', 6)] } }), ReadError)
