@@ -204,9 +204,9 @@ Sequencing note (2026-11-03): task 02's baseline worktrees are pinned to the pre
 
 **Blocked by:** 02
 
-- [ ] Reviewing a branch with one unmet scenario step reports `unmet` with evidence, plus `/code-review`'s findings (not yet run live)
+- [x] Reviewing a branch with one unmet scenario step reports `unmet` with evidence, plus `/code-review`'s findings ([record](../../tests/evals/records/2026-11-03-review-unmet-step.md), spec 062)
 - [x] The tiers map to `/code-review` levels: Quick → low, Standard → medium, Deep → high
-- [ ] `review` is about 350 words, and `pnpm validate` checks the agent frontmatter (2026-11-03: 421 words; validation checks the agent frontmatter)
+- [x] `review` is about 350 words, and `pnpm validate` checks the agent frontmatter (346 words after spec 062)
 
 ### 06: Merge the discovery skills
 
