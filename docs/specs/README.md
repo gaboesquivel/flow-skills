@@ -66,6 +66,6 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [059-claude-code-first.md](059-claude-code-first.md) (implemented)
 - [061-slim-specs.md](061-slim-specs.md) (implemented)
 - [062-trim-build-review.md](062-trim-build-review.md) (implemented)
-- [063-cursor-plugin.md](063-cursor-plugin.md) (accepted)
+- [063-cursor-plugin.md](063-cursor-plugin.md) (implemented)
 
 Significant standalone decisions belong in `docs/decisions/`, not in a spec. See [decisions](../decisions/README.md).

@@ -1,6 +1,6 @@
 # 063 — Cursor plugin parity
 
-Status: accepted (2026-11-03). Appetite: one session.
+Status: implemented (2026-11-03). Appetite: one session.
 
 Decision: [0064](../decisions/0064-cursor-plugin.md) (Accepted). Amends [0062](../decisions/0062-claude-code-first.md).
 
@@ -48,4 +48,6 @@ Invariants: skills stay the one `skills/` tree, and `npx skills add` still insta
 
 ## Tasks
 
-Written by `to-tasks`.
+- [x] 01: Cursor manifest and hooks wiring. Area: .cursor-plugin, hooks/cursor-hooks.json.
+- [x] 02: Dual-protocol guard and session report. Area: hooks/guard.mjs, hooks/wip.mjs, tests.
+- [x] 03: Reviewer fallback and distribution docs. Area: agents/flow-reviewer.md, PRODUCT.md, README.md, docs/agent-compatibility.md, docs/skills.md, AGENTS.md, scripts/validate.mjs.
