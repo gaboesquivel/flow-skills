@@ -14,7 +14,7 @@ It accepts any **Proposed** direction-change record the branch adds, and a draft
 
 ## Deliver
 
-Before the first write, refresh context (`write-agents` Context freshness) and read the SessionStart report; on overlap with another owner's paths, ask whether to contribute, wait, or proceed. Use `domain-modeling` Shared language and `DESIGN.md`, and update owning documentation when behavior changes. Commit only this work (no credentials, logs, or secrets) on a non-default branch, then [Verify](#verify). Report outcome, scope, verification, and next step.
+Before the first write, refresh context (`write-agents` Context freshness) and read the SessionStart report; on overlap with another owner's paths, ask whether to contribute, wait, or proceed. Use `domain-modeling` Shared language and `DESIGN.md`, and update owning documentation when behavior changes. Commit only this work (no credentials, logs, or secrets) on a non-default branch, then [Verify](#verify). Report outcome, scope, verification, and next step first.
 
 ### Pull request
 

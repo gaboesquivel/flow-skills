@@ -18,19 +18,19 @@ Claude Code's `/code-review` hunts bugs and `/security-review` checks trust boun
 
 ## Inspect
 
-Scope: working tree, branch, pull request, or spec. Run `flow-reviewer` with the head, tier, and spec or request. It adds:
+Scope: the working tree by default, or a branch, pull request, or spec. Run `flow-reviewer` with head, tier, and spec or request. It adds:
 
 - scenario verdicts: no evidence means `unresolved`, and `unmet` is Important
 - scope against `build`'s Scope guard
 - names against `GLOSSARY.md`
-- `DESIGN.md` and UI basics when the diff changes what users see
+- `DESIGN.md` and UI basics when the diff changes UI
 
 Findings cite `file:line`: Important (blocks), Nit (at most three), or Pre-existing (never blocks).
 
 ## Repair
 
-Fix each Important finding and `unmet` step on the branch, covering its whole bug class, with a check that fails without the fix. Answer every other finding: fixed, or resolved with a reason. "Review only" or "don't fix" stays read-only. Inside `build`, the main thread repairs. A re-review covers only the new diff and never repeats a finding. After three rounds with an Important finding open, reconsider the approach; fix a recurring finding at its source (a lint rule, a skill, or `AGENTS.md`).
+Fix each Important finding and `unmet` step on the branch, covering its whole bug class, with a check that fails without the fix. Answer every other finding: fixed, or resolved with reason. "Review only" or "don't fix" stays read-only. Inside `build`, the main thread repairs. A re-review covers only the new diff and never repeats a finding. After three rounds with an Important finding open, stop patching and rethink the approach; fix a recurring finding at its source (a lint rule, skill, or `AGENTS.md`).
 
 ## Report
 
-A count ("2 Important, 1 Nit"), then scenario verdicts, findings by severity, repairs, and what stays open. In GitHub mode, post it as a comment, never an approval.
+A count ("2 Important, 1 Nit"), then scenario verdicts, findings by severity, repairs, and open items. On GitHub, post it as a comment, never an approval.
