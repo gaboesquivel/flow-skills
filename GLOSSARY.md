@@ -106,7 +106,7 @@ The one representative end-to-end journey a spec names in its Acceptance section
 
 ## Focused check
 
-The smallest test that proves one behavior: it fails without the change, passes with it, and runs on its own with one command. Contracts (API routes, MCP tools) get theirs before the implementation; UI gets none by default. [`build`](skills/build/SKILL.md#tests) owns the rule; [decision 0056](docs/decisions/0056-contract-first-tests.md).
+The smallest test that proves one behavior: it fails without the change, passes with it, and runs on its own with one command. Consequential contracts (security, permissions, payments, migrations, and contracts others depend on) get theirs before the implementation; other behavior gets one only when a regression would be costly, and UI gets none by default. [`build`](skills/build/SKILL.md#tests) owns the rule; decisions [0056](docs/decisions/0056-contract-first-tests.md) and [0065](docs/decisions/0065-proportional-verification.md).
 
 ## Requirement verdict
 
