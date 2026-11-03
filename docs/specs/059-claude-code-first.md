@@ -95,7 +95,7 @@ Worktrees, sessions, subagent sizing, PR monitoring, review passes, looping, han
 2. They start a new session. The SessionStart report lists the kept worktrees and open pull requests that `git worktree list` and `gh pr list` show.
 3. They ask Claude to run `git push --force origin HEAD`. The hook blocks it with a reason, and nothing is pushed.
 4. On a spec with two disjoint areas, they say "build it". Claude names two slices. Fan-out is the host's choice, and no inline reason is required. The review uses `/code-review` at the size-guard tier plus scenario verdicts. The pull request opens ready with green checks.
-5. They say "ship it". The merge goes through the gate. `liveness.mjs` reports `deployed` or `pushed, no deployment reported`.
+5. They say "ship it". The merge goes through the gate. `liveness.mjs` reports `live` or `pushed, no deployment reported`.
 6. They rerun step 1's comparison with the rebuilt Flow. The record shows idea → prod and failures no worse than step 1's Flow run, and `pnpm context` reports at most 10,000 skill words. If it is worse, the record says so and the spec doesn't ship.
 
 ## Appetite
@@ -133,12 +133,15 @@ Confirmed by the maintainer on 2026-11-03 and recorded in [0062](../decisions/00
 
 ## Tasks
 
+Sequencing note (2026-11-03): task 02's baseline worktrees are pinned to the pre-spec commit 89562c0, so later skill edits on this branch cannot change what it measures. Tasks 03–07 proceeded while 02 waited on CLI sign-in; 02 still runs against 89562c0, and 08 compares against it.
+
+
 - [x] 01: Guard hook in a plugin shell
 - [ ] 02: Baseline: current Flow vs no skills
 - [x] 03: Hand the session and worktree layer to the host
 - [x] 04: Move GitHub and merge procedure into scripts
 - [x] 05: Review on `/code-review`
-- [ ] 06: Merge the discovery skills
+- [ ] 06: Merge the discovery skills (merges landed in 4ea5a65; on-trial comparisons pending CLI sign-in)
 - [x] 07: Retire host-covered skills and sweep the catalog
 - [ ] 08: Rerun the comparison and close
 
