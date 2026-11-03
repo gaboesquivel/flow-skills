@@ -133,13 +133,13 @@ Confirmed by the maintainer on 2026-11-03 and recorded in [0062](../decisions/00
 
 ## Tasks
 
-- [ ] 01: Guard hook in a plugin shell
+- [x] 01: Guard hook in a plugin shell
 - [ ] 02: Baseline: current Flow vs no skills
-- [ ] 03: Hand the session and worktree layer to the host
-- [ ] 04: Move GitHub and merge procedure into scripts
-- [ ] 05: Review on `/code-review`
+- [x] 03: Hand the session and worktree layer to the host
+- [x] 04: Move GitHub and merge procedure into scripts
+- [x] 05: Review on `/code-review`
 - [ ] 06: Merge the discovery skills
-- [ ] 07: Retire host-covered skills and sweep the catalog
+- [x] 07: Retire host-covered skills and sweep the catalog
 - [ ] 08: Rerun the comparison and close
 
 ### 01: Guard hook in a plugin shell
