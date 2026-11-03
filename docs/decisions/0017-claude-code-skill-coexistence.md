@@ -1,6 +1,6 @@
 # 0017 — Coexist with Claude Code built-in skills
 
-Status: **Accepted** (2026-10-27). Related: [0004](0004-portable-skill-catalog.md), [0006](0006-flow-lite-and-flat-docs.md), [0009](0009-adopter-product-context.md), [0013](0013-restore-engineering-skills.md).
+Status: **Accepted** (2026-10-27). Superseded in part by [0062](0062-claude-code-first.md) (delegate to built-ins instead of coexisting). Related: [0004](0004-portable-skill-catalog.md), [0006](0006-flow-lite-and-flat-docs.md), [0009](0009-adopter-product-context.md), [0013](0013-restore-engineering-skills.md).
 
 ## Context
 

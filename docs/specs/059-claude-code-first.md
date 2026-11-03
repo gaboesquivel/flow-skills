@@ -1,8 +1,8 @@
 # 059 — Claude Code first
 
-Status: draft (2026-11-03).
+Status: accepted (2026-11-03).
 
-Decision: [0062](../decisions/0062-claude-code-first.md) (Proposed).
+Decision: [0062](../decisions/0062-claude-code-first.md) (Accepted).
 
 ## Problem Statement
 

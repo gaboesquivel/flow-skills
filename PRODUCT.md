@@ -12,7 +12,7 @@ Flow is a lightweight, human-directed, agent-executed product engineering method
 
 It combines shared product context, reusable engineering skills, and practical development conventions in a continuous workflow from exploration to verified delivery.
 
-Flow is agent-agnostic, UI-agnostic, and technology-agnostic. Its process is proportional to the work, not a mandatory sequence of ceremonies.
+Flow is Claude Code first ([decision 0062](docs/decisions/0062-claude-code-first.md)): it builds on Claude Code's built-ins and enforces must-hold rules with hooks, and stays portable where that is free. It is UI-agnostic and technology-agnostic. Its process is proportional to the work, not a mandatory sequence of ceremonies.
 
 Flow is a documented way of working, not an agent router. Ordinary language should be the complete user interface to Flow; shortcuts and skills are optional conveniences.
 
@@ -31,7 +31,7 @@ Humans define direction and make consequential decisions. Agents do the work: ex
 3. **Human-directed, agent-executed.** Agents carry out the work, including setup and operations; people decide, and handle only the steps that need them, such as sign-in and secrets ([decision 0049](docs/decisions/0049-agent-does-the-work.md)).
 4. **Minimal process.** Use only the structure and skills the task requires.
 5. **Evidence over claims.** Verify outcomes through appropriate tests, reviews, and real-world checks.
-6. **Portable by design.** Work across agents, interfaces, frameworks, and tools.
+6. **Claude Code first, portable where free.** Use the host's built-ins instead of restating them; skills stay plain Markdown so other agents keep the method ([decision 0062](docs/decisions/0062-claude-code-first.md)).
 7. **Improve through use.** Develop Flow using Flow, and simplify it through real experience.
 8. **Agent-first, API-first.** Build every product for agents and people; define capabilities as contracts before interfaces.
 

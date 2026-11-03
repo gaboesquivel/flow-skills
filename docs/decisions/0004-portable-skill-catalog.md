@@ -1,6 +1,6 @@
 # 0004. Portable skill catalog and distribution
 
-Status: accepted (2026-10-27)
+Status: accepted (2026-10-27). Amended by [0062](0062-claude-code-first.md) (distribution adds a Claude Code plugin with hooks; `npx skills add` remains for skills).
 
 ## Context
 
