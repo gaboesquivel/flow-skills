@@ -50,7 +50,7 @@ A headless session with the plugin loaded was asked to run `git push --force ori
 - **Small tasks never reach Flow.** In rounds 1 and 2 no condition invoked a skill, even with Flow's own "build it local" phrase. All of them delivered correct, tested commits in 31–36 s for $0.24–0.52. For work this size, the skills cost only their listing, and idea → prod is the same within noise.
 - **Invoked explicitly, the skills change behavior.** The old `build` caught a real overlap with open work and stopped. The rebuilt `build` initially missed it, because the SessionStart work-in-flight report named branches but not what they change. Commit `5bc0be7` adds the changed areas and a one-line check to the report. After it, the rebuilt `build` stopped correctly, faster and cheaper than the old one (19 s and $0.23, against 26 s and $0.32).
 - **Spec 059's step 6 gate:**
-  - **Idea → prod:** no worse than the pre-spec Flow (rounds 2 and 4).
+  - **Idea → prod:** no worse than the pre-spec Flow when both deliver (round 2: 35 s and $0.35 against 32 s and $0.29, about 21% more cost, at the edge of the noise threshold). Round 4 shows the safe stop, not a delivery.
   - **Failures:** no more delivery failures.
   - **Unauthorized actions:** none. Every denial came from the shared allowlist, for example `python3` heredocs and `gh`.
   - **Skill words:** under the 10,000-word cap.
@@ -63,4 +63,4 @@ A headless session with the plugin loaded was asked to run `git push --force ori
 - The no-skills condition still sees the global skill listing; only the `Skill` tool is denied.
 - Round 3's rebuilt run reported its JSON result before its background review finished, so its turn count is unknown.
 - The judge is a model, and one judge read each pair.
-- Total measured spend: $4.99. The judge subagent's cost was not measured.
+- Total measured spend: $5.03 ($3.14 on delivery runs, $1.73 on trials, $0.16 on the guard check). The judge subagent's cost was not measured.

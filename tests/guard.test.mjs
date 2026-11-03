@@ -309,14 +309,27 @@ test('fails closed when an unparseable command shows a dangerous git flag', (t) 
     'gh pr merge 12 --admin && echo "unbalanced',
     'git -c core.hooksPath=/dev/null commit -m x && echo "unbalanced',
     "git commit -m $'it\\'s' && gh pr merge 12 --squash",
-    "echo $'it\\'s'; gh pr merge 12 --auto --squash",
+    "echo $'it\\'s'; gh pr merge 12 --auto --admin",
     "git commit -m $'it\\'s' && git push origin \"main\"",
     "git commit -m $'it\\'s' && git push origin HEAD:ma''in",
   ]) {
     const r = expect(t, command, 'deny', { cwd })
     assert.match(r.reason, /could not be parsed/u)
   }
-  for (const command of ['git commit -m x && echo "unbalanced', 'git push origin feature && echo "unbalanced', 'git status && echo "--force']) {
+  for (const command of [
+    "git commit -m $'--for''ce' && git push --for''ce origin feature",
+    "git commit -m $'it\\'s' && git push --no-v\"\"erify origin feature",
+    "echo $'it\\'s'; gh pr \"merge\" 12",
+    "echo $'it\\'s'; git push origin ma\\in",
+  ]) {
+    expect(t, command, 'deny', { cwd }) // by the parser or, when it cannot parse, the fallback
+  }
+  for (const command of [
+    'git commit -m x && echo "unbalanced', 'git push origin feature && echo "unbalanced', 'git status && echo "--force',
+    "git commit -m $'fix: don\\'t push to main on save'",
+    "echo $'it\\'s'; gh pr merge 12 --auto --squash",
+    "echo $'it\\'s'; gh pr merge 12 --disable-auto",
+  ]) {
     expect(t, command, 'allow', { cwd })
   }
   const bare = tempDir(t, 'flow-guard-bare-')
