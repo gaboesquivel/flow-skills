@@ -12,7 +12,7 @@ Four levels, only two of them documents: the product vision, the first useful re
 
 ## Decisions
 
-- [0066](../decisions/0066-specs-sized-by-delivery.md) amends [0022](../decisions/0022-start-runs-explore.md), [0060](../decisions/0060-slice-by-area.md) item 1, and spec [061](061-slim-specs.md)'s length rule. The stale-status check stays.
+- [0066](../decisions/0066-specs-sized-by-delivery.md) amends [0022](../decisions/0022-start-runs-explore.md), [0023](../decisions/0023-agent-first.md), [0060](../decisions/0060-slice-by-area.md) item 1, [0062](../decisions/0062-claude-code-first.md) item 3, and spec [061](061-slim-specs.md)'s length rule. The stale-status check stays.
 - OMTM, non-goals, Exposure, and the required acceptance scenario are unchanged. Metric instrumentation is proportional: manual or existing measurement can answer the first question.
 
 ## Acceptance

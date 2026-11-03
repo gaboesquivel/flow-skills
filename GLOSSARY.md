@@ -74,7 +74,7 @@ A task's `Area:` line: every package or directory it changes, comma-separated wh
 
 ## Frontier
 
-The tasks of a spec's task set whose blockers have all integrated. `build` slices them by disjoint area per its [Slices](skills/build/SKILL.md#slices), and the host decides how to fan them out under its concurrency cap (decisions [0060](docs/decisions/0060-slice-by-area.md) and [0062](docs/decisions/0062-claude-code-first.md)). There are no waves. Replaces the wave of [decision 0025](docs/decisions/0025-wave-checkpoints.md); [decision 0029](docs/decisions/0029-spec-issues.md); amended by [decision 0042](docs/decisions/0042-outcome-build-and-ship.md) and [spec 028](docs/specs/028-outcome-build-and-ship.md).
+The tasks of a spec's task set whose blockers have all integrated. `build` keeps concurrent work on disjoint areas per its [Slices](skills/build/SKILL.md#slices), and the host decides whether to fan them out (decisions [0060](docs/decisions/0060-slice-by-area.md) and [0062](docs/decisions/0062-claude-code-first.md)). There are no waves. Replaces the wave of [decision 0025](docs/decisions/0025-wave-checkpoints.md); [decision 0029](docs/decisions/0029-spec-issues.md); amended by [decision 0042](docs/decisions/0042-outcome-build-and-ship.md) and [spec 028](docs/specs/028-outcome-build-and-ship.md).
 
 ## Work in flight
 
@@ -102,7 +102,7 @@ The one remote branch for a delivery: `spec/<number>-<slug>` for a spec, a short
 
 ## Vertical slice
 
-One verifiable outcome cut through every layer it needs: a `to-tasks` task, or a group of small tasks that must land together. The unit of parallel work: a subagent or session takes a whole slice and keeps its small steps inside it, never one technical layer. [`to-tasks`](skills/to-tasks/SKILL.md) drafts them, [`build`'s Slices](skills/build/SKILL.md#slices) cuts them by area, and the host sizes the fan-out ([decision 0062](docs/decisions/0062-claude-code-first.md)).
+One verifiable outcome cut through every layer it needs: a `to-tasks` task, or a group of small tasks that must land together. The unit of parallel work: a subagent or session takes a whole slice and keeps its small steps inside it, never one technical layer. [`to-tasks`](skills/to-tasks/SKILL.md) drafts them, [`build`'s Slices](skills/build/SKILL.md#slices) runs them, and the host decides the fan-out (decisions [0062](docs/decisions/0062-claude-code-first.md) and [0066](docs/decisions/0066-specs-sized-by-delivery.md)).
 
 ## Acceptance scenario
 

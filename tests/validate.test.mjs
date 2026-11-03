@@ -269,7 +269,7 @@ test('no spec fails for its length', (t) => {
   const docs = tempDir(t, 'flow-spec-length-')
   mkdirSync(join(docs, 'specs'))
   writeFileSync(join(docs, 'specs', '065-long.md'), `Status: draft (2026-11-03).\n\n${'word '.repeat(1300)}\n`)
-  assert.doesNotMatch(collectRecordErrors(docs).join('\n'), /065-long\.md: \d+ words/u)
+  assert.deepEqual(collectRecordErrors(docs), [])
 })
 
 test('spec status check fails an accepted spec whose tasks are all ticked until it is implemented', (t) => {

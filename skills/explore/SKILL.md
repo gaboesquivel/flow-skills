@@ -43,7 +43,7 @@ When the user asked only to be interviewed, restate intent in their words, one l
 
 For a new product, or on "grill" or "poke holes". With intent clear, do not re-extract it; challenge only the riskiest claims.
 
-- **Pre-mortem**, once: assume it failed six months from now and list the likeliest reasons. From them name the riskiest assumptions, each with a confidence, and a **kill criterion**: the observation that would end the bet.
+- **Pre-mortem**, once: assume it failed six months from now and list the likeliest reasons. From them name the riskiest assumptions, each with a confidence, and a **kill criterion**: the observation that would end the work.
 - Gather evidence for each risky claim, then ask a small round of focused questions, each with a recommended answer and its tradeoff. Stop when outcome, constraints, and next action are clear; never re-approve settled decisions.
 
 When a new surface's look is not settled by `DESIGN.md`, suggest `design` in one line.
@@ -65,8 +65,8 @@ Label unproven items hypotheses. An explicit yes to the shown text authorizes th
 
 ## Spec-ready
 
-Spec-ready when the brief is confirmed and committed and, for a new product, the first useful release and riskiest assumption are named; otherwise say what is missing. Close with known facts, open assumptions, guesses accepted unchanged, and the next step ("build it", or `to-spec` for a tracked bet), and wait.
+Spec-ready when the brief is confirmed and committed and, for a new product, the first useful release, riskiest assumption, and kill criterion are named; otherwise say what is missing. Close with known facts, open assumptions, guesses accepted unchanged, and the next step ("build it", or `to-spec` for tracked work), and wait.
 
-**New product specs.** Only on "spec it", `to-spec` bounds the first useful release: the active spec in full, later ones as `candidate` stubs. A spec tests an assumption when one is consequential, and metric instrumentation is proportional: manual or existing measurement can come first. With agent users in the brief, name their capabilities and an MCP tool.
+**New product specs.** Only on "spec it", `to-spec` bounds the first useful release: the active spec in full, later ones as `candidate` stubs. A spec tests an assumption when one is consequential, and metric instrumentation is proportional: manual or existing measurement can come first. With agent users in the brief, define their capabilities contract-first, with an MCP tool.
 
 Discussion, interviews, and stress tests do not authorize implementation.
