@@ -1,6 +1,6 @@
 # 056 — Lean agent context and checkable design rules
 
-Status: accepted (2026-11-02). Accepted, returned to draft to rewrite skill changes as outcomes rather than procedures, and accepted again for build the same day.
+Status: implemented (2026-11-03).
 
 ## Problem Statement
 
@@ -135,7 +135,7 @@ No decision record: the budgets are hypotheses in this spec, and the script is r
 - [x] **T2 — `retro` measures before proposing trims.** Done when steps 4 and 8 pass. Blocked by T1. Step 4 not yet run in a live retro.
 - [x] **T3 — `write-agents` install-source outcome.** Done when step 8 passes for it. Independent.
 - [x] **T4 — `design` leaves followable, verifiable rules.** Done when steps 5 and 8 pass. Step 5 not yet run in a live design session.
-- [ ] **T5 — gaboesquivel.com.** Resync, design-skill decision, overlap pairs, `DESIGN.md` split, identity-ban check. Its own PR in that repository. Done when step 6 passes. Blocked by T1 (to measure) and T4 (outcome to meet).
+- [x] **T5 — gaboesquivel.com.** Resync, design-skill decision, overlap pairs, `DESIGN.md` split, identity-ban check. Its own PR in that repository. Done when step 6 passes. Blocked by T1 (to measure) and T4 (outcome to meet). Landed in gaboesquivel/gaboesquivel.com#27: always-loaded plus core design context ~15.4k → ~7.7k tokens (−50%) against that day's `main`, about −58% against the 2026-11-02 audit; zero drift, no description over the limit, no overlap pair, core `DESIGN.md` ~2.3k tokens, and `check:design` fails on each new identity ban (steps 6 and 7 satisfied).
 - [x] **T8 — Article draft.** `docs/blog/designing-with-ai.md`, on this branch.
 
 T1, T3, and T4 can run in parallel. The gaboesquivel package needs no task unless T1 shows it over budget. T5 touches another repository and must not overlap the flow-review-ci session's files there.
