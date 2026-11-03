@@ -1,6 +1,6 @@
 # 061 — Slim specs
 
-Status: draft (2026-11-03). Appetite: one session.
+Status: accepted (2026-11-03). Appetite: one session.
 
 ## Problem
 
