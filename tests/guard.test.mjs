@@ -366,3 +366,26 @@ test('allows what it does not recognise or cannot parse', (t) => {
   assert.equal(empty.status, 0)
   assert.equal(empty.stdout, '')
 })
+
+// Cursor beforeShellExecution: top-level command, and an explicit allow so empty stdout is not a deny.
+const runCursorGuard = (command, cwd) => {
+  const r = spawnSync(process.execPath, [guard], {
+    input: JSON.stringify({ command, cwd, sandbox: false }),
+    encoding: 'utf8',
+  })
+  assert.equal(r.status, 0, r.stderr)
+  return JSON.parse(r.stdout)
+}
+
+test('cursor shell hook denies the same commands and allows the rest with JSON', (t) => {
+  const cwd = gitRepo(t, 'spec/063-x')
+  const denied = runCursorGuard('git push --force origin spec/063-x', cwd)
+  assert.equal(denied.permission, 'deny')
+  assert.match(denied.agent_message, /^Flow guard: .+; .+\.$/u)
+  for (const command of ['git push origin HEAD:main', 'git commit -m x --no-verify', 'gh pr merge 12 --admin']) {
+    assert.equal(runCursorGuard(command, cwd).permission, 'deny', command)
+  }
+  for (const command of ['git status', 'git push origin spec/063-x', 'echo hi']) {
+    assert.deepEqual(runCursorGuard(command, cwd), { permission: 'allow' }, command)
+  }
+})

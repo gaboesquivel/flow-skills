@@ -206,10 +206,21 @@ test('plugin check catches a renamed or drifted manifest and a hook pointing at 
   assert.deepEqual(collectPluginErrors(dir), [
     '.claude-plugin/plugin.json: name must be "flow", found "other"',
     '.claude-plugin/plugin.json: version 1.0.0 must match package.json 1.2.3',
+    '.cursor-plugin/plugin.json: missing',
     'hooks/hooks.json: PreToolUse references missing hooks/guard.mjs',
+    'hooks/cursor-hooks.json: missing',
   ])
   writeFileSync(join(dir, 'hooks', 'guard.mjs'), '')
   writeFileSync(join(dir, '.claude-plugin', 'plugin.json'), JSON.stringify({ name: 'flow', version: '1.2.3' }))
+  mkdirSync(join(dir, '.cursor-plugin'))
+  writeFileSync(join(dir, '.cursor-plugin', 'plugin.json'), JSON.stringify({ name: 'flow', version: '9.9.9' }))
+  writeFileSync(join(dir, 'hooks', 'cursor-hooks.json'), JSON.stringify({ hooks: { beforeShellExecution: [{ command: 'node "${CURSOR_PLUGIN_ROOT}/hooks/guard.mjs"' }], sessionStart: [{ command: 'node "${CURSOR_PLUGIN_ROOT}/hooks/wip.mjs"' }] } }))
+  assert.deepEqual(collectPluginErrors(dir), [
+    '.cursor-plugin/plugin.json: version 9.9.9 must match package.json 1.2.3',
+    'hooks/cursor-hooks.json: sessionStart references missing hooks/wip.mjs',
+  ])
+  writeFileSync(join(dir, '.cursor-plugin', 'plugin.json'), JSON.stringify({ name: 'flow', version: '1.2.3' }))
+  writeFileSync(join(dir, 'hooks', 'wip.mjs'), '')
   assert.deepEqual(collectPluginErrors(dir), [])
   writeFileSync(join(dir, 'hooks', 'hooks.json'), JSON.stringify({ PreToolUse: [] }))
   assert.deepEqual(collectPluginErrors(dir), ['hooks/hooks.json: must wrap the event map in a top-level "hooks" key'])

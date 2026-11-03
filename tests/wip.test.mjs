@@ -120,6 +120,26 @@ test('silent when nothing is in flight', (t) => {
   assert.equal(runWip(dir), '')
 })
 
+const runCursorWip = (cwd) => {
+  const r = spawnSync(process.execPath, [wip], {
+    input: JSON.stringify({ session_id: 's', is_background_agent: false, composer_mode: 'agent', cwd }),
+    encoding: 'utf8',
+  })
+  assert.equal(r.status, 0, r.stderr)
+  return r.stdout
+}
+
+test('cursor sessionStart wraps the report and stays silent when nothing is in flight', (t) => {
+  const dir = repoInFlight(t)
+  const out = JSON.parse(runCursorWip(dir))
+  assert.match(out.additional_context, /feature\/unmerged/u)
+  assert.match(out.additional_context, /Kept worktrees/u)
+  const clean = tempDir(t, 'flow-wip-cursor-clean-')
+  gitIn(clean)('init', '-q', '-b', 'main')
+  gitIn(clean)('commit', '-q', '--allow-empty', '-m', 'init')
+  assert.equal(runCursorWip(clean), '')
+})
+
 test('silent outside a repository and on bad input', (t) => {
   const dir = tempDir(t, 'flow-wip-none-')
   mkdirSync(join(dir, 'sub'))

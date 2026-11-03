@@ -15,6 +15,8 @@ claude plugin install flow@flow-skills
 
 [Agent compatibility](docs/agent-compatibility.md#claude-code) covers loading the plugin and the settings we recommend.
 
+**Cursor.** Install the Cursor plugin from this repository ([`.cursor-plugin/plugin.json`](.cursor-plugin/plugin.json)). It loads the same skills, the same guard and work-in-flight report, and `flow-reviewer`. Use that plugin or `npx skills add`, not both, and not also the Claude Code plugin. Cursor cloud agents run the shell guard and do not run the session report.
+
 **Any Agent Skills host.** Install the skills alone, without the hooks:
 
 ```bash
