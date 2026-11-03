@@ -2,6 +2,23 @@
 
 Current practices. Official identity and the eight principles live in [PRODUCT.md](../PRODUCT.md). The [principles](principles.md) draft elaborates optional themes; this document describes application, not a mandatory sequence or skill pipeline.
 
+## Who owns what
+
+Flow's value does not depend on a starter, `start`, a hosting provider, or the whole delivery sequence ([decision 0067](decisions/0067-flow-boundaries.md)).
+
+| Owner | Owns |
+|---|---|
+| Flow plugin | Intent, judgment, specs, delivery principles, reusable skills |
+| Starters | Optional, opinionated technology foundations |
+| Project scripts | The authoritative verification commands |
+| Native host | Sessions, worktrees, delegation, built-in review |
+
+Skills work alone and compose when useful: `explore` without `start`, `build` without a spec, `to-spec` without `to-tasks`, or `review` on any change.
+
+## Keep people able to judge
+
+Agent speed creates costs that green checks do not show: code no one understands ([comprehension debt](https://addyosmani.com/blog/comprehension-debt/)), rationale no one wrote down ([intent debt](https://addyosmani.com/blog/intent-debt/)), and a review queue that grows with each agent ([orchestration tax](https://addyosmani.com/blog/orchestration-tax/)). Answer them selectively, not with a new phase or document: stop for direction changes and consequential uncertainty, record why in the specs and decisions the work already warrants, say what a person should understand before consequential work ships, and run only as much in parallel as someone can judge. Small, clear work proceeds without any of this. [Research note](research/2026-11-03-velocity-with-intent.md).
+
 ## Clarify intent
 
 Combine focused questions, research, suggested directions, and exploration of alternatives. Reuse known context. Establish the intended outcome, consequential assumptions, existing evidence, and how the next test will inform a decision.

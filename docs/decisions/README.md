@@ -25,7 +25,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0019-voice-first-invocation.md](0019-voice-first-invocation.md) | Accepted (amended by 0028, 0048) | Talking is the interface: model-invocable skills, spoken leading words, host coexistence |
 | [0020-flow-mode.md](0020-flow-mode.md) | Accepted (amended by 0030) | Flow mode: project instruction block, `to-tasks` hand-off, `ship` task-set orchestration, local and pull-request delivery modes |
 | [0021-autonomous-explore-and-ship.md](0021-autonomous-explore-and-ship.md) | Accepted (amended by 0028) | Explore and ship create docs files and GitHub issues, group pull requests, and suggest the host's autonomous mode |
-| [0022-start-runs-explore.md](0022-start-runs-explore.md) | Accepted (amended by 0039, 0044) | Speakable `start` runs `explore` beside the bootstrap; spec 001 full, later slices as candidates |
+| [0022-start-runs-explore.md](0022-start-runs-explore.md) | Accepted (amended by 0039, 0044, 0067) | Speakable `start` runs `explore` beside the bootstrap; spec 001 full, later slices as candidates |
 | [0023-agent-first.md](0023-agent-first.md) | Accepted (amended by 0049) | Agent-first, API-first becomes an official principle; explore and to-spec apply it |
 | [0024-gated-hand-offs.md](0024-gated-hand-offs.md) | Accepted (amended by 0028, 0029) | Named hand-offs; explicit yes before spec writes, task publishing, and merging or pushing `main`; `start` explores at Lite (depth amended by 0026) |
 | [0025-wave-checkpoints.md](0025-wave-checkpoints.md) | Accepted (amended by 0028, 0029, 0031, 0042, 0057) | `ship` runs task sets in waves with a draft pull request, preview checkpoints, and a `Deploy:` target |
@@ -54,7 +54,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0048-delivery-phrases-are-approvals.md](0048-delivery-phrases-are-approvals.md) | Accepted (amended by 0055, 0057, 0058) | "Push it", "build it", and "ship it" are approvals with narrow triggers; build reviews, checks, and verifies the branch; light liveness at every depth |
 | [0049-agent-does-the-work.md](0049-agent-does-the-work.md) | Accepted | The agent does the work: CLI, MCP, API, then browser; hands the user only sign-in, secrets, payment, consent, or permission changes, once |
 | [0050-github-governance-preset.md](0050-github-governance-preset.md) | Accepted (amended by 0057) | One GitHub governance preset: protected default branch, squash only, required checks, no bypass; `start` applies it |
-| [0051-design-skill.md](0051-design-skill.md) | Accepted | `design` compares rendered visual directions, the user chooses, and `DESIGN.md` records the approved one |
+| [0051-design-skill.md](0051-design-skill.md) | Accepted (amended by 0067) | `design` compares rendered visual directions, the user chooses, and `DESIGN.md` records the approved one |
 | [0052-git-first-coordination.md](0052-git-first-coordination.md) | Accepted | Git-first independent-session ownership, worktree boundaries and best-effort discovery |
 | [0053-delivery-appetite-and-scope.md](0053-delivery-appetite-and-scope.md) | Accepted (amended by 0060) | Bounded delivery appetite, scope protection and economical parallelism |
 | [0054-native-capability-first-sessions.md](0054-native-capability-first-sessions.md) | Accepted | Native observable sessions, Claude Code validation priority and portable fallback |
@@ -65,6 +65,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0058-review-passes-and-risk-tiers.md](0058-review-passes-and-risk-tiers.md) | Accepted (amended by 0062) | Fresh-context review on every build; risk tiers set Quick, Standard, or Deep effort; verify pass, Important/Nit/Pre-existing labels, every finding answered, three-round cap; human-tier paths ship on the user's yes |
 | [0062-claude-code-first.md](0062-claude-code-first.md) | Accepted (amended by 0064) | Claude Code first, portable where free; delegate to built-ins; host sizes fan-out; must-hold rules are hooks; ship as a plugin |
 | [0064-cursor-plugin.md](0064-cursor-plugin.md) | Accepted | Cursor plugin beside the Claude Code plugin; same guard and report, host protocol at the edge |
+| [0067-flow-boundaries.md](0067-flow-boundaries.md) | Accepted | Four owners: plugin, starters, project scripts, host; `start` ends at the initial commit; critical thinking is selective |
 | [0059-github-actions-over-vercel-ci.md](0059-github-actions-over-vercel-ci.md) | Accepted | Stay on GitHub Actions standard runners; Vercel CI and paid third-party runners not adopted; pricing notes and revisit triggers |
 | [0060-slice-by-area.md](0060-slice-by-area.md) | Accepted (superseded in part by 0062) | `build` splits work into slices by area at intake; every slice of a multi-area change goes to a worker |
 

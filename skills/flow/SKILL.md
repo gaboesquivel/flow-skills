@@ -29,7 +29,7 @@ Never replace a project's product identity with Flow's tagline, mission, princip
 
 **Write** with [`lib/flow-block.mjs`](lib/flow-block.mjs): `node <skill-dir>/lib/flow-block.mjs <absolute-project-path> [local|github]`. The helper owns the layout: which file holds the block, the `@AGENTS.md` import, markers, the pointer, keeping the recorded value, and refusing malformed markers or symlinked, out-of-project, or shared instruction files. Never touch text outside the markers and that import line. Report its output and relay any warning.
 
-**Goals.** When `PRODUCT.md` is missing or has no brief (problem, who, riskiest assumption, main metric and kill criterion, core journeys), name `explore` as the next step and wait.
+**Goals.** When `PRODUCT.md` is missing or has no brief (problem, who, riskiest assumption, main metric and kill criterion, core journeys), align what exists and name `explore` once as the next step.
 
 ## Boundaries
 
