@@ -30,7 +30,7 @@ Every skill is model-invocable. Matching a phrase to a skill is probabilistic: h
 
 That alignment updates the **current project's** product context. It does not copy this repository's Flow identity into an adopter `PRODUCT.md`. [Decision 0009](decisions/0009-adopter-product-context.md).
 
-`flow` is not a project-start command. Only a `start` request authorizes scaffolding. The optional [`start`](../skills/start/SKILL.md) skill initializes from flow-next or flow-mono, asking only what the request leaves open; the initial commit is its done signal.md)). A worker runs the bootstrap while the main session hands the conversation to `explore`; hosts without workers bootstrap first, then explore. It does not invoke `flow` automatically.
+`flow` is not a project-start command. Only a `start` request authorizes scaffolding. The optional [`start`](../skills/start/SKILL.md) skill initializes from flow-next or flow-mono, asking only what the request leaves open; the initial commit is its done signal ([decision 0067](decisions/0067-flow-boundaries.md)). When the request describes the product, a worker runs the bootstrap while the main session runs `explore`; hosts without workers bootstrap first, then explore. It does not invoke `flow` automatically.
 
 Metadata and contract tests show the intended invocation split. They do not show that a host matched a spoken phrase to the right skill. Claude Code is recorded as a second agent product for read-only runs; see [smoke scenario status](../tests/smoke/2026-10-27-scenario-status.md).
 

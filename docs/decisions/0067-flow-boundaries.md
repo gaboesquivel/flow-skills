@@ -1,6 +1,6 @@
 # 0067 — Flow boundaries: plugin, starters, scripts, host
 
-Status: **Accepted** (2026-11-03). Spec: [066](../specs/066-flow-boundaries.md). Amends [0022](0022-start-runs-explore.md) (`explore` runs beside `start` only when the request describes a product) and [0051](0051-design-skill.md) (`design` is offered after the initial commit, not the first deployment). Builds on [0062](0062-claude-code-first.md).
+Status: **Accepted** (2026-11-03). Spec: [066](../specs/066-flow-boundaries.md). Amends [0022](0022-start-runs-explore.md) and [0024](0024-gated-hand-offs.md) (`explore` runs beside `start` only when the request describes a product), [0026](0026-process-depth.md) (`flow` no longer waits on a missing brief), and [0051](0051-design-skill.md) (`design` is offered after the initial commit, not the first deployment). Builds on [0062](0062-claude-code-first.md).
 
 ## Context
 
@@ -13,10 +13,11 @@ Status: **Accepted** (2026-11-03). Spec: [066](../specs/066-flow-boundaries.md).
    - **Starters:** optional, opinionated technology foundations.
    - **Project scripts:** the authoritative verification commands.
    - **Native host:** sessions, worktrees, delegation, and built-in review.
-2. **`start` ends at the initial commit,** pushed where authorized and with the governance report. A deployment is reported if the host already shows one, never awaited or connected here.
+2. **`start` ends at the initial commit.** It pushes where authorized and reports governance, handing over the one push command when the guard blocks a default-branch push. A deployment is reported if the host shows one, or reported as not connected, never awaited here; "deploy it" connects a host.
 3. **`explore` beside `start` is conditional.** It runs when the request describes a product; otherwise `start` offers it once.
-4. **`qa` stays in the commit gate.** Measured at under ten seconds on both starters, it is the one check that catches rename damage across the template.
-5. **Critical thinking is selective.** It applies where a wrong answer is costly: direction changes, consequential uncertainty, and what a person must understand before it ships. It is not a phase.
+4. **`qa` stays in the commit gate.** It measured under ten seconds on both starters (warm store, install scripts skipped, small suites; [limits](../research/2026-11-03-velocity-with-intent.md#limits)), and it is the check that runs the template's code after renaming, beyond `identity_scan`'s text scan.
+5. **Mission and principles carry this.** The mission opens with velocity with intent; principles 4 and 5 state composable skills, what-not-how, and proportional evidence.
+6. **Critical thinking is selective.** It applies where a wrong answer is costly: direction changes, consequential uncertainty, and what a person must understand before it ships. It is not a phase.
 
 ## Alternatives
 
@@ -27,5 +28,6 @@ Status: **Accepted** (2026-11-03). Spec: [066](../specs/066-flow-boundaries.md).
 ## Consequences
 
 - Time to start now ends at the initial commit, which measures initialization, not hosting.
+- On GitHub with the plugin, the guard stops `start`'s initial push to the default branch, as it always has; the person pushes once. A guard exception is a separate Human-tier change.
 - A new project can sit undeployed until "deploy it" or `ship`; that is delivery, and the report says so.
 - Starters vendor pinned Flow skills ([0045](0045-templates-pin-flow-skills.md)), which load beside a global plugin. Worth revisiting; not settled here.

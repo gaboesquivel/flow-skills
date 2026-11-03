@@ -13,7 +13,7 @@ Flow's value does not depend on a starter, `start`, a hosting provider, or the w
 | Project scripts | The authoritative verification commands |
 | Native host | Sessions, worktrees, delegation, built-in review |
 
-Skills work alone and compose when useful: `explore` without `start`, `build` without a spec, `to-spec` without `to-tasks`, or `review` on any change.
+`start` ends at the initial commit; discovery and deployment are separate work. Skills work alone and compose when useful: `explore` without `start`, `build` without a spec, `to-spec` without `to-tasks`, or `review` on any change.
 
 ## Keep people able to judge
 

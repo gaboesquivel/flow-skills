@@ -6,7 +6,7 @@ disable-model-invocation: false
 
 # Start
 
-**Optional.** Initialize a new application in a clone of [flow-next](https://github.com/gaboesquivel/flow-next) or [flow-mono](https://github.com/gaboesquivel/flow-mono). Done when the initial commit exists, pushed where authorized. Discovery and delivery are separate work, and Flow needs neither this skill nor a starter.
+**Optional.** Initialize a new application in a clone of [flow-next](https://github.com/gaboesquivel/flow-next) or [flow-mono](https://github.com/gaboesquivel/flow-mono). Done when the initial commit exists. Discovery and delivery are separate work, and Flow needs neither this skill nor a starter.
 
 ## Ask only what is open
 
@@ -33,6 +33,8 @@ When the request describes the product, run `explore` alongside as a new-product
 
 ## After the commit
 
-Push the initial commit to the authorized repository only, then run `node <skill-dir>/lib/github-governance.mjs <owner>/<repo>`; report its `unsupported` and `missingPermissions` and never weaken the preset. A deployment is delivery: report one the host already shows, and never wait for it or connect a host here.
+Push the initial commit to the authorized repository only. The plugin's guard blocks a direct push to a GitHub default branch: never work around it; hand the user the one `git push` command and report the push as pending. Once it lands on GitHub, run `node <skill-dir>/lib/github-governance.mjs <owner>/<repo>`; report its `unsupported` and `missingPermissions` and never weaken the preset. With no GitHub repository, report governance as skipped.
 
-Edit instruction files only for the Flow block and the `@AGENTS.md` import. Report the template, destination, slug and host, each check, the initial commit SHA, the governance report, any deployment, and blockers. Offer "explore this" or "design this" once.
+A deployment is delivery: report one the host already shows, or say none is connected, and never wait for it. "Deploy it" connects a host.
+
+Edit instruction files only for the Flow block and the `@AGENTS.md` import. Report the template, destination, slug and host, each check, the initial commit SHA, the push, the governance report, the deployment state, and blockers. Offer "design this" once, and "explore this" unless it ran.
