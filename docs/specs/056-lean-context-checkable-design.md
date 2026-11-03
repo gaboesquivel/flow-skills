@@ -4,7 +4,7 @@ Status: accepted (2026-11-02). Accepted, returned to draft to rewrite skill chan
 
 ## Problem Statement
 
-Agents in Flow repositories spend context reading instructions before they read the work. Flow already says to keep always-loaded guidance short and prefer a check over prose ([`write-agents`](../../skills/write-agents/SKILL.md), [`retro`](../../skills/retro/SKILL.md) Instruction files), but nothing measures it. Nobody can say how much an adopter repository loads at session start, whether its installed skills match its lock, or whether two installed skills fight over the same request. The same gap shows in design: `DESIGN.md` files hold good rules, but most are prose an agent cannot check, so an agent ships a screen that "looks fine" and breaks the identity in small ways.
+Agents in Flow repositories spend context reading instructions before they read the work. Flow already says to keep always-loaded guidance short and prefer a check over prose ([`write-agents`](../../skills/write-agents/SKILL.md), `retro` Instruction files (retro retired by [0062](../decisions/0062-claude-code-first.md))), but nothing measures it. Nobody can say how much an adopter repository loads at session start, whether its installed skills match its lock, or whether two installed skills fight over the same request. The same gap shows in design: `DESIGN.md` files hold good rules, but most are prose an agent cannot check, so an agent ships a screen that "looks fine" and breaks the identity in small ways.
 
 The evidence comes from an audit of the six repositories on 2026-11-02 (each default branch, plus the local install where skills are gitignored). Token figures are estimates at four characters per token.
 
@@ -71,7 +71,7 @@ How each lesson lands:
 | One source for installed skills (audit) | A fresh clone gets a different agent from the maintainer's | `write-agents`: the skills an agent gets come from the project's committed source, and skills only the user starts do not compete for automatic activation. |
 | Measure before trimming (audit) | Trim proposals based on impression | `retro`: instruction-size findings cite a measurement, labelled as an estimate. |
 
-**Measurement script.** `skills/retro/context.mjs`, bundled with `retro` so every repository that installs Flow's skills has it (`node <retro folder>/context.mjs [--repo <path>] [--json]`; `pnpm context` in flow-skills). It measures the working tree, which is what the agent sees, including gitignored installs. Node only, no dependencies, no network. It reports:
+**Measurement script.** `skills/retro/context.mjs` (moved to `scripts/context.mjs` by spec 059), bundled with `retro` so every repository that installs Flow's skills has it (`node <retro folder>/context.mjs [--repo <path>] [--json]`; `pnpm context` in flow-skills). It measures the working tree, which is what the agent sees, including gitignored installs. Node only, no dependencies, no network. It reports:
 
 - *Always loaded:* `CLAUDE.md` and `AGENTS.md` with `@` imports resolved, plus `name` and `description` of every skill the host would list (committed and installed, from `.claude/skills`, `.agents/skills`, and `skills/` where the repository uses them).
 - *On demand:* each `SKILL.md` body, each root context file (`PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md`), and the Flow block, measured as one block wherever it appears.

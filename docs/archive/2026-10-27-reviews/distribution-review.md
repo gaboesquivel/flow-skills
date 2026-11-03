@@ -37,7 +37,7 @@ These are incomplete copies and faulty adaptations. Preserve or rewrite useful s
 
 ### 3. High — manual activation and composition contradict each other
 
-Sources: `bootstrap/AGENTS.snippet.md`, [implement](../../../skills/build/SKILL.md), `skills/grill-with-docs/SKILL.md`, [retro](../../../skills/retro/SKILL.md), `skills/write-for-agents/SKILL-MECHANICS.md` (bootstrap and removed skills), `skills/*/agents/openai.yaml`.
+Sources: `bootstrap/AGENTS.snippet.md`, [implement](../../../skills/build/SKILL.md), `skills/grill-with-docs/SKILL.md`, `skills/retro/SKILL.md`, `skills/write-for-agents/SKILL-MECHANICS.md` (bootstrap and removed skills), `skills/*/agents/openai.yaml`.
 
 Every entrypoint disables model invocation and the bootstrap promises manual specialized skills. Implement nevertheless calls TDD and code-review; grill-with-docs calls two other skills; retro calls writing-for-agents. The bundled skill-mechanics document itself says user-only skills cannot invoke one another. Adapter policy is also inconsistent: only some OpenAI metadata files explicitly disable implicit invocation.
 
