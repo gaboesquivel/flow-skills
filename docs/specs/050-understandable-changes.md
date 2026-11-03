@@ -1,6 +1,6 @@
 # 050 — Understandable changes, trustworthy evidence
 
-Status: accepted (2026-10-31).
+Status: implemented (2026-11-03; accepted 2026-10-31; built in #214).
 Execution: spec/050-understandable-changes; isolated worktree `.worktrees/050-understandable-changes`. Integration owner: the Claude Code spec session continuing this draft (handed over from the Codex session that created it).
 
 ## Problem Statement
