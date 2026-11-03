@@ -519,10 +519,12 @@ export function riskyUnparseable(command, cwd) {
     /\bcommit\b[^\n;&|]*\s-[A-Za-z]*n[A-Za-z]*(?=$|[\s"'`)])/u,
   ]
   let why = risky.some((re) => re.test(command)) ? 'it skips hooks or forces a push' : null
+  // A merge whose pull request cannot be parsed cannot have its required checks confirmed.
+  if (!why && /\bgh\b[\s\S]*?\bpr\s+merge\b/u.test(command)) why = 'it merges a pull request whose checks cannot be confirmed'
   if (!why) {
     const main = escapeRe(defaultBranch(cwd))
     const toMain = new RegExp(`${PUSH}(?:\\S*:)?(?:refs/heads/)?${main}(?=$|[\\s"'\`)])`, 'u')
-    if (toMain.test(command) && deliveryMode(cwd) !== 'local') why = 'it pushes to the default branch'
+    if (toMain.test(command.replace(/["']/gu, '')) && deliveryMode(cwd) !== 'local') why = 'it pushes to the default branch'
   }
   return why && deny(`Flow guard: this command could not be parsed and ${why}; split it into simpler commands without the dangerous flag, or ask the user to run it.`)
 }

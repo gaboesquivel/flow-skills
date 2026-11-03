@@ -308,6 +308,10 @@ test('fails closed when an unparseable command shows a dangerous git flag', (t) 
     'git push origin main && echo "unbalanced',
     'gh pr merge 12 --admin && echo "unbalanced',
     'git -c core.hooksPath=/dev/null commit -m x && echo "unbalanced',
+    "git commit -m $'it\\'s' && gh pr merge 12 --squash",
+    "echo $'it\\'s'; gh pr merge 12 --auto --squash",
+    "git commit -m $'it\\'s' && git push origin \"main\"",
+    "git commit -m $'it\\'s' && git push origin HEAD:ma''in",
   ]) {
     const r = expect(t, command, 'deny', { cwd })
     assert.match(r.reason, /could not be parsed/u)
