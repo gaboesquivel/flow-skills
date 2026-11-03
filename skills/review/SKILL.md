@@ -29,7 +29,7 @@ Findings are Important (blocks), Nit (at most three), or Pre-existing (never blo
 
 ## Repair
 
-Fix each Important finding and `unmet` step on the branch, covering its whole bug class, with a check that fails without the fix. Answer every other finding: fixed, or resolved with a reason. "Review only" or "don't fix" stays read-only. Inside `build`, the integration owner repairs.
+Fix each Important finding and `unmet` step on the branch, covering its whole bug class, with a check that fails without the fix. Answer every other finding: fixed, or resolved with a reason. "Review only" or "don't fix" stays read-only. Inside `build`, the main thread repairs.
 
 ## Convergence
 

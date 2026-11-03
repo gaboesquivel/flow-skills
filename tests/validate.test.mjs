@@ -8,12 +8,15 @@ import { collectBrandMarkErrors } from '../scripts/check-brand-mark.mjs'
 import { STALE_SHIP_PIPELINE_PHRASE, collectCatalogPhraseErrors } from '../scripts/check-catalog-phrases.mjs'
 import { REQUIRED_SCENARIO_IDS, validateEvalScenarios } from '../scripts/check-evals.mjs'
 import {
+  SKILL_WORD_BUDGET,
   collectAdapterErrors,
+  collectAgentErrors,
   collectBareFilenameErrors,
   collectCheckTableErrors,
   collectFixtureNestedGitErrors,
   collectPluginErrors,
   collectRecordErrors,
+  collectSkillWordErrors,
   collectSkillsLinkErrors,
   stripFencedCode,
   validateSkills,
@@ -208,4 +211,44 @@ test('plugin check catches a renamed or drifted manifest and a hook pointing at 
   assert.deepEqual(collectPluginErrors(dir), [])
   writeFileSync(join(dir, 'hooks', 'hooks.json'), JSON.stringify({ PreToolUse: [] }))
   assert.deepEqual(collectPluginErrors(dir), ['hooks/hooks.json: must wrap the event map in a top-level "hooks" key'])
+})
+
+test('skill word budget fails above the limit and reports the total', (t) => {
+  assert.equal(SKILL_WORD_BUDGET, 10_000)
+  assert.deepEqual(collectSkillWordErrors(skillsRoot), [], 'the catalog fits the budget')
+  const dir = tempDir(t, 'flow-words-')
+  for (const [name, words] of [['a', 6], ['b', 5]]) {
+    mkdirSync(join(dir, name))
+    writeFileSync(join(dir, name, 'SKILL.md'), Array.from({ length: words }, () => 'word').join(' '))
+  }
+  assert.deepEqual(collectSkillWordErrors(dir, 11), [])
+  const errors = collectSkillWordErrors(dir, 10)
+  assert.equal(errors.length, 1)
+  assert.match(errors[0], /total 11, over the 10 budget/u)
+  assert.match(errors[0], /a 6, b 5/u)
+})
+
+test('agent check requires front matter with a name and a description', (t) => {
+  assert.deepEqual(collectAgentErrors(repoRoot), [])
+  const dir = tempDir(t, 'flow-agents-')
+  mkdirSync(join(dir, 'agents'))
+  writeFileSync(join(dir, 'agents', 'ok.md'), '---\nname: ok\ndescription: Does ok.\n---\nBody\n')
+  writeFileSync(join(dir, 'agents', 'bare.md'), 'No front matter\n')
+  writeFileSync(join(dir, 'agents', 'nameless.md'), '---\ndescription: x\nname:\n---\n')
+  assert.deepEqual(collectAgentErrors(dir), ['agents/bare.md: missing frontmatter', 'agents/nameless.md: frontmatter name required'])
+})
+
+test('a retired scenario may name a removed skill and its deleted files', (t) => {
+  const dir = tempDir(t, 'flow-eval-retired-')
+  const scenariosFile = join(dir, 'scenarios.json')
+  const evidence = { structural_contract: 'passed', executable_fixture: 'not_executed', live_skill_execution: 'not_executed', independently_reviewed: 'not_executed', verified_second_host: 'not_executed' }
+  const retired = { by: 'docs/decisions/0062-claude-code-first.md', reason: 'removed', date: '2026-11-03' }
+  writeFileSync(scenariosFile, JSON.stringify({
+    scenarios: [
+      { id: 'E15', skills: ['tldr'], behavior: 'x', skillReferences: ['skills/tldr/SKILL.md'], evidence, retired },
+      { id: 'E16', skills: ['tldr'], behavior: 'x', skillReferences: ['skills/tldr/SKILL.md'], evidence },
+    ],
+  }))
+  const errors = validateEvalScenarios({ root: repoRoot, scenariosFile }).filter((e) => !e.startsWith('Missing required'))
+  assert.deepEqual(errors, ['E16: unknown skill tldr', 'E16: missing skill reference skills/tldr/SKILL.md'])
 })

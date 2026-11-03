@@ -1,7 +1,7 @@
 /**
  * What a repository asks an agent to read: always-loaded instructions and skill listing, on-demand
  * skill bodies and root docs, and install hygiene. Reports against budgets; never fails.
- *   node <retro skill folder>/context.mjs [--repo <path>] [--json]   (flow-skills: pnpm context)
+ *   node scripts/context.mjs [--repo <path>] [--json]   (flow-skills: pnpm context)
  * Tokens are estimated as characters / 4 (no key, no network). Spec 056.
  */
 import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs'
@@ -15,6 +15,7 @@ export const BUDGETS = {
   descriptionChars: 1024,
   skillBodyLines: 500,
   skillBodyTokens: 5000,
+  skillWords: 10000,
   designCoreTokens: 3000,
 }
 
@@ -80,6 +81,7 @@ export function installedSkills(root) {
         listed: String(fm['disable-model-invocation']).toLowerCase() !== 'true',
         lines: text.split(/\r?\n/u).length,
         tokens: tokens(text),
+        words: text.split(/\s+/u).filter(Boolean).length,
       })
     }
   }
@@ -160,7 +162,8 @@ export function measure(root) {
     onDemand: {
       docs,
       flowBlockTokens: block ? tokens(block) : null,
-      skills: skills.map(({ name, path, lines, tokens: t }) => ({ name, path, lines, tokens: t })).sort((a, b) => b.tokens - a.tokens),
+      skills: skills.map(({ name, path, lines, tokens: t, words: w }) => ({ name, path, lines, tokens: t, words: w })).sort((a, b) => b.tokens - a.tokens),
+      skillWords: skills.reduce((sum, s) => sum + s.words, 0),
     },
     hygiene: {
       lockUnreadable: read === 'unreadable',
@@ -176,6 +179,7 @@ export function measure(root) {
     over: {
       alwaysLoaded: alwaysTokens > BUDGETS.alwaysLoadedTokens,
       skillListing: listingChars / 4 > BUDGETS.skillListingTokens,
+      skillWords: skills.reduce((sum, s) => sum + s.words, 0) > BUDGETS.skillWords,
       skillBodies: skills.filter((s) => s.lines > BUDGETS.skillBodyLines || s.tokens > BUDGETS.skillBodyTokens).map((s) => s.name),
       designCore: Boolean(design && design.tokens > BUDGETS.designCoreTokens),
     },
@@ -193,6 +197,7 @@ export function report(m) {
   out.push('', 'On demand')
   for (const d of m.onDemand.docs) out.push(`  ${d.path}: ~${d.tokens}${d.path === 'DESIGN.md' ? ` / ${BUDGETS.designCoreTokens}${flag(m.over.designCore)}` : ''}`)
   if (m.onDemand.flowBlockTokens !== null) out.push(`  Flow block: ~${m.onDemand.flowBlockTokens}`)
+  out.push(`  SKILL.md words: ${m.onDemand.skillWords} / ${BUDGETS.skillWords}${flag(m.over.skillWords)}`)
   out.push(`  largest skills: ${list(m.onDemand.skills.slice(0, 5).map((s) => `${s.name} ~${s.tokens}`))}`)
   out.push(`  skill bodies over ${BUDGETS.skillBodyLines} lines or ~${BUDGETS.skillBodyTokens}: ${list(m.over.skillBodies)}`)
   const h = m.hygiene

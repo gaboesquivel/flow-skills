@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Flow progress board: read-only kanban of a repository's specs, derived from git.
+// Flow progress board: read-only kanban of a repository's specs, derived from git (pnpm board).
 // Zero dependencies, Node >= 22. Stages: Candidate, Specced, Ready, Building, Shipped.
 import { execFile, execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
@@ -209,7 +209,7 @@ function specAddedDates(repoRoot, ref) {
 
 /**
  * `Delivery:` from the first Flow block (between the BEGIN/END FLOW markers) in the given texts; null when unset.
- * Mirrors readDelivery and normalizeDelivery in skills/flow/lib/flow-block.mjs (copied: each skill installs on its own).
+ * Mirrors readDelivery and normalizeDelivery in skills/flow/lib/flow-block.mjs (copied when board was its own skill).
  */
 export function readDelivery(texts) {
   for (const text of texts) {

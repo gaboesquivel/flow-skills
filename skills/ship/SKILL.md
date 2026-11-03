@@ -10,7 +10,7 @@ disable-model-invocation: false
 
 ## Preflight
 
-Outside a Git repository, offer `git init` and stop on a no. Fetch and run `node scripts/gh-route.mjs` (mode and route). Ship the named work, else the current branch, else the one unmerged work branch; ask only when several remain. Never edit another agent's checkout.
+Fetch and run `node scripts/gh-route.mjs` (mode and route). Ship the named work, else the current branch, else the one unmerged work branch; ask only when several remain. Never edit another agent's checkout.
 
 **Spec status gate.** Only `accepted` or `implemented` specs land; "ship it" on a `draft` accepts it (`to-spec`). Any other status, an unresolvable spec, unfinished tasks (unless the user says ship it partial), or a linked decision still **Proposed** stops ship. A complete spec missing `Status: implemented` gets it in the landed change.
 

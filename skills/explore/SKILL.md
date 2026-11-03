@@ -10,7 +10,7 @@ Learn what the user wants, test whether it holds up, and record what is durable.
 
 ## Read first
 
-While the first question waits on the user, read in parallel the sources that exist: root context, relevant code, glossary, prior art, and the decisions and specs the request may conflict with, each labeled by status and location (`write-agents` Context freshness). Workers never ask the user. After `start`, its bootstrap report replaces any status read.
+While the first question waits, read the sources that exist: root context, relevant code, glossary, and the decisions and specs the request may conflict with, each labeled by status and location (`write-agents` Context freshness). Subagents never ask the user.
 
 ## Direction changes
 
@@ -28,15 +28,13 @@ Match the request; never ask for depth.
 
 **Metrics.** Keep existing definitions. Define a new one by the journey outcome it observes, what counts, population, window, source, baseline (or "unknown"), and target; an unevidenced target is a hypothesis.
 
-Non-interactive, report an underspecified ask as a blocker instead of guessing.
-
 ## Questions
 
 Ask when who it is for, why now, success, or the binding constraint is missing and you would otherwise fill it in silently.
 
 - Open with a one-sentence hypothesis of what the user wants and an honest confidence percentage; below about 70%, name what is missing. Update both as you go.
 - Put **a guess on each question**, with its reasoning. Open questions go one per message; batch up to three closed ones per form in the host's question UI, marking your guess and each option's tradeoff. Sometimes leave a guess unmarked or guess where you expect pushback, so agreement is not mere politeness.
-- When an answer describes what a good answer sounds like (buzzwords as goals, deference to convention, "I should probably"), ask what they would want if they did not have to justify it. Treat "whatever you think" as delegation: re-ask as a choice between two concrete options.
+- When an answer sounds like what a good answer should (buzzwords, "I should probably"), ask what they would want without justifying it. Re-ask "whatever you think" as a choice between two concrete options.
 - Stop when you can predict the user's reaction to the next three questions. If confidence stops rising, say so and suggest stepping back.
 
 When the user asked only to be interviewed, restate intent in their words, one line each: outcome, user, why now, success, constraint, out of scope. "Sounds good" or silence is not a yes; ask what they would refine.
@@ -46,8 +44,7 @@ When the user asked only to be interviewed, restate intent in their words, one l
 For a new product, or on "grill" or "poke holes". With intent clear, do not re-extract it; challenge only the riskiest claims.
 
 - **Pre-mortem**, once: assume it failed six months from now and list the likeliest reasons. From them name the riskiest assumptions, each with a confidence, and a **kill criterion**: the observation that would end the bet.
-- Gather evidence for each risky claim in parallel.
-- Ask a small round of focused, independent questions, each with a recommended answer and its tradeoff; revise later ones when an answer changes their premise. Stop when outcome, constraints, and next action are clear; never re-approve settled decisions.
+- Gather evidence for each risky claim, then ask a small round of focused questions, each with a recommended answer and its tradeoff. Stop when outcome, constraints, and next action are clear; never re-approve settled decisions.
 
 Deeper discovery (`competitors`, `jtbd`) runs only when asked. When a new surface's look is not settled by `DESIGN.md`, suggest `design` in one line.
 
@@ -62,7 +59,7 @@ For a brief, show the exact text once and ask once:
 
 Label unproven items hypotheses. An explicit yes to the shown text authorizes that write in the same turn; fold corrections in and show it again.
 
-**Branch.** Outside a Git repository, offer `git init` and stop on a no. Write on one non-default branch named for the work; commit only these writes and report branch and commit.
+**Branch.** Write on one non-default branch named for the work; commit only these writes and report branch and commit.
 
 **After `start`.** Write nothing until the bootstrap reports its initial commit, even after a yes; then branch from it, and the yes carries over. The brief replaces the baseline `PRODUCT.md`'s product sections and keeps its template facts. If the bootstrap failed, keep everything in conversation.
 

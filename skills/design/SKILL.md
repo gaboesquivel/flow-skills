@@ -26,7 +26,7 @@ Produce two to four directions that differ in concept, not only in color, in par
 
 Render each so the user can judge it by eye (an image, an HTML or SVG page, a design tool, or [variants on the real route](#prototypes) for a page layout). Show it in context, never in a vacuum: an identity on the same real screen for every direction, plus the mark at 16 and 32 px and in a header, light and dark; a page at phone and desktop width with real content.
 
-Look at each render before showing it, or say it was not seen. Check contrast, small sizes, and that no mark reads as a well-known symbol or another brand.
+Look at each render before showing it, or say it was not seen; check contrast, small sizes, and that no mark reads as another brand.
 
 Save exploration files where the user chose. They are evidence, never a second design authority: `DESIGN.md` holds the approved direction.
 
@@ -40,13 +40,13 @@ On approval, update `DESIGN.md`, keeping its existing sections (create it when m
 
 Commit the canonical assets and set the token values in the app's existing theme, one source every surface reads. When cheap, name a check that asset variants (favicon, icons, social image) match that source as work for `build`. When the direction replaces a name, mark, or token, list every surface still showing the old one (pages, icons, titles, metadata) for `build`.
 
-Recording needs Git: outside a repository, offer `git init` and stop on a no. Write on the work's branch; on the default branch, cut one (for example `design/identity`). Commit only these writes and any explorations the user chose to track.
+Write on the work's branch; on the default branch, cut one (for example `design/identity`). Commit only these writes and any explorations the user chose to track.
 
 ## Prototypes
 
 On "prototype this" or "spike it", state the question and the observation that would answer it, then build the smallest throwaway that shows it. Mark it experimental and use in-memory or stub data, never live mutations or credentials.
 
-- **Layout or interaction:** render two to five structurally different variants (layout, hierarchy, primary affordance; color alone is a tweak) on the real route, gated by `?variant=`, keeping the page's data fetching and swapping only the rendered subtree. An empty new route hides problems a populated page exposes; use one, named `prototype`, only when nothing existing can host it. Add a floating switcher that cycles variants through the URL (arrow keys too, not while a field has focus) and is hidden in production builds. Hand over the URL and keys.
+- **Layout or interaction:** render two to five structurally different variants (layout, hierarchy, primary affordance; color alone is a tweak) on the real route, gated by `?variant=`, keeping the page's data fetching and swapping only the rendered subtree. Use a new route, named `prototype`, only when nothing existing can host it. Add a floating switcher that cycles variants through the URL (arrow keys too, not while a field has focus) and is hidden in production builds. Hand over the URL and keys.
 - **Logic, state, or API:** a throwaway script or one self-contained HTML file answering one question, with the logic in a pure module the page only calls, so it can be lifted later. No tests, framework, or generalising.
 
 Record the answer and its limits where the project keeps such evidence. Committing, promoting, or publishing a prototype needs its own authorization, and promoted code is rewritten to production standards.

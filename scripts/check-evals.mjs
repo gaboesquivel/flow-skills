@@ -74,17 +74,20 @@ export function validateEvalScenarios({ root = repoRoot, scenariosFile = scenari
     if (!REQUIRED_SCENARIO_IDS.includes(id)) errors.push(`${id}: unexpected scenario id`)
     errors.push(...retiredErrors(id, scenario))
 
+    // A retired scenario may name skills and files a later decision removed; they stay as history.
     const skills = scenario.skills
     if (!Array.isArray(skills) || skills.length === 0) errors.push(`${id}: skills must be a non-empty array`)
-    else for (const skill of skills) {
+    else if (!scenario.retired) for (const skill of skills) {
       if (skill !== 'all' && !EXPECTED_SKILL_NAMES.includes(skill)) errors.push(`${id}: unknown skill ${skill}`)
     }
 
-    for (const rel of scenario.skillReferences ?? []) {
-      if (!existsSync(join(root, rel))) errors.push(`${id}: missing skill reference ${rel}`)
-    }
-    for (const rel of scenario.fixtureReferences ?? []) {
-      if (!existsSync(join(root, rel))) errors.push(`${id}: missing fixture reference ${rel}`)
+    if (!scenario.retired) {
+      for (const rel of scenario.skillReferences ?? []) {
+        if (!existsSync(join(root, rel))) errors.push(`${id}: missing skill reference ${rel}`)
+      }
+      for (const rel of scenario.fixtureReferences ?? []) {
+        if (!existsSync(join(root, rel))) errors.push(`${id}: missing fixture reference ${rel}`)
+      }
     }
 
     if (scenario.taskFile && !existsSync(join(root, scenario.taskFile))) errors.push(`${id}: missing task file ${scenario.taskFile}`)

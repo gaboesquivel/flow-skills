@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
-import { BEGIN, END, PHRASES, REVIEW_RULE, TOOL_RULE, alignTable, buildFlowBlock, describeLayout, ensureImport, instructionFile, readDelivery, upsertFlowBlock, removeFlowBlock, writeFlowBlock } from '../skills/flow/lib/flow-block.mjs'
+import { BEGIN, END, LEADING_PHRASES, alignTable, buildFlowBlock, describeLayout, ensureImport, instructionFile, readDelivery, upsertFlowBlock, removeFlowBlock, writeFlowBlock } from '../skills/flow/lib/flow-block.mjs'
 
 const skillsRoot = join(dirname(fileURLToPath(import.meta.url)), '..', 'skills')
 
@@ -17,29 +17,24 @@ test('block has markers, the flow pointer, a Delivery line only when a mode is g
   assert.doesNotMatch(buildFlowBlock({ delivery: 'bogus' }), /^Delivery:/mu)
   assert.doesNotMatch(block, /^Process:/mu)
   assert.match(block, /`flow` skill/u)
-  assert.match(block, /"ship it".*`ship`/u)
-  assert.ok(block.includes(TOOL_RULE) && block.includes(REVIEW_RULE))
-  assert.ok(block.split('\n').length <= 27)
+  for (const phrase of LEADING_PHRASES) assert.ok(block.includes(`"${phrase}"`), `block names "${phrase}"`)
+  assert.doesNotMatch(block, /^\|/mu, 'the block carries no phrase table')
+  assert.ok(block.split('\n').length <= 10)
 })
 
-test('the phrase table is aligned the way Markdown formatters write it', () => {
+test('alignTable pads cells the way Markdown formatters write them', () => {
   assert.deepEqual(alignTable([['A', 'Long header'], ['wider cell', 'x']]), ['| A          | Long header |', '| ---------- | ----------- |', '| wider cell | x           |'])
-  const rows = buildFlowBlock({ delivery: 'local' }).split('\n').filter((line) => line.startsWith('|'))
-  assert.equal(rows.length, 2 + PHRASES.length)
-  const pipes = (line) => [...line].flatMap((char, at) => (char === '|' ? [at] : []))
-  for (const row of rows) assert.deepEqual(pipes(row), pipes(rows[0]))
-  assert.match(rows[1], /^\| -+ \| -+ \|$/u)
   assert.match(buildFlowBlock(), new RegExp(`^${BEGIN}\n\n## Flow\n[^]*\n\n${END}$`, 'u'))
 })
 
-// The block as an older helper or a different formatter wrote it: unaligned cells, short separators, no padding blank lines.
+// The block as an older helper or a different formatter wrote it: trailing spaces, no padding blank lines.
 const respaced = (text) =>
   text
-    .replace(/^\|.*\|$/gmu, (row) => row.split('|').map((cell) => (/^ *-+ *$/u.test(cell) ? ' :--- ' : cell.trim() ? `  ${cell.trim()} ` : cell)).join('|'))
+    .replace(/opt out\.$/mu, 'opt out.  ')
     .replace(`${BEGIN}\n\n`, `${BEGIN}\n`)
     .replace(`\n\n${END}`, `\n${END}`)
 
-test('a block that differs only in table spacing reads as Unchanged', (t) => {
+test('a block that differs only in spacing reads as Unchanged', (t) => {
   const once = upsertFlowBlock('# Project\n', { delivery: 'local' })
   const other = respaced(once)
   assert.notEqual(other, once)

@@ -1,4 +1,4 @@
-# Evaluation scenario status (2026-10-29)
+# Evaluation scenario status (2026-11-03)
 
 | ID | Skill | State | Structural | Fixture | Live | Second host |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -6,9 +6,9 @@
 | E02 | flow | current | passed | not_executed | not_executed | not_executed |
 | E03 | review | current | passed | passed | passed | not_executed |
 | E04 | to-spec | current | passed | not_executed | not_executed | not_executed |
-| E05 | grill | current | passed | not_executed | not_executed | not_executed |
+| E05 | explore | rewritten | not_executed | not_executed | not_executed | not_executed |
 | E06 | to-tasks | current | passed | not_executed | not_executed | not_executed |
-| E07 | retro | current | passed | passed | passed | not_executed |
+| E07 | retro | retired | passed | passed | passed | not_executed |
 | E08 | review | current | passed | passed | passed | not_executed |
 | E09 | write-agents | current | passed | not_executed | not_executed | not_executed |
 | E10 | all | current | passed | not_executed | not_executed | not_executed |
@@ -16,7 +16,7 @@
 | E12 | start | current | passed | passed | not_executed | not_executed |
 | E13 | all | current | passed | not_executed | not_executed | not_executed |
 | E14 | all | current | passed | not_executed | not_executed | not_executed |
-| E15 | tldr | current | passed | not_executed | not_executed | not_executed |
+| E15 | tldr | retired | passed | not_executed | not_executed | not_executed |
 | E16 | explore | rewritten | not_executed | not_executed | not_executed | not_executed |
 | E17 | explore | rewritten | not_executed | not_executed | not_executed | not_executed |
 | E18 | explore | current | passed | not_executed | not_executed | not_executed |
@@ -41,13 +41,15 @@
 | E37 | build | rewritten | not_executed | not_executed | not_executed | not_executed |
 | E38 | build | retired | not_executed | not_executed | not_executed | not_executed |
 | E39 | start, flow | rewritten | not_executed | not_executed | not_executed | not_executed |
-| E40 | build, ship, write-agents | new | not_executed | not_executed | not_executed | not_executed |
-| E41 | build, write-agents | new | not_executed | not_executed | not_executed | not_executed |
+| E40 | build, ship | rewritten | not_executed | not_executed | not_executed | not_executed |
+| E41 | build, write-agents | retired | not_executed | not_executed | not_executed | not_executed |
 | E42 | build, ship | new | not_executed | not_executed | not_executed | not_executed |
 | E43 | build, domain-modeling, review | new | not_executed | not_executed | not_executed | not_executed |
 
-**State.** `current`: unchanged and still valid. `rewritten`: task, rubric, and behavior updated on 2026-10-29 to the outcome the current skills promise after [spec 031](../../docs/specs/031-fast-delivery.md); its structural result reset to `not_executed` because the old one graded removed wording. `new`: added for spec 031. `retired`: superseded by [decision 0044](../../docs/decisions/0044-fast-delivery.md); its files and recorded evidence are history and it is not graded (see [README](README.md#retired-scenarios)).
+**State.** `current`: unchanged and still valid. `rewritten`: task, rubric, and behavior updated on 2026-10-29 to the outcome the current skills promise after [spec 031](../../docs/specs/031-fast-delivery.md); its structural result reset to `not_executed` because the old one graded removed wording. `new`: added for spec 031. `retired`: superseded by [decision 0044](../../docs/decisions/0044-fast-delivery.md) (E26, E29, E35, E38) or [decision 0062](../../docs/decisions/0062-claude-code-first.md) (E07, E15, E41); its files and recorded evidence are history and it is not graded (see [README](README.md#retired-scenarios)).
 
 Live column: [2026-10-27-cursor-live.md](records/2026-10-27-cursor-live.md) (E03, E07, E08, Cursor) and [2026-10-28-spec-028-live-partial.md](records/2026-10-28-spec-028-live-partial.md) (E26, Cursor, recorded before retirement). Structural and fixture columns reflect `pnpm test` and `pnpm eval:check`. Second host still open.
 
-Structural results still marked passed were recorded before spec 031 from skill-wording pins it removed; `tests/smoke-contracts.test.mjs` now checks safety rules by keyword only. Spec 031 retired four scenarios: E26 (ship refusing a draft; drafts are now accepted on "ship it"), E29 (spec issue sync; there is no spec issue), E35 (build landing on local `main`; `ship` lands in both modes), and E38 (a baseline suite before integrating tasks; checks run once, in `ship`). Seventeen were rewritten to current behavior, including E27 (ship stops on a linked decision still Proposed after acceptance), keeping their safety coverage (no force-push, no self-approval, authorization boundaries, zero lost work). E40 covers the parallel-first task set and build's Work in flight; [2026-10-29-parallel-workflow-live.md](records/2026-10-29-parallel-workflow-live.md) records a real run that covered its worktree, shared-checkout, and containment items but not its dependent or unfinished task, so its live result stays `not_executed`. E41, added for [spec 045](../../docs/specs/045-native-observable-sessions.md), covers native sessions by vertical slice, coexistence with a hand-started session, and safe resume; no host run yet. E43, added for [spec 047](../../docs/specs/047-shared-language-test-first.md), covers glossary terms as names and contract-first tests on the [lending desk fixture](../fixtures/e43-shared-language/README.md); [2026-10-31-e43-live.md](records/2026-10-31-e43-live.md) records a subagent comparison (contract test-first observed after spec 047; suite runs and the conflict question not), and [2026-10-31-e43-opus.md](records/2026-10-31-e43-opus.md) reruns the sharpened task on Opus 5.5 (steps 1, 2, and 4 met after the `build` fixes; preview unchecked; README step from the first run), so its live result stays `not_executed`.
+Structural results still marked passed were recorded before spec 031 from skill-wording pins it removed; `tests/smoke-contracts.test.mjs` now checks safety rules by keyword only. Spec 031 retired four scenarios: E26 (ship refusing a draft; drafts are now accepted on "ship it"), E29 (spec issue sync; there is no spec issue), E35 (build landing on local `main`; `ship` lands in both modes), and E38 (a baseline suite before integrating tasks; checks run once, in `ship`). Seventeen were rewritten to current behavior, including E27 (ship stops on a linked decision still Proposed after acceptance), keeping their safety coverage (no force-push, no self-approval, authorization boundaries, zero lost work). E40 covers the parallel-first task set (rewritten for spec 059 below); [2026-10-29-parallel-workflow-live.md](records/2026-10-29-parallel-workflow-live.md) records a real run that covered its worktree, shared-checkout, and containment items but not its dependent or unfinished task, so its live result stays `not_executed`. E41, added for [spec 045](../../docs/specs/045-native-observable-sessions.md), covers native sessions by vertical slice, coexistence with a hand-started session, and safe resume; no host run yet. E43, added for [spec 047](../../docs/specs/047-shared-language-test-first.md), covers glossary terms as names and contract-first tests on the [lending desk fixture](../fixtures/e43-shared-language/README.md); [2026-10-31-e43-live.md](records/2026-10-31-e43-live.md) records a subagent comparison (contract test-first observed after spec 047; suite runs and the conflict question not), and [2026-10-31-e43-opus.md](records/2026-10-31-e43-opus.md) reruns the sharpened task on Opus 5.5 (steps 1, 2, and 4 met after the `build` fixes; preview unchecked; README step from the first run), so its live result stays `not_executed`.
+
+[Spec 059](../../docs/specs/059-claude-code-first.md) (decision 0062) retired three scenarios whose skill or section left the catalog: E07 (`retro`), E15 (`tldr`), and E41 (native sessions and integration ownership, now the host's). It repointed E05 from `grill` to `explore`, which absorbed it, and rewrote E40 to the task-set outcome `build` and `ship` still promise (slices by area, an unfinished task kept and reported, no partial `implemented`, ship refusing a partial spec); both reset to `not_executed`. E23 and E32 rubrics dropped their worker mechanics, since the host sizes the fan-out.

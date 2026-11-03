@@ -1,5 +1,7 @@
 # E41 rubric
 
+> Retired 2026-11-03: superseded by [decision 0062](../../../docs/decisions/0062-claude-code-first.md) and [spec 059](../../../docs/specs/059-claude-code-first.md). Kept as history; not graded. Native sessions, worktrees, and integration ownership moved to the host; `build` slices by area and the host sizes the fan-out.
+
 - Gives each of the two slices one session (or one worker), keeps each slice's tasks inside it, and never splits work by technical layer or per small step.
 - Follows whichever start policy the host exposes: here, starts one session per slice because the user asked, and records that the user's ask, not capability, decided it. Without that ask ("build it" alone), the slices run as worktree subagents with no session and no question.
 - Each child brief names goal, acceptance boundary, non-goals, context links, parent reference, branch, worktree, and integration owner; each child writes in its own ignored in-repository worktree; each brief asks the child to lead its final report with its branch, head commit, and any unmet item.

@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { collectBrandMarkErrors } from './check-brand-mark.mjs'
 import { collectCatalogPhraseErrors } from './check-catalog-phrases.mjs'
 import { collectDocLinkErrors } from './check-doc-links.mjs'
+import { skillWords } from './metrics.mjs'
 import { ESSENTIAL_CHECK_IDS } from '../skills/start/lib/commit-gate.mjs'
 
 // Explicit-only skills must be named to run. Empty since decision 0022 made `start` speakable with a
@@ -12,30 +13,20 @@ import { ESSENTIAL_CHECK_IDS } from '../skills/start/lib/commit-gate.mjs'
 export const EXPLICIT_SKILL_NAMES = new Set([])
 
 export const EXPECTED_SKILL_NAMES = [
-  'align',
-  'board',
   'build',
   'competitors',
   'council',
-  'debug',
   'design',
   'domain-modeling',
   'explore',
   'flow',
-  'grill',
-  'handoff',
-  'interview',
   'jtbd',
-  'measure',
-  'prototype',
-  'push',
-  'retro',
+  'product',
   'review',
   'ship',
   'start',
   'to-spec',
   'to-tasks',
-  'tldr',
   'write-agents',
   'write-humans',
 ].sort()
@@ -295,6 +286,31 @@ export function collectPluginErrors(repoRoot) {
   return errors
 }
 
+// Spec 059: every SKILL.md the catalog loads, summed, stays within this many words (counted as `pnpm metrics` counts them).
+export const SKILL_WORD_BUDGET = 10_000
+
+export function collectSkillWordErrors(skillsDir, budget = SKILL_WORD_BUDGET) {
+  const words = skillWords(skillsDir)
+  if (!words || words.total <= budget) return []
+  return [`skills: SKILL.md words total ${words.total}, over the ${budget} budget (largest: ${words.largest.map(([n, c]) => `${n} ${c}`).join(', ')})`]
+}
+
+// Plugin agents (agents/*.md) need front matter with a name and a description, or the host skips them.
+export function collectAgentErrors(repoRoot) {
+  const dir = join(repoRoot, 'agents')
+  if (!existsSync(dir)) return []
+  const errors = []
+  for (const file of readdirSync(dir).filter((f) => f.endsWith('.md')).sort()) {
+    const text = readFileSync(join(dir, file), 'utf8')
+    const frontmatter = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/u.exec(text)
+    if (!frontmatter) { errors.push(`agents/${file}: missing frontmatter`); continue }
+    for (const key of ['name', 'description']) {
+      if (!new RegExp(`^${key}:[ \\t]*\\S`, 'mu').test(frontmatter[1])) errors.push(`agents/${file}: frontmatter ${key} required`)
+    }
+  }
+  return errors
+}
+
 export function validateRepository(repoRoot) {
   const errors = validateSkills(join(repoRoot, 'skills'))
   errors.push(...collectDocLinkErrors(join(repoRoot, 'docs')))
@@ -307,6 +323,8 @@ export function validateRepository(repoRoot) {
   errors.push(...collectBrandMarkErrors(repoRoot))
   errors.push(...collectFixtureNestedGitErrors(repoRoot))
   errors.push(...collectPluginErrors(repoRoot))
+  errors.push(...collectAgentErrors(repoRoot))
+  errors.push(...collectSkillWordErrors(join(repoRoot, 'skills')))
   return errors
 }
 
@@ -315,5 +333,5 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const errors = validateRepository(repoRoot)
   for (const warning of collectShadowedSkillWarnings(repoRoot)) console.warn(`warning: ${warning}`)
   if (errors.length) { console.error(errors.join('\n')); process.exitCode = 1 }
-  else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills, documentation links, local references, adapters, record names and indexes, catalog phrases, brand mark geometry, fixture layout, the plugin manifest and hooks, and start's check table.`)
+  else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills, documentation links, local references, adapters, record names and indexes, catalog phrases, brand mark geometry, fixture layout, the plugin manifest, hooks, and agents, start's check table, and the ${SKILL_WORD_BUDGET}-word skill budget (${skillWords(join(repoRoot, 'skills')).total} words).`)
 }
