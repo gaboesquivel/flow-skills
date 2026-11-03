@@ -65,6 +65,6 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [058-eve-default-runtime.md](058-eve-default-runtime.md) (implemented)
 - [059-claude-code-first.md](059-claude-code-first.md) (implemented)
 - [061-slim-specs.md](061-slim-specs.md) (implemented)
-- [062-trim-build-review.md](062-trim-build-review.md) (accepted)
+- [062-trim-build-review.md](062-trim-build-review.md) (implemented)
 
 Significant standalone decisions belong in `docs/decisions/`, not in a spec. See [decisions](../decisions/README.md).

@@ -1,6 +1,6 @@
 # 062 — Trim build and review
 
-Status: accepted (2026-11-03). Appetite: one session.
+Status: implemented (2026-11-03). Appetite: one session.
 
 ## Problem
 
@@ -42,5 +42,5 @@ Invariants: no authorization boundary loosens; "build it" never merges, and noth
 
 ## Tasks
 
-- [ ] 01: Trim `build` and `review`. Area: skills/build, skills/review.
-- [ ] 02: Live unmet-step review check, recorded in spec 059. Area: docs/specs.
+- [x] 01: Trim `build` and `review`. Area: skills/build, skills/review.
+- [x] 02: Live unmet-step review check, recorded in spec 059. Area: docs/specs.
