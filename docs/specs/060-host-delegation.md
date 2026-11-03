@@ -11,7 +11,6 @@ Spec 059 moved worktrees, sessions, review and the PR lifecycle to Claude Code, 
 - `build` describes looping until done in prose instead of setting `/goal`.
 - The guard checks required checks on every merge, even where branch protection already enforces them.
 - `council` runs its own fan-out instead of a dynamic workflow.
-- `competitors` and `jtbd` do web research themselves instead of using `/deep-research`.
 - The Flow block in CLAUDE.md holds a `Delivery:` override that plugin user config can hold.
 
 The repo also records a decision for choices that are cheap to reverse, about 60 records in 10 days.
@@ -23,7 +22,6 @@ The bet: **delegating these jobs to Claude Code keeps idea → prod and safety n
 - **`build` Verify sets a `/goal`** with the done condition: focused checks pass, `flow-reviewer` reports no Important finding, and the PR is ready. Stop after 20 turns. Where `/goal` isn't available, `build` keeps its existing steps.
 - **The merge gate defers to branch protection.** The guard skips `required-checks.mjs` when the base branch's protection or rulesets require status checks. It still gates merges on unprotected branches, and still denies `--admin`.
 - **`council` runs its seats as a dynamic workflow** when the host offers one, and as subagents otherwise. The evidence packet, the six reviewer return fields and the adversarial seat stay.
-- **`competitors` and `jtbd` build on `/deep-research`** for gathering sources and keep only their framing: switching forces, and jobs and struggling moments. Each must beat no skill on one scenario or be retired (completes spec 059 task 06).
 - **The `Delivery:` override moves to plugin user config.** `flow` writes the CLAUDE.md block only for installs without the plugin. `gh-route.mjs` and the guard read the plugin config first, then the block.
 - **One Flow install: the plugin, at user scope.** flow-skills ships `.claude-plugin/marketplace.json`, and the maintainer installs `flow@flow-skills` once globally. Vendored Flow skills are removed everywhere:
   - globally from `~/.claude/skills` and `~/.agents/skills`
@@ -54,7 +52,6 @@ The bet: **delegating these jobs to Claude Code keeps idea → prod and safety n
 
 - Guard fixtures with a stubbed `gh`: a protected base with required checks skips the gate; an unprotected base gates; a failed lookup gates; `--admin` is always denied.
 - `gh-route` fixtures: the config value overrides the block, and the block overrides inference.
-- On-trial comparisons for `competitors` and `jtbd` (task 06 of spec 059), recorded under `tests/evals/records/`.
 
 **Acceptance scenario.** A maintainer on flow-skills, with the plugin installed and spec 059's baseline recorded:
 
