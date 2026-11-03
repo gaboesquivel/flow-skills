@@ -539,18 +539,38 @@ export function riskyUnparseable(command, cwd) {
   return null
 }
 
+// Claude Code sends tool_input.command and expects a deny object or silence. Cursor sends command at the top
+// level and treats empty stdout as an invalid permission response, so an allow is explicit JSON.
+export function hookInput(input) {
+  if (typeof input?.tool_input?.command === 'string') return { host: 'claude', command: input.tool_input.command }
+  if (typeof input?.command === 'string') return { host: 'cursor', command: input.command }
+  return null
+}
+
+export function hookOutput(host, verdict) {
+  if (host === 'cursor') return verdict
+    ? { permission: 'deny', agent_message: verdict.deny }
+    : { permission: 'allow' }
+  if (!verdict) return null
+  return { hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: 'deny', permissionDecisionReason: verdict.deny } }
+}
+
 function main() {
   let input
   try { input = JSON.parse(readFileSync(0, 'utf8')) } catch { return }
-  const command = input?.tool_input?.command
-  if (typeof command !== 'string' || !/\b(?:git|gh)\b/u.test(command)) return
+  const parsed = hookInput(input)
+  if (!parsed) return
+  const { host, command } = parsed
+  if (!/\b(?:git|gh)\b/u.test(command)) {
+    const allow = hookOutput(host, null)
+    if (allow) process.stdout.write(`${JSON.stringify(allow)}\n`)
+    return
+  }
   const cwd = typeof input.cwd === 'string' && input.cwd ? input.cwd : process.cwd()
   let verdict = null
   try { verdict = evaluate(command, cwd) } catch { verdict = riskyUnparseable(command, cwd) }
-  if (!verdict) return
-  process.stdout.write(`${JSON.stringify({
-    hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: 'deny', permissionDecisionReason: verdict.deny },
-  })}\n`)
+  const out = hookOutput(host, verdict)
+  if (out) process.stdout.write(`${JSON.stringify(out)}\n`)
 }
 
 const self = (path) => { try { return realpathSync(path) } catch { return path } }

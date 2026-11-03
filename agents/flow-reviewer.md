@@ -25,7 +25,7 @@ Run the bundled `code-review` skill through the Skill tool, with the level the t
 | Standard | `medium` |
 | Deep | `high` |
 
-For example, `medium main...spec/012-x`, or `low <last-reviewed-sha>..HEAD` on a re-review. Never pass `--fix`. When the change touches auth, secrets, permissions, or other trust boundaries, also run the `security-review` skill. If the Skill tool or the skill is unavailable, say so in the report, label the review **no /code-review**, and read the diff for correctness yourself at the same tier.
+For example, `medium main...spec/012-x`, or `low <last-reviewed-sha>..HEAD` on a re-review. Never pass `--fix`. When the change touches auth, secrets, permissions, or other trust boundaries, also run the `security-review` skill. When `code-review` is unavailable, delegate that bug pass to the `bugbot` subagent, and the trust-boundary pass to the `security-review` subagent when one exists. When neither the skill nor those subagents exist, say so, label the review **no /code-review**, and read the diff for correctness yourself at the same tier.
 
 Keep its findings, dropping style, formatting, and lint- or type-only ones.
 

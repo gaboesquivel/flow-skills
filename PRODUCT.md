@@ -12,7 +12,7 @@ Flow is a lightweight, human-directed, agent-executed product engineering method
 
 It combines shared product context, reusable engineering skills, and practical development conventions in a continuous workflow from exploration to verified delivery.
 
-Flow is Claude Code first ([decision 0062](docs/decisions/0062-claude-code-first.md)): it builds on Claude Code's built-ins and enforces must-hold rules with hooks, and stays portable where that is free. It is UI-agnostic and technology-agnostic. Its process is proportional to the work, not a mandatory sequence of ceremonies.
+Flow is Claude Code first ([decision 0062](docs/decisions/0062-claude-code-first.md)): it builds on Claude Code's built-ins and enforces must-hold rules with hooks, and stays portable where that is free. The Cursor plugin runs those same hooks ([decision 0064](docs/decisions/0064-cursor-plugin.md)). It is UI-agnostic and technology-agnostic. Its process is proportional to the work, not a mandatory sequence of ceremonies.
 
 Flow is a documented way of working, not an agent router. Ordinary language should be the complete user interface to Flow; shortcuts and skills are optional conveniences.
 
@@ -100,9 +100,10 @@ flow-skills offers a small catalog: **context alignment** (`flow`) for root cont
 
 ### Install and catalog
 
-**Install.** Two ways, from the same `skills/` tree ([decision 0062](docs/decisions/0062-claude-code-first.md)):
+**Install.** Three ways, from the same `skills/` tree ([decision 0062](docs/decisions/0062-claude-code-first.md), [decision 0064](docs/decisions/0064-cursor-plugin.md)):
 
 - **Claude Code plugin:** the skills plus the [guard hook](hooks/guard.mjs) that blocks unsafe Git and merge operations, the [SessionStart report](hooks/wip.mjs) of work in flight, and the [`flow-reviewer`](agents/flow-reviewer.md) agent. The manifest is [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json); [agent compatibility](docs/agent-compatibility.md#claude-code) covers loading it and the recommended settings.
+- **Cursor plugin:** the same skills, guard, work-in-flight report, and reviewer. The manifest is [`.cursor-plugin/plugin.json`](.cursor-plugin/plugin.json). Install this or the skills CLI, not both, and not also the Claude Code plugin.
 - **Any Agent Skills host:** `npx skills add gaboesquivel/flow-skills` via the [Agent Skills ecosystem](https://github.com/vercel-labs/skills). You get the skills and the method, without the hooks' enforcement.
 
 **Requirements.** What a skill needs depends on its tier ([decision 0037](docs/decisions/0037-git-for-delivery-github-for-github-mode.md)):
@@ -112,7 +113,7 @@ flow-skills offers a small catalog: **context alignment** (`flow`) for root cont
 | Thinking | `council`, `product`, `domain-modeling`, `write-agents`, `design` (directions and prototypes) | Nothing: any folder, or none |
 | Delivery chain | `flow` (the Flow block), `start`, `explore`, `design` (recording), `to-spec`, `to-tasks`, `build`, `review`, `ship` | A Git repository; outside one, the skill offers `git init` and stops on a no |
 | GitHub mode | Pull requests and CI; issues only on request | GitHub access through `gh`, its REST API, or the host's GitHub tools, on top of Git ([decision 0055](docs/decisions/0055-capability-based-github-and-host-triggered-builds.md)) |
-| Enforcement | The guard hook and the SessionStart report | Claude Code with the Flow plugin; other hosts run the same skills without them |
+| Enforcement | The guard hook and the SessionStart report | Claude Code or Cursor with the Flow plugin. Cursor cloud agents run the shell guard and do not run the session report. `npx skills add` and other hosts run the same skills without the hooks |
 
 Local delivery needs only Git, so the whole chain works with GitLab, Bitbucket, or no remote. No skill asks the delivery mode; delivery skills infer it ([decision 0044](docs/decisions/0044-fast-delivery.md)). Thinking skills may read Git when it exists.
 
