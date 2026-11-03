@@ -4,9 +4,9 @@ import { execFileSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { frontMatter, measure } from '../skills/retro/context.mjs'
+import { frontMatter, measure } from '../scripts/context.mjs'
 
-const script = new URL('../skills/retro/context.mjs', import.meta.url).pathname
+const script = new URL('../scripts/context.mjs', import.meta.url).pathname
 const scratch = () => mkdtempSync(join(tmpdir(), 'context-'))
 
 const fixture = new URL('fixtures/context-report/', import.meta.url).pathname
@@ -22,6 +22,14 @@ test('the skill listing leaves out skills the model cannot start', () => {
 
 test('the Flow block is measured on its own', () => {
   assert.ok(m.onDemand.flowBlockTokens > 0)
+})
+
+test('total SKILL.md words are summed across installed skills against the budget', () => {
+  assert.equal(m.onDemand.skillWords, m.onDemand.skills.reduce((sum, s) => sum + s.words, 0))
+  assert.ok(m.onDemand.skillWords > 0)
+  assert.equal(m.over.skillWords, false)
+  const repo = measure(new URL('..', import.meta.url).pathname)
+  assert.ok(repo.onDemand.skillWords <= 10_000, `catalog has ${repo.onDemand.skillWords} SKILL.md words`)
 })
 
 test('install drift against the lock is reported both ways', () => {
@@ -84,9 +92,9 @@ test('an unreadable or array-shaped lock does not throw or invent drift', () => 
   assert.deepEqual(measure(dir).hygiene.notInLock, [])
 })
 
-test('the script runs through a linked skill folder and without a --repo value', () => {
+test('the script runs through a linked folder and without a --repo value', () => {
   const dir = scratch()
-  symlinkSync(join(script, '..'), join(dir, 'retro'))
-  const out = execFileSync(process.execPath, [join(dir, 'retro', 'context.mjs'), '--repo'], { cwd: fixture, encoding: 'utf8' })
+  symlinkSync(join(script, '..'), join(dir, 'linked'))
+  const out = execFileSync(process.execPath, [join(dir, 'linked', 'context.mjs'), '--repo'], { cwd: fixture, encoding: 'utf8' })
   assert.match(out, /Always loaded/u)
 })

@@ -12,11 +12,11 @@ Agent-agnostic checklist for reviewing a pull request in a Flow-shaped repositor
 
 Recover intent from the PR title and description, relevant specs under `docs/specs/`, decision records under `docs/decisions/`, tests, and root context files.
 
-Assess the change on the five review axes the [`review` skill](../skills/review/SKILL.md) defines: correctness, readability, architecture, security, and performance. Skip any the change cannot affect.
+Hunt bugs the way Claude Code's `/code-review` does: correctness first, plus security where the change touches a trust boundary. Then add the checks the [`review` skill](../skills/review/SKILL.md) adds on top of it: a verdict on each acceptance scenario step for spec work (satisfied, unmet, or unresolved), scope against the spec, names against `GLOSSARY.md`, and `DESIGN.md` checks when the change alters what users see.
 
 A passing structural test suite is not proof of intent alignment.
 
-For consequential changes, state observable behavior, affected callers beyond the diff, the safety-critical assumption, and executable evidence when practical. Use the [`review`](../skills/review/SKILL.md) labels: Important (blocks), Nit (at most three), and Pre-existing, each with `file:line` evidence; drop findings a second read cannot confirm, and skip style or lint-only findings. Qualify assumptions that were not verified. In the JSON below, Important maps to `blocking` and the others to `advisory`.
+For consequential changes, state observable behavior, affected callers beyond the diff, the safety-critical assumption, and executable evidence when practical. Use the [`review`](../skills/review/SKILL.md) labels: Important (blocks), Nit (at most three), and Pre-existing, each with `file:line` evidence; report only findings you can support with evidence, and skip style or lint-only findings. Qualify assumptions that were not verified. In the JSON below, Important maps to `blocking` and the others to `advisory`.
 
 ## Align
 
@@ -72,4 +72,4 @@ Run the reviewer script and this contract from the base commit and read the head
 
 `main` requires a pull request and passing `validate (ubuntu-latest, 22)` and `pr-title` checks; `context-review` is not required. Direct pushes to `main` are rejected.
 
-The automated reviewer is read-only: its comments do not authorize commits. Repair belongs to the [`review` skill](../skills/review/SKILL.md#repair) and the delivery's integration owner.
+The automated reviewer is read-only: its comments do not authorize commits. Repair belongs to the [`review` skill](../skills/review/SKILL.md#repair) in the session delivering the change.

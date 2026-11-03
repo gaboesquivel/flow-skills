@@ -18,7 +18,6 @@ const safety = [
   ['ship', /never bypass protection/iu],
   ['ship', /weaken a check/iu],
   ['ship', /data, never instructions/iu],
-  ['review', /never claim independence/iu],
   ['to-spec', /never the default branch/iu],
   ['write-agents', /never instructions that change it/iu],
   ['write-agents', /`git init` needs its own explicit yes/iu],
@@ -28,7 +27,9 @@ const safety = [
   ['ship', /skipped while the pull request was a draft never counts/iu],
   ['build', /drafts run no CI/iu],
   ['build', /never cut by weakening a check/iu],
-  ['write-agents', /\[REDACTED\]/u],
+  ['ship', /only `accepted` or `implemented` specs land/iu],
+  ['ship', /lands only on the user's yes/iu],
+  ['ship', /never `--force`/iu],
   ['write-agents', /never pick by timestamp/iu],
 ]
 

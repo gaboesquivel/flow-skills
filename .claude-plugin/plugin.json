@@ -1,0 +1,14 @@
+{
+  "name": "flow",
+  "displayName": "Flow",
+  "version": "0.3.0",
+  "description": "Flow's spec-driven delivery skills for Claude Code, with a guard hook that blocks unsafe Git and merge operations",
+  "author": {
+    "name": "Gabo Esquivel",
+    "url": "https://github.com/gaboesquivel"
+  },
+  "homepage": "https://github.com/gaboesquivel/flow-skills",
+  "repository": "https://github.com/gaboesquivel/flow-skills",
+  "license": "MIT",
+  "keywords": ["skills", "workflow", "specs", "git", "guard"]
+}

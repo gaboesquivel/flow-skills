@@ -52,7 +52,7 @@ Spec 048 changed this repository's CI workflows. When it landed, GitHub's "Flow 
 - Approvals, size guard, and human tier: [`build`](../../skills/build/SKILL.md#size-guard); [decision 0048](../decisions/0048-delivery-phrases-are-approvals.md); [decision 0058](../decisions/0058-review-passes-and-risk-tiers.md).
 - Untrusted input and the security axis: [`review`](../../skills/review/SKILL.md) (Inspect).
 - Merge gate: [`ship`](../../skills/ship/SKILL.md) and [`required-checks.mjs`](../../skills/ship/scripts/required-checks.mjs); [decision 0057](../decisions/0057-draft-workspace-ready-checks.md).
-- Steps reserved for people: [`write-agents` Tools](../../skills/write-agents/SKILL.md#tools); worker briefs in [Workers](../../skills/write-agents/SKILL.md#workers).
+- Steps reserved for people: [`write-agents` Tools](../../skills/write-agents/SKILL.md#tools); parallel writers in [Sessions](../../skills/write-agents/SKILL.md#sessions).
 
 ## Limitations and trade-offs
 

@@ -7,7 +7,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0001-curated-distribution.md](0001-curated-distribution.md) | Superseded (maintenance/install details) | Initial curated distribution shape |
 | [0002-local-skill-ownership.md](0002-local-skill-ownership.md) | Accepted (install path superseded by 0004) | Local source and composition policy |
 | [0003-skill-naming.md](0003-skill-naming.md) | Superseded by 0004 | Twenty-five-skill catalog (historical) |
-| [0004-portable-skill-catalog.md](0004-portable-skill-catalog.md) | Accepted (parts superseded by 0006, 0013, and 0019) | Portable catalog and Agent Skills install |
+| [0004-portable-skill-catalog.md](0004-portable-skill-catalog.md) | Accepted (parts superseded by 0006, 0013, and 0019; amended by 0062) | Portable catalog and Agent Skills install |
 | [0005-misc-tldr-skill.md](0005-misc-tldr-skill.md) | Accepted | Misc group and `tldr` visual recap skill |
 | [0006-flow-lite-and-flat-docs.md](0006-flow-lite-and-flat-docs.md) | Accepted (invocation split superseded by 0019) | Flow Lite `flow` skill and flat specs/decisions docs |
 | [0007-flow-product-identity.md](0007-flow-product-identity.md) | Accepted (amended by 0049) | Official Flow identity in PRODUCT.md |
@@ -20,7 +20,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0014-handoff-skill.md](0014-handoff-skill.md) | Accepted | Explicit `handoff` skill for a fresh agent |
 | [0015-tasks-and-domain-modeling.md](0015-tasks-and-domain-modeling.md) | Accepted | `to-tasks` rename; restore `domain-modeling` for glossary practice |
 | [0016-start-in-place.md](0016-start-in-place.md) | Accepted | `start` bootstraps at a root holding only agent setup and infers the template |
-| [0017-claude-code-skill-coexistence.md](0017-claude-code-skill-coexistence.md) | Accepted (`simplify` retired by 0019) | Coexist with Claude Code built-ins; keep `simplify` name and document overlaps |
+| [0017-claude-code-skill-coexistence.md](0017-claude-code-skill-coexistence.md) | Accepted (`simplify` retired by 0019; superseded in part by 0062) | Coexist with Claude Code built-ins; keep `simplify` name and document overlaps |
 | [0018-interview-extracts-intent.md](0018-interview-extracts-intent.md) | Accepted | `interview` extracts the user's intent (adapted from `interview-me`), not customer discovery |
 | [0019-voice-first-invocation.md](0019-voice-first-invocation.md) | Accepted (amended by 0028, 0048) | Talking is the interface: model-invocable skills, spoken leading words, host coexistence |
 | [0020-flow-mode.md](0020-flow-mode.md) | Accepted (amended by 0030) | Flow mode: project instruction block, `to-tasks` hand-off, `ship` task-set orchestration, local and pull-request delivery modes |
@@ -62,9 +62,10 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0056-contract-first-tests.md](0056-contract-first-tests.md) | Accepted | API routes and MCP tools are test-first; no UI tests by default; `ARCHITECTURE.md` may set its own policy |
 | [0057-draft-workspace-ready-checks.md](0057-draft-workspace-ready-checks.md) | Accepted | One draft pull request per spec; drafts run no CI or previews; ready runs checks; `ship` counts only checks that ran; no git hooks |
 | [0061-eve-default-agent-runtime.md](0061-eve-default-agent-runtime.md) | Accepted | Eve is the default agent runtime in flow-next and flow-mono; AI SDK for lightweight HTTP; Flow Skills stay host-side |
-| [0058-review-passes-and-risk-tiers.md](0058-review-passes-and-risk-tiers.md) | Accepted | Fresh-context review on every build; risk tiers set Quick, Standard, or Deep effort; verify pass, Important/Nit/Pre-existing labels, every finding answered, three-round cap; human-tier paths ship on the user's yes |
+| [0058-review-passes-and-risk-tiers.md](0058-review-passes-and-risk-tiers.md) | Accepted (amended by 0062) | Fresh-context review on every build; risk tiers set Quick, Standard, or Deep effort; verify pass, Important/Nit/Pre-existing labels, every finding answered, three-round cap; human-tier paths ship on the user's yes |
+| [0062-claude-code-first.md](0062-claude-code-first.md) | Accepted | Claude Code first, portable where free; delegate to built-ins; host sizes fan-out; must-hold rules are hooks; ship as a plugin |
 | [0059-github-actions-over-vercel-ci.md](0059-github-actions-over-vercel-ci.md) | Accepted | Stay on GitHub Actions standard runners; Vercel CI and paid third-party runners not adopted; pricing notes and revisit triggers |
-| [0060-slice-by-area.md](0060-slice-by-area.md) | Accepted | `build` splits work into slices by area at intake; every slice of a multi-area change goes to a worker |
+| [0060-slice-by-area.md](0060-slice-by-area.md) | Accepted (superseded in part by 0062) | `build` splits work into slices by area at intake; every slice of a multi-area change goes to a worker |
 
 ## Rules
 

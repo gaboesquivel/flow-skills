@@ -1,25 +1,24 @@
 import assert from 'node:assert/strict'
-import { existsSync, readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
-import { PHRASES } from '../skills/flow/lib/flow-block.mjs'
+import { collectLeadingPhraseErrors, skillDescriptions } from '../scripts/check-catalog-phrases.mjs'
+import { LEADING_PHRASES } from '../skills/flow/lib/flow-block.mjs'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 
-function description(skill) {
-  const text = readFileSync(join(root, 'skills', skill, 'SKILL.md'), 'utf8')
-  const match = /^description:\s*(.+)$/mu.exec(text)
-  assert.ok(match, `${skill} has no description`)
-  return match[1].toLowerCase()
-}
+test('every leading phrase the Flow block names is in some skill description', () => {
+  assert.ok(LEADING_PHRASES.length > 0)
+  assert.deepEqual(collectLeadingPhraseErrors(root), [])
+})
 
-test('every PHRASES entry names a skill whose description carries its phrase', () => {
-  assert.ok(PHRASES.length > 0)
-  for (const [say, skill] of PHRASES) {
-    assert.ok(existsSync(join(root, 'skills', skill, 'SKILL.md')), `skills/${skill}/SKILL.md missing`)
-    const phrase = /"([^"]+)"/u.exec(say)?.[1]
-    assert.ok(phrase, `no quoted phrase in ${say}`)
-    assert.ok(description(skill).includes(phrase.toLowerCase()), `"${phrase}" not in ${skill} description`)
+test('a phrase no description carries is reported', () => {
+  assert.deepEqual(collectLeadingPhraseErrors(root, ['frobnicate it']), ['Flow block phrase "frobnicate it" is in no skill description'])
+})
+
+test('merged skills still answer the phrases of the skills they absorbed', () => {
+  const all = Object.values(skillDescriptions(root)).join('\n')
+  for (const phrase of ['interview me', 'grill this', 'are we building the right thing', 'measure our progress', 'push it']) {
+    assert.ok(all.includes(`"${phrase}"`), `"${phrase}" is in no skill description`)
   }
 })

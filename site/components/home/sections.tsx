@@ -104,7 +104,7 @@ const STAGES: Stage[] = [
     kicker: "Execution",
     title: "Build",
     body: "Implement the smallest useful vertical slice with thoughtful design, tests, and measurement built in.",
-    skills: ["build", "review", "debug"],
+    skills: ["build", "review"],
     dot: "#b1a0f8",
     example: {
       kicker: "First useful slice",
@@ -117,7 +117,7 @@ const STAGES: Stage[] = [
     kicker: "Delivery",
     title: "Ship",
     body: "Get the product into real use. Verify deployment and the experience—not merely that a build passed.",
-    skills: ["ship", "push"],
+    skills: ["ship"],
     dot: "#c6a8f6",
     example: {
       kicker: "Product in use",
@@ -130,7 +130,7 @@ const STAGES: Stage[] = [
     kicker: "Learning",
     title: "Measure",
     body: "Evaluate results against intent. Learn whether to improve, change direction, expand or stop.",
-    skills: ["measure", "align", "retro"],
+    skills: ["product"],
     dot: "#f0a6cf",
     example: {
       kicker: "Evidence & next decision",

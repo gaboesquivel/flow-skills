@@ -24,7 +24,7 @@ The [`flow`](skills/flow/SKILL.md) skill: keep the current project's `PRODUCT.md
 
 ## Product alignment
 
-The [`align`](skills/align/SKILL.md) skill: a read-only check of the whole product, as built, against its stated vision, users' problems, success metrics, and roadmap. Distinct from [context alignment](#context-alignment) (`flow`: docs follow the product), session alignment (`tldr`), and alignment review (`review`: a change against its spec). [Decision 0041](docs/decisions/0041-align-skill.md).
+The [`product`](skills/product/SKILL.md) skill: a read-only check of the whole product, as built, against its stated vision, users' problems, success metrics, and roadmap, and of each metric against the evidence. Distinct from [context alignment](#context-alignment) (`flow`: docs follow the product) and alignment review (`review`: a change against its spec). Earlier records split it into `align` and `measure`. Decisions [0041](docs/decisions/0041-align-skill.md), [0046](docs/decisions/0046-measurement-assistance.md), and [0062](docs/decisions/0062-claude-code-first.md).
 
 <a id="process-depth"></a>
 
@@ -62,7 +62,7 @@ The optional `build-it` label: added to an issue by an account with `write` perm
 
 ## Flow block
 
-The removable section between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->` that opts a project into Flow mode. It holds only a `Delivery:` line (an override of the inferred [delivery mode](#delivery-mode) when set), the phrase table, and a pointer to `flow`, and lives in the instruction file Git tracks: `AGENTS.md` when tracked, otherwise `CLAUDE.md`, which then imports `@AGENTS.md`. Adopter text outside the block and that import is never changed. [`flow`](skills/flow/SKILL.md#flow-block) owns the rules; decisions [0020](docs/decisions/0020-flow-mode.md) and [0036](docs/decisions/0036-one-explore-depth.md).
+The removable section between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->` that opts a project into Flow mode. It holds only a `Delivery:` line (an override of the inferred [delivery mode](#delivery-mode) when set) and a pointer to `flow`, and lives in the instruction file Git tracks: `AGENTS.md` when tracked, otherwise `CLAUDE.md`, which then imports `@AGENTS.md`. Adopter text outside the block and that import is never changed. [`flow`](skills/flow/SKILL.md#flow-block) owns the rules; decisions [0020](docs/decisions/0020-flow-mode.md) and [0036](docs/decisions/0036-one-explore-depth.md).
 
 ## Unspecced work
 
@@ -74,11 +74,11 @@ A task's `Area:` line: every package or directory it changes, comma-separated wh
 
 ## Frontier
 
-The tasks of a spec's task set whose blockers have all integrated. `build` runs them as workers per its [Slices](skills/build/SKILL.md#slices) ([decision 0060](docs/decisions/0060-slice-by-area.md)), each in its own worktree or on disjoint files in the shared checkout. There are no waves. Replaces the wave of [decision 0025](docs/decisions/0025-wave-checkpoints.md); [decision 0029](docs/decisions/0029-spec-issues.md); amended by [decision 0042](docs/decisions/0042-outcome-build-and-ship.md) and [spec 028](docs/specs/028-outcome-build-and-ship.md).
+The tasks of a spec's task set whose blockers have all integrated. `build` slices them by disjoint area per its [Slices](skills/build/SKILL.md#slices), and the host decides how to fan them out under its concurrency cap (decisions [0060](docs/decisions/0060-slice-by-area.md) and [0062](docs/decisions/0062-claude-code-first.md)). There are no waves. Replaces the wave of [decision 0025](docs/decisions/0025-wave-checkpoints.md); [decision 0029](docs/decisions/0029-spec-issues.md); amended by [decision 0042](docs/decisions/0042-outcome-build-and-ship.md) and [spec 028](docs/specs/028-outcome-build-and-ship.md).
 
 ## Work in flight
 
-Work started but not yet on the default branch: worktrees, task branches, and unfinished tasks. Flow loses none of it. Every worktree has its own branch, finished work reaches the work branch, unfinished tasks are reported rather than dropped, a branch or worktree is removed only when its commits are on the default branch or the user dropped the work, and every report lists what is left. [`build`](skills/build/SKILL.md#work-in-flight) owns the rule; [decision 0044](docs/decisions/0044-fast-delivery.md).
+Work started but not yet on the default branch: kept worktrees, branches with commits not on the default branch, and open pull requests. With the plugin, the SessionStart report ([`hooks/wip.mjs`](hooks/wip.mjs)) lists it when a session opens. Claude Code manages the worktrees; `build` reports unfinished work with its branch and never drops it, and the guard hook blocks removing or resetting another session's worktree. Decisions [0044](docs/decisions/0044-fast-delivery.md) and [0062](docs/decisions/0062-claude-code-first.md).
 
 ## Delivery appetite
 
@@ -90,15 +90,15 @@ The response to new scope that changes an accepted boundary, whether the user or
 
 ## Integration owner
 
-The one session that integrates a delivery (a spec, or one unspecced change): it merges contributed branches and opens or updates the pull request. Recorded once, as a session role, in the pull request description or the spec's `Execution:` line. Missing or conflicting ownership is unknown, never assumed. [`write-agents`](skills/write-agents/SKILL.md#sessions) owns the rule; [decision 0052](docs/decisions/0052-git-first-coordination.md).
+Retired. Earlier records name one session per delivery that merged contributed branches and owned the pull request, recorded in its description or the spec's `Execution:` line ([decision 0052](docs/decisions/0052-git-first-coordination.md)). Claude Code now owns sessions and worktrees, and Flow records no session role ([decision 0062](docs/decisions/0062-claude-code-first.md)).
 
 ## Delivery branch
 
-The one remote branch for a delivery: `spec/<number>-<slug>` for a spec, a short descriptive name otherwise. Its one pull request opens as a draft and is the shared workspace; drafts run no checks or previews, and the pull request is marked ready once verified. Workers' branches stay local. [`build`](skills/build/SKILL.md#pull-request) owns the rule; [decision 0057](docs/decisions/0057-draft-workspace-ready-checks.md).
+The one remote branch for a delivery: `spec/<number>-<slug>` for a spec, a short descriptive name otherwise. Its one pull request opens as a draft and is the shared workspace; drafts run no checks or previews, and the pull request is marked ready once verified. [`build`](skills/build/SKILL.md#pull-request) owns the rule; [decision 0057](docs/decisions/0057-draft-workspace-ready-checks.md).
 
 ## Vertical slice
 
-One verifiable outcome cut through every layer it needs: a `to-tasks` task, or a group of small tasks that must land together. The unit of parallel work: a worker or native session takes a whole slice and keeps its small steps inside it, never one technical layer. [`to-tasks`](skills/to-tasks/SKILL.md) drafts them; [`write-agents`](skills/write-agents/SKILL.md#workers) assigns them, and [`build`'s Slices](skills/build/SKILL.md#slices) sends each to a worker; [decision 0054](docs/decisions/0054-native-capability-first-sessions.md).
+One verifiable outcome cut through every layer it needs: a `to-tasks` task, or a group of small tasks that must land together. The unit of parallel work: a subagent or session takes a whole slice and keeps its small steps inside it, never one technical layer. [`to-tasks`](skills/to-tasks/SKILL.md) drafts them, [`build`'s Slices](skills/build/SKILL.md#slices) cuts them by area, and the host sizes the fan-out ([decision 0062](docs/decisions/0062-claude-code-first.md)).
 
 ## Acceptance scenario
 
@@ -114,7 +114,7 @@ The status a spec review gives each step of the spec's acceptance scenario: **sa
 
 ## Liveness
 
-The light check that ends "push it", "build it", and "ship it": the remote ref contains the commit and, when the host reports deployments, the deployment for that commit is ready and its URL answers 2xx. It reports `live`, `pushed, no deployment reported`, `reachable, commit unconfirmed`, `not live`, or `unverified`, and never gates. It runs no tests, scenario, or browser; behavior is [`review`](skills/review/SKILL.md)'s. [`ship`](skills/ship/SKILL.md#liveness) owns the rule; decisions [0040](docs/decisions/0040-ship-verifies-liveness.md) and [0048](docs/decisions/0048-delivery-phrases-are-approvals.md).
+The light check that ends "push it", "build it", and "ship it": the remote ref contains the commit and, when the host reports deployments, the deployment for that commit is ready and its URL answers 2xx. It reports `live`, `pushed, no deployment reported`, `reachable, commit unconfirmed`, `not live`, or `unverified`, and never gates. It runs no tests, scenario, or browser; behavior is [`review`](skills/review/SKILL.md)'s. [`ship`](skills/ship/SKILL.md#report) reports it from its [`liveness.mjs`](skills/ship/scripts/liveness.mjs) script, which defines the five states; decisions [0040](docs/decisions/0040-ship-verifies-liveness.md) and [0048](docs/decisions/0048-delivery-phrases-are-approvals.md).
 
 ## Verification
 
@@ -126,7 +126,7 @@ A stub for a later bet worth triaging: the problem and the assumption it tests, 
 
 ## Human summary
 
-A visual presentation for a person. Prefer generative UI (GenUI) when the host actually provides it; otherwise Mermaid, tables, and a short statement. The [`tldr`](skills/tldr/SKILL.md) skill owns this, including session recaps and "show me". [`write-humans`](skills/write-humans/SKILL.md) drafts prose. There is no separate `human` skill; other skills, such as `align`, may lead their own reports with a visual, and delivery handoffs lead with `tldr`'s Handoff digest. [Decision 0008](docs/decisions/0008-leading-words-and-visual-summaries.md).
+A visual presentation for a person. Prefer generative UI (GenUI) when the host actually provides it; otherwise Mermaid, tables, and a short statement. Skills such as `product` may lead their own reports with one. Earlier records give summaries, session recaps, and a Handoff digest to a `tldr` skill; Claude Code's recaps and transcripts replaced it ([decision 0062](docs/decisions/0062-claude-code-first.md)). [Decision 0008](docs/decisions/0008-leading-words-and-visual-summaries.md).
 
 ## Leading word
 
@@ -154,7 +154,7 @@ A shared representation of hypotheses, risky assumptions, experiments, evidence,
 
 ## Progress board
 
-The read-only kanban of a project's specs by stage that the [`board`](skills/board/SKILL.md) skill derives from git. It shows where work stands, not hypotheses or evidence; distinct from a [validation board](#validation-board). [Decision 0027](docs/decisions/0027-progress-board-skill.md).
+The read-only kanban of a project's specs by stage, derived from git. In this repository it is a maintainer script, `pnpm board` ([`scripts/board.mjs`](scripts/board.mjs)); it was a skill until [decision 0062](docs/decisions/0062-claude-code-first.md). It shows where work stands, not hypotheses or evidence; distinct from a [validation board](#validation-board). [Decision 0027](docs/decisions/0027-progress-board-skill.md).
 
 ## Capability page
 

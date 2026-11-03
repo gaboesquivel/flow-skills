@@ -95,17 +95,17 @@
     {
       "id": "E05",
       "skills": [
-        "grill"
+        "explore"
       ],
       "behavior": "Challenges consequential uncertainty, not settled choices",
       "taskFile": "tests/evals/tasks/E05-task.md",
       "rubricFile": "tests/evals/rubrics/E05-rubric.md",
       "skillReferences": [
-        "skills/grill/SKILL.md"
+        "skills/explore/SKILL.md"
       ],
       "fixtureReferences": [],
       "evidence": {
-        "structural_contract": "passed",
+        "structural_contract": "not_executed",
         "executable_fixture": "not_executed",
         "live_skill_execution": "not_executed",
         "independently_reviewed": "not_executed",
@@ -160,6 +160,11 @@
         "host": "Cursor",
         "date": "2026-10-27",
         "observation": "tests/evals/records/2026-10-27-cursor-live.md"
+      },
+      "retired": {
+        "by": "docs/decisions/0062-claude-code-first.md",
+        "reason": "Spec 059 removed the retro skill; the prevention ladder stays in write-agents and context reporting moved to scripts/context.mjs.",
+        "date": "2026-11-03"
       }
     },
     {
@@ -342,7 +347,12 @@
         "independently_reviewed": "not_executed",
         "verified_second_host": "not_executed"
       },
-      "claimsLiveRun": false
+      "claimsLiveRun": false,
+      "retired": {
+        "by": "docs/decisions/0062-claude-code-first.md",
+        "reason": "Spec 059 removed the tldr skill; the host renders visual summaries and recaps.",
+        "date": "2026-11-03"
+      }
     },
     {
       "id": "E16",
@@ -918,16 +928,14 @@
       "id": "E40",
       "skills": [
         "build",
-        "ship",
-        "write-agents"
+        "ship"
       ],
-      "behavior": "Parallel-first task set: workers start from the delivery head and commit on their branches (or edit disjoint files in the shared checkout), every finished branch is merged and its containment confirmed before the pull request, an unfinished task is reported and kept, and the spec is not marked implemented partially",
+      "behavior": "Task set by area: the host sizes the fan-out, a dependent task starts from a head with its blockers, an unfinished task is reported with its branch and kept, the spec is not marked implemented partially, and ship refuses a partial spec",
       "taskFile": "tests/evals/tasks/E40-task.md",
       "rubricFile": "tests/evals/rubrics/E40-rubric.md",
       "skillReferences": [
         "skills/build/SKILL.md",
-        "skills/ship/SKILL.md",
-        "skills/write-agents/SKILL.md"
+        "skills/ship/SKILL.md"
       ],
       "fixtureReferences": [],
       "evidence": {
@@ -960,7 +968,12 @@
         "independently_reviewed": "not_executed",
         "verified_second_host": "not_executed"
       },
-      "claimsLiveRun": false
+      "claimsLiveRun": false,
+      "retired": {
+        "by": "docs/decisions/0062-claude-code-first.md",
+        "reason": "Spec 059 hands native sessions, worktrees, and integration ownership to the host; build and write-agents no longer describe them.",
+        "date": "2026-11-03"
+      }
     },
     {
       "id": "E42",

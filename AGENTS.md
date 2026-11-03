@@ -15,20 +15,22 @@ Load only what the task needs. `docs/archive/` is historical evidence, never cur
 
 ## Working practices
 
-Develop Flow through its own practices using conversation and available tools. This repository maintains its own skill source under `skills/`; dogfood those skills when useful. `.claude/skills` links to `skills/`, so Claude Code sessions here load the working-tree source. Notice recurring friction, preserve useful proposals and rationale, and update owning documents when adopted. Edit skill source directly; preserve applicable source notices. When writing or editing agent-consumed context (`skills/**`, `AGENTS.md`, adapter metadata), apply [`write-agents`](skills/write-agents/SKILL.md) so changes meet the same authoring bar the catalog ships. Work through its Tools rule: CLIs, MCP, and APIs first, and the maintainer only for the steps it reserves. Several sessions often work here at once: follow [`write-agents` Sessions](skills/write-agents/SKILL.md#sessions); both `.worktrees/` and Claude Code's `.claude/worktrees/` are ignored here. PR descriptions also name the active spec and exact review head. Run checks only on request, before opening a PR, or when fixing a PR after review. CI runs them on every PR.
+Develop Flow through its own practices using conversation and available tools. This repository maintains its own skill source under `skills/`; dogfood those skills when useful. `.claude/skills` links to `skills/`, so Claude Code sessions here load the working-tree source. Notice recurring friction, preserve useful proposals and rationale, and update owning documents when adopted. Edit skill source directly; preserve applicable source notices. When writing or editing agent-consumed context (`skills/**`, `AGENTS.md`, adapter metadata), apply [`write-agents`](skills/write-agents/SKILL.md) so changes meet the same authoring bar the catalog ships. Work through its Tools rule: CLIs, MCP, and APIs first, and the maintainer only for the steps it reserves. Several sessions often work here at once. Claude Code owns worktrees and sessions: start an isolated one with `claude -w` (worktrees land under the ignored `.claude/worktrees/`), and follow [`write-agents` Sessions](skills/write-agents/SKILL.md#sessions) for shared runtime state and sibling work. The plugin's [guard hook](hooks/guard.mjs) blocks the destructive cases (force-pushes, pushes to `main`, `--no-verify`, admin merges, and removing or resetting another session's worktree), and its [SessionStart report](hooks/wip.mjs) lists work in flight when a session opens. PR descriptions also name the active spec and exact review head. Run checks only on request, before opening a PR, or when fixing a PR after review. CI runs them on every PR.
 
 Use [Conventional Commits](https://www.conventionalcommits.org) for commit messages and PR titles: `type(scope): summary`, with the skill or area as scope (for example `fix(start): …`, `docs(decisions): …`). Add a body when the reason is not obvious from the summary.
 
 ## Distribution maintenance
 
-Flow ships a portable `skills/` tree for the [Agent Skills](https://agentskills.io) ecosystem. Consumers install with `npx skills add gaboesquivel/flow-skills` and reach skills by talking to their agent; no skill must be named explicitly. This repository does not ship a bootstrap installer or require changes to adopter instruction files.
+Flow ships as a Claude Code plugin ([decision 0062](docs/decisions/0062-claude-code-first.md)): [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json), the `skills/` tree, the hooks in [`hooks/hooks.json`](hooks/hooks.json) (PreToolUse guard, SessionStart work-in-flight report), and [`agents/flow-reviewer.md`](agents/flow-reviewer.md). The same `skills/` tree installs on any [Agent Skills](https://agentskills.io) host with `npx skills add gaboesquivel/flow-skills`, without the hooks. Consumers reach skills by talking to their agent; no skill must be named explicitly. This repository does not ship a bootstrap installer or require changes to adopter instruction files. Keep `plugin.json` and `package.json` versions in step; `pnpm validate` checks the plugin manifest, hooks, and agent frontmatter.
 
 | Task | Command |
 | --- | --- |
 | Policy checks | `pnpm validate` |
 | Tests | `pnpm test` |
 | Delivery metrics (time to close PR, CI failures and wait, skill words) | `pnpm metrics [--repo owner/name] [--limit N]` |
-| Context cost (what agents load, skill install drift) | `pnpm context [--repo path] [--json]` |
+| Context cost (what agents load, total SKILL.md words, skill install drift) | `pnpm context [--repo path] [--json]` ([`scripts/context.mjs`](scripts/context.mjs)) |
+| Progress board (specs by stage, from Git) | `pnpm board` ([`scripts/board.mjs`](scripts/board.mjs)) |
+| Guard hook tests | `node --test tests/guard.test.mjs` |
 | Website (`site/`) | `pnpm --dir site install`, then `pnpm --dir site dev` or `pnpm --dir site qa` |
 
 The website in `site/` renders skills and docs from this repository at build time: edit the source Markdown, never copy it into `site/` ([spec 032](docs/specs/032-prism-website.md)).

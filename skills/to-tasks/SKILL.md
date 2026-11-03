@@ -8,50 +8,24 @@ disable-model-invocation: false
 
 Break a plan, spec, or conversation into **tasks**: independently verifiable vertical slices, each naming the tasks that **block** it.
 
-Prefer the fewest tasks that each verify on their own. Keep a straightforward change as one task; split only when slices can proceed in parallel, need separate review, or would not fit one session. A task per layer, file, or step is too fine: every task costs a record, an integration, and a check.
+Prefer the fewest tasks that each verify on their own. Keep a straightforward change as one task; split only when slices can proceed in parallel, need separate review, or would not fit one session. A task per layer, file, or step is too fine.
 
 ## Process
 
-### 1. Gather context
+1. **Context.** Work from the conversation; read a named spec, issue, or URL in full, comments included. Read the areas the work touches when not yet explored. Use the project's terms (`domain-modeling` Shared language), respect decision records in the area, and look for prefactors: make the change easy, then make the easy change.
+2. **Slices.** Each slice delivers narrow, verifiable behavior across the layers it needs, is demoable on its own, and fits one fresh context. Prefactoring comes first.
+3. **Area.** Every package or directory a task changes, comma-separated, coarse, never file paths, including routes outside its main package, so disjoint areas mean disjoint changes. `build` slices by area.
+4. **Blockers.** An edge needs a real data or file dependency, never topic order. Prefer a wide frontier; a task with no blockers can start immediately and is **ready** once its blockers are complete.
 
-Work from the conversation. If the user passes a spec path, issue, or URL, read it in full, comments included.
+**Wide refactors** (one mechanical change, such as renaming a column, whose affected scope spans the codebase so no vertical slice lands green) use **expand–contract**. Expand: add the new form beside the old. Migrate call sites in batches by package or directory, each a task blocked by the expand, keeping CI green. Contract: remove the old form in a task blocked by every batch. When batches cannot stay green alone, they share an integration branch and a final integrate-and-verify task.
 
-### 2. Explore the codebase (optional)
+## Record and report
 
-When you have not already explored the codebase, read the areas the work touches to see the current state (fan-out rule: `write-agents` Workers). Task titles and descriptions use the project's terms (`domain-modeling` Shared language) and respect decision records in the area you touch.
+"Break it down" authorizes recording: resolve only consequential uncertainty, then write without showing the tasks for approval. Tasks are the spec's checklist: write its Tasks section, one line per task (`- [ ] NN: Title`), detail each with the task template below, and commit on the spec's branch. Without a spec, write one with `to-spec` first, or return the tasks as a local draft and say so.
 
-Look for prefactors that make the implementation easier: make the change easy, then make the easy change.
+**Task issues** open only when the user asks: one per task from the issue template, with blockers linked once every number exists (native links, else `Blocked by #a, #b`), and `(#N)` appended to each checklist line. On a public repository, say the issues are public. On a retry, open only the missing ones.
 
-### 3. Draft vertical slices
-
-Break the work into vertical-slice tasks.
-
-<vertical-slice-rules>
-
-- Each slice delivers narrow, verifiable behavior across the layers the product needs. Include schema, API, UI, or tests only where the task requires them.
-- A completed slice is demoable or verifiable on its own.
-- Each slice fits a single fresh context window.
-- Do prefactoring first when it is part of the plan.
-
-</vertical-slice-rules>
-
-Give each task an **area**: every package or directory it changes, comma-separated (for example `lib/feedback/connect, app/opportunities`), coarse and never file paths. A vertical slice names every directory it touches, including pages or routes outside its main package, so disjoint areas mean disjoint changes. Overlapping areas need no blocking edge; `build` uses areas to keep overlapping edits from landing as if independent.
-
-Give each task its **blocking edges**: other tasks that must finish before it can start. An edge needs a real data or file dependency: one task uses what the other builds, or both must change the same file in order. Topic order is not a reason; prefer a wide frontier, where tasks that share only the spec have no blockers. A task with no blockers can start immediately.
-
-**Wide refactors are the exception to vertical slicing.** A **wide refactor** is one mechanical change (rename a column, retype a shared symbol) whose **affected scope** spans the codebase, so one edit breaks many call sites and no vertical slice can land green. Sequence it as **expand–contract**. Expand: add the new form beside the old so nothing breaks. Migrate call sites in batches sized by impact (per package or directory), each batch its own task blocked by the expand, keeping CI green because the old form still exists. Contract: remove the old form once no caller remains, in a task blocked by every migrate batch. When batches cannot stay green alone, they may share an integration branch and a final integrate-and-verify task; green is promised only there.
-
-### 4. Record and report
-
-Resolve only consequential scope or sequencing uncertainty first; "break it down" authorizes recording, so do not show the tasks for approval before writing them.
-
-Outside a Git repository, offer `git init` and stop on a no. Tasks are the spec's checklist: write its Tasks section, one line per task (`- [ ] NN: Title`), and detail each task below it with the task template. Commit on the spec's branch. Without a spec, write one with `to-spec` first, or return the tasks as a local draft and say so. Do not introduce a `.scratch/` task system or labels.
-
-**Task issues** open only when the user asks: one per task from the issue template (sub-issues of the issue the user names, if any), opened in parallel, with blockers linked once every number exists (native blocked-by links where supported, otherwise `Blocked by #a, #b` atop the body); append `(#N)` to each checklist line. On a public repository, say the issues are public. If publishing stops partway, report which issues exist; on a retry, match existing issues by title and open only the missing ones.
-
-A wave, if named at all, only describes scheduling; it is never a checkpoint or gate. Tasks are not pull requests, issues, or worktrees; `build` owns how tasks group into pull requests, and a worker or session gets none of its own. A task is **ready** when its blockers are complete.
-
-Report where the tasks live, each task with what it delivers and its area, and the ready set, then wait for "build it". Do not start implementation.
+Tasks are not pull requests, issues, or worktrees; `build` groups them. Report where the tasks live, each task with what it delivers and its area, and the ready set, then wait for "build it".
 
 <task-template>
 
@@ -87,4 +61,4 @@ The end-to-end behaviour this task makes work, from the user's perspective, not 
 
 </issue-template>
 
-Avoid specific file paths or code snippets in task text; they go stale quickly. Exception: a prototype snippet that encodes a decision more precisely than prose (state machine, reducer, schema, type shape). Inline it, note that it came from a prototype, and keep only the decision-rich parts.
+Keep file paths and code out of task text, except a prototype excerpt that encodes a decision more precisely than prose.

@@ -4,7 +4,7 @@ Status: implemented (2026-10-31)
 
 ## Problem Statement
 
-When a user says "hand off" or "start fresh", [`handoff`](../../skills/handoff/SKILL.md) always writes a document to the temporary directory, and the user then pastes or points a new session at it. Claude Code Desktop can move the current task into a session of its own, carrying the conversation and the remaining plan, and shows it as a session the user can open ([compatibility note](../agent-compatibility.md#native-sessions), [spec 052](052-native-session-integration.md)). On that host the document costs a write, a manual step, and a lossy summary the native move does not need. [Decision 0054](../decisions/0054-native-capability-first-sessions.md) already prefers native capabilities; `handoff` predates it.
+When a user says "hand off" or "start fresh", `handoff` (retired by [0062](../decisions/0062-claude-code-first.md)) always writes a document to the temporary directory, and the user then pastes or points a new session at it. Claude Code Desktop can move the current task into a session of its own, carrying the conversation and the remaining plan, and shows it as a session the user can open ([compatibility note](../agent-compatibility.md#native-sessions), [spec 052](052-native-session-integration.md)). On that host the document costs a write, a manual step, and a lossy summary the native move does not need. [Decision 0054](../decisions/0054-native-capability-first-sessions.md) already prefers native capabilities; `handoff` predates it.
 
 ## Solution
 

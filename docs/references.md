@@ -24,7 +24,7 @@ Primary workflow and engineering influence.
 - [git workflow and versioning](https://github.com/addyosmani/agent-skills/blob/main/skills/git-workflow-and-versioning/SKILL.md) — [Current research](research/2026-10-19-refinement-comparison.md).
 - [idea refine](https://github.com/addyosmani/agent-skills/blob/main/skills/idea-refine/SKILL.md) — [Current research](research/2026-10-19-refinement-comparison.md).
 - [refinement criteria](https://github.com/addyosmani/agent-skills/blob/main/skills/idea-refine/refinement-criteria.md) — [Current research](research/2026-10-19-refinement-comparison.md).
-- [interview me](https://github.com/addyosmani/agent-skills/blob/main/skills/interview-me/SKILL.md) — adapted as `interview`; [decision 0018](decisions/0018-interview-extracts-intent.md).
+- [interview me](https://github.com/addyosmani/agent-skills/blob/main/skills/interview-me/SKILL.md) — adapted as `interview`, since merged into `explore`; decisions [0018](decisions/0018-interview-extracts-intent.md) and [0062](decisions/0062-claude-code-first.md).
 - [spec driven development](https://github.com/addyosmani/agent-skills/blob/main/skills/spec-driven-development/SKILL.md) — [Current research](research/2026-10-19-refinement-comparison.md).
 
 ## Composition and refinement
@@ -41,7 +41,7 @@ Concise skills, questioning, composition, and implementation.
 - [to spec](https://github.com/mattpocock/skills/blob/main/skills/engineering/to-spec/SKILL.md) — [Historical research](archive/2026-10-18/docs/research/2026-10-18-focused-refinement.md).
 - [wayfinder](https://github.com/mattpocock/skills/blob/main/skills/engineering/wayfinder/SKILL.md) — [Historical research](archive/2026-10-18/docs/research/2026-10-18-exploration-and-explanation.md).
 - [grill me](https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md) — [Current research](research/2026-10-19-refinement-comparison.md).
-- [grilling](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md) — adapted locally as `grill`; [Current research](research/2026-10-19-refinement-comparison.md).
+- [grilling](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md) — adapted locally as `grill`, since merged into `explore` ([decision 0062](decisions/0062-claude-code-first.md)); [Current research](research/2026-10-19-refinement-comparison.md).
 
 ## Product discovery and strategy
 

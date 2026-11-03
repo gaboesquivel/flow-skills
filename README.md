@@ -1,10 +1,14 @@
 # Flow Skills
 
-**From intent to verified software.** Portable [agent skills](https://agentskills.io) for [Flow](PRODUCT.md), a lightweight, human-directed, agent-executed product engineering methodology. You talk to your agent, typed or dictated: "interview me", "spec it", "ship it". Each phrase reaches one skill. Nothing runs unless you ask, and you can use one skill, all of them, or none.
+**From intent to verified software.** [Agent skills](https://agentskills.io) for [Flow](PRODUCT.md), a lightweight, human-directed, agent-executed product engineering methodology. Flow is built for Claude Code and ships as a plugin; the skills are plain Markdown, so other agents can use them too. You talk to your agent, typed or dictated: "explore this", "spec it", "ship it". Each phrase reaches one skill. Nothing runs unless you ask, and you can use one skill, all of them, or none.
 
 [Flow identity and catalog scope](PRODUCT.md) · **[Skill catalog](docs/skills.md)** · [Methodology](docs/methodology.md) · [Documentation guide](docs/README.md)
 
 ## Install
+
+**Claude Code (recommended).** Install Flow as a plugin. You get the skills, plus a guard hook that blocks force-pushes, pushes to the default branch, `--no-verify`, and admin merges, a report of work in flight when a session starts, and the `flow-reviewer` agent behind "review it". [Agent compatibility](docs/agent-compatibility.md#claude-code) covers loading the plugin and the settings we recommend.
+
+**Any Agent Skills host.** Install the skills alone, without the hooks:
 
 ```bash
 npx skills add gaboesquivel/flow-skills
@@ -18,11 +22,11 @@ Flow keeps its work in Git: specs, decision records, and the product brief are f
 
 | You use | You need |
 | --- | --- |
-| Thinking skills: `grill`, `interview`, `council`, `align`, `measure`, `debug`, `tldr`, the writing skills, and the rest | Nothing. Any folder works, with or without Git. |
-| The delivery chain: `flow`'s setup, `start`, `explore`, `to-spec`, `to-tasks`, `build`, `review`, `ship`, `board` | A Git repository. Outside one, the skill offers `git init` and stops if you say no. |
+| Thinking skills: `council`, `product`, `domain-modeling`, and `write-agents` | Nothing. Any folder works, with or without Git. |
+| The delivery chain: `flow`'s setup, `start`, `explore`, `to-spec`, `to-tasks`, `build`, `review`, `ship` | A Git repository. Outside one, the skill offers `git init` and stops if you say no. |
 | GitHub mode | GitHub access as well: pull requests and CI live there. |
 
-The rules Flow follows in a project live in Git too. "Set up Flow here" writes one [Flow block](GLOSSARY.md#flow-block) into the instruction file Git tracks: `AGENTS.md`, or `CLAUDE.md` with an `@AGENTS.md` import when `AGENTS.md` is ignored. The block holds the phrase table and, when you set one, a `Delivery:` override, and every agent and teammate who clones the repository reads the same rules. Delete the block to opt out.
+The rules Flow follows in a project live in Git too. "Set up Flow here" writes one [Flow block](GLOSSARY.md#flow-block) into the instruction file Git tracks: `AGENTS.md`, or `CLAUDE.md` with an `@AGENTS.md` import when `AGENTS.md` is ignored. The block holds a pointer to `flow` and, when you set one, a `Delivery:` override, and every agent and teammate who clones the repository reads the same rules. Delete the block to opt out.
 
 ## Local or GitHub delivery
 
@@ -38,7 +42,7 @@ Local and GitHub are delivery options, not separate methodologies: the skills, p
 | "Ship it" | Builds if needed, merges into `main`, and pushes when a remote exists. | Builds if needed and merges the pull request. |
 | [Liveness](GLOSSARY.md#liveness) | Each phrase ends with a light check that its commit is on the remote and, for an app, deployed. | The same. |
 
-Each phrase is the approval; nothing asks again after it. `build` has every change reviewed by a second agent in a fresh context, at Quick, Standard, or Deep effort by risk; CI, Git hook, auth, billing, and release changes ship only on your yes. To override the inferred mode, add a `Delivery:` line to the Flow block, or say so for one run: "ship it local" or "ship it with GitHub". The full rule lives in [`build`](skills/build/SKILL.md#delivery-mode); the glossary defines [delivery mode](GLOSSARY.md#delivery-mode).
+Each phrase is the approval; nothing asks again after it. `build` has every change reviewed by a second agent in a fresh context, running Claude Code's `/code-review` at Quick, Standard, or Deep effort by risk, plus Flow's checks against the spec; CI, Git hook, auth, billing, and release changes ship only on your yes. To override the inferred mode, add a `Delivery:` line to the Flow block, or say so for one run: "ship it local" or "ship it with GitHub". The full rule lives in [`build`](skills/build/SKILL.md#delivery-mode); the glossary defines [delivery mode](GLOSSARY.md#delivery-mode).
 
 ## Work without a spec
 
@@ -58,7 +62,7 @@ flowchart LR
   accDescr: start leads into explore; shaping runs through to-spec and to-tasks, or straight to build; delivery runs build, then ship, with review when the change is large or you ask.
   start["start<br/>new project"] ==> explore
   subgraph shapeGroup [Shape]
-    explore["explore<br/>+ interview, grill"]
+    explore["explore<br/>'explore this'"]
     spec["to-spec<br/>'spec it'"]
     tasks["to-tasks<br/>'break it down'"]
   end
@@ -80,7 +84,7 @@ flowchart LR
 
 Thick arrow: an automatic hand-off, behind your yes. Dashed arrow: you say the next phrase.
 
-- **Skills suggest the next step and wait.** The only automatic hand-offs are `start` → `explore` and explore's `interview` questions and, for a new product, its `grill`, each behind your yes ([decision 0024](docs/decisions/0024-gated-hand-offs.md)). `explore` asks in proportion to the change: nothing for a fix, more for a new product.
+- **Skills suggest the next step and wait.** The only automatic hand-off is `start` → `explore`, behind your yes ([decision 0024](docs/decisions/0024-gated-hand-offs.md)). `explore` asks in proportion to the change: nothing for a fix, more for a new product. "Interview me" and "grill this" reach it too.
 - **No spec required.** "Build it" works on a plain request ([decision 0039](docs/decisions/0039-build-never-requires-a-spec.md)); see [work without a spec](#work-without-a-spec).
 - **`ship` lands in both modes.** It builds first unless the branch is already verified, merges, then checks the shipped commit is live (decisions [0044](docs/decisions/0044-fast-delivery.md) and [0048](docs/decisions/0048-delivery-phrases-are-approvals.md)).
 - **Context stays aligned.** "Update the docs" has `flow` align `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md`.
@@ -92,7 +96,7 @@ Thick arrow: an automatic hand-off, behind your yes. Dashed arrow: you say the n
 | Tracked bet | "explore this" → "spec it" → "break it down" → "build it" → "ship it" |
 | New project | "start a Next.js project" (hands off to `explore`) |
 
-Every other skill (`grill`, `debug`, `council`, `tldr`, …) can run at any time and never blocks delivery.
+Every other skill (`council`, `product`, `design`, …) can run at any time and never blocks delivery.
 
 ### Specs, tasks, and decisions
 
@@ -107,16 +111,15 @@ Details and links to every `SKILL.md`: **[docs/skills.md](docs/skills.md)**.
 | Group | Skills |
 | --- | --- |
 | Context alignment | `flow` |
-| Delivery | `explore`, `interview`, `grill`, `to-spec`, `to-tasks`, `build`, `review`, `ship`, `retro` |
+| Delivery | `explore`, `to-spec`, `to-tasks`, `build`, `review`, `ship` |
 | Advisory | `council` |
-| Design | `design` |
-| Prototype | `prototype` |
+| Design | `design` (prototypes too) |
 | Shared language | `domain-modeling` |
-| Quality | `debug` |
-| Product discovery | `jtbd`, `competitors`, `align`, `measure` |
-| Writing | `write-agents`, `write-humans` |
+| Product discovery | `product` |
+| Writing | `write-agents` |
 | Project start | `start` |
-| Misc | `tldr`, `handoff`, `board` |
+
+The plugin adds a guard hook ([`hooks/guard.mjs`](hooks/guard.mjs)), a SessionStart report ([`hooks/wip.mjs`](hooks/wip.mjs)), and the [`flow-reviewer`](agents/flow-reviewer.md) agent. Debugging, hand-offs, recaps, and retrospectives are Claude Code's own ([decision 0062](docs/decisions/0062-claude-code-first.md)).
 
 Default durable docs in adopter projects: `docs/specs/NNN-short-name.md`, `docs/decisions/NNN-short-name.md` (or existing conventions).
 
@@ -139,7 +142,7 @@ Flow combines product thinking, engineering discipline, and verified execution w
 
 - **Human-directed:** People set direction and make consequential decisions; agents do the work.
 - **Minimal:** Use only the skills, documentation, and verification the work requires.
-- **Portable:** Skills work independently across compatible agents, models, and interfaces.
+- **Claude Code first, portable where it's free:** Flow uses Claude Code's built-ins and enforces must-hold rules with hooks; the skills stay plain Markdown for other agents.
 - **Evidence-driven:** Tests and observed behavior matter more than confident claims.
 - **Locally owned:** Flow maintains its own implementations, with attribution for adapted work.
 

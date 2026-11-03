@@ -7,9 +7,9 @@ import { join } from 'node:path'
 import test, { describe } from 'node:test'
 import vm from 'node:vm'
 import { readDelivery as flowReadDelivery } from '../skills/flow/lib/flow-block.mjs'
-import { countTasks, deriveBoard, main, escapeHtml, fetchGithub, githubReader, githubSource, LIVE_SCRIPT, parseGithubRemote, parseTasks, readDelivery, parseStatus, readSnapshot, renderHtml, startServer } from '../skills/board/scripts/board.mjs'
+import { countTasks, deriveBoard, main, escapeHtml, fetchGithub, githubReader, githubSource, LIVE_SCRIPT, parseGithubRemote, parseTasks, readDelivery, parseStatus, readSnapshot, renderHtml, startServer } from '../scripts/board.mjs'
 
-const script = join(import.meta.dirname, '../skills/board/scripts/board.mjs')
+const script = join(import.meta.dirname, '../scripts/board.mjs')
 
 // Subprocesses run asynchronously so concurrent tests overlap their git and CLI work instead of
 // queueing behind one blocked event loop. Both resolve like spawnSync: { status, stdout, stderr }.

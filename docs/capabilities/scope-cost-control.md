@@ -37,7 +37,7 @@ Spec 057, which introduced this page, sets a proposed appetite of two focused im
 - Appetite capture: [`explore`](../../skills/explore/SKILL.md) (Proportion) and [`to-spec`](../../skills/to-spec/SKILL.md) (Appetite).
 - Scope trade-offs and spend: [`build` Scope guard](../../skills/build/SKILL.md#scope-guard).
 - Scope findings in review: [`review`](../../skills/review/SKILL.md).
-- When parallel work pays: [`write-agents` Workers](../../skills/write-agents/SKILL.md#workers).
+- How parallel work is sliced: [`build` Slices](../../skills/build/SKILL.md#slices); the host sizes the fan-out ([decision 0062](../decisions/0062-claude-code-first.md)).
 - Rationale: [decision 0053](../decisions/0053-delivery-appetite-and-scope.md); practice in [methodology](../methodology.md#defend-the-delivery-boundary).
 - Terms: [delivery appetite](../../GLOSSARY.md#delivery-appetite), [scope trade-off](../../GLOSSARY.md#scope-trade-off).
 

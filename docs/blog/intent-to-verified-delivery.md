@@ -30,7 +30,7 @@ The spec also wrote an acceptance scenario: ten numbered steps, each with an obs
 - [`ci.yml`](../../.github/workflows/ci.yml) and [`pr-title.yml`](../../.github/workflows/pr-title.yml) trigger on `ready_for_review` as well as the usual pull request events, and skip their jobs while the pull request is a draft.
 - [`site/vercel.json`](../../site/vercel.json) turns off branch deployments except `main`, so production still deploys from the default branch and previews become an explicit request.
 
-The pull request records what happened next. The first commit, made before the configuration changed, ran CI and built a preview. The four commits pushed after it reported CI and title checks as `skipped`, with no runner and no deployment. One commit came from a worker in a separate worktree and local branch; the integration owner merged it into the delivery branch, so no extra remote branch or pull request appeared. The rules for that are in [`build`](../../skills/build/SKILL.md) (Pull request, Work in flight) and [`write-agents` Sessions](../../skills/write-agents/SKILL.md#sessions).
+The pull request records what happened next. The first commit, made before the configuration changed, ran CI and built a preview. The four commits pushed after it reported CI and title checks as `skipped`, with no runner and no deployment. One commit came from a worker in a separate worktree and local branch; the integration owner merged it into the delivery branch, so no extra remote branch or pull request appeared. The rules for that were in [`build`](../../skills/build/SKILL.md) and [`write-agents` Sessions](../../skills/write-agents/SKILL.md#sessions) at the time; Claude Code now manages worktrees and sessions ([decision 0062](../decisions/0062-claude-code-first.md)).
 
 While the work is a draft, the only signal is local. `build` runs focused checks as it goes and leaves the full suite for the final head.
 
@@ -74,7 +74,7 @@ The sequence above shows the hand-offs in order. You approve the build. The agen
 
 ## Liveness: a report, not a verdict
 
-After landing, [liveness](../../GLOSSARY.md#liveness) answers a narrow question: is the commit on the remote, and did the host's deployment for it come up and answer? It reports one of `live`, `pushed, no deployment reported`, `reachable, commit unconfirmed`, `not live`, or `unverified`. It never gates, rolls back, or runs the acceptance scenario. Behavior is review's job; [`ship`](../../skills/ship/SKILL.md#liveness) owns the rule.
+After landing, [liveness](../../GLOSSARY.md#liveness) answers a narrow question: is the commit on the remote, and did the host's deployment for it come up and answer? It reports one of `live`, `pushed, no deployment reported`, `reachable, commit unconfirmed`, `not live`, or `unverified`. It never gates, rolls back, or runs the acceptance scenario. Behavior is review's job; [`ship`](../../skills/ship/SKILL.md) owns the rule.
 
 Pull request #208 merged on 2026-10-31 and noted that the production deployment would be checked at ship time. Its record and the follow-up [#213](https://github.com/gaboesquivel/flow-skills/pull/213), which marked the spec implemented, do not state the liveness result for this repository's merge, so this article does not claim one. #213 does record that a production deploy in the `flow-next` starter was rate limited.
 
