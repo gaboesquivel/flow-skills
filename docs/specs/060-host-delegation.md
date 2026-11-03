@@ -25,6 +25,11 @@ The bet: **delegating these jobs to Claude Code keeps idea → prod and safety n
 - **`council` runs its seats as a dynamic workflow** when the host offers one, and as subagents otherwise. The evidence packet, the six reviewer return fields and the adversarial seat stay.
 - **`competitors` and `jtbd` build on `/deep-research`** for gathering sources and keep only their framing: switching forces, and jobs and struggling moments. Each must beat no skill on one scenario or be retired (completes spec 059 task 06).
 - **The `Delivery:` override moves to plugin user config.** `flow` writes the CLAUDE.md block only for installs without the plugin. `gh-route.mjs` and the guard read the plugin config first, then the block.
+- **One Flow install: the plugin, at user scope.** flow-skills ships `.claude-plugin/marketplace.json`, and the maintainer installs `flow@flow-skills` once globally. Vendored Flow skills are removed everywhere:
+  - globally from `~/.claude/skills` and `~/.agents/skills`
+  - from `.agents/skills` and `skills-lock.json` in flow-next, flow-mono, gaboesquivel.com and flow-factory
+
+  Each repo keeps its non-Flow skills untouched. No repo enables the plugin in project settings.
 - **Decision-record threshold** ([0063](../decisions/0063-decision-record-threshold.md)). A choice gets a record only when it chose among real alternatives and is costly to reverse or reaches beyond one spec. `to-spec` and AGENTS.md say so.
 
 ## User Stories
@@ -33,13 +38,16 @@ The bet: **delegating these jobs to Claude Code keeps idea → prod and safety n
 2. As a maintainer merging on a protected branch, `gh pr merge` isn't delayed by the guard's gate. On an unprotected branch it still is.
 3. As a maintainer saying "ask the council", the seats run in parallel through the host, and I get the same packet-based synthesis.
 4. As a plugin user, I set local delivery in the plugin's config, and no block is written into my CLAUDE.md.
-5. Failure case: the protection lookup fails (no `gh`, or the network is down), so the guard keeps the gate. It fails closed for merges.
+5. As the maintainer on any of my repos, the only Flow skills that load are the plugin's (`flow:build` and so on). No stale copy shadows them, and every other skill in the repo is still there.
+6. Failure case: the protection lookup fails (no `gh`, or the network is down), so the guard keeps the gate. It fails closed for merges.
 
 ## Implementation Decisions
 
 - **Protection lookup:** `gh api repos/{o}/{r}/branches/{base}/protection/required_status_checks` and rulesets for the base. Cache per session in memory only. Time out in 1.5 s, and on any error keep the gate.
 - **Plugin config:** a `userConfig` entry `delivery` (`github` | `local`) in `plugin.json`. Verify the field against the plugins reference before building; if it doesn't exist, keep the block and record why.
 - **`/goal` condition** lives in one sentence in `build`'s Outcome, which already holds the done condition.
+- **Cleanup per repo:** remove only the directories whose `skills-lock.json` source is `gaboesquivel/flow-skills`, plus their lock entries. flow-factory's older Flow skills (`implement`, `to-tickets`, and others) count as Flow. Each repo gets one PR. AGENTS.md or CLAUDE.md say Flow comes from the plugin; the Flow block stays until the plugin config replaces it.
+- **Global cleanup:** delete Flow-sourced folders from `~/.claude/skills` and `~/.agents/skills`, after listing them and getting the user's yes, since it deletes files. Keep agent-browser, treg, lead-signals, recruit, make-ugc, skill-creator, find-skills and the rest.
 - **Exposure:** nothing deployable. Hooks run locally.
 
 ## Testing Decisions
@@ -53,14 +61,21 @@ The bet: **delegating these jobs to Claude Code keeps idea → prod and safety n
 1. "Build it" on a small spec sets a `/goal`. The session stops once the condition holds, with no "continue" typed.
 2. "Ship it" on PR to protected `main` merges without the guard's gate. The same merge in a scratch repo without protection is gated.
 3. "Ask the council" on a decision returns the synthesis with one reviewer return per seat and the adversarial seat present.
-4. Setting `delivery: local` in plugin config makes `gh-route.mjs` report local mode, and `flow` writes no block.
-5. Rerunning spec 059's comparison shows idea → prod and failures no worse than 059's Flow run. If not, the record says so and this spec doesn't ship.
+4. On flow-next, flow-mono, gaboesquivel.com and flow-factory, a fresh session lists Flow skills only as `flow:*`, and each repo's other skills are unchanged (diff of `.agents/skills` shows only Flow folders removed). `pnpm validate` in flow-skills no longer warns about shadowing copies in `~/.claude/skills`.
+5. Setting `delivery: local` in plugin config makes `gh-route.mjs` report local mode, and `flow` writes no block.
+6. Rerunning spec 059's comparison shows idea → prod and failures no worse than 059's Flow run. If not, the record says so and this spec doesn't ship.
 
 ## Appetite
 
 Two days of agent work after spec 059 lands. The first slice is the merge-gate change, which is guard-only and testable offline. If time runs out, the `council` workflow gives way first.
 
+## Direction changes
+
+Confirmed by the maintainer on 2026-11-03: [0061](../decisions/0061-eve-default-agent-runtime.md) item 3 changes. Flow Skills are no longer committed under `.agents/skills/` in the starters; Flow comes from the plugin installed at user scope.
+
 ## Out of Scope
+
+- Removing or consolidating non-Flow skills in any repo; for example, gaboesquivel.com keeps all of its other skills.
 
 - More word trims (`build` to ~800, a spec template loaded on demand, `write-agents` reduced). They're deferred until the baseline shows where the cost is.
 - Moving rules to `.claude/rules`, and permission-rule replacements for the guard.
