@@ -1,6 +1,6 @@
 # 0064 — Cursor plugin
 
-Status: **Proposed** (2026-11-03). Spec: [063](../specs/063-cursor-plugin.md). Amends [0062](0062-claude-code-first.md) items 1 and 4, and the enforcement row in `PRODUCT.md`, when the spec is accepted.
+Status: **Accepted** (2026-11-03). Spec: [063](../specs/063-cursor-plugin.md). Amends [0062](0062-claude-code-first.md) items 1 and 4, and the enforcement row in `PRODUCT.md`.
 
 ## Context
 

@@ -1,8 +1,8 @@
 # 063 — Cursor plugin parity
 
-Status: draft (2026-11-03). Appetite: one session.
+Status: accepted (2026-11-03). Appetite: one session.
 
-Decision: [0064](../decisions/0064-cursor-plugin.md) (Proposed). Amends [0062](../decisions/0062-claude-code-first.md) when accepted.
+Decision: [0064](../decisions/0064-cursor-plugin.md) (Accepted). Amends [0062](../decisions/0062-claude-code-first.md).
 
 ## Problem
 
@@ -20,7 +20,7 @@ Flow installs in Cursor as a Cursor plugin that reuses the same skills, the same
 - **One script, two protocols.** `guard.mjs` accepts Cursor's `{ command, cwd }` and Claude's `tool_input.command`, and emits the matching deny. `wip.mjs` emits `{ additional_context }` for Cursor and the same text for Claude. The Cursor hooks file is separate from `hooks/hooks.json`, because the event names differ. Commands use `${CURSOR_PLUGIN_ROOT}`. The deny list does not change.
 - **Reviewer fallback.** `flow-reviewer` calls Bugbot, and security-review on a trust boundary, only when `/code-review` is unavailable and that subagent exists. Otherwise the current label stands. The agent's checks (scenario verdicts, scope, glossary, `DESIGN.md`) stay.
 - **One install.** Compatibility docs tell a Cursor user to install this plugin or `npx skills add`, not both and not also the Claude plugin cache. This repo's `.claude/skills` link stays, so working here still loads the tree.
-- **Direction change, applied only on acceptance.** [0062](../decisions/0062-claude-code-first.md) items 1 and 4, and the enforcement row in `PRODUCT.md`, then say Cursor with this plugin gets the same hooks. Claude Code stays first. `npx skills add` stays skills only. Other hosts stay as they are. Record [0064](../decisions/0064-cursor-plugin.md). Nothing in those files changes in this draft.
+- **Direction change.** [0062](../decisions/0062-claude-code-first.md) items 1 and 4, and the enforcement row in `PRODUCT.md`, say Cursor with this plugin gets the same hooks. Claude Code stays first. `npx skills add` stays skills only. Other hosts stay as they are. Record [0064](../decisions/0064-cursor-plugin.md). Back-pointers land at acceptance.
 
 **Exposure.** The plugin runs in the user's Cursor IDE. The shell hook also runs in Cursor cloud agents. There is no network service and no unauthenticated caller. The guard denies matching shell commands for the installed user. A merge it cannot check fails closed, as it does now.
 

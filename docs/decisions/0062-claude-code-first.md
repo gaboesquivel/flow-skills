@@ -1,6 +1,6 @@
 # 0062 — Claude Code first
 
-Status: **Accepted** (2026-11-03). Spec: [059](../specs/059-claude-code-first.md). Amends [PRODUCT.md](../../PRODUCT.md) principle 6 and Definition, [0060](0060-slice-by-area.md) item 2, [0017](0017-claude-code-skill-coexistence.md), [0058](0058-review-passes-and-risk-tiers.md) (review mechanics), and [0004](0004-portable-skill-catalog.md) (distribution). Amended 2026-11-03: `board.mjs`, kept as a maintainer script, is removed. It misread spec status lines, and spec files, pull requests, and the SessionStart work-in-flight report already show where work stands.
+Status: **Accepted** (2026-11-03). Spec: [059](../specs/059-claude-code-first.md). Amends [PRODUCT.md](../../PRODUCT.md) principle 6 and Definition, [0060](0060-slice-by-area.md) item 2, [0017](0017-claude-code-skill-coexistence.md), [0058](0058-review-passes-and-risk-tiers.md) (review mechanics), and [0004](0004-portable-skill-catalog.md) (distribution). Amended 2026-11-03: `board.mjs`, kept as a maintainer script, is removed. It misread spec status lines, and spec files, pull requests, and the SessionStart work-in-flight report already show where work stands. Amended by [0064](0064-cursor-plugin.md) (the Cursor plugin runs the same guard and work-in-flight report).
 
 ## Context
 

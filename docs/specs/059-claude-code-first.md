@@ -1,8 +1,8 @@
 # 059 — Claude Code first
 
-Status: implemented (2026-11-03).
+Status: implemented (2026-11-03). Amended by [0064](../decisions/0064-cursor-plugin.md) (Cursor plugin runs the same hooks; `npx skills add` stays skills only).
 
-Decision: [0062](../decisions/0062-claude-code-first.md) (Accepted).
+Decision: [0062](../decisions/0062-claude-code-first.md) (Accepted, amended by 0064).
 
 ## Problem Statement
 
