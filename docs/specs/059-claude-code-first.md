@@ -242,13 +242,13 @@ Sequencing note (2026-11-03): task 02's baseline worktrees are pinned to the pre
 **Blocked by:** 07
 
 - [x] The record shows idea → prod and failures no worse than task 02's Flow run, or says the spec doesn't ship
-- [ ] Every acceptance scenario step has a verdict (step 4 unresolved)
+- [x] Every acceptance scenario step has a verdict
 
 Acceptance verdicts (2026-11-03):
 
 1. Satisfied: [`tests/evals/records/2026-11-03-build-vs-no-skills.md`](../../tests/evals/records/2026-11-03-build-vs-no-skills.md), rounds 1–2.
 2. Satisfied: `node hooks/wip.mjs` on flow-skills listed both kept worktrees, the unmerged `spec/060-host-delegation` branch with its changed areas, and open pull request #230, matching `git worktree list` and `gh pr list`.
 3. Satisfied: the record's live guard check denied `git push --force` and the remote stayed put.
-4. Unresolved: no live "build it" on a spec with two disjoint areas has been recorded.
+4. Satisfied: "build it" on spec 061 (two disjoint areas) named two slices from its `Area:` lines, ran them in parallel, reviewed each acceptance step with a verdict, and opened #235 ready with green checks.
 5. Satisfied: after #233 merged, `liveness.mjs` reported `pushed, no deployment reported` for `main` at `22d5423`.
 6. Satisfied: the record's step 6 gate (idea → prod and failures no worse, skill words under 10,000).
