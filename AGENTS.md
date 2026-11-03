@@ -29,7 +29,6 @@ Flow ships as a Claude Code plugin ([decision 0062](docs/decisions/0062-claude-c
 | Tests | `pnpm test` |
 | Delivery metrics (time to close PR, CI failures and wait, skill words) | `pnpm metrics [--repo owner/name] [--limit N]` |
 | Context cost (what agents load, total SKILL.md words, skill install drift) | `pnpm context [--repo path] [--json]` ([`scripts/context.mjs`](scripts/context.mjs)) |
-| Progress board (specs by stage, from Git) | `pnpm board` ([`scripts/board.mjs`](scripts/board.mjs)) |
 | Guard hook tests | `node --test tests/guard.test.mjs` |
 | Website (`site/`) | `pnpm --dir site install`, then `pnpm --dir site dev` or `pnpm --dir site qa` |
 

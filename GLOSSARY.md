@@ -154,7 +154,7 @@ A shared representation of hypotheses, risky assumptions, experiments, evidence,
 
 ## Progress board
 
-The read-only kanban of a project's specs by stage, derived from git. In this repository it is a maintainer script, `pnpm board` ([`scripts/board.mjs`](scripts/board.mjs)); it was a skill until [decision 0062](docs/decisions/0062-claude-code-first.md). It shows where work stands, not hypotheses or evidence; distinct from a [validation board](#validation-board). [Decision 0027](docs/decisions/0027-progress-board-skill.md).
+Retired. A read-only kanban of a project's specs by stage, derived from git: a skill from [decision 0027](docs/decisions/0027-progress-board-skill.md), a maintainer script (`pnpm board`) from [decision 0062](docs/decisions/0062-claude-code-first.md), and removed on 2026-11-03. Spec status lines, open pull requests, and the SessionStart [work-in-flight report](hooks/wip.mjs) show where work stands. Distinct from a [validation board](#validation-board).
 
 ## Capability page
 

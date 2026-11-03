@@ -1,6 +1,6 @@
 # 041 — Skill evaluation against real delivery
 
-Status: accepted (2026-10-30).
+Status: implemented (2026-11-03; accepted 2026-10-30; built in #186, baseline recorded in `tests/evals/records/2026-11-03-build-vs-no-skills.md`).
 
 ## Problem Statement
 
