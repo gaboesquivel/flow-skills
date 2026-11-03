@@ -27,7 +27,7 @@ Asking to build authorizes these steps with no confirmation. It does not authori
 
 Outside a Git repository, offer `git init` and stop on a no.
 
-Before the first write, refresh context as `write-agents` Context freshness describes and inspect sibling work as its Sessions describes: name the base, this worktree and branch, the integration owner, and any overlapping or unknown work. Stop before writing paths that open work also changes when that work belongs to another owner or its owner is unknown: report the overlap, led by `tldr`'s Handoff digest, and ask the user whether to contribute to that delivery, wait for it, or proceed on this branch. Overlap with this delivery's own task branches is integration, not a conflict.
+Before the first write, refresh context (`write-agents` Context freshness), check the SessionStart report and other sibling work, and stop on overlap with paths another owner's work changes: report it and ask whether to contribute, wait, or proceed.
 
 Work on a branch that is not the default branch. Commit only this work: no credentials, local logs, or generated secrets, and never rewrite unrelated commits. In GitHub mode, follow [Pull request](#pull-request). Then Verify. Report the branch or pull request, the review and its verdicts, checks, liveness, limitations, and work in flight, led by `tldr`'s Handoff digest.
 
@@ -64,12 +64,11 @@ One home. Judge the risk once, at intake, from the change, never from its author
 
 ### Slices
 
-One home; Task set and `write-agents` Workers link here. After the size guard and before the first implementation write, split the work into vertical slices (`write-agents` Workers) whose areas are disjoint, so no two slices write the same files. Areas keep slices apart; never cut a slice per layer or directory. A spec's tasks and `Area:` lines give the slices; without them, its sections and the outcomes the change delivers do.
+One home; Task set links here. After the size guard and before the first implementation write, split the work into vertical slices by disjoint area, so no two slices write the same files; never cut a slice per layer or directory. A spec's tasks and `Area:` lines give the slices; without them, its sections and the outcomes the change delivers do.
 
-- Every slice runs as a worker, all ready slices launched in one batch, briefed as `write-agents` Workers and [Scope guard](#scope-guard) describe.
-- A slice stays inline only when it is the change's only slice, is trivial (a few lines in one file), or settles an interface other slices depend on; that one runs first, and its dependents launch once it is committed.
-- The plan and the report name each slice, its area, and its worker or inline reason. An inline slice with no named reason is a defect.
-- The main thread writes shared files (indexes, lockfiles, the spec's status), integrates as Task set step 3 describes, and verifies.
+- The host decides whether each slice runs as a subagent, a `/batch` unit, or inline, under its concurrency cap. A slice that settles an interface others depend on runs first.
+- The plan and the report name each slice and its area.
+- The main thread writes shared files (indexes, lockfiles, the spec's status) and verifies.
 
 ### Data changes
 
@@ -115,17 +114,10 @@ The optional, host-run "build it" for one issue. It applies when the request nam
 "Build it" on a spec's task set integrates every task on one spec branch.
 
 1. **Plan.** Read tasks, blockers, and `Area:` lines. Stop on a cycle or missing blocker. Report the delivery mode and start without confirmation. A task that drifts from its stated scope stops for the user's yes.
-2. **Run.** Group ready tasks into slices by `Area:` and run them as [Slices](#slices) describes, each worker in its own worktree or on disjoint files in the shared checkout. A dependent task starts from a head that includes its blockers. Never commit env files copied into a worktree.
-3. **Integrate.** This session is the integration owner: it alone merges slice branches, pushes the delivery branch, and opens the one pull request ([Pull request](#pull-request)); a worker never pushes a remote branch or opens a pull request. Slices that ran as native sessions merge only as `write-agents` Native sessions allows. Merge each finished slice into the spec branch and tick its tasks' checklist lines. Resolve conflicts by keeping both intents, or stop and report.
-4. **Finish.** When every task is integrated, set `Status: implemented` in a final commit on the spec branch. Either way, deliver the integrated work; when tasks remain, it claims no completion and Work in flight applies.
+2. **Run.** Group ready tasks into slices by `Area:` and run them as [Slices](#slices) describes. A dependent task starts from a head that includes its blockers. Tick each task's checklist line once its work is on the spec branch.
+3. **Finish.** When every task is integrated, set `Status: implemented` in a final commit on the spec branch. Either way, deliver the integrated work; when tasks remain, it claims no completion.
 
 ## Work in flight
 
-One home for keeping work from being lost or stranded; `ship` points here.
-
-- A worker in its own worktree, whether the host's isolation or one you created, starts from the delivery branch's head and commits on that worktree's branch before it finishes; never a detached head. Host isolation may start a worktree elsewhere (Claude Code starts from the default branch): move the worker's branch to the delivery head before it works. A worker in the shared checkout edits disjoint files and leaves committing to the main thread. Other sessions may share that checkout: confirm the delivery branch is checked out before each commit there.
-- Work counts as integrated only when it is in a commit on the delivery branch. Before the pull request or landing, merge every worker branch into it, commit every shared-checkout change, and confirm each worker branch is contained in the delivery branch (by ancestry, or by patch equivalence when the delivery branch was rebased or squash-landed and the work was cherry-picked onto its new base).
-- An unfinished task is reported with its path and branch, never dropped. An uncommitted change no one explains, even in this session's worktree, is reported, never committed or discarded. A spec becomes `implemented` only when every task is integrated; otherwise its status stays and the pull request claims no completion.
-- Remove only worktrees and branches this work created, and only when their commits are on the default branch, or their tip was integrated into a branch whose pull request merged, or the user dropped the work; never with uncommitted changes in it.
-- A new session finds work in flight from worktrees, unmerged branches, open pull requests, and spec status before starting anything (`write-agents` Sessions), and treats another session's work as that session's.
-- Every report, including a stop, lists kept worktrees, uncommitted shared-checkout changes, branches with commits not on the default branch, local `main` ahead of its remote, and open pull requests, each with the step that finishes it.
+Work counts only once it is committed on the delivery branch; an unfinished task is reported with its branch, never dropped.
+Every report, including a stop, lists unmerged branches, kept worktrees, and open pull requests; the SessionStart report shows them.
