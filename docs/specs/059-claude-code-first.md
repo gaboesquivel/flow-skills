@@ -204,7 +204,7 @@ Sequencing note (2026-11-03): task 02's baseline worktrees are pinned to the pre
 
 **Blocked by:** 02
 
-- [x] Reviewing a branch with one unmet scenario step reports `unmet` with evidence, plus `/code-review`'s findings (2026-11-03, spec 062: a fresh reviewer briefed with `agents/flow-reviewer.md` ran `/code-review medium` on a scratch branch implementing one of two steps, marked step 2 `unmet` with command output, and reported both missing behaviors as Important)
+- [x] Reviewing a branch with one unmet scenario step reports `unmet` with evidence, plus `/code-review`'s findings ([record](../../tests/evals/records/2026-11-03-review-unmet-step.md), spec 062)
 - [x] The tiers map to `/code-review` levels: Quick → low, Standard → medium, Deep → high
 - [x] `review` is about 350 words, and `pnpm validate` checks the agent frontmatter (346 words after spec 062)
 

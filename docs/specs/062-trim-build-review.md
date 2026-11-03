@@ -17,9 +17,9 @@ Status: implemented (2026-11-03). Appetite: one session.
   - Keep every rule's substance: tiers, the human tier, slices by area, data changes, test policy, the scope trade-off, spend, delivery mode and the issue trigger.
   - Cut what the guard hook enforces down to one pointer, and fold Done into Verify.
   - Move Unspecced work into Deliver.
-- **`review`, at most 350 words.** Outcome, Effort (the tier comes from `build`'s Size guard; "review it" runs Deep), Inspect, Repair, and Report keep their headings. The tier table, finding labels and round mechanics live only in `agents/flow-reviewer.md`, and `review` links there.
+- **`review`, at most 350 words.** Outcome, Effort (the tier comes from `build`'s Size guard; "review it" runs Deep), Inspect, Repair, and Report keep their headings. `review` keeps one compact statement of tier levels, finding labels and re-review rules, so skill-only installs without the agent still have them, and links to `agents/flow-reviewer.md` for the full mechanics.
 - **`flow-reviewer` is unchanged** except for any line it needs to stay the single home for those mechanics.
-- **Live check.** A scratch clone holds a spec with two acceptance steps, and a branch implements only one of them. A fresh-context reviewer, briefed with `agents/flow-reviewer.md`, reviews that branch. Its report must mark the missing step `unmet`, with evidence, and include `/code-review`'s findings or say why there are none. The result goes into spec 059's open check.
+- **Live check.** A scratch clone holds a spec with two acceptance steps, and a branch implements only one of them. A fresh-context reviewer, briefed with `agents/flow-reviewer.md`, reviews that branch. Its report must mark the missing step `unmet`, with evidence, and include `/code-review`'s findings or say why there are none. The result goes into spec 059's open check and a record under `tests/evals/records/`.
 - No decision record. No rule changes meaning.
 
 ## Acceptance
