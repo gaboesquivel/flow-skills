@@ -14,25 +14,110 @@ const MERGE_GATE_MS = 10_000
 
 class Unparseable extends Error {}
 
-// Remove heredoc bodies: their text is data, not commands. An unterminated heredoc drops everything after it.
+const WRAPPERS = new Set(['command', 'exec', 'nohup', 'time', 'builtin', 'sudo'])
+const SHELLS = new Set(['sh', 'bash', 'zsh', 'dash', 'ksh'])
+// A shell flag cluster that carries -c, such as -c, -lc, or -ec.
+const isShellC = (a) => /^-[A-Za-z]*c[A-Za-z]*$/u.test(a)
+const SHELL_VALUE_OPTS = new Set(['-o', '+o', '-O', '+O', '--rcfile', '--init-file'])
+
+// Does one line of shell, minus its heredoc bodies, pipe a heredoc into a shell reading commands from stdin?
+function feedsShell(line) {
+  let segments
+  try { segments = tokenize(line) } catch { return false }
+  return segments.some((raw) => {
+    const w = unwrap(raw)
+    if (!w.length || !SHELLS.has(basename(w[0]))) return false
+    const args = w.slice(1)
+    return args.includes('-s') || args.every((a) => a.startsWith('-') && !isShellC(a))
+  })
+}
+
+// Remove heredoc bodies: their text is data, not commands, unless the heredoc feeds a shell, whose body is kept as
+// commands. Only a << outside quotes and comments starts a heredoc. An unterminated heredoc drops everything after it.
 export function stripHeredocs(text) {
-  const lines = text.split('\n')
-  const out = []
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
-    out.push(line)
-    const delimiters = [...line.matchAll(/(?<!<)<<(?!<)(-?)\s*(['"]?)([A-Za-z_][\w-]*)\2/gu)].map((m) => ({ tabs: m[1] === '-', word: m[3] }))
-    for (const { tabs, word } of delimiters) {
-      i++
-      while (i < lines.length && (tabs ? lines[i].replace(/^\t+/u, '') : lines[i]) !== word) i++
+  let out = ''
+  let lineStart = 0
+  let quote = null
+  const pending = []
+  let i = 0
+  while (i < text.length) {
+    const c = text[i]
+    if (quote === "'") { out += c; if (c === "'") quote = null; i++; continue }
+    if (c === '\\' && i + 1 < text.length) { out += c + text[i + 1]; i += 2; continue }
+    if (quote === '"') { out += c; if (c === '"') quote = null; i++; continue }
+    if (c === "'" || c === '"') { quote = c; out += c; i++; continue }
+    if (c === '#' && (out.length === lineStart || /[\s;&|()]/u.test(out.at(-1)))) {
+      const end = text.indexOf('\n', i)
+      const stop = end === -1 ? text.length : end
+      out += text.slice(i, stop)
+      i = stop
+      continue
     }
+    if (c === '<' && text[i + 1] === '<' && text[i + 2] !== '<' && text[i - 1] !== '<') {
+      const m = /^<<(-?)[ \t]*(?:'([^'\n]*)'|"([^"\n]*)"|\\?([A-Za-z_][\w-]*))/u.exec(text.slice(i))
+      if (m) {
+        pending.push({ tabs: m[1] === '-', word: m[2] ?? m[3] ?? m[4] })
+        out += m[0]
+        i += m[0].length
+        continue
+      }
+    }
+    if (c === '\n') {
+      const feed = pending.length > 0 && feedsShell(out.slice(lineStart))
+      out += c
+      i++
+      for (const { tabs, word } of pending) {
+        while (i < text.length) {
+          const end = text.indexOf('\n', i)
+          const stop = end === -1 ? text.length : end
+          const line = text.slice(i, stop)
+          i = stop + 1
+          if ((tabs ? line.replace(/^\t+/u, '') : line) === word) break
+          if (feed) out += `${line}\n`
+        }
+      }
+      pending.length = 0
+      lineStart = out.length
+      continue
+    }
+    out += c
+    i++
   }
-  return out.join('\n')
+  return out
+}
+
+// Index of the ) closing the ( at `open`, skipping quoted text; -1 when there is none.
+function closeParen(text, open) {
+  let depth = 0
+  for (let k = open; k < text.length; k++) {
+    const c = text[k]
+    if (c === '\\') { k++; continue }
+    if (c === "'") { k = text.indexOf("'", k + 1); if (k === -1) return -1; continue }
+    if (c === '"') {
+      for (k++; k < text.length && text[k] !== '"'; k++) if (text[k] === '\\') k++
+      if (k >= text.length) return -1
+      continue
+    }
+    if (c === '(') depth++
+    else if (c === ')' && --depth === 0) return k
+  }
+  return -1
+}
+
+const closeBacktick = (text, from) => {
+  for (let k = from; k < text.length; k++) {
+    if (text[k] === '\\') k++
+    else if (text[k] === '`') return k
+  }
+  return -1
 }
 
 // Split a shell command into segments of words, honouring quotes and escapes. Throws Unparseable on unbalanced quotes.
+// Command substitutions inside double quotes ($(...) and backticks) are returned on `segments.subs` as command text;
+// outside quotes, parentheses and backticks already split segments.
 export function tokenize(text) {
   const segments = []
+  const subs = []
   let words = []
   let word = null
   const endWord = () => { if (word !== null) words.push(word); word = null }
@@ -49,7 +134,19 @@ export function tokenize(text) {
       let j = i + 1
       for (; j < text.length && text[j] !== '"'; j++) {
         if (text[j] === '\\' && j + 1 < text.length && '"\\$`\n'.includes(text[j + 1])) { j++; if (text[j] !== '\n') value += text[j] }
-        else value += text[j]
+        else if (text[j] === '`') {
+          const end = closeBacktick(text, j + 1)
+          if (end === -1) throw new Unparseable('unbalanced backtick')
+          subs.push(text.slice(j + 1, end))
+          value += text.slice(j, end + 1)
+          j = end
+        } else if (text[j] === '$' && text[j + 1] === '(') {
+          const end = closeParen(text, j + 1)
+          if (end === -1) throw new Unparseable('unbalanced $(')
+          subs.push(text.slice(j + 2, end))
+          value += text.slice(j, end + 1)
+          j = end
+        } else value += text[j]
       }
       if (j >= text.length) throw new Unparseable('unbalanced double quote')
       word = (word ?? '') + value
@@ -62,7 +159,7 @@ export function tokenize(text) {
     } else if (c === '#' && word === null) {
       while (i < text.length && text[i] !== '\n') i++
       endSegment()
-    } else if ('\n;&|()'.includes(c)) {
+    } else if ('\n;&|()`'.includes(c)) {
       // A redirection such as 2>&1 or >&2 keeps its & inside the word.
       if (c === '&' && word !== null && /[<>]$/u.test(word)) { word += c; continue }
       endSegment()
@@ -71,19 +168,35 @@ export function tokenize(text) {
     }
   }
   endSegment()
+  segments.subs = subs
   return segments
 }
 
-const WRAPPERS = new Set(['command', 'exec', 'nohup', 'time', 'builtin', 'sudo'])
-const SHELLS = new Set(['sh', 'bash', 'zsh', 'dash', 'ksh'])
+// sudo options that take a value in the next word.
+const SUDO_VALUE_OPTS = new Set(['-u', '-g', '-h', '-p', '-C', '-U', '-r', '-t', '-D', '--user', '--group', '--host', '--prompt',
+  '--close-from', '--other-user', '--role', '--type', '--chdir'])
+const ENV_VALUE_OPTS = new Set(['-u', '--unset', '-C', '--chdir'])
 
 // Drop env assignments, redirections, and wrappers such as `command` or `env FOO=1`, so `git` is the first word.
 function unwrap(words) {
   let w = words.filter((word) => !/^\d*[<>]/u.test(word))
   for (;;) {
     if (w.length && /^[A-Za-z_]\w*=/u.test(w[0])) { w = w.slice(1); continue }
-    if (w.length && WRAPPERS.has(w[0])) { w = w.slice(1); while (w.length && w[0].startsWith('-')) w = w.slice(1); continue }
-    if (w.length && w[0] === 'env') { w = w.slice(1); while (w.length && (w[0].startsWith('-') || /^[A-Za-z_]\w*=/u.test(w[0]))) w = w.slice(1); continue }
+    if (w.length && WRAPPERS.has(w[0])) {
+      const sudo = w[0] === 'sudo'
+      w = w.slice(1)
+      while (w.length && w[0].startsWith('-')) {
+        const takesValue = sudo && (SUDO_VALUE_OPTS.has(w[0]) || (/^-[A-Za-z]+$/u.test(w[0]) && 'ughpCUrtD'.includes(w[0].at(-1))))
+        w = w.slice(takesValue ? 2 : 1)
+        if (w[0] === '--' && sudo) { w = w.slice(1); break }
+      }
+      continue
+    }
+    if (w.length && w[0] === 'env') {
+      w = w.slice(1)
+      while (w.length && (w[0].startsWith('-') || /^[A-Za-z_]\w*=/u.test(w[0]))) w = w.slice(ENV_VALUE_OPTS.has(w[0]) ? 2 : 1)
+      continue
+    }
     return w
   }
 }
@@ -99,32 +212,73 @@ function run(cmd, args, { cwd, timeout = QUICK_MS } = {}) {
   return { ok: !r.error && r.status === 0, status: r.status, error: r.error, stdout: (r.stdout ?? '').trim(), stderr: (r.stderr ?? '').trim() }
 }
 
+// Default branch: origin/HEAD, else main, else master (local or remote-tracking), else init.defaultBranch, else main.
 const defaultBranch = (dir) => {
   const r = run('git', ['symbolic-ref', '--short', 'refs/remotes/origin/HEAD'], { cwd: dir })
-  return r.ok && r.stdout ? r.stdout.replace(/^[^/]+\//u, '') : 'main'
+  if (r.ok && r.stdout) return r.stdout.replace(/^[^/]+\//u, '')
+  const has = (ref) => run('git', ['rev-parse', '--verify', '-q', ref], { cwd: dir }).ok
+  for (const b of ['main', 'master']) if (has(`refs/heads/${b}`) || has(`refs/remotes/origin/${b}`)) return b
+  const init = run('git', ['config', 'init.defaultBranch'], { cwd: dir })
+  return init.ok && init.stdout ? init.stdout : 'main'
 }
 const currentBranch = (dir) => {
   const r = run('git', ['symbolic-ref', '--short', 'HEAD'], { cwd: dir })
   return r.ok ? r.stdout : null
 }
 
+// Delivery mode, as ship's gh-route.mjs reads it: the Flow block's `Delivery:` line in AGENTS.md or CLAUDE.md at the
+// repository root, else GitHub when origin is a GitHub remote, else local.
+const GITHUB_REMOTE = /^(?:[a-z][\w+.-]*:\/\/)?(?:[^@/\s]+@)?github\.com(?::\d+)?[:/][\w.-]+\/[\w.-]+?(?:\.git)?\/?$/iu
+function deliveryMode(dir) {
+  const top = run('git', ['rev-parse', '--show-toplevel'], { cwd: dir })
+  if (top.ok && top.stdout) {
+    for (const file of ['AGENTS.md', 'CLAUDE.md']) {
+      let text
+      try { text = readFileSync(join(top.stdout, file), 'utf8') } catch { continue }
+      const block = /<!-- BEGIN FLOW -->([\s\S]*?)<!-- END FLOW -->/u.exec(text)?.[1]
+      const value = block && /^Delivery:[ \t]*(.*)$/imu.exec(block)?.[1]?.trim().toLowerCase().replace(/[\s_]+/gu, '-')
+      if (['github', 'pull-request', 'pull-requests', 'pullrequest', 'pr'].includes(value)) return 'github'
+      if (value === 'local') return 'local'
+    }
+  }
+  const origin = run('git', ['remote', 'get-url', 'origin'], { cwd: dir })
+  return origin.ok && GITHUB_REMOTE.test(origin.stdout) ? 'github' : 'local'
+}
+
 const deny = (reason) => ({ deny: reason })
 const firstLine = (r) => (r.error?.message ?? (r.stderr || 'no output')).split('\n')[0]
 
-// Git global options before the subcommand; -C changes the directory the command acts on.
+// A long option abbreviated to a unique prefix (Git accepts these), such as --forc or --no-v, read as the dangerous
+// option it abbreviates. Any `=value` is kept.
+function longOption(a, dangerous) {
+  if (!a.startsWith('--')) return a
+  const eq = a.indexOf('=')
+  const name = eq === -1 ? a : a.slice(0, eq)
+  if (name.length < 4 || dangerous.includes(name)) return a
+  const hit = dangerous.find((d) => d.startsWith(name))
+  return hit ? hit + (eq === -1 ? '' : a.slice(eq)) : a
+}
+
+// Git global options before the subcommand; -C changes the directory the command acts on. Collects -c config keys.
 function splitGit(args, dir) {
+  const config = []
   let i = 0
   for (; i < args.length; i++) {
     const a = args[i]
     if (a === '-C') { dir = resolve(dir, args[++i] ?? '.'); continue }
-    if (a === '-c' || a === '--git-dir' || a === '--work-tree' || a === '--namespace' || a === '--exec-path') { i++; continue }
+    if (a === '-c') { config.push(args[++i] ?? ''); continue }
+    if (a.startsWith('-c') && a.length > 2) { config.push(a.slice(2)); continue }
+    if (a.startsWith('--config-env=')) { config.push(a.slice(13)); continue }
+    if (a === '--config-env') { config.push(args[++i] ?? ''); continue }
+    if (a === '--git-dir' || a === '--work-tree' || a === '--namespace' || a === '--exec-path') { i++; continue }
     if (a.startsWith('-')) continue
     break
   }
-  return { dir, sub: args[i], rest: args.slice(i + 1) }
+  return { dir, sub: args[i], rest: args.slice(i + 1), config: config.map((c) => c.split('=')[0].toLowerCase()) }
 }
 
 const PUSH_VALUE_OPTS = new Set(['-o', '--push-option', '--repo', '--receive-pack', '--exec'])
+const PUSH_DANGEROUS = ['--force', '--force-with-lease', '--force-if-includes', '--mirror', '--no-verify']
 const COMMIT_VALUE_OPTS = new Set(['-m', '--message', '-F', '--file', '-C', '--reuse-message', '-c', '--reedit-message', '-t', '--template',
   '--author', '--date', '--cleanup', '--fixup', '--squash', '--trailer', '--pathspec-from-file'])
 
@@ -134,8 +288,9 @@ function checkPush(rest, dir) {
     const a = rest[i]
     if (a === '--') { positional.push(...rest.slice(i + 1)); break }
     if (PUSH_VALUE_OPTS.has(a)) { i++; continue }
-    if (a === '--no-verify') return deny('Flow guard: `git push --no-verify` skips the pre-push hooks; fix what the hook reports and push again without --no-verify.')
-    if (a === '--force' || a.startsWith('--force-with-lease') || a === '--force-if-includes' || a === '--mirror' || (/^-[A-Za-z]+$/u.test(a) && a.includes('f'))) {
+    const opt = longOption(a, PUSH_DANGEROUS)
+    if (opt === '--no-verify') return deny('Flow guard: `git push --no-verify` skips the pre-push hooks; fix what the hook reports and push again without --no-verify.')
+    if (opt === '--force' || opt.startsWith('--force-with-lease') || opt === '--force-if-includes' || opt === '--mirror' || (/^-[A-Za-z]+$/u.test(a) && a.includes('f'))) {
       return deny('Flow guard: force push is blocked; push new commits on top instead, or push to a new branch and open a pull request.')
     }
     if (a.startsWith('-')) continue
@@ -146,17 +301,18 @@ function checkPush(rest, dir) {
     return deny('Flow guard: a `+refspec` is a force push and is blocked; push without the leading +, or push to a new branch.')
   }
   const main = defaultBranch(dir)
-  const toMain = 'Flow guard: pushing to the default branch is blocked; push a feature branch and land it through a pull request.'
-  if (!refspecs.length) {
-    if (currentBranch(dir) === main) return deny(toMain)
-    return null
-  }
+  let toDefault = false
+  if (!refspecs.length) toDefault = currentBranch(dir) === main
   for (const spec of refspecs) {
     const colon = spec.lastIndexOf(':')
     let dst = colon === -1 ? spec : spec.slice(colon + 1)
     if (dst === 'HEAD' || dst === '@') dst = currentBranch(dir) ?? dst
     dst = dst.replace(/^refs\/heads\//u, '')
-    if (dst === main) return deny(toMain)
+    if (dst === main) toDefault = true
+  }
+  // Local delivery (ship's local mode) lands by merging into the default branch and pushing it.
+  if (toDefault && deliveryMode(dir) !== 'local') {
+    return deny('Flow guard: pushing to the default branch is blocked; push a feature branch and land it through a pull request.')
   }
   return null
 }
@@ -165,7 +321,7 @@ function checkCommit(rest) {
   for (let i = 0; i < rest.length; i++) {
     const a = rest[i]
     if (a === '--') break
-    if (a === '--no-verify') return deny('Flow guard: `git commit --no-verify` skips the commit hooks; fix what the hook reports and commit again without --no-verify.')
+    if (longOption(a, ['--no-verify']) === '--no-verify') return deny('Flow guard: `git commit --no-verify` skips the commit hooks; fix what the hook reports and commit again without --no-verify.')
     if (COMMIT_VALUE_OPTS.has(a)) { i++; continue }
     if (/^-[A-Za-z]+$/u.test(a)) {
       for (const ch of a.slice(1)) {
@@ -181,11 +337,16 @@ const outside = (target, cwd, what) => inside(cwd, target)
   ? null
   : deny(`Flow guard: \`${what}\` outside the session's directory is blocked; run it from that worktree's own session, or ask the user to run it.`)
 
+const HOOKED = new Set(['commit', 'push', 'merge', 'rebase', 'am', 'cherry-pick'])
+
 function checkGit(words, dir, cwd) {
-  const { dir: gitDir, sub, rest } = splitGit(words.slice(1), dir)
+  const { dir: gitDir, sub, rest, config } = splitGit(words.slice(1), dir)
+  if (HOOKED.has(sub) && config.includes('core.hookspath')) {
+    return deny(`Flow guard: \`git -c core.hooksPath=… ${sub}\` skips the Git hooks; fix what the hook reports and run it again without overriding core.hooksPath.`)
+  }
   if (sub === 'push') return checkPush(rest, gitDir)
   if (sub === 'commit') return checkCommit(rest)
-  if ((sub === 'merge' || sub === 'rebase') && rest.includes('--no-verify')) {
+  if ((sub === 'merge' || sub === 'rebase') && rest.some((a) => longOption(a, ['--no-verify']) === '--no-verify')) {
     return deny(`Flow guard: \`git ${sub} --no-verify\` skips the Git hooks; fix what the hook reports and run it again without --no-verify.`)
   }
   if (sub === 'reset' && rest.includes('--hard')) return outside(gitDir, cwd, 'git reset --hard')
@@ -201,10 +362,11 @@ function checkGit(words, dir, cwd) {
 const REQUIRED_CHECKS = () => process.env.FLOW_GUARD_REQUIRED_CHECKS || join(HERE, '..', 'skills', 'ship', 'scripts', 'required-checks.mjs')
 
 function checkMerge(args, dir) {
-  if (args.includes('--admin')) {
+  if (args.some((a) => longOption(a, ['--admin']) === '--admin')) {
     return deny('Flow guard: `gh pr merge --admin` bypasses branch protection; wait for the required checks and reviews, then merge without --admin.')
   }
-  if (args.includes('--disable-auto')) return null
+  // Auto-merge waits for GitHub to enforce the required checks; disabling it merges nothing.
+  if (args.includes('--disable-auto') || args.includes('--auto')) return null
   const deadline = Date.now() + MERGE_GATE_MS
   const left = () => Math.max(1, deadline - Date.now())
   const failClosed = (why) => deny(`Flow guard: cannot confirm this pull request's required checks are green (${why}); run \`node skills/ship/scripts/required-checks.mjs <owner/repo> <number>\` and merge only when it exits 0.`)
@@ -213,8 +375,8 @@ function checkMerge(args, dir) {
   let target = null
   for (let i = 0; i < args.length; i++) {
     const a = args[i]
-    if (a === '-R' || a === '--repo') { repo = args[++i] ?? null; continue }
-    if (a.startsWith('--repo=')) { repo = a.slice(7); continue }
+    if (a === '-R' || a === '--repo') { repo = args[++i] || null; continue }
+    if (a.startsWith('--repo=')) { repo = a.slice(7) || null; continue }
     if (['-b', '--body', '-F', '--body-file', '-t', '--subject', '-A', '--author-email', '--match-head-commit'].includes(a)) { i++; continue }
     if (a.startsWith('-')) continue
     target ??= a
@@ -225,15 +387,16 @@ function checkMerge(args, dir) {
   else if (/^#?\d+$/u.test(target ?? '')) number = Number(target.replace('#', ''))
   repo = repo?.replace(/^(?:https?:\/\/)?github\.com\//u, '') ?? null
 
+  if (!number) {
+    // No number: the pull request for the named branch, or for the current branch; -R only when the user gave one.
+    const r = run('gh', ['pr', 'view', ...(target ? [target] : []), ...(repo ? ['-R', repo] : []), '--json', 'number', '-q', '.number'], { cwd: dir, timeout: left() })
+    if (!r.ok || !/^\d+$/u.test(r.stdout)) return failClosed(`gh could not find the pull request: ${firstLine(r)}`)
+    number = Number(r.stdout)
+  }
   if (!repo) {
     const r = run('gh', ['repo', 'view', '--json', 'nameWithOwner', '-q', '.nameWithOwner'], { cwd: dir, timeout: left() })
     if (!r.ok || !r.stdout) return failClosed(`gh could not name the repository: ${firstLine(r)}`)
     repo = r.stdout
-  }
-  if (!number) {
-    const r = run('gh', ['pr', 'view', ...(target ? [target] : []), '-R', repo, '--json', 'number', '-q', '.number'], { cwd: dir, timeout: left() })
-    if (!r.ok || !/^\d+$/u.test(r.stdout)) return failClosed(`gh could not find the pull request: ${firstLine(r)}`)
-    number = Number(r.stdout)
   }
   const script = REQUIRED_CHECKS()
   if (!existsSync(script)) return failClosed(`required-checks.mjs not found at ${script}`)
@@ -254,24 +417,61 @@ function checkGh(words, dir) {
   return checkMerge([...args.slice(0, idx), ...args.slice(idx + 2)], dir)
 }
 
-export function evaluate(command, cwd, depth = 0) {
-  let dir = cwd
-  for (const raw of tokenize(stripHeredocs(command))) {
-    const words = unwrap(raw)
-    if (!words.length) continue
-    const name = basename(words[0])
-    if ((name === 'cd' || name === 'pushd') && words[1] && words[1] !== '-') { dir = resolve(dir, words[1].replace(/^~(?=\/|$)/u, process.env.HOME ?? '~')); continue }
-    let verdict = null
-    if (name === 'git') verdict = checkGit(words, dir, cwd)
-    else if (name === 'gh') verdict = checkGh(words, dir)
-    else if (SHELLS.has(name) && depth < 3) {
-      const c = words.indexOf('-c')
-      if (c !== -1 && words[c + 1]) verdict = evaluate(words[c + 1], dir, depth + 1)
+const MAX_DEPTH = 4
+const XARGS_VALUE_OPTS = new Set(['-a', '-d', '-E', '-I', '-L', '-n', '-P', '-s', '--arg-file', '--delimiter', '--eof', '--replace',
+  '--max-lines', '--max-args', '--max-procs', '--max-chars', '--process-slot-var'])
+
+// One segment's words. `state.dir` tracks cd; `cwd` stays the session's directory.
+function checkSegment(raw, state, cwd, depth) {
+  const words = unwrap(raw)
+  if (!words.length) return null
+  const name = basename(words[0])
+  if ((name === 'cd' || name === 'pushd') && words[1] && words[1] !== '-') { state.dir = resolve(state.dir, words[1].replace(/^~(?=\/|$)/u, process.env.HOME ?? '~')); return null }
+  if (name === 'git') return checkGit(words, state.dir, cwd)
+  if (name === 'gh') return checkGh(words, state.dir)
+  if (depth >= MAX_DEPTH) return null
+  if (SHELLS.has(name)) {
+    const args = words.slice(1)
+    for (let i = 0; i < args.length; i++) {
+      const a = args[i]
+      if (isShellC(a)) {
+        const script = args[i + 1] === '--' ? args[i + 2] : args[i + 1]
+        return script ? evaluate(script, cwd, depth + 1, state.dir) : null
+      }
+      if (SHELL_VALUE_OPTS.has(a)) { i++; continue }
+      if (!a.startsWith('-') && !a.startsWith('+')) break
     }
-    if (verdict) return verdict
+    return null
+  }
+  if (name === 'eval') return evaluate(words.slice(1).join(' '), cwd, depth + 1, state.dir)
+  if (name === 'xargs') {
+    let i = 1
+    for (; i < words.length && words[i].startsWith('-'); i++) {
+      if (words[i] === '--') { i++; break }
+      if (XARGS_VALUE_OPTS.has(words[i])) i++
+    }
+    return i < words.length ? checkSegment(words.slice(i), { dir: state.dir }, cwd, depth + 1) : null
   }
   return null
 }
+
+// `cwd` is the session's directory; `dir` is where the command starts (it differs inside `cd x && bash -c ...`).
+export function evaluate(command, cwd, depth = 0, dir = cwd) {
+  const segments = tokenize(stripHeredocs(command))
+  const state = { dir }
+  for (const raw of segments) {
+    const verdict = checkSegment(raw, state, cwd, depth)
+    if (verdict) return verdict
+  }
+  if (depth < MAX_DEPTH) {
+    for (const sub of segments.subs) {
+      const verdict = evaluate(sub, cwd, depth + 1, dir)
+      if (verdict) return verdict
+    }
+  }
+  return null
+}
+
 
 function main() {
   let input

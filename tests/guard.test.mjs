@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { dirname, join } from 'node:path'
+import { delimiter, dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 
@@ -16,15 +16,19 @@ const tempDir = (t, prefix) => {
   return dir
 }
 
-// A git repository on `branch`, with origin/HEAD pointing at main; offline, no remote needed.
-const gitRepo = (t, branch) => {
+// A git repository on `branch`, with origin/HEAD pointing at `main`; offline. Origin is a GitHub URL (GitHub delivery
+// mode) unless `origin` says otherwise; it is never contacted.
+const gitRepo = (t, branch, { main = 'main', origin = 'https://github.com/o/r.git', originHead = true } = {}) => {
   const dir = tempDir(t, 'flow-guard-repo-')
   const git = (...args) => assert.equal(spawnSync('git', args, { cwd: dir, encoding: 'utf8' }).status, 0, `git ${args.join(' ')}`)
-  git('init', '-q', '-b', 'main')
+  git('init', '-q', '-b', main)
   git('-c', 'user.email=t@example.com', '-c', 'user.name=t', 'commit', '-q', '--allow-empty', '-m', 'init')
-  git('update-ref', 'refs/remotes/origin/main', 'HEAD')
-  git('symbolic-ref', 'refs/remotes/origin/HEAD', 'refs/remotes/origin/main')
-  if (branch !== 'main') git('switch', '-q', '-c', branch)
+  if (origin) git('remote', 'add', 'origin', origin)
+  if (originHead) {
+    git('update-ref', `refs/remotes/origin/${main}`, 'HEAD')
+    git('symbolic-ref', 'refs/remotes/origin/HEAD', `refs/remotes/origin/${main}`)
+  }
+  if (branch !== main) git('switch', '-q', '-c', branch)
   return dir
 }
 
@@ -148,6 +152,128 @@ test('merge gate runs required-checks and fails closed', (t) => {
   expect(t, 'gh pr merge 12 -R o/r', 'deny', { cwd, env: { FLOW_GUARD_REQUIRED_CHECKS: join(dir, 'missing.mjs') } })
   expect(t, 'gh pr merge 12 -R o/r --admin', 'deny', { cwd, env: { FLOW_GUARD_REQUIRED_CHECKS: green } })
   expect(t, 'gh pr merge 12 -R o/r --disable-auto', 'allow', { cwd, env: { FLOW_GUARD_REQUIRED_CHECKS: red } })
+})
+
+test('local delivery mode may push the default branch, never force', (t) => {
+  const bare = tempDir(t, 'flow-guard-bare-')
+  const local = gitRepo(t, 'main', { origin: bare })
+  expect(t, 'git push origin main', 'allow', { cwd: local })
+  expect(t, 'git push', 'allow', { cwd: local })
+  expect(t, 'git push --force origin main', 'deny', { cwd: local })
+  expect(t, 'git push origin +main', 'deny', { cwd: local })
+  expect(t, 'git push --no-verify origin main', 'deny', { cwd: local })
+
+  const github = gitRepo(t, 'main')
+  expect(t, 'git push origin main', 'deny', { cwd: github })
+
+  const blockLocal = gitRepo(t, 'main')
+  writeFileSync(join(blockLocal, 'AGENTS.md'), '# Agents\n\n<!-- BEGIN FLOW -->\nDelivery: local\n<!-- END FLOW -->\n')
+  expect(t, 'git push origin main', 'allow', { cwd: blockLocal })
+  expect(t, 'git push -f origin main', 'deny', { cwd: blockLocal })
+
+  const blockGithub = gitRepo(t, 'main', { origin: bare })
+  writeFileSync(join(blockGithub, 'CLAUDE.md'), '<!-- BEGIN FLOW -->\nDelivery: github\n<!-- END FLOW -->\n')
+  expect(t, 'git push origin main', 'deny', { cwd: blockGithub })
+
+  const outsideBlock = gitRepo(t, 'main')
+  writeFileSync(join(outsideBlock, 'AGENTS.md'), 'Delivery: local\n')
+  expect(t, 'git push origin main', 'deny', { cwd: outsideBlock })
+})
+
+test('default branch falls back to main, master, then init.defaultBranch', (t) => {
+  const master = gitRepo(t, 'master', { main: 'master', originHead: false })
+  expect(t, 'git push origin master', 'deny', { cwd: master })
+  expect(t, 'git push', 'deny', { cwd: master })
+  expect(t, 'git push origin main', 'allow', { cwd: master })
+
+  const trunk = gitRepo(t, 'trunk', { main: 'trunk', originHead: false })
+  spawnSync('git', ['config', 'init.defaultBranch', 'trunk'], { cwd: trunk })
+  expect(t, 'git push origin trunk', 'deny', { cwd: trunk })
+})
+
+test('bypass forms are read through', (t) => {
+  const cwd = gitRepo(t, 'feat')
+  for (const command of [
+    'bash -lc "git push --force origin feat"',
+    'sh -ec "git push -f origin feat"',
+    'zsh -xc \'git commit -n -m x\'',
+    'bash -c -- "git push -f origin feat"',
+    'eval git push --force origin feat',
+    'eval "git push -f origin feat"',
+    'echo feat | xargs git push -f origin',
+    'xargs -I {} -n 1 git push --force origin {}',
+    'xargs sh -c "git push -f origin feat"',
+    'sudo -u root git push -f origin feat',
+    'sudo -u root -g wheel -- git push --force origin feat',
+    'echo "$(git push -f origin feat)"',
+    'echo "x `git push -f origin feat` y"',
+    'echo `git push -f origin feat`',
+    'git push --forc origin feat',
+    'git push --force-w origin feat',
+    'git push --force-with origin feat',
+    'git push --mirr origin',
+    'git push --no-v origin feat',
+    'git commit --no-veri -m x',
+    'git merge --no-v feat',
+    'gh pr merge 12 --adm',
+    'git -c core.hooksPath=/dev/null commit -m x',
+    'git -c core.hookspath= push origin feat',
+    'git -c CORE.HOOKSPATH=x merge feat',
+    'git -ccore.hooksPath=/tmp rebase main',
+    'git -c core.hooksPath=/dev/null am x.patch',
+    'git -c core.hooksPath=/dev/null cherry-pick abc',
+    'bash <<EOF\ngit push --force origin feat\nEOF',
+    'cat <<\'EOF\' | sh\ngit push -f origin feat\nEOF',
+    'bash -s <<EOF\ngit commit -n -m x\nEOF',
+    'echo "a<<EOF"\ngit push -f origin feat',
+    "echo 'a<<EOF'\ngit push -f origin feat",
+    'cd /tmp && bash -c "git -C /tmp/elsewhere reset --hard"',
+  ]) expect(t, command, 'deny', { cwd })
+  for (const command of [
+    'git commit -m "--no-verify"',
+    'git commit -F - <<EOF\nfix: drop --no-verify\ngit push -f origin main\nEOF',
+    'bash script.sh <<EOF\ngit push -f origin feat\nEOF',
+    'git -c user.name=x commit -m ok',
+    'git -c core.hooksPath=x status',
+    'git push --follow-tags origin feat',
+    'echo "$(git status)"',
+    'sudo -u root git push origin feat',
+    'gh pr merge 12 --auto --squash',
+  ]) expect(t, command, 'allow', { cwd })
+})
+
+test('merge gate resolves the current branch pull request without -R', (t) => {
+  const cwd = gitRepo(t, 'feature')
+  const dir = tempDir(t, 'flow-guard-gh-')
+  const log = join(dir, 'gh.log')
+  writeFileSync(join(dir, 'gh'), `#!/bin/sh
+echo "$*" >> "${log}"
+case "$*" in
+  "pr view"*) echo 34 ;;
+  "repo view"*) echo o/r ;;
+  *) exit 1 ;;
+esac
+`)
+  chmodSync(join(dir, 'gh'), 0o755)
+  const checks = join(dir, 'checks.mjs')
+  writeFileSync(checks, `import { appendFileSync } from 'node:fs'\nappendFileSync(${JSON.stringify(log)}, 'checks ' + process.argv.slice(2).join(' ') + '\\n')\n`)
+  const env = { PATH: `${dir}${delimiter}${process.env.PATH}`, FLOW_GUARD_REQUIRED_CHECKS: checks }
+  const lines = () => readFileSync(log, 'utf8').trim().split('\n')
+
+  expect(t, 'gh pr merge --squash', 'allow', { cwd, env })
+  assert.deepEqual(lines(), ['pr view --json number -q .number', 'repo view --json nameWithOwner -q .nameWithOwner', 'checks o/r 34'])
+
+  writeFileSync(log, '')
+  expect(t, 'gh pr merge -R o/x --squash', 'allow', { cwd, env })
+  assert.deepEqual(lines(), ['pr view -R o/x --json number -q .number', 'checks o/x 34'])
+
+  writeFileSync(log, '')
+  expect(t, 'gh pr merge feature --merge', 'allow', { cwd, env })
+  assert.equal(lines()[0], 'pr view feature --json number -q .number')
+
+  writeFileSync(log, '')
+  expect(t, 'gh pr merge --auto --squash', 'allow', { cwd, env })
+  assert.equal(readFileSync(log, 'utf8'), '', 'auto-merge is left to GitHub')
 })
 
 test('allows what it does not recognise or cannot parse', (t) => {

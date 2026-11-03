@@ -55,6 +55,31 @@ test('live via a later commit on the branch that contains this one', async () =>
   assert.match(r.detail, /later commit bbbbbbb/u)
 })
 
+test('live via a later deployment when the commit\'s own deployment is inactive (superseded)', async () => {
+  const r = await check(git({
+    'git merge-base --is-ancestor': '',
+    [`gh api ${R}/deployments?sha=${SHA}`]: [deployment(7)],
+    [`gh api ${R}/deployments/7/statuses`]: [{ state: 'inactive' }],
+    [`gh api ${R}/deployments?environment=Production`]: [deployment(11, LATER), deployment(7)],
+    [`gh api ${R}/deployments/11/statuses`]: [{ state: 'success', environment_url: 'https://app.example.com' }],
+  }))
+  assert.equal(r.state, 'live')
+  assert.equal(r.url, 'https://app.example.com')
+  assert.match(r.detail, /deployment 11 \(via later commit bbbbbbb; deployment 7 was superseded\)/u)
+})
+
+test('not live: inactive with no later successful deployment containing the commit', async () => {
+  const r = await check(git({
+    'git merge-base --is-ancestor': fail('not an ancestor'),
+    [`gh api ${R}/deployments?sha=${SHA}`]: [deployment(7)],
+    [`gh api ${R}/deployments/7/statuses`]: [{ state: 'inactive' }],
+    [`gh api ${R}/deployments?environment=Production`]: [deployment(11, LATER), deployment(7)],
+    [`gh api ${R}/deployments/11/statuses`]: [{ state: 'success', environment_url: 'https://app.example.com' }],
+  }))
+  assert.equal(r.state, 'not live')
+  assert.match(r.detail, /inactive \(superseded\)/u)
+})
+
 test('pushed, no deployment reported: on the remote, host reports nothing', async () => {
   const r = await check(git({ [`gh api ${R}/deployments`]: [] }))
   assert.equal(r.state, 'pushed, no deployment reported')

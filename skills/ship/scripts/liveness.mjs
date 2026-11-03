@@ -82,8 +82,8 @@ export async function liveness({ repoDir, ref = 'HEAD', pr = null, url = null, h
     onRef = exact.length ? [] : api(`repos/${repo}/deployments?ref=${encodeURIComponent(branch)}&per_page=20`)
   } catch (e) { return result('unverified', sha, branch, `cannot read deployments: ${firstLine(e)}`) }
   const later = onRef.find((d) => d.sha !== sha && tryGit('merge-base', '--is-ancestor', sha, d.sha) !== null)
-  const deployment = pickDeployment(exact) ?? later ?? null
-  if (!deployment) {
+  const picked = pickDeployment(exact) ?? later ?? null
+  if (!picked) {
     if (url || onRef.length) {
       // Something is deployed on this branch, but not provably this commit.
       const other = onRef[0]
@@ -95,7 +95,8 @@ export async function liveness({ repoDir, ref = 'HEAD', pr = null, url = null, h
     }
     return result('pushed, no deployment reported', sha, branch, `origin/${branch} contains ${sha.slice(0, 7)}; the host reported no deployment for it`)
   }
-  const via = deployment.sha === sha ? '' : ` (via later commit ${deployment.sha.slice(0, 7)})`
+  let deployment = picked
+  let via = deployment.sha === sha ? '' : ` (via later commit ${deployment.sha.slice(0, 7)})`
 
   let status
   const deadline = waitSeconds * 1000
@@ -103,6 +104,23 @@ export async function liveness({ repoDir, ref = 'HEAD', pr = null, url = null, h
     try { status = latestStatus(api, repo, deployment, true) } catch (e) { return result('unverified', sha, branch, `cannot read deployment status: ${firstLine(e)}`) }
     if (!['pending', 'queued', 'in_progress'].includes(status?.state ?? 'pending') || waited + POLL_MS > deadline) break
     await sleep(POLL_MS)
+  }
+  // Inactive: a later deployment on the same environment superseded this one. Live when the newest successful one
+  // there contains this commit.
+  if (status?.state === 'inactive') {
+    const superseded = deployment
+    let newer
+    try { newer = api(`repos/${repo}/deployments?environment=${encodeURIComponent(superseded.environment ?? '')}&per_page=20`) } catch (e) { return result('unverified', sha, branch, `deployment ${superseded.id} is inactive; cannot read later deployments: ${firstLine(e)}`) }
+    let found = null
+    for (const d of [...(Array.isArray(newer) ? newer : [])].sort((a, b) => b.id - a.id)) {
+      if (d.id === superseded.id || d.sha === sha || tryGit('merge-base', '--is-ancestor', sha, d.sha) === null) continue
+      const s = latestStatus(api, repo, d)
+      if (s?.state === 'success') { found = { d, s }; break }
+    }
+    if (!found) return result('not live', sha, branch, `deployment ${superseded.id}${via} is inactive (superseded) and no later successful deployment on ${superseded.environment ?? 'its environment'} contains ${sha.slice(0, 7)}`)
+    deployment = found.d
+    status = found.s
+    via = ` (via later commit ${deployment.sha.slice(0, 7)}; deployment ${superseded.id} was superseded)`
   }
   const state = status?.state ?? 'pending'
   if (['pending', 'queued', 'in_progress'].includes(state)) return result('unverified', sha, branch, `deployment ${deployment.id}${via} still ${state} after ${waitSeconds}s`)
