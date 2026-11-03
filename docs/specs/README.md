@@ -63,6 +63,6 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [056-lean-context-checkable-design.md](056-lean-context-checkable-design.md) (accepted)
 - [057-content-architecture.md](057-content-architecture.md) (implemented)
 - [058-eve-default-runtime.md](058-eve-default-runtime.md) (implemented)
-- [059-claude-code-first.md](059-claude-code-first.md) (accepted)
+- [059-claude-code-first.md](059-claude-code-first.md) (implemented)
 
 Significant standalone decisions belong in `docs/decisions/`, not in a spec. See [decisions](../decisions/README.md).

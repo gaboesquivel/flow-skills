@@ -126,7 +126,7 @@ A stub for a later bet worth triaging: the problem and the assumption it tests, 
 
 ## Human summary
 
-A visual presentation for a person. Prefer generative UI (GenUI) when the host actually provides it; otherwise Mermaid, tables, and a short statement. Skills such as `product` may lead their own reports with one. [`write-humans`](skills/write-humans/SKILL.md) drafts prose. Earlier records give summaries, session recaps, and a Handoff digest to a `tldr` skill; Claude Code's recaps and transcripts replaced it ([decision 0062](docs/decisions/0062-claude-code-first.md)). [Decision 0008](docs/decisions/0008-leading-words-and-visual-summaries.md).
+A visual presentation for a person. Prefer generative UI (GenUI) when the host actually provides it; otherwise Mermaid, tables, and a short statement. Skills such as `product` may lead their own reports with one. Earlier records give summaries, session recaps, and a Handoff digest to a `tldr` skill; Claude Code's recaps and transcripts replaced it ([decision 0062](docs/decisions/0062-claude-code-first.md)). [Decision 0008](docs/decisions/0008-leading-words-and-visual-summaries.md).
 
 ## Leading word
 

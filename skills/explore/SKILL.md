@@ -46,7 +46,7 @@ For a new product, or on "grill" or "poke holes". With intent clear, do not re-e
 - **Pre-mortem**, once: assume it failed six months from now and list the likeliest reasons. From them name the riskiest assumptions, each with a confidence, and a **kill criterion**: the observation that would end the bet.
 - Gather evidence for each risky claim, then ask a small round of focused questions, each with a recommended answer and its tradeoff. Stop when outcome, constraints, and next action are clear; never re-approve settled decisions.
 
-Deeper discovery (`competitors`, `jtbd`) runs only when asked. When a new surface's look is not settled by `DESIGN.md`, suggest `design` in one line.
+When a new surface's look is not settled by `DESIGN.md`, suggest `design` in one line.
 
 ## Outcome and write gate
 

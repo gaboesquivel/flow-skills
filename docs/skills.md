@@ -26,7 +26,7 @@ Product discovery, writing, advisory, and design skills are optional and do not 
 
 | Skill | Say | When to use |
 | --- | --- | --- |
-| [explore](../skills/explore/SKILL.md) | "explore this" | Asks in proportion to the change, with no named depth tiers and never the delivery mode: a fix or small change gets no questions; a feature gets intent, journeys, the agent lens, and the metric it should move, if any; a new product adds the riskiest assumption, kill criterion, main metric, and a pre-mortem. "Interview me" asks with a guess on each question until it can predict your answers; "grill this" stress-tests a plan's riskiest claims with evidence. Deeper research only when you ask for `competitors` or `jtbd`. One confirmation of the brief, committed on the work's branch, never on the default branch; or a clearer intent or a killed idea. Next steps: "build it" builds the brief with no spec, or "spec it" for a tracked bet (decisions [0036](decisions/0036-one-explore-depth.md), [0039](decisions/0039-build-never-requires-a-spec.md), [0044](decisions/0044-fast-delivery.md)). A goal that contradicts an accepted decision, spec, or `PRODUCT.md` fact on the current branch stops at a direction-change gate for your yes ([decision 0038](decisions/0038-direction-changes-are-confirmed-and-recorded.md)). |
+| [explore](../skills/explore/SKILL.md) | "explore this" | Asks in proportion to the change, with no named depth tiers and never the delivery mode: a fix or small change gets no questions; a feature gets intent, journeys, the agent lens, and the metric it should move, if any; a new product adds the riskiest assumption, kill criterion, main metric, and a pre-mortem. "Interview me" asks with a guess on each question until it can predict your answers; "grill this" stress-tests a plan's riskiest claims with evidence. One confirmation of the brief, committed on the work's branch, never on the default branch; or a clearer intent or a killed idea. Next steps: "build it" builds the brief with no spec, or "spec it" for a tracked bet (decisions [0036](decisions/0036-one-explore-depth.md), [0039](decisions/0039-build-never-requires-a-spec.md), [0044](decisions/0044-fast-delivery.md)). A goal that contradicts an accepted decision, spec, or `PRODUCT.md` fact on the current branch stops at a direction-change gate for your yes ([decision 0038](decisions/0038-direction-changes-are-confirmed-and-recorded.md)). |
 | [to-spec](../skills/to-spec/SKILL.md) | "spec it" | Turn conversation into a numbered spec file with contract-first interfaces, an [Exposure](../GLOSSARY.md#exposure) line, and one required [acceptance scenario](../GLOSSARY.md#acceptance-scenario); label assumptions; write later bets as `candidate` stub files, committed on the spec's branch. Writes the spec as a `draft` on the work's branch, and any decision beside it as **Proposed**, and opens no issue unless you ask. "Accept the spec", or "build it" or "ship it" on a draft, accepts it; `to-spec` owns [the rule](../skills/to-spec/SKILL.md#status-and-acceptance). "Share the draft" opens a draft pull request linking the file ([0044](decisions/0044-fast-delivery.md)). |
 | [to-tasks](../skills/to-tasks/SKILL.md) | "break it down" | Vertical-slice tasks with blockers, listed as a checklist in the spec's Tasks section (GitHub sub-issues only on request); gives each task an [area](../GLOSSARY.md#area), which may list several directories; reports the ready set and waits for "build it". |
 | [build](../skills/build/SKILL.md) | "build it" | Implement authorized work on a branch, then verify it without merging: the review at the tier its risk sets, fixes, checks once on the final head, and branch [liveness](../GLOSSARY.md#liveness). Ends with an open pull request (GitHub mode) or a committed branch (local mode), and reports any unfinished work with its branch. Slices a multi-area change by area and leaves the fan-out to the host; [unspecced work](../GLOSSARY.md#unspecced-work) needs no spec. Owns the size guard (risk tiers; human-tier paths ship on your yes) and [delivery mode](../skills/build/SKILL.md#delivery-mode) ([0044](decisions/0044-fast-delivery.md), [0048](decisions/0048-delivery-phrases-are-approvals.md)). |
@@ -57,15 +57,12 @@ Debugging, code simplification, security audits, and performance work belong to 
 
 | Skill | Say | When to use |
 | --- | --- | --- |
-| [jtbd](../skills/jtbd/SKILL.md) | "jobs to be done" | Frame jobs, struggling moments, and the progress someone wants. |
-| [competitors](../skills/competitors/SKILL.md) | "who are the competitors" | Map alternatives, differentiation, and why people move or stay. |
 | [product](../skills/product/SKILL.md) | "are we building the right thing" | Read-only check of the whole product against its vision, problems, metrics, and roadmap, and of each metric and journey against the evidence, naming what blocks a conclusion ("measure our progress"). Decisions [0041](decisions/0041-align-skill.md) and [0046](decisions/0046-measurement-assistance.md). |
 
 ## Writing
 
 | Skill | Say | When to use |
 | --- | --- | --- |
-| [write-humans](../skills/write-humans/SKILL.md) | "write this up" | Draft or edit clear prose for human readers. |
 | [write-agents](../skills/write-agents/SKILL.md) | "write agent instructions" | Draft or edit agent instructions so each fact has one home. Owns the shared Sessions, Context freshness, and Tools rules; Sessions keeps what the host does not: isolate shared runtime state between parallel writers, and report sibling work you cannot see. |
 
 ## Project start
@@ -76,7 +73,7 @@ Debugging, code simplification, security audits, and performance work belong to 
 
 ## Retired
 
-[Decision 0062](decisions/0062-claude-code-first.md) moved these to Claude Code or into other skills: `interview` and `grill` (now `explore`), `align` and `measure` (now `product`), `prototype` (now `design`), `push` (now `ship`), `handoff` and `tldr` (the host's sessions, transcripts, and recaps), `debug` and `retro` (the host), and `board`, now a maintainer script in this repository (`pnpm board`).
+[Decision 0062](decisions/0062-claude-code-first.md) moved these to Claude Code or into other skills: `interview` and `grill` (now `explore`), `align` and `measure` (now `product`), `prototype` (now `design`), `push` (now `ship`), `handoff` and `tldr` (the host's sessions, transcripts, and recaps), `debug` and `retro` (the host), and `board`, now a maintainer script in this repository (`pnpm board`). [Spec 059](specs/059-claude-code-first.md) removed `jtbd`, `competitors`, and `write-humans`: each tied with no skill in an on-trial comparison.
 
 ## Maintain (this repository)
 

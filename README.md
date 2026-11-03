@@ -22,7 +22,7 @@ Flow keeps its work in Git: specs, decision records, and the product brief are f
 
 | You use | You need |
 | --- | --- |
-| Thinking skills: `council`, `product`, `jtbd`, `competitors`, `domain-modeling`, and the writing skills | Nothing. Any folder works, with or without Git. |
+| Thinking skills: `council`, `product`, `domain-modeling`, and `write-agents` | Nothing. Any folder works, with or without Git. |
 | The delivery chain: `flow`'s setup, `start`, `explore`, `to-spec`, `to-tasks`, `build`, `review`, `ship` | A Git repository. Outside one, the skill offers `git init` and stops if you say no. |
 | GitHub mode | GitHub access as well: pull requests and CI live there. |
 
@@ -115,8 +115,8 @@ Details and links to every `SKILL.md`: **[docs/skills.md](docs/skills.md)**.
 | Advisory | `council` |
 | Design | `design` (prototypes too) |
 | Shared language | `domain-modeling` |
-| Product discovery | `jtbd`, `competitors`, `product` |
-| Writing | `write-agents`, `write-humans` |
+| Product discovery | `product` |
+| Writing | `write-agents` |
 | Project start | `start` |
 
 The plugin adds a guard hook ([`hooks/guard.mjs`](hooks/guard.mjs)), a SessionStart report ([`hooks/wip.mjs`](hooks/wip.mjs)), and the [`flow-reviewer`](agents/flow-reviewer.md) agent. Debugging, hand-offs, recaps, and retrospectives are Claude Code's own ([decision 0062](docs/decisions/0062-claude-code-first.md)).
