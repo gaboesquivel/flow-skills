@@ -68,6 +68,18 @@ test('live via a later deployment when the commit\'s own deployment is inactive 
   assert.match(r.detail, /deployment 11 \(via later commit bbbbbbb; deployment 7 was superseded\)/u)
 })
 
+test('live via a newer successful redeploy of the same commit when its own deployment is inactive', async () => {
+  const r = await check(git({
+    'git merge-base --is-ancestor': fail('must not be needed for the same commit'),
+    [`gh api ${R}/deployments?sha=${SHA}`]: [deployment(7)],
+    [`gh api ${R}/deployments/7/statuses`]: [{ state: 'inactive' }],
+    [`gh api ${R}/deployments?environment=Production`]: [deployment(12), deployment(7)],
+    [`gh api ${R}/deployments/12/statuses`]: [{ state: 'success', environment_url: 'https://app.example.com' }],
+  }))
+  assert.equal(r.state, 'live')
+  assert.match(r.detail, /deployment 12 \(redeploy of aaaaaaa; deployment 7 was superseded\)/u)
+})
+
 test('not live: inactive with no later successful deployment containing the commit', async () => {
   const r = await check(git({
     'git merge-base --is-ancestor': fail('not an ancestor'),

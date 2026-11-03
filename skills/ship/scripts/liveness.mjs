@@ -113,14 +113,17 @@ export async function liveness({ repoDir, ref = 'HEAD', pr = null, url = null, h
     try { newer = api(`repos/${repo}/deployments?environment=${encodeURIComponent(superseded.environment ?? '')}&per_page=20`) } catch (e) { return result('unverified', sha, branch, `deployment ${superseded.id} is inactive; cannot read later deployments: ${firstLine(e)}`) }
     let found = null
     for (const d of [...(Array.isArray(newer) ? newer : [])].sort((a, b) => b.id - a.id)) {
-      if (d.id === superseded.id || d.sha === sha || tryGit('merge-base', '--is-ancestor', sha, d.sha) === null) continue
+      // A redeploy of this same commit counts; only the superseded deployment itself is skipped.
+      if (d.id === superseded.id || (d.sha !== sha && tryGit('merge-base', '--is-ancestor', sha, d.sha) === null)) continue
       const s = latestStatus(api, repo, d)
       if (s?.state === 'success') { found = { d, s }; break }
     }
     if (!found) return result('not live', sha, branch, `deployment ${superseded.id}${via} is inactive (superseded) and no later successful deployment on ${superseded.environment ?? 'its environment'} contains ${sha.slice(0, 7)}`)
     deployment = found.d
     status = found.s
-    via = ` (via later commit ${deployment.sha.slice(0, 7)}; deployment ${superseded.id} was superseded)`
+    via = deployment.sha === sha
+      ? ` (redeploy of ${sha.slice(0, 7)}; deployment ${superseded.id} was superseded)`
+      : ` (via later commit ${deployment.sha.slice(0, 7)}; deployment ${superseded.id} was superseded)`
   }
   const state = status?.state ?? 'pending'
   if (['pending', 'queued', 'in_progress'].includes(state)) return result('unverified', sha, branch, `deployment ${deployment.id}${via} still ${state} after ${waitSeconds}s`)

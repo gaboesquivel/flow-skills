@@ -23,7 +23,7 @@ Run `build` unless its review and green checks cover the head you will land with
 Human-tier work (`build`'s Size guard) lands only on the user's yes given after build reported its paths.
 
 - **GitHub mode:** prefer the desktop's **Merge when ready** (GitHub auto-merge) where available. Else `gh pr merge` with an allowed method and `--match-head-commit <checked head>`; the guard hook blocks it unless `scripts/required-checks.mjs` passes. A required check that is pending or failing stops the landing, and so does one skipped, missing, or on another head: a check skipped while the pull request was a draft never counts. When protection requires a human approval, stop.
-- **Local mode:** merge the checked head into `main` with a merge commit, rerunning the suite once when `main` moved. Push `main` when a remote exists; on a rejection, fetch, merge, rerun, and push once, else stop.
+- **Local mode:** merge the checked head into `main` with a merge commit, rerunning the suite once when `main` moved. Push `main` when a remote exists; on a rejection, fetch, merge, rerun, and push once, else stop. The guard hook denies pushing the default branch to GitHub even in local mode: hand the user that one `git push`.
 
 **Refused merge:** stop with a ready-to-merge report (head SHA, checks, review, command); never retry around it. After the merge, remove only the branches and worktrees this delivery created (never `--force`).
 

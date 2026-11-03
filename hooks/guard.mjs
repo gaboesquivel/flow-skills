@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Flow guard: Claude Code PreToolUse hook for Bash. Denies unsafe Git and merge operations with a reason.
 // Reads the hook JSON on stdin. Prints a deny decision on stdout, or nothing to leave the call to the normal
-// permission flow. Fails open when it cannot parse a command; fails closed only for merges it cannot check.
+// permission flow. Fails open when it cannot parse a command, unless its raw text shows a dangerous git/gh flag; fails
+// closed for merges it cannot check.
 // Pure Node >= 22, no dependencies, never writes files.
 import { spawnSync } from 'node:child_process'
 import { existsSync, readFileSync, realpathSync } from 'node:fs'
@@ -33,19 +34,34 @@ function feedsShell(line) {
 }
 
 // Remove heredoc bodies: their text is data, not commands, unless the heredoc feeds a shell, whose body is kept as
-// commands. Only a << outside quotes and comments starts a heredoc. An unterminated heredoc drops everything after it.
+// commands. Only a << outside quotes and comments starts a heredoc; a $( inside double quotes opens an unquoted context
+// until its matching ), so `"$(cat <<'EOF' ... EOF\n)"` strips its body too. An unterminated heredoc drops everything
+// after it.
 export function stripHeredocs(text) {
   let out = ''
   let lineStart = 0
   let quote = null
+  // Open $( substitutions entered from inside double quotes: their ( depth and where their text starts in `out`.
+  const subs = []
   const pending = []
   let i = 0
   while (i < text.length) {
     const c = text[i]
     if (quote === "'") { out += c; if (c === "'") quote = null; i++; continue }
     if (c === '\\' && i + 1 < text.length) { out += c + text[i + 1]; i += 2; continue }
-    if (quote === '"') { out += c; if (c === '"') quote = null; i++; continue }
+    if (quote === '"') {
+      if (c === '$' && text[i + 1] === '(') { out += '$('; i += 2; subs.push({ depth: 0, start: out.length }); quote = null; continue }
+      out += c
+      if (c === '"') quote = null
+      i++
+      continue
+    }
     if (c === "'" || c === '"') { quote = c; out += c; i++; continue }
+    if (subs.length && c === '(') subs.at(-1).depth++
+    if (subs.length && c === ')') {
+      if (subs.at(-1).depth === 0) { subs.pop(); quote = '"'; out += c; i++; continue }
+      subs.at(-1).depth--
+    }
     if (c === '#' && (out.length === lineStart || /[\s;&|()]/u.test(out.at(-1)))) {
       const end = text.indexOf('\n', i)
       const stop = end === -1 ? text.length : end
@@ -63,7 +79,7 @@ export function stripHeredocs(text) {
       }
     }
     if (c === '\n') {
-      const feed = pending.length > 0 && feedsShell(out.slice(lineStart))
+      const feed = pending.length > 0 && feedsShell(out.slice(Math.max(lineStart, subs.at(-1)?.start ?? 0)))
       out += c
       i++
       for (const { tabs, word } of pending) {
@@ -282,11 +298,25 @@ const PUSH_DANGEROUS = ['--force', '--force-with-lease', '--force-if-includes', 
 const COMMIT_VALUE_OPTS = new Set(['-m', '--message', '-F', '--file', '-C', '--reuse-message', '-c', '--reedit-message', '-t', '--template',
   '--author', '--date', '--cleanup', '--fixup', '--squash', '--trailer', '--pathspec-from-file'])
 
+// Where a push to `remote` goes: the remote's push URL, or `remote` itself when it is a URL or path.
+function pushUrl(remote, dir) {
+  if (!remote) {
+    const branch = currentBranch(dir)
+    const conf = (key) => { const r = run('git', ['config', key], { cwd: dir }); return r.ok && r.stdout ? r.stdout : null }
+    remote = (branch && conf(`branch.${branch}.pushRemote`)) || conf('remote.pushDefault') || (branch && conf(`branch.${branch}.remote`)) || 'origin'
+  }
+  const r = run('git', ['remote', 'get-url', '--push', remote], { cwd: dir })
+  return r.ok && r.stdout ? r.stdout : remote
+}
+
 function checkPush(rest, dir) {
   const positional = []
+  let repo = null
   for (let i = 0; i < rest.length; i++) {
     const a = rest[i]
     if (a === '--') { positional.push(...rest.slice(i + 1)); break }
+    if (a === '--repo') { repo = rest[++i] ?? null; continue }
+    if (a.startsWith('--repo=')) { repo = a.slice(7) || null; continue }
     if (PUSH_VALUE_OPTS.has(a)) { i++; continue }
     const opt = longOption(a, PUSH_DANGEROUS)
     if (opt === '--no-verify') return deny('Flow guard: `git push --no-verify` skips the pre-push hooks; fix what the hook reports and push again without --no-verify.')
@@ -310,8 +340,10 @@ function checkPush(rest, dir) {
     dst = dst.replace(/^refs\/heads\//u, '')
     if (dst === main) toDefault = true
   }
-  // Local delivery (ship's local mode) lands by merging into the default branch and pushing it.
-  if (toDefault && deliveryMode(dir) !== 'local') {
+  if (!toDefault) return null
+  // A GitHub destination always lands through a pull request, whatever origin or the Delivery line says. Otherwise
+  // local delivery (ship's local mode) lands by merging into the default branch and pushing it.
+  if (GITHUB_REMOTE.test(pushUrl(positional[0] ?? repo, dir)) || deliveryMode(dir) !== 'local') {
     return deny('Flow guard: pushing to the default branch is blocked; push a feature branch and land it through a pull request.')
   }
   return null
@@ -472,6 +504,28 @@ export function evaluate(command, cwd, depth = 0, dir = cwd) {
   return null
 }
 
+const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')
+
+// A command the guard cannot parse is allowed, unless its raw text plainly runs git/gh push, commit, merge, or rebase
+// with a dangerous token; then it is denied, since the guard cannot tell what it would do.
+export function riskyUnparseable(command, cwd) {
+  if (!/\b(?:git|gh)\b[\s\S]*?\b(?:push|commit|merge|rebase)\b/u.test(command)) return null
+  const PUSH = String.raw`\bpush\b[^\n;&|]*\s`
+  const risky = [
+    /(?:^|[\s"'])--(?:forc|force[\w=:/-]*|no-v[\w-]*|adm\w*|mirr\w*)(?=$|[\s"'`)])/u,
+    /core\.hookspath/iu,
+    new RegExp(`${PUSH}-[A-Za-z]*f[A-Za-z]*(?=$|[\\s"'\`)])`, 'u'),
+    new RegExp(`${PUSH}\\+\\S`, 'u'),
+    /\bcommit\b[^\n;&|]*\s-[A-Za-z]*n[A-Za-z]*(?=$|[\s"'`)])/u,
+  ]
+  let why = risky.some((re) => re.test(command)) ? 'it skips hooks or forces a push' : null
+  if (!why) {
+    const main = escapeRe(defaultBranch(cwd))
+    const toMain = new RegExp(`${PUSH}(?:\\S*:)?(?:refs/heads/)?${main}(?=$|[\\s"'\`)])`, 'u')
+    if (toMain.test(command) && deliveryMode(cwd) !== 'local') why = 'it pushes to the default branch'
+  }
+  return why && deny(`Flow guard: this command could not be parsed and ${why}; split it into simpler commands without the dangerous flag, or ask the user to run it.`)
+}
 
 function main() {
   let input
@@ -480,7 +534,7 @@ function main() {
   if (typeof command !== 'string' || !/\b(?:git|gh)\b/u.test(command)) return
   const cwd = typeof input.cwd === 'string' && input.cwd ? input.cwd : process.cwd()
   let verdict = null
-  try { verdict = evaluate(command, cwd) } catch { return }
+  try { verdict = evaluate(command, cwd) } catch { verdict = riskyUnparseable(command, cwd) }
   if (!verdict) return
   process.stdout.write(`${JSON.stringify({
     hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: 'deny', permissionDecisionReason: verdict.deny },

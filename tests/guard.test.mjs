@@ -168,7 +168,8 @@ test('local delivery mode may push the default branch, never force', (t) => {
 
   const blockLocal = gitRepo(t, 'main')
   writeFileSync(join(blockLocal, 'AGENTS.md'), '# Agents\n\n<!-- BEGIN FLOW -->\nDelivery: local\n<!-- END FLOW -->\n')
-  expect(t, 'git push origin main', 'allow', { cwd: blockLocal })
+  // The Delivery line cannot open a GitHub destination: origin here is github.com.
+  expect(t, 'git push origin main', 'deny', { cwd: blockLocal })
   expect(t, 'git push -f origin main', 'deny', { cwd: blockLocal })
 
   const blockGithub = gitRepo(t, 'main', { origin: bare })
@@ -274,6 +275,69 @@ esac
   writeFileSync(log, '')
   expect(t, 'gh pr merge --auto --squash', 'allow', { cwd, env })
   assert.equal(readFileSync(log, 'utf8'), '', 'auto-merge is left to GitHub')
+})
+
+test('a heredoc inside "$(...)" is stripped, so quotes in its body do not hide the command', (t) => {
+  const cwd = gitRepo(t, 'feature')
+  const msg = (body) => `"$(cat <<'EOF'\n${body}\nEOF\n)"`
+  for (const command of [
+    `git commit --no-verify -m ${msg("fix: it's done")}`,
+    `git commit -m ${msg("fix: it's done")} && git push --force origin feature`,
+    `git commit --no-verify -m ${msg('fix: say "hi')}`,
+    `git commit -m ${msg("won't")} && git push origin main`,
+    `git commit -m ${msg("won't")} && git push --force origin feature`,
+  ]) {
+    const r = expect(t, command, 'deny', { cwd })
+    assert.doesNotMatch(r.reason, /could not be parsed/u, 'parsed, not caught by the fail-closed fallback')
+  }
+  for (const command of [
+    `git commit -m ${msg("fix: it's done\n\nIt won't push --force.")}`,
+    `git commit -m ${msg("fix: it's done")} && git push origin feature`,
+    "cat <<EOF | git commit -F -\nfix: it's done\nEOF",
+    'echo "$(cat <<EOF\n$(git status)\nEOF\n)"',
+  ]) expect(t, command, 'allow', { cwd })
+})
+
+test('fails closed when an unparseable command shows a dangerous git flag', (t) => {
+  const cwd = gitRepo(t, 'feature')
+  for (const command of [
+    'git push --force origin feature && echo "unbalanced',
+    'git commit --no-verify -m x && echo "unbalanced',
+    'git commit -n -m x; echo "unbalanced',
+    'git push origin +feature && echo "unbalanced',
+    'git push origin main && echo "unbalanced',
+    'gh pr merge 12 --admin && echo "unbalanced',
+    'git -c core.hooksPath=/dev/null commit -m x && echo "unbalanced',
+  ]) {
+    const r = expect(t, command, 'deny', { cwd })
+    assert.match(r.reason, /could not be parsed/u)
+  }
+  for (const command of ['git commit -m x && echo "unbalanced', 'git push origin feature && echo "unbalanced', 'git status && echo "--force']) {
+    expect(t, command, 'allow', { cwd })
+  }
+  const bare = tempDir(t, 'flow-guard-bare-')
+  expect(t, 'git push origin main && echo "unbalanced', 'allow', { cwd: gitRepo(t, 'main', { origin: bare }) })
+})
+
+test('a default-branch push to a GitHub destination is denied whatever origin or the Delivery line says', (t) => {
+  const bare = tempDir(t, 'flow-guard-bare-')
+  const local = gitRepo(t, 'main', { origin: bare })
+  expect(t, 'git push git@github.com:a/b.git main', 'deny', { cwd: local })
+  expect(t, 'git push https://github.com/a/b.git HEAD:main', 'deny', { cwd: local })
+  expect(t, 'git push git@github.com:a/b.git feature', 'allow', { cwd: local })
+  expect(t, 'git push origin main', 'allow', { cwd: local })
+  expect(t, `git push ${bare} main`, 'allow', { cwd: local })
+
+  const mirror = gitRepo(t, 'main', { origin: bare })
+  spawnSync('git', ['remote', 'add', 'upstream', 'git@github.com:a/b.git'], { cwd: mirror })
+  expect(t, 'git push upstream main', 'deny', { cwd: mirror })
+  expect(t, 'git push origin main', 'allow', { cwd: mirror })
+  spawnSync('git', ['config', 'branch.main.remote', 'upstream'], { cwd: mirror })
+  expect(t, 'git push', 'deny', { cwd: mirror })
+
+  const blockLocal = gitRepo(t, 'main')
+  writeFileSync(join(blockLocal, 'AGENTS.md'), '<!-- BEGIN FLOW -->\nDelivery: local\n<!-- END FLOW -->\n')
+  expect(t, 'git push origin main', 'deny', { cwd: blockLocal })
 })
 
 test('allows what it does not recognise or cannot parse', (t) => {
