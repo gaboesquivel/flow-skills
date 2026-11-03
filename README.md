@@ -6,7 +6,14 @@
 
 ## Install
 
-**Claude Code (recommended).** Install Flow as a plugin. You get the skills, plus a guard hook that blocks force-pushes, pushes to the default branch, `--no-verify`, and admin merges, a report of work in flight when a session starts, and the `flow-reviewer` agent behind "review it". [Agent compatibility](docs/agent-compatibility.md#claude-code) covers loading the plugin and the settings we recommend.
+**Claude Code (recommended).** Install Flow as a plugin. You get the skills, plus a guard hook that blocks force-pushes, pushes to the default branch, `--no-verify`, and admin merges, a report of work in flight when a session starts, and the `flow-reviewer` agent behind "review it". The repository is its own marketplace; installed at user scope, the plugin loads in the terminal, the desktop app, and IDE extensions:
+
+```bash
+claude plugin marketplace add gaboesquivel/flow-skills
+claude plugin install flow@flow-skills
+```
+
+[Agent compatibility](docs/agent-compatibility.md#claude-code) covers loading the plugin and the settings we recommend.
 
 **Any Agent Skills host.** Install the skills alone, without the hooks:
 
