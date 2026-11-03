@@ -64,5 +64,6 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [057-content-architecture.md](057-content-architecture.md) (implemented)
 - [058-eve-default-runtime.md](058-eve-default-runtime.md) (implemented)
 - [059-claude-code-first.md](059-claude-code-first.md) (accepted)
+- [060-host-delegation.md](060-host-delegation.md) (draft)
 
 Significant standalone decisions belong in `docs/decisions/`, not in a spec. See [decisions](../decisions/README.md).
