@@ -129,4 +129,114 @@ Confirmed by the maintainer on 2026-11-03 and recorded in [0062](../decisions/00
   - `claude plugin eval` is available for the on-trial skills. The docs and the host disagree, so fall back to spec 041's manual comparison.
   - The cloud has no documented auto-merge, so `ship` keeps a `gh` merge path.
   - The word estimates come from an audit, not a measurement.
-- Next: "break it down" for tasks, then "build it".
+- Next: "build it".
+
+## Tasks
+
+- [ ] 01: Guard hook in a plugin shell
+- [ ] 02: Baseline: current Flow vs no skills
+- [ ] 03: Hand the session and worktree layer to the host
+- [ ] 04: Move GitHub and merge procedure into scripts
+- [ ] 05: Review on `/code-review`
+- [ ] 06: Merge the discovery skills
+- [ ] 07: Retire host-covered skills and sweep the catalog
+- [ ] 08: Rerun the comparison and close
+
+### 01: Guard hook in a plugin shell
+
+**What to build:** Flow installs as a Claude Code plugin. Its PreToolUse guard blocks force-pushes, pushes to the default branch, `--no-verify`, `gh pr merge --admin`, destructive worktree commands outside the session's directory, and merges whose required checks are not green. No skill changes.
+
+**Area:** .claude-plugin, hooks, tests, scripts
+
+**Blocked by:** None (can start immediately)
+
+- [ ] Every deny and allow fixture in Testing Decisions passes (`node --test tests/guard.test.mjs`)
+- [ ] Each deny gives a reason. Unparseable commands are allowed. The hook never writes and exits within 2 seconds.
+- [ ] `pnpm validate` checks `plugin.json` and `hooks.json`
+- [ ] Installing the plugin from this branch blocks `git push --force` in a live session (acceptance step 3)
+
+### 02: Baseline: current Flow vs no skills
+
+**What to build:** spec 041's comparison runs on one representative small task: current Flow against no skills, with the same model and host, in isolated worktrees from the same commit. This is the yardstick for every later cut.
+
+**Area:** tests/evals
+
+**Blocked by:** None (can start immediately)
+
+- [ ] The record in `tests/evals/records/` gives elapsed time, user turns, retries, CI failures, unauthorized actions, cost or `unknown`, and limitations
+- [ ] `pnpm eval:check` passes
+- [ ] It runs before any skill edit on this branch lands
+
+### 03: Hand the session and worktree layer to the host
+
+**What to build:** a new session prints work in flight (kept worktrees, unmerged branches, open pull requests) through a SessionStart hook. `write-agents` and `build` stop describing worktrees, sessions, integration owners, worker mechanics, progress notes and prompt logs. Two rules stay: isolate shared runtime state, and report sibling work you can't see. `build` keeps slicing by area and lets the host size the fan-out under a concurrency cap.
+
+**Area:** hooks, skills/write-agents, skills/build, docs/agent-compatibility.md
+
+**Blocked by:** 01 (shares the hook configuration), 02
+
+- [ ] Opening a session in a repository with a kept worktree and an open pull request lists both (acceptance step 2). The hook is silent on errors.
+- [ ] The recommended settings are documented: `worktree.baseRef: "head"`, and a subagent concurrency cap of 4–6
+- [ ] `write-agents` Sessions is about 150 words. Workers, the Repository rule, prompt logs and progress notes are gone, and the `git init` offer is one line.
+- [ ] `build` drops Work in flight, the Task set merge mechanics and the rule that an inline slice must name a reason
+
+### 04: Move GitHub and merge procedure into scripts
+
+**What to build:** `ship` merges through the gate and reports liveness from a script. Route selection between `gh` and REST is a script. `ship` absorbs `push`. The prose for the pull request lifecycle, Reaching GitHub, merge mechanics and the five liveness states shrinks to "run it". Desktop auto-merge is preferred, and the `gh` merge path stays for CLI and cloud.
+
+**Area:** skills/ship, skills/push, skills/build, scripts
+
+**Blocked by:** 02, 03 (both edit `build`)
+
+- [ ] `liveness.mjs` reports each of the five states against fixtures, and "ship it" ends with its output (acceptance step 5)
+- [ ] `gh-route.mjs` infers the delivery mode and falls back to REST when GraphQL is refused (fixture test)
+- [ ] "Push it" still pushes a branch and reports liveness, now through `ship`
+- [ ] `build` Pull request and Delivery mode each fit a few lines that point to the scripts
+
+### 05: Review on `/code-review`
+
+**What to build:** "review it" and `build`'s Verify run a Flow reviewer agent. It calls `/code-review` at the size-guard tier and adds per-step scenario verdicts, the scope check, glossary naming and the DESIGN.md UI checks. It keeps the three-round cap and the Important/Nit/Pre-existing labels. The generic axes and effort mechanics leave `review`.
+
+**Area:** agents, skills/review
+
+**Blocked by:** 02
+
+- [ ] Reviewing a branch with one unmet scenario step reports `unmet` with evidence, plus `/code-review`'s findings
+- [ ] The tiers map to `/code-review` levels: Quick → low, Standard → medium, Deep → high
+- [ ] `review` is about 350 words, and `pnpm validate` checks the agent frontmatter
+
+### 06: Merge the discovery skills
+
+**What to build:** `explore` absorbs `interview` and `grill`. A new `product` skill merges `align` and `measure`. `design` absorbs prototype's UI variants. `jtbd`, `competitors` and `write-humans` each stay only if they beat no skill on one scenario.
+
+**Area:** skills/explore, skills/interview, skills/grill, skills/align, skills/measure, skills/design, skills/prototype, skills/jtbd, skills/competitors, skills/write-humans, tests/evals
+
+**Blocked by:** 02
+
+- [ ] "Interview me", "grill this", "are we building the right thing" and "measure our progress" still reach the right behavior through the merged skills
+- [ ] Each on-trial skill has a recorded comparison against no skill, and the losers are removed
+- [ ] What stays: the direction-change gate, a guess on each question, pre-mortem and kill criterion, the journey-to-capability map, the gap taxonomy, and alternatives rendered in context
+
+### 07: Retire host-covered skills and sweep the catalog
+
+**What to build:** `handoff`, `tldr`, `debug`, `retro` and `board` leave the catalog, and `board.mjs` stays as a script. `to-spec` ships `next-number`. The Flow block drops PHRASES and the no-Node fallback. References to removed skills and sections are cleaned up across the catalog. The catalog docs, PRODUCT.md and AGENTS.md describe the plugin and the new catalog, and the total SKILL.md word count is enforced.
+
+**Area:** skills, scripts, docs, tests, PRODUCT.md, AGENTS.md, README.md, GLOSSARY.md
+
+**Blocked by:** 03, 04, 05, 06
+
+- [ ] `pnpm validate` and `pnpm test` pass with the new `EXPECTED_SKILL_NAMES`
+- [ ] `pnpm context` reports at most 10,000 SKILL.md words, and validation fails above that
+- [ ] No skill links a removed skill or section (`check-doc-links` and a grep stay clean)
+- [ ] `to-spec` numbering works from the installed skill
+
+### 08: Rerun the comparison and close
+
+**What to build:** task 02's comparison reruns with the rebuilt Flow, and the full acceptance scenario is walked through on flow-skills.
+
+**Area:** tests/evals, docs/specs
+
+**Blocked by:** 07
+
+- [ ] The record shows idea → prod and failures no worse than task 02's Flow run, or says the spec doesn't ship
+- [ ] Every acceptance scenario step has a verdict
