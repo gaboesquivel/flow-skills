@@ -28,6 +28,9 @@ const safety = [
   ['ship', /skipped while the pull request was a draft never counts/iu],
   ['build', /drafts run no CI/iu],
   ['build', /never cut by weakening a check/iu],
+  ['ship', /only `accepted` or `implemented` specs land/iu],
+  ['ship', /lands only on the user's yes/iu],
+  ['ship', /never `--force`/iu],
   ['write-agents', /\[REDACTED\]/u],
   ['write-agents', /never pick by timestamp/iu],
 ]
