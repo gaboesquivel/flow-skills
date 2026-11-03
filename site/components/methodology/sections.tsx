@@ -78,7 +78,7 @@ export function StepsSection() {
 const PATH_NOTES: Record<string, string> = {
   "Quick fix": "Start with the request. No spec, no questions: build, check once, and ship it.",
   "Shaped idea": "Explore asks in proportion to the change; build the confirmed brief directly.",
-  "Tracked bet": "A bet worth tracking gets a spec and verifiable tasks before the build.",
+  "Tracked work": "Work worth tracking gets a spec and verifiable tasks before the build.",
   "New project": "Start bootstraps from flow-next or flow-mono while explore shapes the product.",
 };
 
