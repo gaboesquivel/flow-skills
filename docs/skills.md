@@ -73,7 +73,7 @@ Debugging, code simplification, security audits, and performance work belong to 
 
 ## Retired
 
-[Decision 0062](decisions/0062-claude-code-first.md) moved these to Claude Code or into other skills: `interview` and `grill` (now `explore`), `align` and `measure` (now `product`), `prototype` (now `design`), `push` (now `ship`), `handoff` and `tldr` (the host's sessions, transcripts, and recaps), `debug` and `retro` (the host), and `board`, now a maintainer script in this repository (`pnpm board`). [Spec 059](specs/059-claude-code-first.md) removed `jtbd`, `competitors`, and `write-humans`: each tied with no skill in an on-trial comparison.
+[Decision 0062](decisions/0062-claude-code-first.md) moved these to Claude Code or into other skills: `interview` and `grill` (now `explore`), `align` and `measure` (now `product`), `prototype` (now `design`), `push` (now `ship`), `handoff` and `tldr` (the host's sessions, transcripts, and recaps), `debug` and `retro` (the host), and `board` (a maintainer script until 2026-11-03, then removed; spec status lines, pull requests, and the SessionStart work-in-flight report cover it). [Spec 059](specs/059-claude-code-first.md) removed `jtbd`, `competitors`, and `write-humans`: each tied with no skill in an on-trial comparison.
 
 ## Maintain (this repository)
 

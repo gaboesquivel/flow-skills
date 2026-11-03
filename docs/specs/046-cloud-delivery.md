@@ -1,6 +1,6 @@
 # 046 — Cloud delivery: same Flow, local or cloud
 
-Status: **accepted** (2026-10-31)  
+Status: **implemented** (2026-11-03; accepted 2026-10-31; built in #196, #200, #202)  
 Repository: `gaboesquivel/flow-skills`  
 Decision: [0055](../decisions/0055-capability-based-github-and-host-triggered-builds.md) (Accepted)  
 Builds on: [0044](../decisions/0044-fast-delivery.md), [0048](../decisions/0048-delivery-phrases-are-approvals.md), [0050](../decisions/0050-github-governance-preset.md), [0052](../decisions/0052-git-first-coordination.md), [0054](../decisions/0054-native-capability-first-sessions.md); [spec 041](041-skill-evaluation.md) (metrics), [spec 045](045-native-observable-sessions.md) (sessions)
