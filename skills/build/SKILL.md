@@ -69,7 +69,7 @@ One home; `to-spec` and `review` link here. A testing policy in the project's `A
 
 ## Scope guard
 
-One home; `review` and `ship` link here. The accepted scope is the request, or the spec's acceptance scenario, Out of Scope, and Appetite.
+One home; `review` and `ship` link here. The accepted scope is the request, or the spec's acceptance scenario, Out of Scope, and the appetite on its status line.
 
 - **New scope mid-flight** (a dashboard, a broad refactor, a dependency, infrastructure, a UI surface, another spec), from anyone: before starting it, recommend defer, replace, reject, or expand the appetite, and name the criterion it changes. A consequential change waits for the user while unaffected work continues; changing an accepted spec's scope returns it to `draft`. A small prefactor the work needs proceeds. Subagent briefs carry the Out of Scope list.
 - **Blockers are not scope.** A correctness, security, or required-check failure is fixed or reported as the reason it cannot ship; never cut by weakening a check or by calling the work shipped.
