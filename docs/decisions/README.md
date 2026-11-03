@@ -63,6 +63,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0057-draft-workspace-ready-checks.md](0057-draft-workspace-ready-checks.md) | Accepted | One draft pull request per spec; drafts run no CI or previews; ready runs checks; `ship` counts only checks that ran; no git hooks |
 | [0061-eve-default-agent-runtime.md](0061-eve-default-agent-runtime.md) | Accepted | Eve is the default agent runtime in flow-next and flow-mono; AI SDK for lightweight HTTP; Flow Skills stay host-side |
 | [0058-review-passes-and-risk-tiers.md](0058-review-passes-and-risk-tiers.md) | Accepted | Fresh-context review on every build; risk tiers set Quick, Standard, or Deep effort; verify pass, Important/Nit/Pre-existing labels, every finding answered, three-round cap; human-tier paths ship on the user's yes |
+| [0062-claude-code-first.md](0062-claude-code-first.md) | Proposed | Claude Code first, portable where free; delegate to built-ins; host sizes fan-out; must-hold rules are hooks; ship as a plugin |
 | [0059-github-actions-over-vercel-ci.md](0059-github-actions-over-vercel-ci.md) | Accepted | Stay on GitHub Actions standard runners; Vercel CI and paid third-party runners not adopted; pricing notes and revisit triggers |
 | [0060-slice-by-area.md](0060-slice-by-area.md) | Accepted | `build` splits work into slices by area at intake; every slice of a multi-area change goes to a worker |
 
