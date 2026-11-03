@@ -12,8 +12,8 @@ Break a plan, spec, or conversation into **tasks**: independently verifiable ver
 
 1. **Context.** Read a named spec, issue, or URL in full, and the areas touched. Use the project's terms, respect decision records, and prefactor first: make the change easy, then make the easy change.
 2. **Slices.** Each delivers narrow, demoable behavior across the layers it needs and fits one fresh context.
-3. **Area.** Every package or directory a task changes, coarse, never file paths, routes outside its main package included; `build` slices by area, so disjoint areas must mean disjoint changes.
-4. **Blockers.** Only a real data or file dependency, never topic order. Prefer a wide frontier; a task is **ready** once its blockers are complete.
+3. **Area.** Every package or directory a task changes (coarse, never file paths), including routes outside its main package; `build` slices by area, so disjoint areas must mean disjoint changes.
+4. **Blockers.** Only a real data or file dependency, never topic order; prefer a wide frontier. A task is **ready** once its blockers are complete.
 
 **Wide refactors** no vertical slice can land green use **expand–contract**: add the new form; migrate call sites in green batches by package, each blocked by the expand; remove the old form, blocked by every batch. Batches that cannot stay green alone share an integration branch and a final verify task.
 
@@ -25,7 +25,7 @@ Break a plan, spec, or conversation into **tasks**: independently verifiable ver
 
 Omit `Blocked by` when none. Add one indented sentence only when the title cannot say what to build. The spec's Acceptance holds the checks. Without a spec, write one with `to-spec` first or return a labelled local draft. Keep paths and code out of task text.
 
-**Task issues** open only when asked: one per task from the issue template, blockers linked once every number exists, and `(#N)` appended to each line. On a public repository, say the issues are public; on a retry, open only the missing ones.
+**Task issues** open only when asked: one per task from the issue template, blockers linked once every number exists, and `(#N)` appended to each line. Say when they are public; on a retry, open only the missing ones.
 
 Tasks are not pull requests or worktrees; `build` groups them. Report where the tasks live and the ready set, then wait for "build it".
 
@@ -33,7 +33,7 @@ Tasks are not pull requests or worktrees; `build` groups them. Report where the 
 
 ## Spec
 
-A link to the spec file, if any.
+Its link, if any.
 
 ## What to build
 

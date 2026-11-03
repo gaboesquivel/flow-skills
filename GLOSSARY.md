@@ -82,7 +82,7 @@ Work started but not yet on the default branch: kept worktrees, branches with co
 
 ## Delivery appetite
 
-How much time (and, when material, model, evaluation, or infrastructure cost) an increment is worth, with its first verifiable slice and non-goals. A target and constraint, not a guarantee; recorded in the increment's spec (or, for work built without one, its brief or pull request), never in `PRODUCT.md`. [`to-spec`](skills/to-spec/SKILL.md) records it as an optional clause on the spec's status line; [decision 0053](docs/decisions/0053-delivery-appetite-and-scope.md).
+How much time (and, when material, model, evaluation, or infrastructure cost) an increment is worth, with its first verifiable slice and non-goals. A target and constraint, not a guarantee; recorded in the increment's spec (or, for work built without one, its brief or pull request), never in `PRODUCT.md`. [`to-spec`](skills/to-spec/SKILL.md) records the time target on the spec's status line and the rest under Decisions; [decision 0053](docs/decisions/0053-delivery-appetite-and-scope.md).
 
 ## Scope trade-off
 
