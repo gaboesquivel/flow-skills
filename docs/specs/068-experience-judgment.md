@@ -1,6 +1,6 @@
 # 068 — Experience and judgment
 
-Status: draft (2026-11-04). Appetite: one session. Decision: [0068](../decisions/0068-experience-skill.md). Evidence: [research note](../research/2026-11-04-judgment-and-experience.md).
+Status: implemented (2026-11-04). Appetite: one session. Decision: [0068](../decisions/0068-experience-skill.md). Evidence: [research note](../research/2026-11-04-judgment-and-experience.md).
 
 ## Problem
 

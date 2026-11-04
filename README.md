@@ -31,7 +31,7 @@ Flow keeps its work in Git: specs, decision records, and the product brief are f
 
 | You use | You need |
 | --- | --- |
-| Thinking skills: `council`, `product`, `domain-modeling`, and `write-agents` | Nothing. Any folder works, with or without Git. |
+| Thinking skills: `council`, `product`, `experience`, `domain-modeling`, and `write-agents` | Nothing. Any folder works, with or without Git. |
 | The delivery chain: `flow`'s setup, `start`, `explore`, `to-spec`, `to-tasks`, `build`, `review`, `ship` | A Git repository. Outside one, the skill offers `git init` and stops if you say no. |
 | GitHub mode | GitHub access as well: pull requests and CI live there. |
 
@@ -122,6 +122,7 @@ Details and links to every `SKILL.md`: **[docs/skills.md](docs/skills.md)**.
 | Context alignment | `flow` |
 | Delivery | `explore`, `to-spec`, `to-tasks`, `build`, `review`, `ship` |
 | Advisory | `council` |
+| Experience | `experience` (read-only walk of a running product) |
 | Design | `design` (prototypes too) |
 | Shared language | `domain-modeling` |
 | Product discovery | `product` |

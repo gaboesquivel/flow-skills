@@ -1,6 +1,6 @@
 ---
 name: explore
-description: Understand the problem, users, and open questions before planning or building, interviewing with a guess on each question or stress-testing a plan. Use when the user says "explore this", "what are we missing", "interview me", "ask me questions", "grill me", "grill this", or "poke holes in it".
+description: Understand the problem, users, and open questions before planning or building, interviewing with a guess on each question or stress-testing a plan. Use when the user says "explore this", "what are we missing", "interview me", "ask me questions", "grill me", "grill this", "poke holes in it", or "work backwards".
 disable-model-invocation: false
 ---
 
@@ -32,9 +32,11 @@ Match the request; never ask for depth.
 
 Ask when who it is for, why now, success, or the binding constraint is missing and you would otherwise fill it in silently.
 
+- Work backwards: start from the outcome the user wants and the journey that reaches it, and keep doing nothing a live alternative until the evidence beats it. Name the question before proposing architecture.
 - Open with a one-sentence hypothesis of what the user wants and an honest confidence percentage; below about 70%, name what is missing. Update both as you go.
 - Put **a guess on each question**, with its reasoning. Open questions go one per message; batch up to three closed ones per form in the host's question UI, marking your guess and each option's tradeoff. Sometimes leave a guess unmarked or guess where you expect pushback, so agreement is not mere politeness.
 - When an answer sounds like what a good answer should (buzzwords, "I should probably"), ask what they would want without justifying it. Re-ask "whatever you think" as a choice between two concrete options.
+- When one uncertainty blocks the choice, suggest the smallest investigation that resolves it (read a contract, trace a request, compare two approaches), then report what it showed and what follows.
 - Stop when you can predict the user's reaction to the next three questions. If confidence stops rising, say so and suggest stepping back.
 
 When the user asked only to be interviewed, restate intent in their words, one line each: outcome, user, why now, success, constraint, out of scope. "Sounds good" or silence is not a yes; ask what they would refine.

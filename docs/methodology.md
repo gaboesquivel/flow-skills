@@ -21,6 +21,8 @@ Agent speed creates costs that green checks do not show: code no one understands
 
 ## Clarify intent
 
+Work backwards from the user outcome, keep doing nothing as an alternative, and offer the smallest investigation when one uncertainty blocks a choice; [`experience`](../skills/experience/SKILL.md) observes the finished journey. Sources: [research note](research/2026-11-04-judgment-and-experience.md).
+
 Combine focused questions, research, suggested directions, and exploration of alternatives. Reuse known context. Establish the intended outcome, consequential assumptions, existing evidence, and how the next test will inform a decision.
 
 When commercial context affects the decision, use the known customer, buyer, business model, distribution, and evidence of maturity to guide refinement. Ask only for missing context that matters to the current uncertainty. Optional product-discovery skills do not block delivery work.
