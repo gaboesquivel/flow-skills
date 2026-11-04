@@ -14,7 +14,7 @@ Talk to your agent, by typing or dictation. Each skill has a [leading word](../G
 
 The delivery skills and the paths between them are drawn in the README: [how it works](../README.md#how-it-works). Every step is skippable; there is no required order.
 
-Product discovery, writing, advisory, and design skills are optional and do not block delivery.
+Product discovery, writing, advisory, experience, and design skills are optional and do not block delivery.
 
 ## Context alignment
 
@@ -26,7 +26,7 @@ Product discovery, writing, advisory, and design skills are optional and do not 
 
 | Skill | Say | When to use |
 | --- | --- | --- |
-| [explore](../skills/explore/SKILL.md) | "explore this" | Asks in proportion to the change, with no named depth tiers and never the delivery mode: a fix or small change gets no questions; a feature gets intent, journeys, the agent lens, and the metric it should move, if any; a new product adds the vision, the [first useful release](../GLOSSARY.md#first-useful-release), the riskiest assumption, kill criterion, main metric, and a pre-mortem. "Interview me" asks with a guess on each question until it can predict your answers; "grill this" stress-tests a plan's riskiest claims with evidence. One confirmation of the brief, committed on the work's branch, never on the default branch; or a clearer intent or a killed idea. Next steps: "build it" builds the brief with no spec, or "spec it" for tracked work (decisions [0036](decisions/0036-one-explore-depth.md), [0039](decisions/0039-build-never-requires-a-spec.md), [0044](decisions/0044-fast-delivery.md)). A goal that contradicts an accepted decision, spec, or `PRODUCT.md` fact on the current branch stops at a direction-change gate for your yes ([decision 0038](decisions/0038-direction-changes-are-confirmed-and-recorded.md)). |
+| [explore](../skills/explore/SKILL.md) | "explore this" | Asks in proportion to the change, with no named depth tiers and never the delivery mode: a fix or small change gets no questions; a feature gets intent, journeys, the agent lens, and the metric it should move, if any; a new product adds the vision, the [first useful release](../GLOSSARY.md#first-useful-release), the riskiest assumption, kill criterion, main metric, and a pre-mortem. "Work backwards" starts from the user outcome with doing nothing as an option; "interview me" asks with a guess on each question until it can predict your answers; "grill this" stress-tests a plan's riskiest claims with evidence. One confirmation of the brief, committed on the work's branch, never on the default branch; or a clearer intent or a killed idea. Next steps: "build it" builds the brief with no spec, or "spec it" for tracked work (decisions [0036](decisions/0036-one-explore-depth.md), [0039](decisions/0039-build-never-requires-a-spec.md), [0044](decisions/0044-fast-delivery.md)). A goal that contradicts an accepted decision, spec, or `PRODUCT.md` fact on the current branch stops at a direction-change gate for your yes ([decision 0038](decisions/0038-direction-changes-are-confirmed-and-recorded.md)). |
 | [to-spec](../skills/to-spec/SKILL.md) | "spec it" | Turn conversation into a numbered spec file that says what and why, with contracts where agents or other systems depend on them, an [Exposure](../GLOSSARY.md#exposure) line and one required [acceptance scenario](../GLOSSARY.md#acceptance-scenario); label assumptions; decide unasked whether the work is one spec or several, writing later ones as `candidate` stub files on the spec's branch. Writes the spec as a `draft` on the work's branch, and any decision beside it as **Proposed**, and opens no issue unless you ask. "Accept the spec", or "build it" or "ship it" on a draft, accepts it; `to-spec` owns [the rule](../skills/to-spec/SKILL.md#status-and-acceptance). "Share the draft" opens a draft pull request linking the file ([0044](decisions/0044-fast-delivery.md)). |
 | [to-tasks](../skills/to-tasks/SKILL.md) | "break it down" | Vertical-slice tasks with blockers, listed as a checklist in the spec's Tasks section (GitHub sub-issues only on request); lets outcomes, dependencies, and integration cost set the count; gives each task an [area](../GLOSSARY.md#area), which may list several directories; reports the ready set and waits for "build it". |
 | [build](../skills/build/SKILL.md) | "build it" | Implement authorized work on a branch, then verify it without merging: the review at the tier its risk sets, fixes, checks once on the final head, and branch [liveness](../GLOSSARY.md#liveness). Ends with an open pull request (GitHub mode) or a committed branch (local mode), and reports any unfinished work with its branch. Slices work with several outcomes and leaves the fan-out to the host; [unspecced work](../GLOSSARY.md#unspecced-work) needs no spec. Owns the size guard (risk tiers judged by consequence, not novelty; human-tier paths ship on your yes) and proportional [tests](../skills/build/SKILL.md#tests) and [delivery mode](../skills/build/SKILL.md#delivery-mode) ([0044](decisions/0044-fast-delivery.md), [0048](decisions/0048-delivery-phrases-are-approvals.md)). |
@@ -44,6 +44,7 @@ Product discovery, writing, advisory, and design skills are optional and do not 
 | Skill | Say | When to use |
 | --- | --- | --- |
 | [council](../skills/council/SKILL.md) | "ask the council" | Independent perspectives on a consequential decision. It does not implement or approve. |
+| [experience](../skills/experience/SKILL.md) | "walk the experience" | Read-only walk of a running product as its user, with the host's own browser or screenshot tools: realistic starting state, reproduction steps, impact and confidence for each friction found, observations kept apart from hypotheses. Not a design, review, or metrics pass, and nothing requires it ([decision 0068](decisions/0068-experience-skill.md)). |
 
 ## Design
 
@@ -57,7 +58,7 @@ Debugging, code simplification, security audits, and performance work belong to 
 
 | Skill | Say | When to use |
 | --- | --- | --- |
-| [product](../skills/product/SKILL.md) | "are we building the right thing" | Read-only check of the whole product against its vision, problems, metrics, and roadmap, and of each metric and journey against the evidence, naming what blocks a conclusion ("measure our progress"). Decisions [0041](decisions/0041-align-skill.md) and [0046](decisions/0046-measurement-assistance.md). |
+| [product](../skills/product/SKILL.md) | "are we building the right thing", "did it land" | Read-only check of the whole product against its vision, problems, metrics, and roadmap, and of each metric and journey against the evidence, naming what blocks a conclusion ("measure our progress"). Decisions [0041](decisions/0041-align-skill.md) and [0046](decisions/0046-measurement-assistance.md). |
 
 ## Writing
 

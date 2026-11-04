@@ -23,9 +23,9 @@ Scope: the working tree by default, or a branch, pull request, or spec. Run `flo
 - scenario verdicts: no evidence means `unresolved`, and `unmet` is Important
 - scope against `build`'s Scope guard
 - names against `GLOSSARY.md`
-- `DESIGN.md` and UI basics when the diff changes UI
+- `DESIGN.md` and UI basics when the diff changes UI, including material experiential defects (a missing loading, empty, or error state) seen in the rendered result; a whole-journey walk is `experience`'s
 
-Findings cite `file:line`: Important (blocks), Nit (at most three), or Pre-existing (never blocks).
+Be able to explain the consequential choices the change made. Findings cite `file:line`: Important (blocks), Nit (at most three), or Pre-existing (never blocks).
 
 ## Repair
 

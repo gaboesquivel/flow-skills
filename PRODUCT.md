@@ -110,7 +110,7 @@ flow-skills offers a small catalog: **context alignment** (`flow`) for root cont
 
 | Tier | Skills or features | Needs |
 | --- | --- | --- |
-| Thinking | `council`, `product`, `domain-modeling`, `write-agents`, `design` (directions and prototypes) | Nothing: any folder, or none |
+| Thinking | `council`, `product`, `experience`, `domain-modeling`, `write-agents`, `design` (directions and prototypes) | Nothing: any folder, or none |
 | Delivery chain | `flow` (the Flow block), `start`, `explore`, `design` (recording), `to-spec`, `to-tasks`, `build`, `review`, `ship` | A Git repository; outside one, the skill offers `git init` and stops on a no |
 | GitHub mode | Pull requests and CI; issues only on request | GitHub access through `gh`, its REST API, or the host's GitHub tools, on top of Git ([decision 0055](docs/decisions/0055-capability-based-github-and-host-triggered-builds.md)) |
 | Enforcement | The guard hook and the SessionStart report | Claude Code or Cursor with the Flow plugin. Cursor cloud agents run the shell guard and do not run the session report. `npx skills add` and other hosts run the same skills without the hooks |
@@ -122,6 +122,7 @@ Local delivery needs only Git, so the whole chain works with GitLab, Bitbucket, 
 | Context alignment | [`flow`](skills/flow/SKILL.md) — align the current project's `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, `ARCHITECTURE.md` where hosts support discovery, and set up Flow: the opt-in [Flow block](GLOSSARY.md#flow-block), which can override the inferred [delivery mode](GLOSSARY.md#delivery-mode). Not always-on, and not template initialization. |
 | Delivery | `explore` (interviews and stress tests too), `to-spec`, `to-tasks`, `build`, `review`, `ship` (pushes too) |
 | Advisory | `council` |
+| Experience | `experience` (read-only walk of a running product) |
 | Design | `design` (prototypes too) |
 | Shared language | `domain-modeling` |
 | Product discovery | `product` |
@@ -147,7 +148,7 @@ Opt-in conversational delivery ([decision 0020](docs/decisions/0020-flow-mode.md
 | Agent execution | `build` (outcomes and proofs for an implementation, in either delivery mode), `ship`; the plugin's guard hook; plain-Markdown packages with no mandatory router |
 | Verified value | `review` (the `flow-reviewer` agent on top of `/code-review`), `ship`, `product`; scenario verdicts, liveness, and a product-wide check against vision and metric evidence |
 
-Further catalog growth needs its own decision. [0013](docs/decisions/0013-restore-engineering-skills.md) restored `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug`. [0014](docs/decisions/0014-handoff-skill.md) adds `handoff`. [0015](docs/decisions/0015-tasks-and-domain-modeling.md) renames `to-tasks` and restores `domain-modeling`. [0019](docs/decisions/0019-voice-first-invocation.md) retires `simplify`, `security`, and `performance` in favor of host tools. [0027](docs/decisions/0027-progress-board-skill.md) adds `board`. [0041](docs/decisions/0041-align-skill.md) adds `align`. [0046](docs/decisions/0046-measurement-assistance.md) adds `measure`. [0051](docs/decisions/0051-design-skill.md) adds `design`. [0062](docs/decisions/0062-claude-code-first.md) hands host-covered work to Claude Code: `explore` absorbs `interview` and `grill`, `product` merges `align` and `measure`, `design` absorbs `prototype`'s UI variants, `ship` absorbs `push`, and `handoff`, `tldr`, `debug`, `retro`, and `board` leave the catalog (`board` stayed as a script until 2026-11-03, then was removed). [Spec 059](docs/specs/059-claude-code-first.md) removes `jtbd`, `competitors`, and `write-humans`, which tied with no skill in an on-trial comparison.
+Further catalog growth needs its own decision. [0013](docs/decisions/0013-restore-engineering-skills.md) restored `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug`. [0014](docs/decisions/0014-handoff-skill.md) adds `handoff`. [0015](docs/decisions/0015-tasks-and-domain-modeling.md) renames `to-tasks` and restores `domain-modeling`. [0019](docs/decisions/0019-voice-first-invocation.md) retires `simplify`, `security`, and `performance` in favor of host tools. [0027](docs/decisions/0027-progress-board-skill.md) adds `board`. [0041](docs/decisions/0041-align-skill.md) adds `align`. [0046](docs/decisions/0046-measurement-assistance.md) adds `measure`. [0051](docs/decisions/0051-design-skill.md) adds `design`. [0062](docs/decisions/0062-claude-code-first.md) hands host-covered work to Claude Code: `explore` absorbs `interview` and `grill`, `product` merges `align` and `measure`, `design` absorbs `prototype`'s UI variants, `ship` absorbs `push`, and `handoff`, `tldr`, `debug`, `retro`, and `board` leave the catalog (`board` stayed as a script until 2026-11-03, then was removed). [Spec 059](docs/specs/059-claude-code-first.md) removes `jtbd`, `competitors`, and `write-humans`, which tied with no skill in an on-trial comparison. [0068](docs/decisions/0068-experience-skill.md) adds `experience`.
 
 ### Open choices
 

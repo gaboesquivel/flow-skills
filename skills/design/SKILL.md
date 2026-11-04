@@ -26,7 +26,7 @@ Produce two to four directions that differ in concept, not only in color, in par
 
 Render each so the user can judge it by eye (an image, an HTML or SVG page, a design tool, or [variants on the real route](#prototypes) for a page layout). Show it in context, never in a vacuum: an identity on the same real screen for every direction, plus the mark at 16 and 32 px and in a header, light and dark; a page at phone and desktop width with real content.
 
-Look at each render before showing it, or say it was not seen; check contrast, small sizes, and that no mark reads as another brand.
+Show realistic content and the states a person meets: loading, empty, and failure, not only the happy path. Look at each render before showing it, or say it was not seen; check contrast, small sizes, and that no mark reads as another brand.
 
 Save exploration files where the user chose. They are evidence, never a second design authority: `DESIGN.md` holds the approved direction.
 

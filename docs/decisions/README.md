@@ -71,6 +71,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0065-proportional-verification.md](0065-proportional-verification.md) | Accepted | Risk is consequence, not novelty; test-first is targeted at consequential contracts; other behavior needs evidence, not necessarily a test |
 | [0066-specs-sized-by-delivery.md](0066-specs-sized-by-delivery.md) | Accepted | Four levels from vision to tasks; `to-spec` decides the split; no word limit; specs say what, not how |
 | [0067-flow-boundaries.md](0067-flow-boundaries.md) | Accepted | Four owners: plugin, starters, project scripts, host; `start` ends at the initial commit; critical thinking is selective |
+| [0068-experience-skill.md](0068-experience-skill.md) | Accepted | The experience skill and the new-skill test |
 
 ## Rules
 

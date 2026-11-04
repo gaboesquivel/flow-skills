@@ -104,6 +104,11 @@ Candidate sources for the `explore` redesign (depth tiers, write gates, extract-
 - [Every — ce-brainstorm](https://github.com/EveryInc/compound-engineering-plugin/tree/main/skills/ce-brainstorm) — Lightweight / Standard / Deep tiers, blindspot pass (partially inspected 2026-10-28).
 - [Gary Klein — project premortem](https://hbr.org/2007/09/performing-a-project-premortem) — summary only; full page paywalled.
 
+## Judgment and experience
+
+- [rauchg/skills](https://github.com/rauchg/skills) (MIT) and [rauchg/gdp-ts](https://github.com/rauchg/gdp-ts) — principles adopted, no tools; [research](research/2026-11-04-judgment-and-experience.md).
+- Heitor Lessa and Gregor Hohpe talks — the maintainer's summaries only, not transcribed; same note.
+
 ## Design and exploration
 
 Design candidates and alternative approaches. Inclusion does not add a Flow capability.

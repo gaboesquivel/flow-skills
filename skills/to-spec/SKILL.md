@@ -50,7 +50,7 @@ The change, from the user's side.
 
 ## Decisions
 
-Only consequential choices and established constraints that shape execution. For capabilities agents or other systems use, the contract, with errors and permissions they can act on.
+Only consequential choices and established constraints that shape execution, with the alternatives and trade-offs a person needs to decide and which are hard to reverse. A sketch or model only when it resolves a material uncertainty or states a binding constraint. For capabilities agents or other systems use, the contract, with errors and permissions they can act on.
 
 **Exposure** (required for deployable behaviour): where it runs, who can reach it, and how writes behave without authentication; with authentication out of scope, writes fail closed.
 
@@ -60,7 +60,7 @@ A confirmed direction change without a record: the file, old position, new one.
 
 ## Acceptance
 
-**Acceptance scenario** (required; `review` gives each step a verdict): the actor, the starting state with realistic data, and numbered steps with observable results; for agent users, also through the MCP tool. A metric the work should move gets a step proving it counts correctly; manual or existing measurement is enough when it answers the question.
+**Acceptance scenario** (required; `review` gives each step a verdict), a realistic user journey: the actor, the starting state with realistic data, and numbered steps with observable results; for agent users, also through the MCP tool. A metric the work should move gets a step proving it counts correctly; manual or existing measurement is enough when it answers the question.
 
 Then consequential invariants, each with the evidence proving it, per `build` Tests.
 

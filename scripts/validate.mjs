@@ -17,6 +17,7 @@ export const EXPECTED_SKILL_NAMES = [
   'council',
   'design',
   'domain-modeling',
+  'experience',
   'explore',
   'flow',
   'product',

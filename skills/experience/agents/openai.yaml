@@ -1,0 +1,5 @@
+interface:
+  display_name: "Experience"
+  short_description: "Walk a running product as its user"
+policy:
+  allow_implicit_invocation: true
