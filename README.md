@@ -68,8 +68,8 @@ Say a phrase and the matching skill runs. There is no required order: start anyw
 ```mermaid
 flowchart LR
   accTitle: Flow's skills from a new project to shipped work
-  accDescr: start leads into explore; shaping runs through to-spec and to-tasks, or straight to build; delivery runs build, then ship, with review when the change is large or you ask.
-  start["start<br/>new project"] ==> explore
+  accDescr: start can lead into explore; shaping runs through to-spec and to-tasks, or straight to build; delivery runs build, then ship, with review when the change is large or you ask.
+  start["start<br/>new project"] -.-> explore
   subgraph shapeGroup [Shape]
     explore["explore<br/>'explore this'"]
     spec["to-spec<br/>'spec it'"]
@@ -93,7 +93,7 @@ flowchart LR
 
 Thick arrow: an automatic hand-off, behind your yes. Dashed arrow: you say the next phrase.
 
-- **Skills suggest the next step and wait.** The only automatic hand-off is `start` → `explore`, behind your yes ([decision 0024](docs/decisions/0024-gated-hand-offs.md)). `explore` asks in proportion to the change: nothing for a fix, more for a new product. "Interview me" and "grill this" reach it too.
+- **Skills suggest the next step and wait.** The only automatic hand-off is `start` → `explore`, when the request describes the product and behind your yes ([decision 0024](docs/decisions/0024-gated-hand-offs.md)). `explore` asks in proportion to the change: nothing for a fix, more for a new product. "Interview me" and "grill this" reach it too.
 - **No spec required.** "Build it" works on a plain request ([decision 0039](docs/decisions/0039-build-never-requires-a-spec.md)); see [work without a spec](#work-without-a-spec).
 - **`ship` lands in both modes.** It builds first unless the branch is already verified, merges, then checks the shipped commit is live (decisions [0044](docs/decisions/0044-fast-delivery.md) and [0048](docs/decisions/0048-delivery-phrases-are-approvals.md)).
 - **Context stays aligned.** "Update the docs" has `flow` align `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md`.
@@ -103,7 +103,7 @@ Thick arrow: an automatic hand-off, behind your yes. Dashed arrow: you say the n
 | Quick fix | "build it" → "ship it", or just "ship it" |
 | Shaped idea | "explore this" → "build it" → "ship it" |
 | Tracked work | "explore this" → "spec it" → "break it down" → "build it" → "ship it" |
-| New project | "start a Next.js project" (hands off to `explore`) |
+| New project | "start a Next.js project" (`explore` alongside when you describe the product) |
 
 Every other skill (`council`, `product`, `design`, …) can run at any time and never blocks delivery.
 

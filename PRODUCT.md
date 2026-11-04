@@ -4,7 +4,7 @@
 
 ## Mission
 
-Make product engineering with AI agents simpler, faster, and more reliable—without sacrificing product understanding, engineering quality, or human judgment.
+Velocity with intent: make product engineering with AI agents simpler, faster, and more reliable—without sacrificing product understanding, engineering quality, or human judgment.
 
 ## Definition
 
@@ -29,8 +29,8 @@ Humans define direction and make consequential decisions. Agents do the work: ex
 1. **Product before code.** Build useful software, not just completed tasks.
 2. **Preserve intent.** Keep product, design, architecture, and significant decisions understandable and current.
 3. **Human-directed, agent-executed.** Agents carry out the work, including setup and operations; people decide, and handle only the steps that need them, such as sign-in and secrets ([decision 0049](docs/decisions/0049-agent-does-the-work.md)).
-4. **Minimal process.** Use only the structure and skills the task requires.
-5. **Evidence over claims.** Verify outcomes through appropriate tests, reviews, and real-world checks.
+4. **Minimal process.** Use only the structure and skills the task requires; skills compose, and no sequence is mandatory. Humans say what and why; agents choose how.
+5. **Evidence over claims.** Verify outcomes through tests, reviews, and real-world checks in proportion to risk: agents judge what needs evidence, and project scripts run the checks.
 6. **Claude Code first, portable where free.** Use the host's built-ins instead of restating them; skills stay plain Markdown so other agents keep the method ([decision 0062](docs/decisions/0062-claude-code-first.md)).
 7. **Improve through use.** Develop Flow using Flow, and simplify it through real experience.
 8. **Agent-first, API-first.** Build every product for agents and people; define consequential capabilities as contracts before interfaces.
@@ -44,7 +44,7 @@ Reduce the time and effort between human intent and verified product value. Proc
 | Metric | From | To | Target (hypothesis, low confidence) |
 | --- | --- | --- | --- |
 | **Idea → prod** (main) | First prompt of the session where the work begins, local or cloud, or the authorizing `build-it` label on an issue | Live: production deploy answers (apps), or merged to `main` (flow-skills) | Small change < 15 min; feature < 2 h |
-| Time to start | First prompt to `start` | First green deploy | < 5 min; flow-next and flow-mono ship Vercel-ready so `start` deploys with no extra setup |
+| Time to start | First prompt to `start` | Initial commit, pushed where authorized | < 5 min |
 | Time to close PR | First commit on the branch | Merge | Median < 10 min (baseline 7.4 min, p90 60 min) |
 | Delivery within appetite | Increment accepted with an appetite | Shipped | Most increments ship within appetite with accepted scope intact; not yet measured ([decision 0053](docs/decisions/0053-delivery-appetite-and-scope.md)) |
 
@@ -72,7 +72,7 @@ The methodology defines what good product engineering looks like. Reusable skill
 | **Flow website** ([`site/`](site/README.md)) | Public home for the ecosystem: methodology, skill catalog, starters, docs, capability pages, and articles rendered from this repository ([spec 057](docs/specs/057-content-architecture.md)), with a `⌘K` palette for search and cited answers for people ([spec 040](docs/specs/040-site-refinement.md)), and `llms.txt`, Markdown, search, and MCP for agents ([spec 032](docs/specs/032-prism-website.md)) |
 | **[Flow Factory](https://github.com/gaboesquivel/flow-factory)** | Optional hosted, issue-driven orchestration and automated execution built on Flow—not Flow itself. [Flow mode](#flow-mode) is the in-session counterpart and does not depend on it. |
 
-Adoption is flexible: take one skill or the whole practice, and shape the workflow to the work. The starters are deliberately opinionated: they choose the stack, tooling, and deployment so a project ships on day one; teams that want other choices keep the methodology and skip or fork a starter ([spec 040](docs/specs/040-site-refinement.md)).
+Each piece has one job ([who owns what](docs/methodology.md#who-owns-what)). Adoption is flexible: take one skill or the whole practice in any repository, and shape the workflow to the work. The starters are deliberately opinionated: they choose the stack, tooling, and deployment so a project ships on day one; teams that want other choices keep the methodology and skip or fork a starter ([spec 040](docs/specs/040-site-refinement.md)).
 
 Templates remain usable without Flow. Flow owns the methodology; flow-skills implements portable agent behavior; templates own their application foundations.
 
@@ -126,7 +126,7 @@ Local delivery needs only Git, so the whole chain works with GitLab, Bitbucket, 
 | Shared language | `domain-modeling` |
 | Product discovery | `product` |
 | Writing | `write-agents` |
-| Project start | [`start`](skills/start/SKILL.md) — Flow setup plus a verified bootstrap from flow-next or flow-mono in one lane while `explore` shapes the product in the other; asks only what the request leaves open, and the first green deployment is its done signal |
+| Project start | [`start`](skills/start/SKILL.md) — Flow setup plus a verified bootstrap from flow-next or flow-mono, with `explore` alongside when the request describes a product; asks only what the request leaves open, and the initial commit is its done signal |
 
 Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Say a skill's leading word ("interview me", "spec it", "ship it"); slash commands are optional. Every skill is reachable by phrase ([0019](docs/decisions/0019-voice-first-invocation.md)); `start` asks only what the request leaves open before it writes anything ([0022](docs/decisions/0022-start-runs-explore.md), amended by [0044](docs/decisions/0044-fast-delivery.md)). No skill enforces a sequence (`/build` does not require `/to-spec`).
 
@@ -153,6 +153,6 @@ Further catalog growth needs its own decision. [0013](docs/decisions/0013-restor
 
 Measurable learning may inform maintainer research. Idea → prod is Flow's main metric ([Success](#success)); broader demand remains unvalidated.
 
-**Starting a project.** Invoke the optional [`start`](skills/start/SKILL.md) skill when you want a verified new repository from flow-next or flow-mono. One lane bootstraps while `explore` shapes the product with you ([0022](docs/decisions/0022-start-runs-explore.md)). It asks only what the request leaves open. The bootstrap covers renamed identity, template setup, QA, the identity scan, `.gitignore`, baseline `PRODUCT.md` / `DESIGN.md` / `ARCHITECTURE.md`, and an independent initial commit when checks pass; the first green deployment is the done signal ([0044](docs/decisions/0044-fast-delivery.md)). There is no `flow start` command; discoverable `flow` must not be treated as initialization ([0010](docs/decisions/0010-optional-start-skill.md)).
+**Starting a project.** Invoke the optional [`start`](skills/start/SKILL.md) skill when you want a verified new repository from flow-next or flow-mono. When the request describes the product, `explore` runs alongside ([0022](docs/decisions/0022-start-runs-explore.md)). It asks only what the request leaves open. The bootstrap covers renamed identity, template setup, QA, the identity scan, `.gitignore`, baseline `PRODUCT.md` / `DESIGN.md` / `ARCHITECTURE.md`, and an independent initial commit when checks pass; the initial commit is the done signal ([decision 0067](docs/decisions/0067-flow-boundaries.md)). There is no `flow start` command; discoverable `flow` must not be treated as initialization ([0010](docs/decisions/0010-optional-start-skill.md)).
 
 See [documentation guide](docs/README.md) and [AGENTS.md](AGENTS.md) for maintenance.

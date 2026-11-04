@@ -516,7 +516,7 @@
         "start",
         "explore"
       ],
-      "behavior": "Start request with a description and clear name starts without restatement, bootstraps and explores in two lanes, and treats the first green deployment as done",
+      "behavior": "Start request with a description and clear name starts without restatement, bootstraps and explores in two lanes, and treats the initial commit as done",
       "taskFile": "tests/evals/tasks/E23-task.md",
       "rubricFile": "tests/evals/rubrics/E23-rubric.md",
       "skillReferences": [

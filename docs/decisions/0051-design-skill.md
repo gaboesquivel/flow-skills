@@ -1,6 +1,6 @@
 # 0051 — Design skill for visual direction
 
-Status: **Accepted** (2026-10-29). Spec: [039](../specs/039-design-skill.md).
+Status: **Accepted** (2026-10-29). Spec: [039](../specs/039-design-skill.md). Amended by [0067](0067-flow-boundaries.md) (`design` is offered after the initial commit).
 
 ## Context
 
