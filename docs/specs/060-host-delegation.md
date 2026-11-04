@@ -6,19 +6,18 @@ Decision: [0063](../decisions/0063-decision-record-threshold.md). Narrowed on 20
 
 ## Problem
 
-Spec 059 moved worktrees, sessions, review, and the pull request lifecycle to Claude Code. This draft listed what was left, and part of it has since landed. The repository also recorded a decision for choices that are cheap to reverse: about 60 records in 10 days.
+Spec 059 moved worktrees, sessions, review, and the pull request lifecycle to Claude Code. Draft 060 listed what was left, and part of it has since landed. The repository also recorded a decision for choices that are cheap to reverse: about 60 records in 10 days.
 
 ## Solution
 
 Close what is true today and set the record threshold:
 
-- `build`'s Verify already states its done condition as a `/goal`.
 - `.claude-plugin/marketplace.json` already publishes the plugin ([#239](https://github.com/gaboesquivel/flow-skills/pull/239)).
-- A choice gets a decision record only under [0063](../decisions/0063-decision-record-threshold.md)'s test. `to-spec` already states it; `AGENTS.md` now points there.
+- A choice gets a decision record only under [0063](../decisions/0063-decision-record-threshold.md)'s test. `to-spec` already states it; `AGENTS.md` now points there, and `flow-reviewer` flags a record that fails it.
 
 ## Decisions
 
-- Everything else moves to [spec 067](067-host-delegation-remainder.md), because each part needs a person's yes, reaches other repositories, or depends on a comparison run. Splitting lets the finished part land.
+- Everything else moves to [spec 067](067-host-delegation-remainder.md), because each part needs a person's yes, reaches other repositories, needs a host capability confirmed, or depends on a comparison run. Splitting lets the finished part land.
 - No deployable behaviour changes.
 
 ## Acceptance
