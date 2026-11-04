@@ -66,6 +66,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0060-slice-by-area.md](0060-slice-by-area.md) | Accepted (superseded in part by 0062; amended by 0066) | `build` splits work into slices by area at intake; every slice of a multi-area change goes to a worker |
 | [0061-eve-default-agent-runtime.md](0061-eve-default-agent-runtime.md) | Accepted | Eve is the default agent runtime in flow-next and flow-mono; AI SDK for lightweight HTTP; Flow Skills stay host-side |
 | [0062-claude-code-first.md](0062-claude-code-first.md) | Accepted (amended by 0064, 0066) | Claude Code first, portable where free; delegate to built-ins; host sizes fan-out; must-hold rules are hooks; ship as a plugin |
+| [0063-decision-record-threshold.md](0063-decision-record-threshold.md) | Accepted | Decision records only for choices among real alternatives that are costly to reverse or reach beyond one spec |
 | [0064-cursor-plugin.md](0064-cursor-plugin.md) | Accepted | Cursor plugin beside the Claude Code plugin; same guard and report, host protocol at the edge |
 | [0065-proportional-verification.md](0065-proportional-verification.md) | Accepted | Risk is consequence, not novelty; test-first is targeted at consequential contracts; other behavior needs evidence, not necessarily a test |
 | [0066-specs-sized-by-delivery.md](0066-specs-sized-by-delivery.md) | Accepted | Four levels from vision to tasks; `to-spec` decides the split; no word limit; specs say what, not how |
