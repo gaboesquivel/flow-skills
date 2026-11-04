@@ -45,6 +45,6 @@ Maintain useful context without waiting for a note-taking request. Respect expli
 - Keep one authoritative home for each fact; link instead of copying. Document intent, constraints, and useful navigation rather than restating readily discoverable code. Create files only for meaningful content.
 - Apply project-specific meanings and surface conflicts. When a meaning is resolved, update `GLOSSARY.md` and affected current documents together. Loading the glossary alone does not require an edit.
 - Preserve durable findings with sources and limitations in research, indexed in `docs/references.md`; distinguish historical and candidate sources from adopted influences. Avoid transcripts.
-- Record significant rationale in a numbered decision record under `docs/decisions/` and update current context. Routine clarification needs no decision record.
+- Record significant rationale in a numbered decision record under `docs/decisions/` and update current context; a choice earns one only under [`to-spec`](skills/to-spec/SKILL.md)'s test ([decision 0063](docs/decisions/0063-decision-record-threshold.md)). Routine clarification needs no decision record.
 - Record bounded increments in `docs/specs/` when the work warrants a durable artifact.
 - Keep personal motivations and private context out of project documents. Use concise, professional language.

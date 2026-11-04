@@ -1,6 +1,6 @@
 # 0063 — Decision-record threshold
 
-Status: **Proposed** (2026-11-03). Spec: [060](../specs/060-host-delegation.md).
+Status: **Accepted** (2026-11-03). Spec: [060](../specs/060-host-delegation.md).
 
 ## Context
 
@@ -8,7 +8,7 @@ flow-skills wrote about 60 decision records in its first 10 days, and several re
 
 ## Decision
 
-A choice gets a decision record only when it chose among real alternatives **and** is costly to reverse or reaches beyond one spec. Everything else goes in the spec's Implementation Decisions. `to-spec` and AGENTS.md state the test, and reviewers flag records that don't meet it.
+A choice gets a decision record only when it chose among real alternatives **and** is costly to reverse or reaches beyond one spec. Everything else goes in the spec's Decisions section. `to-spec` and AGENTS.md state the test, and reviewers flag records that don't meet it.
 
 ## Alternatives
 
