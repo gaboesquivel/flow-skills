@@ -33,7 +33,7 @@ Humans define direction and make consequential decisions. Agents do the work: ex
 5. **Evidence over claims.** Verify outcomes through tests, reviews, and real-world checks in proportion to risk: agents judge what needs evidence, and project scripts run the checks.
 6. **Claude Code first, portable where free.** Use the host's built-ins instead of restating them; skills stay plain Markdown so other agents keep the method ([decision 0062](docs/decisions/0062-claude-code-first.md)).
 7. **Improve through use.** Develop Flow using Flow, and simplify it through real experience.
-8. **Agent-first, API-first.** Build every product for agents and people; define capabilities as contracts before interfaces.
+8. **Agent-first, API-first.** Build every product for agents and people; define consequential capabilities as contracts before interfaces.
 
 Methodology practices that elaborate these principles live in [docs/principles.md](docs/principles.md) and [docs/methodology.md](docs/methodology.md) as optional judgment, not enforcement.
 

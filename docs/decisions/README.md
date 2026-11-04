@@ -25,8 +25,8 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0019-voice-first-invocation.md](0019-voice-first-invocation.md) | Accepted (amended by 0028, 0048) | Talking is the interface: model-invocable skills, spoken leading words, host coexistence |
 | [0020-flow-mode.md](0020-flow-mode.md) | Accepted (amended by 0030) | Flow mode: project instruction block, `to-tasks` hand-off, `ship` task-set orchestration, local and pull-request delivery modes |
 | [0021-autonomous-explore-and-ship.md](0021-autonomous-explore-and-ship.md) | Accepted (amended by 0028) | Explore and ship create docs files and GitHub issues, group pull requests, and suggest the host's autonomous mode |
-| [0022-start-runs-explore.md](0022-start-runs-explore.md) | Accepted (amended by 0039, 0044, 0067) | Speakable `start` runs `explore` beside the bootstrap; spec 001 full, later slices as candidates |
-| [0023-agent-first.md](0023-agent-first.md) | Accepted (amended by 0049) | Agent-first, API-first becomes an official principle; explore and to-spec apply it |
+| [0022-start-runs-explore.md](0022-start-runs-explore.md) | Accepted (amended by 0039, 0044, 0066, 0067) | Speakable `start` runs `explore` beside the bootstrap; spec 001 full, later slices as candidates |
+| [0023-agent-first.md](0023-agent-first.md) | Accepted (amended by 0049, 0066) | Agent-first, API-first becomes an official principle; explore and to-spec apply it |
 | [0024-gated-hand-offs.md](0024-gated-hand-offs.md) | Accepted (amended by 0028, 0029, 0067) | Named hand-offs; explicit yes before spec writes, task publishing, and merging or pushing `main`; `start` explores at Lite (depth amended by 0026) |
 | [0025-wave-checkpoints.md](0025-wave-checkpoints.md) | Accepted (amended by 0028, 0029, 0031, 0042, 0057) | `ship` runs task sets in waves with a draft pull request, preview checkpoints, and a `Deploy:` target |
 | [0026-process-depth.md](0026-process-depth.md) | Accepted (amended by 0029, 0030, 0067; superseded in part by 0036) | Lite or Full process recorded in the Flow block; `start` is Flow setup plus bootstrap; spec–decision boundary; "Flow Lite" label retired |
@@ -45,7 +45,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0039-build-never-requires-a-spec.md](0039-build-never-requires-a-spec.md) | Accepted (amended by 0042, 0044, 0058) | The size guard escalates review instead of stopping; specs only on request; "build it" after `explore` builds the brief; "build it local" on a protected repository stops at a branch commit |
 | [0040-ship-verifies-liveness.md](0040-ship-verifies-liveness.md) | Accepted (amended by 0044, 0048) | `ship` verifies only that the shipped commit's checks are green and its deployment answers; no scenario, browser, or preview run |
 | [0041-align-skill.md](0041-align-skill.md) | Accepted | Read-only `align` skill checks the product against its vision, problems, metrics, and roadmap |
-| [0042-outcome-build-and-ship.md](0042-outcome-build-and-ship.md) | Accepted (amended by 0044, 0056) | `build` and `ship` state outcomes, reasons, and proofs; workers, scheduling, and test order are choices |
+| [0042-outcome-build-and-ship.md](0042-outcome-build-and-ship.md) | Accepted (amended by 0044, 0056; amended by 0065) | `build` and `ship` state outcomes, reasons, and proofs; workers, scheduling, and test order are choices |
 | [0043-workers-when-they-pay.md](0043-workers-when-they-pay.md) | Accepted (amended by 0044, 0053, 0058) | Workers only where they pay; one green run per head; re-review covers the fix |
 | [0044-fast-delivery.md](0044-fast-delivery.md) | Accepted (amended by 0048, 0052, 0053, 0055, 0057, 0058) | Checks once at PR time, review when it pays; one delivery shape, inferred mode, no spec issue, parallel by default, zero lost work, shipped means deployed |
 | [0045-templates-pin-flow-skills.md](0045-templates-pin-flow-skills.md) | Accepted | Template skills locks pin flow-skills; Flow owns workflow, overlapping third-party workflow skills dropped |
@@ -59,15 +59,17 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0053-delivery-appetite-and-scope.md](0053-delivery-appetite-and-scope.md) | Accepted (amended by 0060) | Bounded delivery appetite, scope protection and economical parallelism |
 | [0054-native-capability-first-sessions.md](0054-native-capability-first-sessions.md) | Accepted | Native observable sessions, Claude Code validation priority and portable fallback |
 | [0055-capability-based-github-and-host-triggered-builds.md](0055-capability-based-github-and-host-triggered-builds.md) | Accepted | GitHub mode through any reachable route; optional label-triggered cloud builds; cloud-ready repository setup |
-| [0056-contract-first-tests.md](0056-contract-first-tests.md) | Accepted | API routes and MCP tools are test-first; no UI tests by default; `ARCHITECTURE.md` may set its own policy |
+| [0056-contract-first-tests.md](0056-contract-first-tests.md) | Accepted (amended by 0065) | API routes and MCP tools are test-first; no UI tests by default; `ARCHITECTURE.md` may set its own policy |
 | [0057-draft-workspace-ready-checks.md](0057-draft-workspace-ready-checks.md) | Accepted | One draft pull request per spec; drafts run no CI or previews; ready runs checks; `ship` counts only checks that ran; no git hooks |
-| [0061-eve-default-agent-runtime.md](0061-eve-default-agent-runtime.md) | Accepted | Eve is the default agent runtime in flow-next and flow-mono; AI SDK for lightweight HTTP; Flow Skills stay host-side |
-| [0058-review-passes-and-risk-tiers.md](0058-review-passes-and-risk-tiers.md) | Accepted (amended by 0062) | Fresh-context review on every build; risk tiers set Quick, Standard, or Deep effort; verify pass, Important/Nit/Pre-existing labels, every finding answered, three-round cap; human-tier paths ship on the user's yes |
-| [0062-claude-code-first.md](0062-claude-code-first.md) | Accepted (amended by 0064) | Claude Code first, portable where free; delegate to built-ins; host sizes fan-out; must-hold rules are hooks; ship as a plugin |
-| [0064-cursor-plugin.md](0064-cursor-plugin.md) | Accepted | Cursor plugin beside the Claude Code plugin; same guard and report, host protocol at the edge |
-| [0067-flow-boundaries.md](0067-flow-boundaries.md) | Accepted | Four owners: plugin, starters, project scripts, host; `start` ends at the initial commit; critical thinking is selective |
+| [0058-review-passes-and-risk-tiers.md](0058-review-passes-and-risk-tiers.md) | Accepted (amended by 0062, 0065) | Fresh-context review on every build; risk tiers set Quick, Standard, or Deep effort; verify pass, Important/Nit/Pre-existing labels, every finding answered, three-round cap; human-tier paths ship on the user's yes |
 | [0059-github-actions-over-vercel-ci.md](0059-github-actions-over-vercel-ci.md) | Accepted | Stay on GitHub Actions standard runners; Vercel CI and paid third-party runners not adopted; pricing notes and revisit triggers |
-| [0060-slice-by-area.md](0060-slice-by-area.md) | Accepted (superseded in part by 0062) | `build` splits work into slices by area at intake; every slice of a multi-area change goes to a worker |
+| [0060-slice-by-area.md](0060-slice-by-area.md) | Accepted (superseded in part by 0062; amended by 0066) | `build` splits work into slices by area at intake; every slice of a multi-area change goes to a worker |
+| [0061-eve-default-agent-runtime.md](0061-eve-default-agent-runtime.md) | Accepted | Eve is the default agent runtime in flow-next and flow-mono; AI SDK for lightweight HTTP; Flow Skills stay host-side |
+| [0062-claude-code-first.md](0062-claude-code-first.md) | Accepted (amended by 0064, 0066) | Claude Code first, portable where free; delegate to built-ins; host sizes fan-out; must-hold rules are hooks; ship as a plugin |
+| [0064-cursor-plugin.md](0064-cursor-plugin.md) | Accepted | Cursor plugin beside the Claude Code plugin; same guard and report, host protocol at the edge |
+| [0065-proportional-verification.md](0065-proportional-verification.md) | Accepted | Risk is consequence, not novelty; test-first is targeted at consequential contracts; other behavior needs evidence, not necessarily a test |
+| [0066-specs-sized-by-delivery.md](0066-specs-sized-by-delivery.md) | Accepted | Four levels from vision to tasks; `to-spec` decides the split; no word limit; specs say what, not how |
+| [0067-flow-boundaries.md](0067-flow-boundaries.md) | Accepted | Four owners: plugin, starters, project scripts, host; `start` ends at the initial commit; critical thinking is selective |
 
 ## Rules
 

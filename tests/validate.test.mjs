@@ -18,7 +18,6 @@ import {
   collectRecordErrors,
   collectSkillWordErrors,
   collectSkillsLinkErrors,
-  collectSpecLengthErrors,
   collectSpecStatusErrors,
   stripFencedCode,
   validateSkills,
@@ -266,18 +265,11 @@ test('a retired scenario may name a removed skill and its deleted files', (t) =>
   assert.deepEqual(errors, ['E16: unknown skill tldr', 'E16: missing skill reference skills/tldr/SKILL.md'])
 })
 
-test('spec length check fails specs from 061 over 1,000 words and names the file and count', (t) => {
-  const words = (n) => Array.from({ length: n }, () => 'word').join(' ')
-  const errors = collectSpecLengthErrors('061-long.md', words(1001))
-  assert.equal(errors.length, 1)
-  assert.match(errors[0], /docs\/specs\/061-long\.md: 1001 words, over the 1000-word limit/u)
-  assert.deepEqual(collectSpecLengthErrors('061-fits.md', words(1000)), [])
-  assert.deepEqual(collectSpecLengthErrors('075-short.md', `# Spec\n\n${words(10)}\n`), [])
-  assert.deepEqual(collectSpecLengthErrors('060-older.md', words(1500)), [], 'earlier specs are not rewritten')
+test('no spec fails for its length', (t) => {
   const docs = tempDir(t, 'flow-spec-length-')
   mkdirSync(join(docs, 'specs'))
-  writeFileSync(join(docs, 'specs', '062-padded.md'), `Status: **Draft**\n\n${words(1200)}\n`)
-  assert.match(collectRecordErrors(docs).join('\n'), /062-padded\.md: 1202 words/u)
+  writeFileSync(join(docs, 'specs', '065-long.md'), `Status: draft (2026-11-03).\n\n${'word '.repeat(1300)}\n`)
+  assert.deepEqual(collectRecordErrors(docs), [])
 })
 
 test('spec status check fails an accepted spec whose tasks are all ticked until it is implemented', (t) => {

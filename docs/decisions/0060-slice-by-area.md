@@ -1,6 +1,6 @@
 # 0060 — Build slices by area
 
-Status: **Accepted** (2026-11-02). Superseded in part by [0062](0062-claude-code-first.md) (item 2 and the named inline reason: the host sizes the fan-out under a cap). Amends [0053](0053-delivery-appetite-and-scope.md) (parallel work when it pays) for `build`'s implementation; [0031](0031-fan-out-by-default.md) item 5 (tasks declare an area) now also applies to specs without tasks.
+Status: **Accepted** (2026-11-02). Superseded in part by [0062](0062-claude-code-first.md) (item 2 and the named inline reason: the host sizes the fan-out under a cap). Amended by [0066](0066-specs-sized-by-delivery.md) (item 1: slicing is for work with several outcomes, by outcome first). Amends [0053](0053-delivery-appetite-and-scope.md) (parallel work when it pays) for `build`'s implementation; [0031](0031-fan-out-by-default.md) item 5 (tasks declare an area) now also applies to specs without tasks.
 
 ## Context
 

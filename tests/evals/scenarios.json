@@ -562,7 +562,7 @@
         "explore",
         "to-spec"
       ],
-      "behavior": "Spec it after a new-product brief writes spec 001 in full, contract-first, testing the riskiest assumption, with later bets as candidate stubs",
+      "behavior": "Spec it after a new-product brief writes the active spec in full, bounded by the first useful release, with later work as candidate stubs",
       "taskFile": "tests/evals/tasks/E25-task.md",
       "rubricFile": "tests/evals/rubrics/E25-rubric.md",
       "skillReferences": [
@@ -1005,7 +1005,7 @@
         "domain-modeling",
         "review"
       ],
-      "behavior": "An ambiguous request word resolves to the glossary term in code, tests, and agent interfaces without a question; a changed API route or MCP tool gets its focused contract check first; UI gets no test by default; the full suite runs once; a code-glossary conflict gets one question; a docs fix gets no test",
+      "behavior": "An ambiguous request word resolves to the glossary term in code, tests, and agent interfaces without a question; an MCP tool or access rule gets its focused contract check first; UI gets no test by default; the full suite runs once; a code-glossary conflict gets one question; a docs fix gets no test",
       "taskFile": "tests/evals/tasks/E43-task.md",
       "rubricFile": "tests/evals/rubrics/E43-rubric.md",
       "skillReferences": [
