@@ -1005,7 +1005,7 @@
         "domain-modeling",
         "review"
       ],
-      "behavior": "An ambiguous request word resolves to the glossary term in code, tests, and agent interfaces without a question; a changed API route or MCP tool gets its focused contract check first; UI gets no test by default; the full suite runs once; a code-glossary conflict gets one question; a docs fix gets no test",
+      "behavior": "An ambiguous request word resolves to the glossary term in code, tests, and agent interfaces without a question; an MCP tool or access rule gets its focused contract check first; UI gets no test by default; the full suite runs once; a code-glossary conflict gets one question; a docs fix gets no test",
       "taskFile": "tests/evals/tasks/E43-task.md",
       "rubricFile": "tests/evals/rubrics/E43-rubric.md",
       "skillReferences": [

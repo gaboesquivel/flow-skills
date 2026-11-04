@@ -68,5 +68,6 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [062-trim-build-review.md](062-trim-build-review.md) (implemented)
 - [063-cursor-plugin.md](063-cursor-plugin.md) (implemented)
 - [065-intent-sized-specs.md](065-intent-sized-specs.md) (implemented)
+- [064-proportional-verification.md](064-proportional-verification.md) (implemented)
 
 Significant standalone decisions belong in `docs/decisions/`, not in a spec. See [decisions](../decisions/README.md).
