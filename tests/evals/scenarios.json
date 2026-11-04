@@ -562,7 +562,7 @@
         "explore",
         "to-spec"
       ],
-      "behavior": "Spec it after a new-product brief writes spec 001 in full, contract-first, testing the riskiest assumption, with later bets as candidate stubs",
+      "behavior": "Spec it after a new-product brief writes the active spec in full, bounded by the first useful release, with later work as candidate stubs",
       "taskFile": "tests/evals/tasks/E25-task.md",
       "rubricFile": "tests/evals/rubrics/E25-rubric.md",
       "skillReferences": [

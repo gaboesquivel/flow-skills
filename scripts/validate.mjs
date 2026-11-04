@@ -192,17 +192,6 @@ export const decisionStatus = (text) => {
   return raw.replace(/[*_`]/gu, '').match(/^[a-z]+/iu)?.[0]?.toLowerCase() ?? ''
 }
 
-// Spec 061: specs numbered 061 or later stay within this many words (whitespace-split, as `wc -w` counts).
-export const SPEC_WORD_LIMIT = 1_000
-export const SPEC_WORD_LIMIT_FROM = 61
-
-export function collectSpecLengthErrors(file, text, limit = SPEC_WORD_LIMIT) {
-  const number = Number(/^(\d{3})-/u.exec(file)?.[1] ?? Number.NaN)
-  if (!(number >= SPEC_WORD_LIMIT_FROM)) return []
-  const words = text.split(/\s+/u).filter(Boolean).length
-  return words > limit ? [`docs/specs/${file}: ${words} words, over the ${limit}-word limit; link instead of restating, or split the spec`] : []
-}
-
 // Spec 061: an accepted spec whose Tasks checklist is all ticked has shipped without its status changing.
 export function collectSpecStatusErrors(file, text) {
   if (decisionStatus(text) !== 'accepted') return []
@@ -233,7 +222,7 @@ export function collectRecordErrors(docsDir) {
       }
       if (folder === 'specs') {
         const text = readFileSync(join(path, file), 'utf8')
-        errors.push(...collectSpecLengthErrors(file, text), ...collectSpecStatusErrors(file, text))
+        errors.push(...collectSpecStatusErrors(file, text))
       }
     }
   }
@@ -374,5 +363,5 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const errors = validateRepository(repoRoot)
   for (const warning of collectShadowedSkillWarnings(repoRoot)) console.warn(`warning: ${warning}`)
   if (errors.length) { console.error(errors.join('\n')); process.exitCode = 1 }
-  else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills, documentation links, local references, adapters, record names and indexes, spec length and status, catalog phrases, brand mark geometry, fixture layout, the plugin manifest, hooks, and agents, start's check table, and the ${SKILL_WORD_BUDGET}-word skill budget (${skillWords(join(repoRoot, 'skills')).total} words).`)
+  else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills, documentation links, local references, adapters, record names and indexes, spec status, catalog phrases, brand mark geometry, fixture layout, the plugin manifest, hooks, and agents, start's check table, and the ${SKILL_WORD_BUDGET}-word skill budget (${skillWords(join(repoRoot, 'skills')).total} words).`)
 }

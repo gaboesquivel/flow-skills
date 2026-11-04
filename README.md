@@ -55,7 +55,7 @@ Each phrase is the approval; nothing asks again after it. `build` has every chan
 
 ## Work without a spec
 
-Specs are for bets worth tracking, not a toll on every change. In either mode, nothing writes a spec or tasks unless you say "spec it" or "break it down" ([decision 0039](docs/decisions/0039-build-never-requires-a-spec.md)).
+Specs are for work worth tracking, not a toll on every change. In either mode, nothing writes a spec or tasks unless you say "spec it" or "break it down" ([decision 0039](docs/decisions/0039-build-never-requires-a-spec.md)).
 
 - **Say "build it".** With no spec behind it, `build` treats the change as [unspecced work](GLOSSARY.md#unspecced-work) and ends with a reviewed, checked branch: a committed branch, or an open pull request. Its [size guard](skills/build/SKILL.md#size-guard) sets the review's effort from the change's risk; "ship it" lands it.
 - **Explore, then build.** After "explore this", "build it" builds the confirmed brief directly. The brief's branch is the work branch, so the brief lands with the code. For a new product, `explore` stops at the brief; spec 001 comes only when you ask. `explore` skips fixes and clearly small changes entirely: no questions, no writes.
@@ -102,14 +102,14 @@ Thick arrow: an automatic hand-off, behind your yes. Dashed arrow: you say the n
 | --- | --- |
 | Quick fix | "build it" → "ship it", or just "ship it" |
 | Shaped idea | "explore this" → "build it" → "ship it" |
-| Tracked bet | "explore this" → "spec it" → "break it down" → "build it" → "ship it" |
+| Tracked work | "explore this" → "spec it" → "break it down" → "build it" → "ship it" |
 | New project | "start a Next.js project" (hands off to `explore`) |
 
 Every other skill (`council`, `product`, `design`, …) can run at any time and never blocks delivery.
 
 ### Specs, tasks, and decisions
 
-- **Spec:** one bet. It tests one assumption and ships as one unit. "Spec it" writes a draft file; "build it" or "ship it" on the draft accepts it, or say "accept the spec" to approve it first.
+- **Spec:** one independently deliverable increment; `to-spec` decides whether work needs one or several. "Spec it" writes a draft file; "build it" or "ship it" on the draft accepts it, or say "accept the spec" to approve it first.
 - **Tasks:** the slices inside a spec, each verifiable on its own.
 - **Decision record:** written only when a choice picked among real alternatives *and* reaches beyond one spec or is costly to reverse.
 

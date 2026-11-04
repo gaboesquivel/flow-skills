@@ -1,6 +1,6 @@
 # 061 — Slim specs
 
-Status: implemented (2026-11-03). Appetite: one session.
+Status: implemented (2026-11-03). Appetite: one session. Length rule amended by [decision 0066](../decisions/0066-specs-sized-by-delivery.md) (no word limit or length failure).
 
 ## Problem
 
