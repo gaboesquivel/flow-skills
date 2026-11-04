@@ -1,0 +1,15 @@
+{
+  "name": "flow-skills",
+  "description": "Flow, a human-directed, agent-executed product engineering methodology, as a Claude Code plugin",
+  "owner": {
+    "name": "Gabo Esquivel",
+    "url": "https://github.com/gaboesquivel"
+  },
+  "plugins": [
+    {
+      "name": "flow",
+      "source": "./",
+      "description": "Flow's spec-driven delivery skills for Claude Code, with a guard hook that blocks unsafe Git and merge operations"
+    }
+  ]
+}

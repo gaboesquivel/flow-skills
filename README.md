@@ -6,7 +6,16 @@
 
 ## Install
 
-**Claude Code (recommended).** Install Flow as a plugin. You get the skills, plus a guard hook that blocks force-pushes, pushes to the default branch, `--no-verify`, and admin merges, a report of work in flight when a session starts, and the `flow-reviewer` agent behind "review it". [Agent compatibility](docs/agent-compatibility.md#claude-code) covers loading the plugin and the settings we recommend.
+**Claude Code (recommended).** Install Flow as a plugin. You get the skills, plus a guard hook that blocks force-pushes, pushes to the default branch, `--no-verify`, and admin merges, a report of work in flight when a session starts, and the `flow-reviewer` agent behind "review it". The repository is its own marketplace; installed at user scope, the plugin loads in the terminal, the desktop app, and IDE extensions:
+
+```bash
+claude plugin marketplace add gaboesquivel/flow-skills
+claude plugin install flow@flow-skills
+```
+
+[Agent compatibility](docs/agent-compatibility.md#claude-code) covers loading the plugin and the settings we recommend.
+
+**Cursor.** Install the Cursor plugin from this repository ([`.cursor-plugin/plugin.json`](.cursor-plugin/plugin.json)). It loads the same skills, the same guard and work-in-flight report, and `flow-reviewer`. Use that plugin or `npx skills add`, not both, and not also the Claude Code plugin. Cursor cloud agents run the shell guard and do not run the session report.
 
 **Any Agent Skills host.** Install the skills alone, without the hooks:
 
@@ -46,7 +55,7 @@ Each phrase is the approval; nothing asks again after it. `build` has every chan
 
 ## Work without a spec
 
-Specs are for bets worth tracking, not a toll on every change. In either mode, nothing writes a spec or tasks unless you say "spec it" or "break it down" ([decision 0039](docs/decisions/0039-build-never-requires-a-spec.md)).
+Specs are for work worth tracking, not a toll on every change. In either mode, nothing writes a spec or tasks unless you say "spec it" or "break it down" ([decision 0039](docs/decisions/0039-build-never-requires-a-spec.md)).
 
 - **Say "build it".** With no spec behind it, `build` treats the change as [unspecced work](GLOSSARY.md#unspecced-work) and ends with a reviewed, checked branch: a committed branch, or an open pull request. Its [size guard](skills/build/SKILL.md#size-guard) sets the review's effort from the change's risk; "ship it" lands it.
 - **Explore, then build.** After "explore this", "build it" builds the confirmed brief directly. The brief's branch is the work branch, so the brief lands with the code. For a new product, `explore` stops at the brief; spec 001 comes only when you ask. `explore` skips fixes and clearly small changes entirely: no questions, no writes.
@@ -59,8 +68,8 @@ Say a phrase and the matching skill runs. There is no required order: start anyw
 ```mermaid
 flowchart LR
   accTitle: Flow's skills from a new project to shipped work
-  accDescr: start leads into explore; shaping runs through to-spec and to-tasks, or straight to build; delivery runs build, then ship, with review when the change is large or you ask.
-  start["start<br/>new project"] ==> explore
+  accDescr: start can lead into explore; shaping runs through to-spec and to-tasks, or straight to build; delivery runs build, then ship, with review when the change is large or you ask.
+  start["start<br/>new project"] -.-> explore
   subgraph shapeGroup [Shape]
     explore["explore<br/>'explore this'"]
     spec["to-spec<br/>'spec it'"]
@@ -84,7 +93,7 @@ flowchart LR
 
 Thick arrow: an automatic hand-off, behind your yes. Dashed arrow: you say the next phrase.
 
-- **Skills suggest the next step and wait.** The only automatic hand-off is `start` → `explore`, behind your yes ([decision 0024](docs/decisions/0024-gated-hand-offs.md)). `explore` asks in proportion to the change: nothing for a fix, more for a new product. "Interview me" and "grill this" reach it too.
+- **Skills suggest the next step and wait.** The only automatic hand-off is `start` → `explore`, when the request describes the product and behind your yes ([decision 0024](docs/decisions/0024-gated-hand-offs.md)). `explore` asks in proportion to the change: nothing for a fix, more for a new product. "Interview me" and "grill this" reach it too.
 - **No spec required.** "Build it" works on a plain request ([decision 0039](docs/decisions/0039-build-never-requires-a-spec.md)); see [work without a spec](#work-without-a-spec).
 - **`ship` lands in both modes.** It builds first unless the branch is already verified, merges, then checks the shipped commit is live (decisions [0044](docs/decisions/0044-fast-delivery.md) and [0048](docs/decisions/0048-delivery-phrases-are-approvals.md)).
 - **Context stays aligned.** "Update the docs" has `flow` align `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md`.
@@ -93,14 +102,14 @@ Thick arrow: an automatic hand-off, behind your yes. Dashed arrow: you say the n
 | --- | --- |
 | Quick fix | "build it" → "ship it", or just "ship it" |
 | Shaped idea | "explore this" → "build it" → "ship it" |
-| Tracked bet | "explore this" → "spec it" → "break it down" → "build it" → "ship it" |
-| New project | "start a Next.js project" (hands off to `explore`) |
+| Tracked work | "explore this" → "spec it" → "break it down" → "build it" → "ship it" |
+| New project | "start a Next.js project" (`explore` alongside when you describe the product) |
 
 Every other skill (`council`, `product`, `design`, …) can run at any time and never blocks delivery.
 
 ### Specs, tasks, and decisions
 
-- **Spec:** one bet. It tests one assumption and ships as one unit. "Spec it" writes a draft file; "build it" or "ship it" on the draft accepts it, or say "accept the spec" to approve it first.
+- **Spec:** one independently deliverable increment; `to-spec` decides whether work needs one or several. "Spec it" writes a draft file; "build it" or "ship it" on the draft accepts it, or say "accept the spec" to approve it first.
 - **Tasks:** the slices inside a spec, each verifiable on its own.
 - **Decision record:** written only when a choice picked among real alternatives *and* reaches beyond one spec or is costly to reverse.
 

@@ -10,6 +10,7 @@ Primary sources for the 2026 skill-reliability initiative. Flow adapts ideas; it
 
 - [Matt Pocock — skills](https://github.com/mattpocock/skills) — `writing-for-agents`, `grill-me`, `grill-with-docs`, `prototype`, `handoff`, `implement` (inspected 2026-10-27).
 - [Lauren Tan — pstack](https://github.com/cursor/plugins/tree/main/pstack) — `correct`, `blast-radius`, `architect`, `how`, `why`, `interrogate`, `create-verification-skill`, `poteto-mode/playbooks/eval.md` (inspected 2026-10-27). Central mode and full playbook orchestration not adopted.
+- Addy Osmani — [Comprehension debt](https://addyosmani.com/blog/comprehension-debt/), [The Intent Debt](https://addyosmani.com/blog/intent-debt/), [The Orchestration Tax](https://addyosmani.com/blog/orchestration-tax/) — adopted as selective critical thinking; [research note](research/2026-11-03-velocity-with-intent.md).
 - [Addy Osmani — agent-skills](https://github.com/addyosmani/agent-skills) — verification, simplification, review, Git workflow, specification-related skills (prior research plus spot checks 2026-10-27).
 - [Jesse Vincent — Superpowers](https://github.com/obra/superpowers) — test-driven skill authoring, systematic debugging (inspected 2026-10-27). Full workflow chaining not adopted.
 - [Anthropic Agent Skills](https://github.com/anthropics/skills) — Skill Creator evaluation approach (inspected 2026-10-27).

@@ -4,7 +4,7 @@
 
 ## Mission
 
-Make product engineering with AI agents simpler, faster, and more reliable—without sacrificing product understanding, engineering quality, or human judgment.
+Velocity with intent: make product engineering with AI agents simpler, faster, and more reliable—without sacrificing product understanding, engineering quality, or human judgment.
 
 ## Definition
 
@@ -12,7 +12,7 @@ Flow is a lightweight, human-directed, agent-executed product engineering method
 
 It combines shared product context, reusable engineering skills, and practical development conventions in a continuous workflow from exploration to verified delivery.
 
-Flow is Claude Code first ([decision 0062](docs/decisions/0062-claude-code-first.md)): it builds on Claude Code's built-ins and enforces must-hold rules with hooks, and stays portable where that is free. It is UI-agnostic and technology-agnostic. Its process is proportional to the work, not a mandatory sequence of ceremonies.
+Flow is Claude Code first ([decision 0062](docs/decisions/0062-claude-code-first.md)): it builds on Claude Code's built-ins and enforces must-hold rules with hooks, and stays portable where that is free. The Cursor plugin runs those same hooks ([decision 0064](docs/decisions/0064-cursor-plugin.md)). It is UI-agnostic and technology-agnostic. Its process is proportional to the work, not a mandatory sequence of ceremonies.
 
 Flow is a documented way of working, not an agent router. Ordinary language should be the complete user interface to Flow; shortcuts and skills are optional conveniences.
 
@@ -29,11 +29,11 @@ Humans define direction and make consequential decisions. Agents do the work: ex
 1. **Product before code.** Build useful software, not just completed tasks.
 2. **Preserve intent.** Keep product, design, architecture, and significant decisions understandable and current.
 3. **Human-directed, agent-executed.** Agents carry out the work, including setup and operations; people decide, and handle only the steps that need them, such as sign-in and secrets ([decision 0049](docs/decisions/0049-agent-does-the-work.md)).
-4. **Minimal process.** Use only the structure and skills the task requires.
-5. **Evidence over claims.** Verify outcomes through appropriate tests, reviews, and real-world checks.
+4. **Minimal process.** Use only the structure and skills the task requires; skills compose, and no sequence is mandatory. Humans say what and why; agents choose how.
+5. **Evidence over claims.** Verify outcomes through tests, reviews, and real-world checks in proportion to risk: agents judge what needs evidence, and project scripts run the checks.
 6. **Claude Code first, portable where free.** Use the host's built-ins instead of restating them; skills stay plain Markdown so other agents keep the method ([decision 0062](docs/decisions/0062-claude-code-first.md)).
 7. **Improve through use.** Develop Flow using Flow, and simplify it through real experience.
-8. **Agent-first, API-first.** Build every product for agents and people; define capabilities as contracts before interfaces.
+8. **Agent-first, API-first.** Build every product for agents and people; define consequential capabilities as contracts before interfaces.
 
 Methodology practices that elaborate these principles live in [docs/principles.md](docs/principles.md) and [docs/methodology.md](docs/methodology.md) as optional judgment, not enforcement.
 
@@ -44,7 +44,7 @@ Reduce the time and effort between human intent and verified product value. Proc
 | Metric | From | To | Target (hypothesis, low confidence) |
 | --- | --- | --- | --- |
 | **Idea → prod** (main) | First prompt of the session where the work begins, local or cloud, or the authorizing `build-it` label on an issue | Live: production deploy answers (apps), or merged to `main` (flow-skills) | Small change < 15 min; feature < 2 h |
-| Time to start | First prompt to `start` | First green deploy | < 5 min; flow-next and flow-mono ship Vercel-ready so `start` deploys with no extra setup |
+| Time to start | First prompt to `start` | Initial commit, pushed where authorized | < 5 min |
 | Time to close PR | First commit on the branch | Merge | Median < 10 min (baseline 7.4 min, p90 60 min) |
 | Delivery within appetite | Increment accepted with an appetite | Shipped | Most increments ship within appetite with accepted scope intact; not yet measured ([decision 0053](docs/decisions/0053-delivery-appetite-and-scope.md)) |
 
@@ -72,7 +72,7 @@ The methodology defines what good product engineering looks like. Reusable skill
 | **Flow website** ([`site/`](site/README.md)) | Public home for the ecosystem: methodology, skill catalog, starters, docs, capability pages, and articles rendered from this repository ([spec 057](docs/specs/057-content-architecture.md)), with a `⌘K` palette for search and cited answers for people ([spec 040](docs/specs/040-site-refinement.md)), and `llms.txt`, Markdown, search, and MCP for agents ([spec 032](docs/specs/032-prism-website.md)) |
 | **[Flow Factory](https://github.com/gaboesquivel/flow-factory)** | Optional hosted, issue-driven orchestration and automated execution built on Flow—not Flow itself. [Flow mode](#flow-mode) is the in-session counterpart and does not depend on it. |
 
-Adoption is flexible: take one skill or the whole practice, and shape the workflow to the work. The starters are deliberately opinionated: they choose the stack, tooling, and deployment so a project ships on day one; teams that want other choices keep the methodology and skip or fork a starter ([spec 040](docs/specs/040-site-refinement.md)).
+Each piece has one job ([who owns what](docs/methodology.md#who-owns-what)). Adoption is flexible: take one skill or the whole practice in any repository, and shape the workflow to the work. The starters are deliberately opinionated: they choose the stack, tooling, and deployment so a project ships on day one; teams that want other choices keep the methodology and skip or fork a starter ([spec 040](docs/specs/040-site-refinement.md)).
 
 Templates remain usable without Flow. Flow owns the methodology; flow-skills implements portable agent behavior; templates own their application foundations.
 
@@ -100,9 +100,10 @@ flow-skills offers a small catalog: **context alignment** (`flow`) for root cont
 
 ### Install and catalog
 
-**Install.** Two ways, from the same `skills/` tree ([decision 0062](docs/decisions/0062-claude-code-first.md)):
+**Install.** Three ways, from the same `skills/` tree ([decision 0062](docs/decisions/0062-claude-code-first.md), [decision 0064](docs/decisions/0064-cursor-plugin.md)):
 
 - **Claude Code plugin:** the skills plus the [guard hook](hooks/guard.mjs) that blocks unsafe Git and merge operations, the [SessionStart report](hooks/wip.mjs) of work in flight, and the [`flow-reviewer`](agents/flow-reviewer.md) agent. The manifest is [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json); [agent compatibility](docs/agent-compatibility.md#claude-code) covers loading it and the recommended settings.
+- **Cursor plugin:** the same skills, guard, work-in-flight report, and reviewer. The manifest is [`.cursor-plugin/plugin.json`](.cursor-plugin/plugin.json). Install this or the skills CLI, not both, and not also the Claude Code plugin.
 - **Any Agent Skills host:** `npx skills add gaboesquivel/flow-skills` via the [Agent Skills ecosystem](https://github.com/vercel-labs/skills). You get the skills and the method, without the hooks' enforcement.
 
 **Requirements.** What a skill needs depends on its tier ([decision 0037](docs/decisions/0037-git-for-delivery-github-for-github-mode.md)):
@@ -112,7 +113,7 @@ flow-skills offers a small catalog: **context alignment** (`flow`) for root cont
 | Thinking | `council`, `product`, `domain-modeling`, `write-agents`, `design` (directions and prototypes) | Nothing: any folder, or none |
 | Delivery chain | `flow` (the Flow block), `start`, `explore`, `design` (recording), `to-spec`, `to-tasks`, `build`, `review`, `ship` | A Git repository; outside one, the skill offers `git init` and stops on a no |
 | GitHub mode | Pull requests and CI; issues only on request | GitHub access through `gh`, its REST API, or the host's GitHub tools, on top of Git ([decision 0055](docs/decisions/0055-capability-based-github-and-host-triggered-builds.md)) |
-| Enforcement | The guard hook and the SessionStart report | Claude Code with the Flow plugin; other hosts run the same skills without them |
+| Enforcement | The guard hook and the SessionStart report | Claude Code or Cursor with the Flow plugin. Cursor cloud agents run the shell guard and do not run the session report. `npx skills add` and other hosts run the same skills without the hooks |
 
 Local delivery needs only Git, so the whole chain works with GitLab, Bitbucket, or no remote. No skill asks the delivery mode; delivery skills infer it ([decision 0044](docs/decisions/0044-fast-delivery.md)). Thinking skills may read Git when it exists.
 
@@ -125,13 +126,13 @@ Local delivery needs only Git, so the whole chain works with GitLab, Bitbucket, 
 | Shared language | `domain-modeling` |
 | Product discovery | `product` |
 | Writing | `write-agents` |
-| Project start | [`start`](skills/start/SKILL.md) — Flow setup plus a verified bootstrap from flow-next or flow-mono in one lane while `explore` shapes the product in the other; asks only what the request leaves open, and the first green deployment is its done signal |
+| Project start | [`start`](skills/start/SKILL.md) — Flow setup plus a verified bootstrap from flow-next or flow-mono, with `explore` alongside when the request describes a product; asks only what the request leaves open, and the initial commit is its done signal |
 
 Grouped descriptions and links: **[docs/skills.md](docs/skills.md)**. Say a skill's leading word ("interview me", "spec it", "ship it"); slash commands are optional. Every skill is reachable by phrase ([0019](docs/decisions/0019-voice-first-invocation.md)); `start` asks only what the request leaves open before it writes anything ([0022](docs/decisions/0022-start-runs-explore.md), amended by [0044](docs/decisions/0044-fast-delivery.md)). No skill enforces a sequence (`/build` does not require `/to-spec`).
 
 **Default durable docs in adopter projects:** `docs/specs/NNN-short-name.md` and `docs/decisions/NNN-short-name.md`, plus root context files when useful. The spec file is the record in both modes; in GitHub mode the pull request links it, and issues open only on request ([decision 0044](docs/decisions/0044-fast-delivery.md), superseding the spec issue of [0029](docs/decisions/0029-spec-issues.md) and [0035](docs/decisions/0035-spec-issue-on-acceptance.md)).
 
-**Not shipped as skills:** validation-board UI (the read-only [progress board](GLOSSARY.md#progress-board) is a maintainer script, `pnpm board`), OMTM automation or analytics services (read-only measurement assistance ships in `product`, [decision 0046](docs/decisions/0046-measurement-assistance.md), [spec 034](docs/specs/034-measurement-support.md)), commercial discovery pipelines, or hosted orchestration (Flow Factory); the optional [issue trigger](GLOSSARY.md#issue-trigger) runs on the host's own triggers, not a Flow service ([decision 0055](docs/decisions/0055-capability-based-github-and-host-triggered-builds.md)). Project initialization is the optional [`start`](skills/start/SKILL.md) skill only (not a router or mandatory pipeline). Validation judgment lives in [methodology](docs/methodology.md) as practice; measurement never gates shipping.
+**Not shipped as skills:** validation-board UI or a progress board ([retired](GLOSSARY.md#progress-board)), OMTM automation or analytics services (read-only measurement assistance ships in `product`, [decision 0046](docs/decisions/0046-measurement-assistance.md), [spec 034](docs/specs/034-measurement-support.md)), commercial discovery pipelines, or hosted orchestration (Flow Factory); the optional [issue trigger](GLOSSARY.md#issue-trigger) runs on the host's own triggers, not a Flow service ([decision 0055](docs/decisions/0055-capability-based-github-and-host-triggered-builds.md)). Project initialization is the optional [`start`](skills/start/SKILL.md) skill only (not a router or mandatory pipeline). Validation judgment lives in [methodology](docs/methodology.md) as practice; measurement never gates shipping.
 
 ### Flow mode
 
@@ -146,12 +147,12 @@ Opt-in conversational delivery ([decision 0020](docs/decisions/0020-flow-mode.md
 | Agent execution | `build` (outcomes and proofs for an implementation, in either delivery mode), `ship`; the plugin's guard hook; plain-Markdown packages with no mandatory router |
 | Verified value | `review` (the `flow-reviewer` agent on top of `/code-review`), `ship`, `product`; scenario verdicts, liveness, and a product-wide check against vision and metric evidence |
 
-Further catalog growth needs its own decision. [0013](docs/decisions/0013-restore-engineering-skills.md) restored `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug`. [0014](docs/decisions/0014-handoff-skill.md) adds `handoff`. [0015](docs/decisions/0015-tasks-and-domain-modeling.md) renames `to-tasks` and restores `domain-modeling`. [0019](docs/decisions/0019-voice-first-invocation.md) retires `simplify`, `security`, and `performance` in favor of host tools. [0027](docs/decisions/0027-progress-board-skill.md) adds `board`. [0041](docs/decisions/0041-align-skill.md) adds `align`. [0046](docs/decisions/0046-measurement-assistance.md) adds `measure`. [0051](docs/decisions/0051-design-skill.md) adds `design`. [0062](docs/decisions/0062-claude-code-first.md) hands host-covered work to Claude Code: `explore` absorbs `interview` and `grill`, `product` merges `align` and `measure`, `design` absorbs `prototype`'s UI variants, `ship` absorbs `push`, and `handoff`, `tldr`, `debug`, `retro`, and `board` leave the catalog (`board` stays as a script). [Spec 059](docs/specs/059-claude-code-first.md) removes `jtbd`, `competitors`, and `write-humans`, which tied with no skill in an on-trial comparison.
+Further catalog growth needs its own decision. [0013](docs/decisions/0013-restore-engineering-skills.md) restored `council`, `ship`, `prototype`, `simplify`, `security`, `performance`, and `debug`. [0014](docs/decisions/0014-handoff-skill.md) adds `handoff`. [0015](docs/decisions/0015-tasks-and-domain-modeling.md) renames `to-tasks` and restores `domain-modeling`. [0019](docs/decisions/0019-voice-first-invocation.md) retires `simplify`, `security`, and `performance` in favor of host tools. [0027](docs/decisions/0027-progress-board-skill.md) adds `board`. [0041](docs/decisions/0041-align-skill.md) adds `align`. [0046](docs/decisions/0046-measurement-assistance.md) adds `measure`. [0051](docs/decisions/0051-design-skill.md) adds `design`. [0062](docs/decisions/0062-claude-code-first.md) hands host-covered work to Claude Code: `explore` absorbs `interview` and `grill`, `product` merges `align` and `measure`, `design` absorbs `prototype`'s UI variants, `ship` absorbs `push`, and `handoff`, `tldr`, `debug`, `retro`, and `board` leave the catalog (`board` stayed as a script until 2026-11-03, then was removed). [Spec 059](docs/specs/059-claude-code-first.md) removes `jtbd`, `competitors`, and `write-humans`, which tied with no skill in an on-trial comparison.
 
 ### Open choices
 
 Measurable learning may inform maintainer research. Idea → prod is Flow's main metric ([Success](#success)); broader demand remains unvalidated.
 
-**Starting a project.** Invoke the optional [`start`](skills/start/SKILL.md) skill when you want a verified new repository from flow-next or flow-mono. One lane bootstraps while `explore` shapes the product with you ([0022](docs/decisions/0022-start-runs-explore.md)). It asks only what the request leaves open. The bootstrap covers renamed identity, template setup, QA, the identity scan, `.gitignore`, baseline `PRODUCT.md` / `DESIGN.md` / `ARCHITECTURE.md`, and an independent initial commit when checks pass; the first green deployment is the done signal ([0044](docs/decisions/0044-fast-delivery.md)). There is no `flow start` command; discoverable `flow` must not be treated as initialization ([0010](docs/decisions/0010-optional-start-skill.md)).
+**Starting a project.** Invoke the optional [`start`](skills/start/SKILL.md) skill when you want a verified new repository from flow-next or flow-mono. When the request describes the product, `explore` runs alongside ([0022](docs/decisions/0022-start-runs-explore.md)). It asks only what the request leaves open. The bootstrap covers renamed identity, template setup, QA, the identity scan, `.gitignore`, baseline `PRODUCT.md` / `DESIGN.md` / `ARCHITECTURE.md`, and an independent initial commit when checks pass; the initial commit is the done signal ([decision 0067](docs/decisions/0067-flow-boundaries.md)). There is no `flow start` command; discoverable `flow` must not be treated as initialization ([0010](docs/decisions/0010-optional-start-skill.md)).
 
 See [documentation guide](docs/README.md) and [AGENTS.md](AGENTS.md) for maintenance.

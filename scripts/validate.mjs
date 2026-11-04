@@ -192,6 +192,15 @@ export const decisionStatus = (text) => {
   return raw.replace(/[*_`]/gu, '').match(/^[a-z]+/iu)?.[0]?.toLowerCase() ?? ''
 }
 
+// Spec 061: an accepted spec whose Tasks checklist is all ticked has shipped without its status changing.
+export function collectSpecStatusErrors(file, text) {
+  if (decisionStatus(text) !== 'accepted') return []
+  const tasks = /^##[ \t]+Tasks[ \t]*\r?\n([\s\S]*?)(?=^##[ \t]|(?![\s\S]))/mu.exec(text)?.[1] ?? ''
+  const boxes = [...tasks.matchAll(/^[ \t]*[-*+][ \t]+\[([ xX])\]/gmu)].map((match) => match[1])
+  if (!boxes.length || boxes.some((box) => box === ' ')) return []
+  return [`docs/specs/${file}: every task is ticked but the spec is still accepted; set \`Status: implemented\``]
+}
+
 // Specs and decisions: well-formed names, unique numbers (parallel sessions pick "next free number"
 // independently), an index entry, and a known decision status, so a missing link fails locally instead of in CI.
 export function collectRecordErrors(docsDir) {
@@ -210,6 +219,10 @@ export function collectRecordErrors(docsDir) {
       if (index !== null && !index.includes(file)) errors.push(`docs/${folder}/${file}: link it from docs/${folder}/README.md`)
       if (folder === 'decisions' && !DECISION_STATUSES.includes(decisionStatus(readFileSync(join(path, file), 'utf8')))) {
         errors.push(`docs/${folder}/${file}: start with a status line, for example "Status: **Accepted** (YYYY-MM-DD)", using one of ${DECISION_STATUSES.join(', ')}`)
+      }
+      if (folder === 'specs') {
+        const text = readFileSync(join(path, file), 'utf8')
+        errors.push(...collectSpecStatusErrors(file, text))
       }
     }
   }
@@ -252,8 +265,19 @@ export function collectFixtureNestedGitErrors(repoRoot) {
   return errors
 }
 
-// Claude Code plugin shell: the manifest names the plugin `flow` at package.json's version, and every hook
-// command that runs a script under ${CLAUDE_PLUGIN_ROOT} points at a file that exists.
+const pluginScripts = (handler, variable) => {
+  const line = [handler?.command, ...(handler?.args ?? [])].join(' ')
+  return [...line.matchAll(new RegExp(`\\$\\{${variable}\\}"?/([^\\s"']+)`, 'gu'))].map((match) => match[1])
+}
+
+const checkManifest = (errors, manifest, rel, pkg) => {
+  if (!manifest) return
+  if (manifest.name !== 'flow') errors.push(`${rel}: name must be "flow", found ${JSON.stringify(manifest.name)}`)
+  if (pkg && manifest.version !== pkg.version) errors.push(`${rel}: version ${manifest.version} must match package.json ${pkg.version}`)
+}
+
+// Plugin shell: each manifest names the plugin `flow` at package.json's version, and every hook command that
+// runs a script under the host's plugin-root variable points at a file that exists.
 export function collectPluginErrors(repoRoot) {
   const errors = []
   const readJson = (rel) => {
@@ -262,21 +286,30 @@ export function collectPluginErrors(repoRoot) {
     try { return JSON.parse(readFileSync(path, 'utf8')) } catch (e) { errors.push(`${rel}: invalid JSON (${e.message})`); return null }
   }
   const pkg = readJson('package.json')
-  const manifest = readJson('.claude-plugin/plugin.json')
-  if (manifest) {
-    if (manifest.name !== 'flow') errors.push(`.claude-plugin/plugin.json: name must be "flow", found ${JSON.stringify(manifest.name)}`)
-    if (pkg && manifest.version !== pkg.version) errors.push(`.claude-plugin/plugin.json: version ${manifest.version} must match package.json ${pkg.version}`)
-  }
+  checkManifest(errors, readJson('.claude-plugin/plugin.json'), '.claude-plugin/plugin.json', pkg)
+  checkManifest(errors, readJson('.cursor-plugin/plugin.json'), '.cursor-plugin/plugin.json', pkg)
   const hooks = readJson('hooks/hooks.json')
   if (hooks) {
     if (!hooks.hooks || typeof hooks.hooks !== 'object') errors.push('hooks/hooks.json: must wrap the event map in a top-level "hooks" key')
     else for (const [event, groups] of Object.entries(hooks.hooks)) {
       if (!Array.isArray(groups)) { errors.push(`hooks/hooks.json: ${event} must be an array of matcher groups`); continue }
       for (const group of groups) for (const handler of group?.hooks ?? []) {
-        const line = [handler.command, ...(handler.args ?? [])].join(' ')
-        const scripts = [...line.matchAll(/\$\{CLAUDE_PLUGIN_ROOT\}"?\/([^\s"']+)/gu)].map((m) => m[1])
+        const scripts = pluginScripts(handler, 'CLAUDE_PLUGIN_ROOT')
         if (handler.type === 'command' && !scripts.length) errors.push(`hooks/hooks.json: ${event} command must run a script under \${CLAUDE_PLUGIN_ROOT}`)
         for (const script of scripts) if (!existsSync(join(repoRoot, script))) errors.push(`hooks/hooks.json: ${event} references missing ${script}`)
+      }
+    }
+  }
+  const cursorHooks = readJson('hooks/cursor-hooks.json')
+  if (cursorHooks) {
+    if (!cursorHooks.hooks || typeof cursorHooks.hooks !== 'object') errors.push('hooks/cursor-hooks.json: must wrap the event map in a top-level "hooks" key')
+    else for (const event of ['beforeShellExecution', 'sessionStart']) {
+      const handlers = cursorHooks.hooks[event]
+      if (!Array.isArray(handlers)) { errors.push(`hooks/cursor-hooks.json: ${event} must be an array of commands`); continue }
+      for (const handler of handlers) {
+        const scripts = pluginScripts(handler, 'CURSOR_PLUGIN_ROOT')
+        if (!scripts.length) errors.push(`hooks/cursor-hooks.json: ${event} command must run a script under \${CURSOR_PLUGIN_ROOT}`)
+        for (const script of scripts) if (!existsSync(join(repoRoot, script))) errors.push(`hooks/cursor-hooks.json: ${event} references missing ${script}`)
       }
     }
   }
@@ -330,5 +363,5 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const errors = validateRepository(repoRoot)
   for (const warning of collectShadowedSkillWarnings(repoRoot)) console.warn(`warning: ${warning}`)
   if (errors.length) { console.error(errors.join('\n')); process.exitCode = 1 }
-  else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills, documentation links, local references, adapters, record names and indexes, catalog phrases, brand mark geometry, fixture layout, the plugin manifest, hooks, and agents, start's check table, and the ${SKILL_WORD_BUDGET}-word skill budget (${skillWords(join(repoRoot, 'skills')).total} words).`)
+  else console.log(`Validated ${EXPECTED_SKILL_NAMES.length} skills, documentation links, local references, adapters, record names and indexes, spec status, catalog phrases, brand mark geometry, fixture layout, the plugin manifest, hooks, and agents, start's check table, and the ${SKILL_WORD_BUDGET}-word skill budget (${skillWords(join(repoRoot, 'skills')).total} words).`)
 }

@@ -38,6 +38,12 @@ Move quickly with intent, and use feedback to correct direction.
 
 Shorten the path from an assumption to useful evidence and a decision. Progress may mean shipping, narrowing scope, changing direction, or stopping. Challenge purpose and evidence when it matters; let small tasks proceed with minimal ceremony.
 
+## Critical thinking
+
+Direct agents without surrendering judgment.
+
+Say what and why, and let agents choose how. Keep enough understanding of what ships to decide, correct, and explain it. Apply this where a wrong answer is costly, never as a step every task must pass ([Keep people able to judge](methodology.md#keep-people-able-to-judge)).
+
 ## Room for exploration
 
 Open exploration may begin with curiosity rather than a formal hypothesis. When it becomes a product commitment, make its intent and validation approach explicit. Apply these themes with judgment rather than as a checklist for every action.

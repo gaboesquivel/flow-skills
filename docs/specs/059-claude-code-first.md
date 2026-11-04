@@ -1,8 +1,8 @@
 # 059 — Claude Code first
 
-Status: implemented (2026-11-03).
+Status: implemented (2026-11-03). Amended by [0064](../decisions/0064-cursor-plugin.md) (Cursor plugin runs the same hooks; `npx skills add` stays skills only).
 
-Decision: [0062](../decisions/0062-claude-code-first.md) (Accepted).
+Decision: [0062](../decisions/0062-claude-code-first.md) (Accepted, amended by 0064).
 
 ## Problem Statement
 
@@ -153,10 +153,10 @@ Sequencing note (2026-11-03): task 02's baseline worktrees are pinned to the pre
 
 **Blocked by:** None (can start immediately)
 
-- [ ] Every deny and allow fixture in Testing Decisions passes (`node --test tests/guard.test.mjs`)
-- [ ] Each deny gives a reason. Unparseable commands are allowed. The hook never writes and exits within 2 seconds.
-- [ ] `pnpm validate` checks `plugin.json` and `hooks.json`
-- [ ] Installing the plugin from this branch blocks `git push --force` in a live session (acceptance step 3)
+- [x] Every deny and allow fixture in Testing Decisions passes (`node --test tests/guard.test.mjs`)
+- [x] Each deny gives a reason. Unparseable commands are allowed. The hook never writes and exits within 2 seconds.
+- [x] `pnpm validate` checks `plugin.json` and `hooks.json`
+- [x] Installing the plugin from this branch blocks `git push --force` in a live session (acceptance step 3)
 
 ### 02: Baseline: current Flow vs no skills
 
@@ -166,9 +166,9 @@ Sequencing note (2026-11-03): task 02's baseline worktrees are pinned to the pre
 
 **Blocked by:** None (can start immediately)
 
-- [ ] The record in `tests/evals/records/` gives elapsed time, user turns, retries, CI failures, unauthorized actions, cost or `unknown`, and limitations
-- [ ] `pnpm eval:check` passes
-- [ ] It runs before any skill edit on this branch lands
+- [x] The record in `tests/evals/records/` gives elapsed time, user turns, retries, CI failures, unauthorized actions, cost or `unknown`, and limitations
+- [x] `pnpm eval:check` passes
+- [x] It runs before any skill edit on this branch lands
 
 ### 03: Hand the session and worktree layer to the host
 
@@ -178,10 +178,10 @@ Sequencing note (2026-11-03): task 02's baseline worktrees are pinned to the pre
 
 **Blocked by:** 01 (shares the hook configuration), 02
 
-- [ ] Opening a session in a repository with a kept worktree and an open pull request lists both (acceptance step 2). The hook is silent on errors.
-- [ ] The recommended settings are documented: `worktree.baseRef: "head"`, and a subagent concurrency cap of 4–6
-- [ ] `write-agents` Sessions is about 150 words. Workers, the Repository rule, prompt logs and progress notes are gone, and the `git init` offer is one line.
-- [ ] `build` drops Work in flight, the Task set merge mechanics and the rule that an inline slice must name a reason
+- [x] Opening a session in a repository with a kept worktree and an open pull request lists both (acceptance step 2). The hook is silent on errors.
+- [x] The recommended settings are documented: `worktree.baseRef: "head"`, and a subagent concurrency cap of 4–6
+- [x] `write-agents` Sessions is about 150 words. Workers, the Repository rule, prompt logs and progress notes are gone, and the `git init` offer is one line.
+- [x] `build` drops Work in flight, the Task set merge mechanics and the rule that an inline slice must name a reason
 
 ### 04: Move GitHub and merge procedure into scripts
 
@@ -191,10 +191,10 @@ Sequencing note (2026-11-03): task 02's baseline worktrees are pinned to the pre
 
 **Blocked by:** 02, 03 (both edit `build`)
 
-- [ ] `liveness.mjs` reports each of the five states against fixtures, and "ship it" ends with its output (acceptance step 5)
-- [ ] `gh-route.mjs` infers the delivery mode and falls back to REST when GraphQL is refused (fixture test)
-- [ ] "Push it" still pushes a branch and reports liveness, now through `ship`
-- [ ] `build` Pull request and Delivery mode each fit a few lines that point to the scripts
+- [x] `liveness.mjs` reports each of the five states against fixtures, and "ship it" ends with its output (acceptance step 5)
+- [x] `gh-route.mjs` infers the delivery mode and falls back to REST when GraphQL is refused (fixture test)
+- [x] "Push it" still pushes a branch and reports liveness, now through `ship`
+- [x] `build` Pull request and Delivery mode each fit a few lines that point to the scripts
 
 ### 05: Review on `/code-review`
 
@@ -204,9 +204,9 @@ Sequencing note (2026-11-03): task 02's baseline worktrees are pinned to the pre
 
 **Blocked by:** 02
 
-- [ ] Reviewing a branch with one unmet scenario step reports `unmet` with evidence, plus `/code-review`'s findings
-- [ ] The tiers map to `/code-review` levels: Quick → low, Standard → medium, Deep → high
-- [ ] `review` is about 350 words, and `pnpm validate` checks the agent frontmatter
+- [x] Reviewing a branch with one unmet scenario step reports `unmet` with evidence, plus `/code-review`'s findings ([record](../../tests/evals/records/2026-11-03-review-unmet-step.md), spec 062)
+- [x] The tiers map to `/code-review` levels: Quick → low, Standard → medium, Deep → high
+- [x] `review` is about 350 words, and `pnpm validate` checks the agent frontmatter (346 words after spec 062)
 
 ### 06: Merge the discovery skills
 
@@ -216,9 +216,9 @@ Sequencing note (2026-11-03): task 02's baseline worktrees are pinned to the pre
 
 **Blocked by:** 02
 
-- [ ] "Interview me", "grill this", "are we building the right thing" and "measure our progress" still reach the right behavior through the merged skills
-- [ ] Each on-trial skill has a recorded comparison against no skill, and the losers are removed
-- [ ] What stays: the direction-change gate, a guess on each question, pre-mortem and kill criterion, the journey-to-capability map, the gap taxonomy, and alternatives rendered in context
+- [x] "Interview me", "grill this", "are we building the right thing" and "measure our progress" still reach the right behavior through the merged skills
+- [x] Each on-trial skill has a recorded comparison against no skill, and the losers are removed
+- [x] What stays: the direction-change gate, a guess on each question, pre-mortem and kill criterion, the journey-to-capability map, the gap taxonomy, and alternatives rendered in context
 
 ### 07: Retire host-covered skills and sweep the catalog
 
@@ -228,10 +228,10 @@ Sequencing note (2026-11-03): task 02's baseline worktrees are pinned to the pre
 
 **Blocked by:** 03, 04, 05, 06
 
-- [ ] `pnpm validate` and `pnpm test` pass with the new `EXPECTED_SKILL_NAMES`
-- [ ] `pnpm context` reports at most 10,000 SKILL.md words, and validation fails above that
-- [ ] No skill links a removed skill or section (`check-doc-links` and a grep stay clean)
-- [ ] `to-spec` numbering works from the installed skill
+- [x] `pnpm validate` and `pnpm test` pass with the new `EXPECTED_SKILL_NAMES`
+- [x] `pnpm context` reports at most 10,000 SKILL.md words, and validation fails above that
+- [x] No skill links a removed skill or section (`check-doc-links` and a grep stay clean)
+- [x] `to-spec` numbering works from the installed skill
 
 ### 08: Rerun the comparison and close
 
@@ -241,5 +241,14 @@ Sequencing note (2026-11-03): task 02's baseline worktrees are pinned to the pre
 
 **Blocked by:** 07
 
-- [ ] The record shows idea → prod and failures no worse than task 02's Flow run, or says the spec doesn't ship
-- [ ] Every acceptance scenario step has a verdict
+- [x] The record shows idea → prod and failures no worse than task 02's Flow run, or says the spec doesn't ship
+- [x] Every acceptance scenario step has a verdict
+
+Acceptance verdicts (2026-11-03):
+
+1. Satisfied: [`tests/evals/records/2026-11-03-build-vs-no-skills.md`](../../tests/evals/records/2026-11-03-build-vs-no-skills.md), rounds 1–2.
+2. Satisfied: `node hooks/wip.mjs` on flow-skills listed both kept worktrees, the unmerged `spec/060-host-delegation` branch with its changed areas, and open pull request #230, matching `git worktree list` and `gh pr list`.
+3. Satisfied: the record's live guard check denied `git push --force` and the remote stayed put.
+4. Satisfied: "build it" on spec 061 (two disjoint areas) named two slices from its `Area:` lines, ran them in parallel, reviewed each acceptance step with a verdict, and opened #235 ready with green checks.
+5. Satisfied: after #233 merged, `liveness.mjs` reported `pushed, no deployment reported` for `main` at `22d5423`.
+6. Satisfied: the record's step 6 gate (idea → prod and failures no worse, skill words under 10,000).

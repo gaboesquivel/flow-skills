@@ -25,14 +25,14 @@ Run the bundled `code-review` skill through the Skill tool, with the level the t
 | Standard | `medium` |
 | Deep | `high` |
 
-For example, `medium main...spec/012-x`, or `low <last-reviewed-sha>..HEAD` on a re-review. Never pass `--fix`. When the change touches auth, secrets, permissions, or other trust boundaries, also run the `security-review` skill. If the Skill tool or the skill is unavailable, say so in the report, label the review **no /code-review**, and read the diff for correctness yourself at the same tier.
+For example, `medium main...spec/012-x`, or `low <last-reviewed-sha>..HEAD` on a re-review. Never pass `--fix`. When the change touches auth, secrets, permissions, or other trust boundaries, also run the `security-review` skill. When `code-review` is unavailable, delegate that bug pass to the `bugbot` subagent, and the trust-boundary pass to the `security-review` subagent when one exists. When neither the skill nor those subagents exist, say so, label the review **no /code-review**, and read the diff for correctness yourself at the same tier.
 
 Keep its findings, dropping style, formatting, and lint- or type-only ones.
 
 ## 2. Flow's layer
 
-- **Scenario verdicts.** For each step of the spec's acceptance scenario, give `satisfied`, `unmet`, or `unresolved`, with evidence: a test that exercises it, `file:line`, or command output you ran. Prose or a passing suite alone proves nothing. No evidence means `unresolved`, never `satisfied`. An `unmet` step is an Important finding. Unspecced work has no verdicts; check it against the request.
-- **Scope.** Compare the change with the spec's acceptance scenario, Out of Scope, and Appetite. A dependency, surface, infrastructure, or refactor the accepted scope does not need is an Important finding until the user accepts it. Accepted behavior the change omits is an `unmet` step. Judge content, not file counts.
+- **Scenario verdicts.** For each step of the spec's acceptance scenario, give `satisfied`, `unmet`, or `unresolved`, with evidence: a test that exercises it, `file:line`, or command output you ran or `build` recorded (say which). Prose or a passing suite alone proves nothing. No evidence means `unresolved`, never `satisfied`. An `unmet` step is an Important finding. Unspecced work has no verdicts; check it against the request.
+- **Scope.** Compare the change with the spec's acceptance scenario, Out of Scope, and the appetite on its status line. A dependency, surface, infrastructure, or refactor the accepted scope does not need is an Important finding until the user accepts it. Accepted behavior the change omits is an `unmet` step. Judge content, not file counts.
 - **Names.** A second name for a term defined in `GLOSSARY.md`, or a new domain term the glossary lacks, is a finding.
 - **UI**, only when the diff changes what users see: consistency with `DESIGN.md` when present (tokens, canonical assets, usage rules, no retired marks), labels and roles, contrast through the tokens, focus and keyboard use, layout at phone width without horizontal scroll, and heading hierarchy.
 - **Data.** A stored-data shape change needs a committed migration, and any destructive step names its rollback or backup first.

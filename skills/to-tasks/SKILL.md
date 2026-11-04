@@ -6,59 +6,43 @@ disable-model-invocation: false
 
 # To Tasks
 
-Break a plan, spec, or conversation into **tasks**: independently verifiable vertical slices, each naming the tasks that **block** it.
-
-Prefer the fewest tasks that each verify on their own. Keep a straightforward change as one task; split only when slices can proceed in parallel, need separate review, or would not fit one session. A task per layer, file, or step is too fine.
+Break a plan, spec, or conversation into **tasks**: independently verifiable vertical slices, each naming the tasks that **block** it. Outcomes, dependencies, and integration cost set the count, never a target: a first MVP may need several tasks, a small change one. Split where a slice can be demonstrated alone, needs separate review, or would not fit one session; never per layer, file, or step.
 
 ## Process
 
-1. **Context.** Work from the conversation; read a named spec, issue, or URL in full, comments included. Read the areas the work touches when not yet explored. Use the project's terms (`domain-modeling` Shared language), respect decision records in the area, and look for prefactors: make the change easy, then make the easy change.
-2. **Slices.** Each slice delivers narrow, verifiable behavior across the layers it needs, is demoable on its own, and fits one fresh context. Prefactoring comes first.
-3. **Area.** Every package or directory a task changes, comma-separated, coarse, never file paths, including routes outside its main package, so disjoint areas mean disjoint changes. `build` slices by area.
-4. **Blockers.** An edge needs a real data or file dependency, never topic order. Prefer a wide frontier; a task with no blockers can start immediately and is **ready** once its blockers are complete.
+1. **Context.** Read a named spec, issue, or URL in full, and the areas touched. Use the project's terms, respect decision records, and prefactor first: make the change easy, then make the easy change.
+2. **Slices.** Each delivers narrow, demoable behavior across the layers it needs and fits one fresh context.
+3. **Area.** Every package or directory a task changes, never file paths, fine enough to show independence inside a shared app (`app/notes` when nothing else in `app` changes), including routes outside its main package; `build` keeps concurrent work apart by area, so disjoint areas must mean disjoint changes.
+4. **Blockers.** Only a real data or file dependency, never topic order; prefer a wide frontier. A task is **ready** once its blockers are complete.
 
-**Wide refactors** (one mechanical change, such as renaming a column, whose affected scope spans the codebase so no vertical slice lands green) use **expand–contract**. Expand: add the new form beside the old. Migrate call sites in batches by package or directory, each a task blocked by the expand, keeping CI green. Contract: remove the old form in a task blocked by every batch. When batches cannot stay green alone, they share an integration branch and a final integrate-and-verify task.
+**Wide refactors** no vertical slice can land green use **expand–contract**: add the new form; migrate call sites in green batches by package, each blocked by the expand; remove the old form, blocked by every batch. Batches that cannot stay green alone share an integration branch and a final verify task.
 
 ## Record and report
 
-"Break it down" authorizes recording: resolve only consequential uncertainty, then write without showing the tasks for approval. Tasks are the spec's checklist: write its Tasks section, one line per task (`- [ ] NN: Title`), detail each with the task template below, and commit on the spec's branch. Without a spec, write one with `to-spec` first, or return the tasks as a local draft and say so.
+"Break it down" authorizes writing the spec's Tasks section without approval, one line per task, committed on the spec's branch:
 
-**Task issues** open only when the user asks: one per task from the issue template, with blockers linked once every number exists (native links, else `Blocked by #a, #b`), and `(#N)` appended to each checklist line. On a public repository, say the issues are public. On a retry, open only the missing ones.
+`- [ ] NN: Title. Area: a, b. Blocked by: NN.`
 
-Tasks are not pull requests, issues, or worktrees; `build` groups them. Report where the tasks live, each task with what it delivers and its area, and the ready set, then wait for "build it".
+Omit `Blocked by` when none. Add one indented sentence only when the title cannot say what to build. The spec's Acceptance holds the checks. Without a spec, write one with `to-spec` first or return a labelled local draft. Keep paths and code out of task text.
 
-<task-template>
+**Task issues** open only when asked: one per task from the issue template, blockers linked once every number exists, and `(#N)` appended to each line. Say when they are public; on a retry, open only the missing ones.
 
-### <NN>: <Task title>
-
-**What to build:** the end-to-end behaviour this task makes work, from the user's perspective, not a layer-by-layer implementation list.
-
-**Area:** every package or directory this task changes, comma-separated, never file paths.
-
-**Blocked by:** the numbers or titles of tasks that gate this one, or "None (can start immediately)".
-
-- [ ] Observable behavior 1, with its focused check when one exists
-- [ ] Observable behavior 2
-
-</task-template>
+Tasks are not pull requests or worktrees; `build` groups them. Report where the tasks live and the ready set, then wait for "build it".
 
 <issue-template>
 
 ## Spec
 
-A link to the spec file this task belongs to (omit only when the task belongs to no spec).
+Its link, if any.
 
 ## What to build
 
-Area: every package or directory this task changes, comma-separated, never file paths.
+Area: as in the checklist line.
 
-The end-to-end behaviour this task makes work, from the user's perspective, not layer-by-layer implementation.
+The end-to-end behaviour, from the user's side.
 
 ## Acceptance criteria
 
 - [ ] Criterion 1
-- [ ] Criterion 2
 
 </issue-template>
-
-Keep file paths and code out of task text, except a prototype excerpt that encodes a decision more precisely than prose.

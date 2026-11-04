@@ -6,7 +6,7 @@ Status: implemented (2026-10-28). Issue: [#127](https://github.com/gaboesquivel/
 
 Users want to talk to their agent and land changes with little friction, in either delivery mode, and reach for a spec only when the work is a bet worth tracking. Today that works only for small fixes:
 
-- **The size guard forces a spec.** [`build`](../../skills/build/SKILL.md#unspecced-work) stops any unspecced change that adds product behavior, changes a data shape or public API, needs a migration, or touches a risky area, and suggests `to-spec`. `ship` stops on the same guard. Most features trip it.
+- **The size guard forces a spec.** [`build`](../../skills/build/SKILL.md#outcome) stops any unspecced change that adds product behavior, changes a data shape or public API, needs a migration, or touches a risky area, and suggests `to-spec`. `ship` stops on the same guard. Most features trip it.
 - **"Explore this", then "build it", always ends in a spec.** `explore` confirms a brief on an `explore/<slug>` branch, and the next "build it" hits the guard. The user wanted a commit or a pull request.
 - **`explore` writes spec 001 unasked** for a new product, with its tasks and later bets as candidate stubs.
 - **A protected default branch leaves no local option.** It forces GitHub mode, so "build it local" cannot produce a plain commit without a pull request.

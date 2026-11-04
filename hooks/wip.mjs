@@ -96,18 +96,29 @@ export function report(cwd, { started = Date.now() } = {}) {
   ].join('\n')
 }
 
+// Cursor's sessionStart wants JSON additional_context. Claude Code adds plain stdout. composer_mode and
+// is_background_agent are Cursor's fields; Claude's SessionStart input has neither, so existing callers stay plain text.
+export function sessionOutput(input, text) {
+  if (!text) return null
+  const cursor = input?.composer_mode != null || input?.is_background_agent != null
+  return cursor ? { additional_context: text } : text
+}
+
 function main() {
   const started = Date.now()
   let cwd = process.cwd()
+  let input = {}
   try {
     if (!process.stdin.isTTY) {
-      const input = JSON.parse(readFileSync(0, 'utf8') || '{}')
+      input = JSON.parse(readFileSync(0, 'utf8') || '{}')
       if (typeof input?.cwd === 'string' && input.cwd) cwd = input.cwd
     }
   } catch { /* no or bad input: use the process directory */ }
   let text = ''
   try { text = report(cwd, { started }) } catch { return }
-  if (text) process.stdout.write(`${text}\n`)
+  const out = sessionOutput(input, text)
+  if (typeof out === 'string') process.stdout.write(`${out}\n`)
+  else if (out) process.stdout.write(`${JSON.stringify(out)}\n`)
 }
 
 const self = (path) => { try { return realpathSync(path) } catch { return path } }

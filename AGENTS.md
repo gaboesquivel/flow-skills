@@ -21,7 +21,7 @@ Use [Conventional Commits](https://www.conventionalcommits.org) for commit messa
 
 ## Distribution maintenance
 
-Flow ships as a Claude Code plugin ([decision 0062](docs/decisions/0062-claude-code-first.md)): [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json), the `skills/` tree, the hooks in [`hooks/hooks.json`](hooks/hooks.json) (PreToolUse guard, SessionStart work-in-flight report), and [`agents/flow-reviewer.md`](agents/flow-reviewer.md). The same `skills/` tree installs on any [Agent Skills](https://agentskills.io) host with `npx skills add gaboesquivel/flow-skills`, without the hooks. Consumers reach skills by talking to their agent; no skill must be named explicitly. This repository does not ship a bootstrap installer or require changes to adopter instruction files. Keep `plugin.json` and `package.json` versions in step; `pnpm validate` checks the plugin manifest, hooks, and agent frontmatter.
+Flow ships as a Claude Code plugin ([decision 0062](docs/decisions/0062-claude-code-first.md)) from its own marketplace ([`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json)): [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json), the `skills/` tree, the hooks in [`hooks/hooks.json`](hooks/hooks.json) (PreToolUse guard, SessionStart work-in-flight report), and [`agents/flow-reviewer.md`](agents/flow-reviewer.md). The Cursor plugin ([decision 0064](docs/decisions/0064-cursor-plugin.md), [`.cursor-plugin/plugin.json`](.cursor-plugin/plugin.json), [`hooks/cursor-hooks.json`](hooks/cursor-hooks.json)) runs the same scripts. The same `skills/` tree installs on any [Agent Skills](https://agentskills.io) host with `npx skills add gaboesquivel/flow-skills`, without the hooks. Consumers reach skills by talking to their agent; no skill must be named explicitly. This repository does not ship a bootstrap installer or require changes to adopter instruction files. Keep `plugin.json` and `package.json` versions in step; `pnpm validate` checks the plugin manifest, hooks, and agent frontmatter.
 
 | Task | Command |
 | --- | --- |
@@ -29,7 +29,6 @@ Flow ships as a Claude Code plugin ([decision 0062](docs/decisions/0062-claude-c
 | Tests | `pnpm test` |
 | Delivery metrics (time to close PR, CI failures and wait, skill words) | `pnpm metrics [--repo owner/name] [--limit N]` |
 | Context cost (what agents load, total SKILL.md words, skill install drift) | `pnpm context [--repo path] [--json]` ([`scripts/context.mjs`](scripts/context.mjs)) |
-| Progress board (specs by stage, from Git) | `pnpm board` ([`scripts/board.mjs`](scripts/board.mjs)) |
 | Guard hook tests | `node --test tests/guard.test.mjs` |
 | Website (`site/`) | `pnpm --dir site install`, then `pnpm --dir site dev` or `pnpm --dir site qa` |
 

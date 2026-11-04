@@ -1,6 +1,6 @@
 # 056 — Lean agent context and checkable design rules
 
-Status: accepted (2026-11-02). Accepted, returned to draft to rewrite skill changes as outcomes rather than procedures, and accepted again for build the same day.
+Status: implemented (2026-11-03).
 
 ## Problem Statement
 
@@ -131,16 +131,14 @@ No decision record: the budgets are hypotheses in this spec, and the script is r
 
 ## Tasks
 
-- [x] **T1 — Context report.** `skills/retro/context.mjs`, `pnpm context`, fixtures and tests. Done when steps 1–3 pass on the real repositories. Blocks T2, T5, and T6.
+- [x] **T1 — Context report.** `skills/retro/context.mjs`, `pnpm context`, fixtures and tests. Done when steps 1–3 pass on the real repositories. Blocks T2 and T5.
 - [x] **T2 — `retro` measures before proposing trims.** Done when steps 4 and 8 pass. Blocked by T1. Step 4 not yet run in a live retro.
 - [x] **T3 — `write-agents` install-source outcome.** Done when step 8 passes for it. Independent.
 - [x] **T4 — `design` leaves followable, verifiable rules.** Done when steps 5 and 8 pass. Step 5 not yet run in a live design session.
-- [ ] **T5 — gaboesquivel.com.** Resync, design-skill decision, overlap pairs, `DESIGN.md` split, identity-ban check. Its own PR in that repository. Done when step 6 passes. Blocked by T1 (to measure) and T4 (outcome to meet).
-- [ ] **T6 — Templates.** flow-next and flow-mono stack-skill review with keep, pin, or drop per skill. Their own PRs. Blocked by T1.
-- [ ] **T7 — Description voice experiment.** Using the existing skill evals ([041](041-skill-evaluation.md), [049](049-local-evaluation.md)), compare imperative and third-person descriptions on three Flow skills. Change `write-agents` and the catalog only if third person triggers at least as well. Blocked by nothing.
+- [x] **T5 — gaboesquivel.com.** Resync, design-skill decision, overlap pairs, `DESIGN.md` split, identity-ban check. Its own PR in that repository. Done when step 6 passes. Blocked by T1 (to measure) and T4 (outcome to meet). Landed in gaboesquivel/gaboesquivel.com#27: always-loaded plus core design context ~15.4k → ~7.7k tokens (−50%) against that day's `main`, about −58% against the 2026-11-02 audit; zero drift, no description over the limit, no overlap pair, core `DESIGN.md` ~2.3k tokens, and `check:design` fails on each new identity ban (steps 6 and 7 satisfied).
 - [x] **T8 — Article draft.** `docs/blog/designing-with-ai.md`, on this branch.
 
-T1, T3, T4, and T7 can run in parallel. The gaboesquivel package needs no task unless T1 shows it over budget. T5 and T6 touch other repositories and must not overlap the flow-review-ci session's files there.
+T1, T3, and T4 can run in parallel. The gaboesquivel package needs no task unless T1 shows it over budget. T5 touches another repository and must not overlap the flow-review-ci session's files there.
 
 ## Out of Scope
 
@@ -150,9 +148,11 @@ T1, T3, T4, and T7 can run in parallel. The gaboesquivel package needs no task u
 - Editing third-party skill bodies.
 - A public landing page or versioned release site for any skill (Taste Skill's packaging), and a post-drafting skill built on `gabo`. Both are noted in the research as ideas, not bets here.
 - Publishing the article.
+- A stack-skill review in flow-next and flow-mono (keep, pin, or drop per skill). Since [0062](../decisions/0062-claude-code-first.md) templates load Flow from the plugin; the review happens with the next template work.
+- A description voice experiment (imperative against third person). The maintainer tests it manually.
 
 ## Further Notes
 
-- Appetite (assumed): T1–T4 and T8 in one session; T5–T7 one short session each.
+- Appetite (assumed): T1–T4 and T8 in one session; T5 one short session.
 - Open assumptions: characters ÷ 4 is close enough to rank costs (it misranks code-heavy files); hosts list every installed skill's metadata at session start (true for Claude Code; other hosts vary); the maintainer wants gaboesquivel.com's 41 extra skills gone rather than added to the lock.
 - The @so_ainsight post saved as "running X with Claude Code" is a list of eight open-source UI and motion repositories; it informs the design-skill research, not this spec's measures.

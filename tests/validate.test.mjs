@@ -18,6 +18,7 @@ import {
   collectRecordErrors,
   collectSkillWordErrors,
   collectSkillsLinkErrors,
+  collectSpecStatusErrors,
   stripFencedCode,
   validateSkills,
   collectShadowedSkillWarnings,
@@ -204,10 +205,21 @@ test('plugin check catches a renamed or drifted manifest and a hook pointing at 
   assert.deepEqual(collectPluginErrors(dir), [
     '.claude-plugin/plugin.json: name must be "flow", found "other"',
     '.claude-plugin/plugin.json: version 1.0.0 must match package.json 1.2.3',
+    '.cursor-plugin/plugin.json: missing',
     'hooks/hooks.json: PreToolUse references missing hooks/guard.mjs',
+    'hooks/cursor-hooks.json: missing',
   ])
   writeFileSync(join(dir, 'hooks', 'guard.mjs'), '')
   writeFileSync(join(dir, '.claude-plugin', 'plugin.json'), JSON.stringify({ name: 'flow', version: '1.2.3' }))
+  mkdirSync(join(dir, '.cursor-plugin'))
+  writeFileSync(join(dir, '.cursor-plugin', 'plugin.json'), JSON.stringify({ name: 'flow', version: '9.9.9' }))
+  writeFileSync(join(dir, 'hooks', 'cursor-hooks.json'), JSON.stringify({ hooks: { beforeShellExecution: [{ command: 'node "${CURSOR_PLUGIN_ROOT}/hooks/guard.mjs"' }], sessionStart: [{ command: 'node "${CURSOR_PLUGIN_ROOT}/hooks/wip.mjs"' }] } }))
+  assert.deepEqual(collectPluginErrors(dir), [
+    '.cursor-plugin/plugin.json: version 9.9.9 must match package.json 1.2.3',
+    'hooks/cursor-hooks.json: sessionStart references missing hooks/wip.mjs',
+  ])
+  writeFileSync(join(dir, '.cursor-plugin', 'plugin.json'), JSON.stringify({ name: 'flow', version: '1.2.3' }))
+  writeFileSync(join(dir, 'hooks', 'wip.mjs'), '')
   assert.deepEqual(collectPluginErrors(dir), [])
   writeFileSync(join(dir, 'hooks', 'hooks.json'), JSON.stringify({ PreToolUse: [] }))
   assert.deepEqual(collectPluginErrors(dir), ['hooks/hooks.json: must wrap the event map in a top-level "hooks" key'])
@@ -251,4 +263,30 @@ test('a retired scenario may name a removed skill and its deleted files', (t) =>
   }))
   const errors = validateEvalScenarios({ root: repoRoot, scenariosFile }).filter((e) => !e.startsWith('Missing required'))
   assert.deepEqual(errors, ['E16: unknown skill tldr', 'E16: missing skill reference skills/tldr/SKILL.md'])
+})
+
+test('no spec fails for its length', (t) => {
+  const docs = tempDir(t, 'flow-spec-length-')
+  mkdirSync(join(docs, 'specs'))
+  writeFileSync(join(docs, 'specs', '065-long.md'), `Status: draft (2026-11-03).\n\n${'word '.repeat(1300)}\n`)
+  assert.deepEqual(collectRecordErrors(docs), [])
+})
+
+test('spec status check fails an accepted spec whose tasks are all ticked until it is implemented', (t) => {
+  const spec = (status, tasks) => `# 061: Demo\n\nStatus: **${status}** (2026-11-03)\n\n## Problem\n\n- [ ] not a task\n\n## Tasks\n\n${tasks}\n`
+  const ticked = '- [x] 01: One. Area: a.\n- [X] 02: Two. Area: b.'
+  const errors = collectSpecStatusErrors('061-demo.md', spec('Accepted', ticked))
+  assert.equal(errors.length, 1)
+  assert.match(errors[0], /docs\/specs\/061-demo\.md: .*set `Status: implemented`/u)
+  assert.deepEqual(collectSpecStatusErrors('061-demo.md', spec('Accepted', '- [x] 01: One. Area: a.\n- [ ] 02: Two. Area: b.')), [])
+  assert.deepEqual(collectSpecStatusErrors('061-demo.md', spec('Implemented', ticked)), [])
+  assert.deepEqual(collectSpecStatusErrors('061-demo.md', spec('Accepted', '01: One. Area: a.')), [])
+  assert.deepEqual(collectSpecStatusErrors('061-demo.md', `Status: Accepted\n\n## Tasks\n\n- [x] 01: Done.\n\n## Notes\n\n- [ ] later\n`).length, 1, 'boxes after Tasks are ignored')
+  const docs = tempDir(t, 'flow-spec-status-')
+  const file = join(docs, 'specs', '063-ticked.md')
+  mkdirSync(join(docs, 'specs'))
+  writeFileSync(file, spec('Accepted', ticked))
+  assert.match(collectRecordErrors(docs).join('\n'), /063-ticked\.md: .*set `Status: implemented`/u)
+  writeFileSync(file, spec('Implemented', ticked))
+  assert.deepEqual(collectRecordErrors(docs), [])
 })

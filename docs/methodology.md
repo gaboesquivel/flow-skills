@@ -2,11 +2,30 @@
 
 Current practices. Official identity and the eight principles live in [PRODUCT.md](../PRODUCT.md). The [principles](principles.md) draft elaborates optional themes; this document describes application, not a mandatory sequence or skill pipeline.
 
+## Who owns what
+
+Flow's value does not depend on a starter, `start`, a hosting provider, or the whole delivery sequence ([decision 0067](decisions/0067-flow-boundaries.md)).
+
+| Owner | Owns |
+|---|---|
+| Flow plugin | Intent, judgment, specs, delivery principles, reusable skills |
+| Starters | Optional, opinionated technology foundations |
+| Project scripts | The authoritative verification commands |
+| Native host | Sessions, worktrees, delegation, built-in review |
+
+`start` ends at the initial commit; discovery and deployment are separate work. Skills work alone and compose when useful: `explore` without `start`, `build` without a spec, `to-spec` without `to-tasks`, or `review` on any change.
+
+## Keep people able to judge
+
+Agent speed creates costs that green checks do not show: code no one understands ([comprehension debt](https://addyosmani.com/blog/comprehension-debt/)), rationale no one wrote down ([intent debt](https://addyosmani.com/blog/intent-debt/)), and a review queue that grows with each agent ([orchestration tax](https://addyosmani.com/blog/orchestration-tax/)). Answer them selectively, not with a new phase or document: stop for direction changes and consequential uncertainty, record why in the specs and decisions the work already warrants, say what a person should understand before consequential work ships, and run only as much in parallel as someone can judge. Small, clear work proceeds without any of this. [Research note](research/2026-11-03-velocity-with-intent.md).
+
 ## Clarify intent
 
 Combine focused questions, research, suggested directions, and exploration of alternatives. Reuse known context. Establish the intended outcome, consequential assumptions, existing evidence, and how the next test will inform a decision.
 
 When commercial context affects the decision, use the known customer, buyer, business model, distribution, and evidence of maturity to guide refinement. Ask only for missing context that matters to the current uncertainty. Optional product-discovery skills do not block delivery work.
+
+For a new product, keep the vision and core journeys broad while the active work stays bounded: the vision lives in `PRODUCT.md`, the [first useful release](../GLOSSARY.md#first-useful-release) bounds it, specs are independently deliverable increments, and tasks are their executable slices. [`to-spec`](../skills/to-spec/SKILL.md) decides how many specs the work needs ([decision 0066](decisions/0066-specs-sized-by-delivery.md)). Specs say what and why; how is the agent's.
 
 Record bounded increments in `docs/specs/` when durable scope helps; record significant rationale in `docs/decisions/`. Small clear changes may need only conversation and code.
 
@@ -14,7 +33,7 @@ Record bounded increments in `docs/specs/` when durable scope helps; record sign
 
 For a new product or substantial feature, settle the delivery appetite early: a time target (and a cost limit when model, evaluation, or infrastructure spend is material), the first verifiable increment, and non-goals. Recover what is known and ask only for what is missing, with a suggested default. A small, understood change gets none of this.
 
-During delivery, new scope gets a [scope trade-off](../GLOSSARY.md#scope-trade-off) whether the user or an agent proposed it: defer, replace, reject, or expand the appetite, naming what changes. Review flags both unrequested additions and accepted behavior that went missing. Blockers to correctness, security, or required checks are never traded away to meet a target. Parallel work pays only when it saves more elapsed time than it costs to brief, start, and integrate. Elapsed time and cost are reported when observed and marked "not measured" otherwise. [`explore`](../skills/explore/SKILL.md#proportion) and [`to-spec`](../skills/to-spec/SKILL.md) capture the appetite, [`build`'s Scope guard](../skills/build/SKILL.md#scope-guard) defends it, ([decision 0053](decisions/0053-delivery-appetite-and-scope.md)); `build` slices a multi-area change by disjoint area and the host sizes the fan-out under its concurrency cap ([Slices](../skills/build/SKILL.md#slices), decisions [0060](decisions/0060-slice-by-area.md) and [0062](decisions/0062-claude-code-first.md)).
+During delivery, new scope gets a [scope trade-off](../GLOSSARY.md#scope-trade-off) whether the user or an agent proposed it: defer, replace, reject, or expand the appetite, naming what changes. Review flags both unrequested additions and accepted behavior that went missing. Blockers to correctness, security, or required checks are never traded away to meet a target. Parallel work pays only when it saves more elapsed time than it costs to brief, start, and integrate. Elapsed time and cost are reported when observed and marked "not measured" otherwise. [`explore`](../skills/explore/SKILL.md#proportion) and [`to-spec`](../skills/to-spec/SKILL.md) capture the appetite, [`build`'s Scope guard](../skills/build/SKILL.md#scope-guard) defends it, ([decision 0053](decisions/0053-delivery-appetite-and-scope.md)); `build` slices work with several outcomes and the host decides the fan-out ([Slices](../skills/build/SKILL.md#slices), decisions [0060](decisions/0060-slice-by-area.md), [0062](decisions/0062-claude-code-first.md), and [0066](decisions/0066-specs-sized-by-delivery.md)).
 
 ## Observe and revisit
 
