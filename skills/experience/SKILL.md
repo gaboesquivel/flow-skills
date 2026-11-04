@@ -1,6 +1,6 @@
 ---
 name: experience
-description: Walk a working product as its user would and report observed friction with evidence; read-only. Use when the user says "walk the experience", "try it like a user", or "one stroke".
+description: Walk a working product as its user would and report observed friction with evidence; read-only. Use when the user says "walk the experience" or "try it like a user".
 disable-model-invocation: false
 ---
 

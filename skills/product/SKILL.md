@@ -20,7 +20,7 @@ A missing source is a finding, not a reason to stop or ask.
 
 Map each core journey and stated problem to the capabilities that serve it, each **implemented**, **partial**, **planned**, or **none**. Then:
 
-- **Working:** journeys the implemented product serves. A shipped capability is not demonstrated value until evidence shows it: "did it land" separates delivered (`ship`'s liveness) from used and from the outcome moved, relates each journey to observed friction and adoption, and leaves what no source shows unknown.
+- **Working:** journeys the implemented product serves. A shipped capability is not demonstrated value until evidence shows it: "did it land" asks about the outcome of landed work, never to merge it, and separates delivered (`ship`'s liveness) from used and from the outcome moved, relates each journey to observed friction and adoption, and leaves what no source shows unknown.
 - **Missing:** stated problems with nothing behind them, and metrics nothing in the product can observe.
 - **Drift:** built work no stated problem asks for, or docs describing a product the code no longer is.
 - **Complexity:** surfaces that cost more than the problem they serve.

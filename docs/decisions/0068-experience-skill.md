@@ -23,5 +23,5 @@ Flow verifies correctness (`review`) and liveness (`ship`), and judges fit and m
 
 ## Consequences
 
-- One more skill (about 400 words) in the catalog, with adapter metadata and an eval scenario.
+- One more skill (about 400 words) in the catalog, with adapter metadata. No eval scenario yet; the first real walk is the evidence.
 - No dependency, recording tool, or gate. Without a browser it reports the limit and what it could still establish.

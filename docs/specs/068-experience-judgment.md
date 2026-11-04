@@ -54,4 +54,4 @@ New skills beyond `experience`; recording or browser dependencies; metrics analy
 
 ## Tasks
 
-Written by `to-tasks`.
+- [x] 01: Edit the five skills, add `experience`, and align the catalog, principles, methodology, and research note. Area: skills, docs, scripts/validate.mjs.
