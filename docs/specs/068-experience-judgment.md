@@ -23,7 +23,7 @@ Sharpen five existing skills by a few sentences each, and add one optional skill
 
 ## Decisions
 
-- [0068](../decisions/0068-experience-skill.md) adds `experience` (catalog growth needs a record, [PRODUCT.md](../PRODUCT.md)) and sets the new-skill test.
+- [0068](../decisions/0068-experience-skill.md) adds `experience` (catalog growth needs a record, [PRODUCT.md](../../PRODUCT.md)) and sets the new-skill test.
 - **Edits, each naming the behavior it changes:**
   - `explore`: start from the outcome the user wants and treat doing nothing as an option (stops solution-first interviews); when one uncertainty blocks the choice, offer the smallest investigation (inspect a contract, trace a request, compare two approaches) and report what it showed.
   - `to-spec`: the acceptance scenario follows a realistic user journey; a model or sketch only when it resolves a material uncertainty or states a binding constraint; consequential choices show alternatives and trade-offs, flagging which are hard to reverse.
