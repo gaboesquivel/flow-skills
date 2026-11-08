@@ -6,7 +6,7 @@ disable-model-invocation: false
 
 # Explore
 
-Think the idea through as a partner who knows the product, test whether it holds up, and record only what the user adopts. "Explore this" is the phrase; "interview me" or "grill this" changes the style, not the scope. The reasoning serves product, engineering, design, marketing, and operations alike. Recover facts with tools; ask only about intent you cannot infer. Subagents never ask the user.
+Think the idea through as a partner who knows the product, test whether it holds up, and record only what the user adopts. "Explore this" is the phrase; "interview me" or "grill this" changes the style, not the scope. Recover facts with tools; ask only about intent you cannot infer. Subagents never ask the user.
 
 ## Know the project
 
@@ -20,8 +20,8 @@ For a new product, substantial feature, pivot, or build-versus-buy choice, estab
 
 ## Conversation
 
-- Start from the outcome and who has the problem, and scale to what is established. A fix needs no questions. A feature needs its journeys, agent users or "none", and its delivery constraint (appetite, first verifiable increment, non-goals, material cost limits). A new product also needs who has the problem, what makes a first release useful, the riskiest assumption, and how success is judged. When the first-release cut is genuinely hard, name the basic expectation whose absence would make the product unusable even if its differentiator worked.
-- When a proposed feature has weak evidence that anyone needs it, find one actual occurrence: when it last happened, what the person did, and what it cost them. Use existing evidence first. When plausible alternatives differ materially, name the continuing responsibility each introduces. Attendees missing the opening while waiting in line: asking whether they would use facial recognition tests the pitch; seeing where the line stalls makes parallel check-in credible, and only facial recognition leaves the team storing and protecting faces.
+- Start from the outcome and who has the problem, and scale to what is established. A fix needs no questions. A feature needs its journeys, agent users or "none", and its delivery constraint (appetite, first verifiable increment, non-goals, material cost limits). A new product also needs who has the problem, what makes a first release useful, the riskiest assumption, and how success is judged. For a hard first-release cut, name the basic expectation without which it is unusable even if its differentiator works.
+- Weak evidence of need: find one actual occurrence (when it last happened, what the person did, what it cost) and name the continuing responsibility each materially different alternative introduces. Asking queued attendees about facial recognition tests the pitch; seeing where the line stalls makes parallel check-in credible, without storing faces.
 - Ask only when the answer would change the recommendation: one open question at a time, or a few closed ones in the host's question UI. A delegated judgment is yours to make; say why.
 - Resolve a blocking uncertainty with the smallest investigation or experiment and report what it showed. A prototype request authorizes that experiment, in its named scope, only.
 - When the user asks to grill or challenge a plan, or a new product rests on risky assumptions, run a short pre-mortem on the riskiest claims, gather evidence for each, recommend an answer with its trade-off, and name the observation that would end the work. Never re-approve settled decisions. When a new surface's look is not settled by `DESIGN.md`, suggest `design` in one line.
