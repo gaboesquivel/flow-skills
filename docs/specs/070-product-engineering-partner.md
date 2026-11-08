@@ -1,6 +1,6 @@
 # 070 — Explore as a product-engineering partner
 
-Status: accepted (2026-11-08). Appetite: one session. Decision: [0070](../decisions/0070-research-and-clearer-names.md).
+Status: implemented (2026-11-08). Appetite: one session. Decision: [0070](../decisions/0070-research-and-clearer-names.md).
 
 ## Problem
 
@@ -50,6 +50,10 @@ Scenario: a maintainer of Signal, a feedback board whose `PRODUCT.md` says submi
 8. "Build it" on a branch with one disclosed linked decision and one unrelated Proposed record accepts only the linked one.
 
 Invariants: `pnpm validate` and `pnpm test` pass; skill words stay within the 10,500 budget; no hook changes.
+
+## Evidence
+
+Run counts, review findings, and the pending live cases live in one [review record](../../tests/evals/records/2026-11-08-spec-070-review.md). In short: the deterministic checks pass (`tests/spec-070.test.mjs`, the Flow block refresh on the [Signal fixture](../../tests/fixtures/e44-signal/README.md)); a fresh-context review's findings are fixed; [E44](../../tests/evals/tasks/E44-task.md) cases 1 to 8 are written and not yet run on a host.
 
 ## Out of Scope
 
