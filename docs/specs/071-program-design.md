@@ -1,6 +1,6 @@
 # 071 — Product evidence and program design before code
 
-Status: draft (2026-11-08). Appetite: one session.
+Status: implemented (2026-11-08). Appetite: one session.
 
 ## Problem
 
