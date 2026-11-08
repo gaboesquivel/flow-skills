@@ -26,7 +26,7 @@ The status line is `Status: <candidate|draft|accepted|implemented|dropped> (YYYY
 
 Writing a draft is not acceptance. **Acceptance** happens in one commit on "accept the spec", or as the first commit of "build it" or "ship it" on a draft:
 
-- Set the identified spec to `accepted` and each record it links from **Proposed** to **Accepted**, dated. Acceptance covers only that work and the linked changes whose consequences the user has seen; another Proposed record on the branch stays Proposed.
+- Set the identified spec to `accepted` and each record it links whose consequences the user has seen from **Proposed** to **Accepted**, dated. Any other Proposed record on the branch stays Proposed; a linked one not yet disclosed is shown before acceptance.
 - Back-pointers, never earlier: for each linked record that supersedes or amends an older one, append `Superseded by`, `Superseded in part by`, or `Amended by [NNNN]` with a short scope to the older record's Status line (or `superseded_by`), index row, and each changed spec; update each contradicted owner statement (`PRODUCT.md`, `DESIGN.md`, `ARCHITECTURE.md`, `GLOSSARY.md`) and leave unrelated documents alone. A direction-change Decisions bullet gets the same, linking the spec.
 
 A draft without an acceptance scenario, or without **Exposure** when it adds deployable behaviour, stays `draft`: name what is missing and stop. A `candidate` must become a full draft first. Changing an accepted spec's scope or a linked decision returns it to `draft`.

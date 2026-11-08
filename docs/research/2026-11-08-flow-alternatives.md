@@ -26,7 +26,7 @@ Repository trees, READMEs, and `SKILL.md` files read through the GitHub API; Cla
 Other observations:
 
 - Pocock's catalog overlaps Flow's by name and job: `to-spec`, `domain-modeling`, `code-review`, `prototype`, and `research` (observed). The 2026-10-20 note described it only as agent-writing patterns; that is now incomplete.
-- Both plugin catalogs sit in Anthropic's official marketplace (observed), so a Claude Code user meets them before Flow (inferred).
+- Both READMEs install from `claude-plugins-official` (observed: [Pocock](https://github.com/mattpocock/skills#readme), [Superpowers](https://github.com/obra/superpowers#readme)), so a Claude Code user may meet them before Flow (inferred).
 - The doing-nothing alternative is strong: [spec 059's comparison](../../tests/evals/records/2026-11-03-build-vs-no-skills.md) found small tasks never reached a Flow skill and delivered as well without one.
 
 ## Limits

@@ -53,7 +53,7 @@ test('acceptance covers only the identified work and its linked, disclosed recor
   assert.match(build, /unrelated proposal on the branch gets no approval/u)
   assert.match(build, /authorized change needs no second yes/u)
   assert.match(build, /With no spec, a change that reverses or narrows an accepted commitment/u, 'unspecced direction-change protection kept')
-  assert.match(read('to-spec'), /another Proposed record on the branch stays Proposed/u)
+  assert.match(read('to-spec'), /other Proposed record on the branch stays Proposed/u)
   assert.match(read('ship'), /unrelated proposal on the branch is neither accepted nor blocking/u)
 })
 
