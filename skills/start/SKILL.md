@@ -22,7 +22,7 @@ Anything other than an explicit yes is not one.
 
 Run `node <skill-dir>/lib/bootstrap.mjs <destination> <project-name> --preset <preset>` and keep its JSON. It is the one supported path: it removes template remotes, renames identity through an allowlist, runs `pnpm setup`, writes the root docs and the Flow block, runs the checks, and commits `chore: initialize <slug>` only when all pass. Exit 0 means committed with a clean tree; otherwise `blockers` names what stopped it. Never commit around a blocker or with `--no-verify`.
 
-When the request describes the product, run `explore` alongside as a new-product run; it writes nothing until the initial commit, and a failed bootstrap does not discard it. Otherwise offer it once at the end.
+When the request describes the product, run `explore` alongside as a new-product run, without repeating what the request settled; it writes nothing until the initial commit, and a failed bootstrap does not discard it. A brief already developed is consumed, not redone. Otherwise offer it once at the end.
 
 | Check | Command / action |
 | --- | --- |

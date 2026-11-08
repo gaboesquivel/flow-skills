@@ -12,9 +12,9 @@ Use the project's spec location, else `docs/specs/NNN-short-name.md`, numbered b
 
 **What, not how.** Name outcomes, constraints, and consequential decisions. Components, file layout, and implementation are `build`'s unless an established constraint fixes them.
 
-**How many specs.** Decide this yourself and report why, never asking. For a new product, name the first useful release in the Solution, proposing one as an assumption when the brief has none; the vision (`PRODUCT.md`) may stay broad. Default to one spec; several independent tasks in one spec is valid. Split only when a part can be delivered on its own, the whole is too much to accept and deliver at once, a dependency between parts is consequential, or later investment should wait on what an earlier part teaches. Never split for length or task count. Write the active spec in full and each later one as a **candidate** stub: the problem and what it waits on. Each spec states its acceptance boundary and Out of Scope; name a dependency only when real.
+**How many specs.** Decide this yourself and report why, never asking. For a new product, name the first useful release in the Solution, proposing one as an assumption when the brief has none; the vision (`PRODUCT.md`) may stay broad. Default to one spec; several vertical tasks in one spec is valid, and a large update to an existing product is sized the same way. "Spec it" covers the outcome under discussion. When a first slice is independently useful, or what it teaches could change later investment, write that slice in full and keep a later one as a **candidate** stub (the problem and what it waits on) only when the later problem and its dependency are worth remembering. When several pieces form one useful release, can be accepted together, and the user means to deliver them together, one MVP spec holds them. Never split for length or task count. Each spec states its acceptance boundary and Out of Scope; name a dependency only when real. Report which scope "build it" will build.
 
-A choice gets a decision record (`docs/decisions/NNNN-short-name.md`) only when it chose among real alternatives **and** reaches beyond this spec or is costly to reverse; otherwise it is a Decisions bullet. Records never hold scope or tasks. Write a needed record as **Proposed** and link it.
+A choice gets a decision record (`docs/decisions/NNNN-short-name.md`) only when it chose among real alternatives **and** reaches beyond this spec or is costly to reverse; otherwise it is a Decisions bullet. Records never hold scope or tasks. Changing an Accepted decision always gets one, with `Supersedes [NNNN]` or `Amends [NNNN]` (and scope) on its Status line; a conflict only with a spec or owner document gets one only by the test above. Write a needed record as **Proposed** and link it.
 
 **Length.** As short as complete, with no word limit: link records, glossary, and code instead of restating them.
 
@@ -27,7 +27,7 @@ The status line is `Status: <candidate|draft|accepted|implemented|dropped> (YYYY
 Writing a draft is not acceptance. **Acceptance** happens in one commit on "accept the spec", or as the first commit of "build it" or "ship it" on a draft:
 
 - Set the spec to `accepted` and each linked record from **Proposed** to **Accepted**, dated.
-- Back-pointers, never earlier: for each linked record that supersedes or amends an older one, append `Superseded by`, `Superseded in part by`, or `Amended by [NNNN]` with a short scope to the older record's Status line (or `superseded_by`), index row, and each changed spec; update each contradicted `PRODUCT.md` fact. A direction-change Decisions bullet gets the same, linking the spec.
+- Back-pointers, never earlier: for each linked record that supersedes or amends an older one, append `Superseded by`, `Superseded in part by`, or `Amended by [NNNN]` with a short scope to the older record's Status line (or `superseded_by`), index row, and each changed spec; update each contradicted owner statement (`PRODUCT.md`, `DESIGN.md`, `ARCHITECTURE.md`, `GLOSSARY.md`) and leave unrelated documents alone. A direction-change Decisions bullet gets the same, linking the spec.
 
 A draft without an acceptance scenario, or without **Exposure** when it adds deployable behaviour, stays `draft`: name what is missing and stop. A `candidate` must become a full draft first. Changing an accepted spec's scope or a linked decision returns it to `draft`.
 
@@ -35,7 +35,7 @@ A draft without an acceptance scenario, or without **Exposure** when it adds dep
 
 ## Process
 
-1. Explore only what the conversation lacks (specs, decisions, tests, terms per `domain-modeling` Shared language), and sketch test seams for consequential behavior, preferring existing high-level ones. Reversing or narrowing an Accepted decision, accepted spec, or `PRODUCT.md` fact needs an explicit yes (`explore`'s Direction changes) unless already confirmed.
+1. Explore only what the conversation lacks (specs, decisions, tests, terms per `domain-modeling` Shared language), and sketch test seams for consequential behavior, preferring existing high-level ones. A draft that reverses or narrows an Accepted decision, accepted or implemented spec, or an owner-document fact is a **direction change**, the gate's one home: name the exact current statement (file and quote), the proposed replacement, and the observable consequence, kept apart from accepted direction. Resolve it with an explicit yes before the spec is accepted or built; a user who already chose the new direction with that consequence understood has given it once. Discussion and experiments in `explore` do not trigger it. A prototype or implementation discrepancy alone never establishes a product promise.
 2. Commit the spec as `draft` and any record as **Proposed**, publishing nothing and asking nothing; report the files, how many specs and why, open assumptions, and next step: "build it", "accept the spec", or "share the draft".
 
 <spec-template>
@@ -56,7 +56,7 @@ Only consequential choices and established constraints that shape execution, wit
 
 **Appetite** (substantial work): the first verifiable slice, what gives way first, and any material cost limit.
 
-A confirmed direction change without a record: the file, old position, new one.
+A direction change without a record: the current statement, the replacement, the consequence, marked a proposal until confirmed.
 
 ## Acceptance
 

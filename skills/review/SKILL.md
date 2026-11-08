@@ -22,7 +22,8 @@ Scope: the working tree by default, or a branch, pull request, or spec. Run `flo
 
 - scenario verdicts: no evidence means `unresolved`, and `unmet` is Important
 - scope against `build`'s Scope guard
-- names against `GLOSSARY.md`
+- names against `GLOSSARY.md`, flagging a missing entry only when it creates a meaningful ambiguity or naming inconsistency
+- owner commitments: when the change touches what `PRODUCT.md`, `DESIGN.md`, `ARCHITECTURE.md`, or `GLOSSARY.md` states, compare it with that statement
 - `DESIGN.md` and UI basics when the diff changes UI, including material experiential defects (a missing loading, empty, or error state) seen in the rendered result; a whole-journey walk is `experience`'s
 
 Be able to explain the consequential choices the change made. Findings cite `file:line`: Important (blocks), Nit (at most three), or Pre-existing (never blocks).

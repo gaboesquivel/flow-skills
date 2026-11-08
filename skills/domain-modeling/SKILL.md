@@ -14,7 +14,7 @@ Use one project glossary at `GLOSSARY.md`. Record significant choices under `doc
 
 One home for using the glossary during any work; other skills link here. A resolved `GLOSSARY.md` term names its concept everywhere: product context, specs, tasks, agent interfaces (tool and API names), code identifiers, and test names. Never introduce a second name for it.
 
-When a request uses a synonym or an ambiguous term that changes behavior, settle it from the glossary, then from code and docs, and use the resolved term without asking. Ask one question, with your guess, only when those sources conflict or are silent and the meaning changes the behavior. Add or update an entry in the same commit as the work that resolves it, and only when the term will recur; a term used once and generic vocabulary get none.
+When a request uses a synonym or an ambiguous term that changes behavior, settle it from the glossary, then from code and docs, and use the resolved term without asking. Ask one question, with your guess, only when those sources conflict or are silent and the meaning changes the behavior. When glossary and code disagree on a behavior the request depends on (a hold period of three days against seven), that is the conflict: ask before editing. A disagreement the request does not touch is not. Add or update an entry in the same commit as the work that resolves it, only when the term recurs and passes one test: *what could a capable contributor reasonably get wrong without this definition?* A term used once, generic vocabulary, a synonym of an existing entry, and a new noun alone get none.
 
 ## During the session
 
@@ -25,7 +25,7 @@ When a request uses a synonym or an ambiguous term that changes behavior, settle
 
 ### Update GLOSSARY.md inline
 
-When a term is resolved, update `GLOSSARY.md` immediately. Follow [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md). Keep implementation detail out of the glossary; it is vocabulary, not a spec or scratch pad.
+When a term is resolved, update `GLOSSARY.md` immediately. Follow [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md). Keep implementation detail out of the glossary; it is vocabulary, not a spec or scratch pad. Give a short definition, an example only when it separates two easily confused things, and a link to the owner of procedural detail instead of restating it.
 
 ### Offer decision records sparingly
 
