@@ -73,6 +73,7 @@ Significant product, design, architecture, infrastructure, or process choices li
 | [0067-flow-boundaries.md](0067-flow-boundaries.md) | Accepted | Four owners: plugin, starters, project scripts, host; `start` ends at the initial commit; critical thinking is selective |
 | [0068-experience-skill.md](0068-experience-skill.md) | Accepted | The experience skill and the new-skill test |
 | [0069-direction-changes-at-adoption.md](0069-direction-changes-at-adoption.md) | Accepted | Direction changes gate at adoption, not discussion (amends 0038, 0044) |
+| [0070-research-and-clearer-names.md](0070-research-and-clearer-names.md) | Proposed | `research` skill; `product` → `align`, `flow` → `sync-docs`; an outcome sentence in initiative specs (amends 0062) |
 
 ## Rules
 
