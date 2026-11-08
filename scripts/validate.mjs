@@ -19,8 +19,9 @@ export const EXPECTED_SKILL_NAMES = [
   'domain-modeling',
   'experience',
   'explore',
-  'flow',
-  'product',
+  'align',
+  'research',
+  'sync-docs',
   'review',
   'ship',
   'start',
@@ -123,7 +124,7 @@ export function stripFencedCode(text) {
 
 // Bare backtick filenames (no slash) that look like skill-bundled files must exist in the citing
 // skill's own directory: a packaged skill must work when installed alone. A helper owned by another
-// skill is named with a path (for example the `flow` skill's `lib/flow-block.mjs`), which this
+// skill is named with a path (for example the `sync-docs` skill's `lib/flow-block.mjs`), which this
 // check leaves alone. Scope is deliberately narrow to avoid false positives on adopter-project
 // names: script extensions (.sh, .mjs, .cjs, .js, .ts, .py) and lowercase-initial .md names only,
 // so `AGENTS.md`, `PRODUCT.md`, `package.json`, and other project files are never checked.
@@ -318,7 +319,8 @@ export function collectPluginErrors(repoRoot) {
 }
 
 // Spec 059: every SKILL.md the catalog loads, summed, stays within this many words (counted as `pnpm metrics` counts them).
-export const SKILL_WORD_BUDGET = 10_000
+// Spec 070 raised it from 10,000 when `research` became the fifteenth skill.
+export const SKILL_WORD_BUDGET = 10_500
 
 export function collectSkillWordErrors(skillsDir, budget = SKILL_WORD_BUDGET) {
   const words = skillWords(skillsDir)

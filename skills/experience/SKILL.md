@@ -6,7 +6,7 @@ disable-model-invocation: false
 
 # Experience
 
-**What is it like to use this?** Follow a real journey through a running product and report what a user would meet. This is observation, never repair: visual direction is `design`, correctness against intent is `review`, outcomes and direction are `product`, delivery is `ship`.
+**What is it like to use this?** Follow a real journey through a running product and report what a user would meet. This is observation, never repair: visual direction is `design`, correctness against intent is `review`, outcomes and direction are `align`, delivery is `ship`.
 
 ## Set up
 

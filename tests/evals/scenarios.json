@@ -24,13 +24,13 @@
     {
       "id": "E02",
       "skills": [
-        "flow"
+        "sync-docs"
       ],
       "behavior": "Product context remains specific to the adopter",
       "taskFile": "tests/evals/tasks/E02-task.md",
       "rubricFile": "tests/evals/rubrics/E02-rubric.md",
       "skillReferences": [
-        "skills/flow/SKILL.md"
+        "skills/sync-docs/SKILL.md"
       ],
       "fixtureReferences": [],
       "evidence": {
@@ -227,7 +227,7 @@
       "taskFile": "tests/evals/tasks/E10-task.md",
       "rubricFile": "tests/evals/rubrics/E10-rubric.md",
       "skillReferences": [
-        "skills/flow/SKILL.md",
+        "skills/sync-docs/SKILL.md",
         "skills/build/SKILL.md"
       ],
       "fixtureReferences": [],
@@ -489,17 +489,17 @@
     {
       "id": "E22",
       "skills": [
-        "flow"
+        "sync-docs"
       ],
       "behavior": "Set up Flow here writes one idempotent Flow block with no delivery question or unrequested Delivery line",
       "taskFile": "tests/evals/tasks/E22-task.md",
       "rubricFile": "tests/evals/rubrics/E22-rubric.md",
       "skillReferences": [
-        "skills/flow/SKILL.md"
+        "skills/sync-docs/SKILL.md"
       ],
       "fixtureReferences": [
         "tests/flow-block.test.mjs",
-        "skills/flow/lib/flow-block.mjs"
+        "skills/sync-docs/lib/flow-block.mjs"
       ],
       "evidence": {
         "structural_contract": "not_executed",
@@ -905,14 +905,14 @@
       "id": "E39",
       "skills": [
         "start",
-        "flow"
+        "sync-docs"
       ],
       "behavior": "Start formats every written and renamed file after the Flow block, so the initial commit passes the project's lint and format check, and re-running the Flow block helper after formatting reports Unchanged",
       "taskFile": "tests/evals/tasks/E39-task.md",
       "rubricFile": "tests/evals/rubrics/E39-rubric.md",
       "skillReferences": [
         "skills/start/SKILL.md",
-        "skills/flow/SKILL.md"
+        "skills/sync-docs/SKILL.md"
       ],
       "fixtureReferences": [],
       "evidence": {
@@ -1021,6 +1021,46 @@
       "evidence": {
         "structural_contract": "not_executed",
         "executable_fixture": "not_executed",
+        "live_skill_execution": "not_executed",
+        "independently_reviewed": "not_executed",
+        "verified_second_host": "not_executed"
+      },
+      "claimsLiveRun": false
+    },
+    {
+      "id": "E44",
+      "skills": [
+        "explore",
+        "research",
+        "align",
+        "sync-docs",
+        "to-spec",
+        "build"
+      ],
+      "behavior": "Explore reads goals and constraints first, weighs existing alternatives, and separates experiment from pivot; research writes or reuses a sourced note only on an explicit request; an initiative spec answers how we will know; check alignment is read-only; an old Flow block refreshes in place; build it accepts only linked, disclosed records",
+      "taskFile": "tests/evals/tasks/E44-task.md",
+      "rubricFile": "tests/evals/rubrics/E44-rubric.md",
+      "skillReferences": [
+        "skills/explore/SKILL.md",
+        "skills/research/SKILL.md",
+        "skills/align/SKILL.md",
+        "skills/sync-docs/SKILL.md",
+        "skills/to-spec/SKILL.md",
+        "skills/build/SKILL.md"
+      ],
+      "fixtureReferences": [
+        "tests/fixtures/e44-signal/README.md",
+        "tests/fixtures/e44-signal/PRODUCT.md",
+        "tests/fixtures/e44-signal/ARCHITECTURE.md",
+        "tests/fixtures/e44-signal/AGENTS.md",
+        "tests/fixtures/e44-signal/docs/specs/004-match-suggestions-one-board.md",
+        "tests/fixtures/e44-signal/docs/decisions/0002-suggestion-logging.md",
+        "tests/fixtures/e44-signal/docs/decisions/0003-public-api-pricing.md",
+        "tests/fixtures/e44-signal/docs/research/2026-10-15-duplicate-handling.md"
+      ],
+      "evidence": {
+        "structural_contract": "passed",
+        "executable_fixture": "passed",
         "live_skill_execution": "not_executed",
         "independently_reviewed": "not_executed",
         "verified_second_host": "not_executed"

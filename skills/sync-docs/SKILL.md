@@ -1,12 +1,12 @@
 ---
-name: flow
-description: Align the project's PRODUCT.md, DESIGN.md, GLOSSARY.md, and ARCHITECTURE.md after meaningful changes, and write the Flow block on request. Use when the user says "update the docs", "sync the docs", or "set up Flow here".
+name: sync-docs
+description: Update the project's PRODUCT.md, DESIGN.md, GLOSSARY.md, and ARCHITECTURE.md to match accepted direction, and write the Flow block on request. Use when the user says "sync the docs", "update the docs", or "set up Flow here".
 disable-model-invocation: false
 ---
 
-# Flow
+# Sync Docs
 
-**Preserve intent** for the project you are in. Align its root context when work changes what that product is, how it behaves, how it is built, or how the team names important concepts. This skill runs no other skill, authorizes no implementation, and is not project initialization (`start` is).
+**Preserve intent** for the project you are in. "Sync the docs" updates its root context when accepted work changes what that product is, how it behaves, how it is built, or how the team names important concepts. Judging whether the product fits its goals is `align`, read-only; this skill writes. A bare "sync" (Git, data) is not this skill. It runs no other skill, authorizes no implementation, and is not project initialization (`start` is).
 
 ## Whose product
 
@@ -29,11 +29,11 @@ Never replace a project's product identity with Flow's tagline, mission, princip
 
 **Delivery.** The mode is inferred (`build`'s Delivery mode), so the block's `Delivery:` line is an optional override: write it only when the user names `local` or `github`, and keep a recorded one unless the user names another. Never ask for it.
 
-**Write** with [`lib/flow-block.mjs`](lib/flow-block.mjs): `node <skill-dir>/lib/flow-block.mjs <absolute-project-path> [local|github]`. The helper owns the layout: which file holds the block, the `@AGENTS.md` import, markers, the pointer, keeping the recorded value, and refusing malformed markers or symlinked, out-of-project, or shared instruction files. Never touch text outside the markers and that import line. Report its output and relay any warning.
+**Write** with [`lib/flow-block.mjs`](lib/flow-block.mjs): `node <skill-dir>/lib/flow-block.mjs <absolute-project-path> [local|github]`. The helper owns the layout: which file holds the block, the `@AGENTS.md` import, markers, the pointer, keeping the recorded value, and refusing malformed markers or symlinked, out-of-project, or shared instruction files. Never touch text outside the markers and that import line. A block from an earlier release (one naming the `flow` skill) is refreshed by the helper on setup or on "sync the docs", rewriting only the block and keeping its `Delivery:` value. Report its output and relay any warning.
 
 ## Boundaries
 
-- Edit adopter instruction files only for the Flow block and the `@AGENTS.md` import, and write the block only when the user asks or `start` runs.
+- Edit adopter instruction files only for the Flow block and the `@AGENTS.md` import, and write the block only when the user asks, `start` runs, or a sync refreshes an existing block.
 - Alignment edits are not permission to implement unrelated code; that is `build`.
 - Never write a session registry, live roster, or shared progress log; coordination is Git evidence.
 - Create no `docs/specs/` or `docs/decisions/` records here; that is `to-spec` or explicit decision work.

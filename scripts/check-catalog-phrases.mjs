@@ -1,6 +1,6 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { LEADING_PHRASES } from '../skills/flow/lib/flow-block.mjs'
+import { LEADING_PHRASES } from '../skills/sync-docs/lib/flow-block.mjs'
 
 /** Surfaces that must reflect decision 0042 ship landing copy, not pre-amendment 0028-only hand-offs. */
 export const CATALOG_PHRASE_SURFACES = [

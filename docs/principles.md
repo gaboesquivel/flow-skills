@@ -24,7 +24,7 @@ Treat agent use as a first-class product interaction. Make relevant capabilities
 
 Make software easy to understand and safe to change; require evidence proportional to what can go wrong.
 
-Work backward from the experience: decisions serve a meaningful user journey. Make quality observable: judge consequential experience through what was actually seen, not assumed from the implementation. Agent output does not establish understanding. Know what the code actually does, through shared domain language, contracts, and checks, and weigh what a change costs later: who depends on it, how hard it is to replace, what breaks if it fails. Small, contained work stays light; consequential work earns more evidence. A responding deployment is liveness, not verified behavior, and verified behavior is not customer value; "did it land" is a later question for [`product`](../skills/product/SKILL.md).
+Work backward from the experience: decisions serve a meaningful user journey. Make quality observable: judge consequential experience through what was actually seen, not assumed from the implementation. Agent output does not establish understanding. Know what the code actually does, through shared domain language, contracts, and checks, and weigh what a change costs later: who depends on it, how hard it is to replace, what breaks if it fails. Small, contained work stays light; consequential work earns more evidence. A responding deployment is liveness, not verified behavior, and verified behavior is not customer value; "did it land" is a later question for [`align`](../skills/align/SKILL.md).
 
 ## Lean
 

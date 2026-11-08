@@ -43,7 +43,7 @@ export const docsTaskGroups = (): TaskGroup[] => [
       ...capability("scope-cost-control", "Manage scope and cost"),
       ...capability("security-human-control", "Direct agents safely"),
       ...capability("verified-delivery", "Understand delivery evidence"),
-      { description: "Keep PRODUCT.md, DESIGN.md, and the glossary aligned.", href: "/skills/flow", label: "Maintain context" },
+      { description: "Keep PRODUCT.md, DESIGN.md, and the glossary aligned.", href: "/skills/sync-docs", label: "Maintain context" },
       { description: "Settle what the project's terms mean.", href: "/skills/domain-modeling", label: "Model the domain" },
       ...guide("principles", "Principles", "Optional themes: validation, observability, agentic, lean, velocity."),
       ...(capabilities.length ? [{ description: "Every published capability, by group.", href: "/capabilities", label: "All capabilities" }] : []),

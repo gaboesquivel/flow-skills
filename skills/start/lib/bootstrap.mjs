@@ -46,10 +46,10 @@ const defaultRun = ({ cwd, script, env }) => {
   }
 }
 
-// The Flow block belongs to the `flow` skill; without it the block is skipped and reported.
+// The Flow block belongs to the `sync-docs` skill; without it the block is skipped and reported.
 const loadFlowBlock = async () => {
   try {
-    return await import(new URL('../../flow/lib/flow-block.mjs', import.meta.url))
+    return await import(new URL('../../sync-docs/lib/flow-block.mjs', import.meta.url))
   } catch {
     return null
   }
@@ -120,7 +120,7 @@ export const runBootstrap = async ({ destinationPath: given, projectName, preset
     if (report.flowBlock.refused) return block(`Flow block refused: ${report.flowBlock.refused}`)
     report.flowImport = flow.ensureImport(destinationPath)
     if (report.flowImport.refused) return block(`@AGENTS.md import refused: ${report.flowImport.refused}`)
-  } else report.flowBlock = { skipped: 'flow skill not installed' }
+  } else report.flowBlock = { skipped: 'sync-docs skill not installed' }
 
   const scripts = JSON.parse(readFileSync(pkgFile, 'utf8')).scripts ?? {}
   if (scripts.format) report.format = run({ cwd: destinationPath, script: 'format' }).status

@@ -1,6 +1,6 @@
 # Flow Skills Competitive Landscape and Differentiation
 
-Status: imported research dated 2026-10-20; claims not independently reverified during cleanup. Recommendations, including tables labeled ADOPT or REJECT, are proposals—not Flow decisions. The report assumes a fixed lifecycle that current Flow documentation does not adopt. Original session citation tokens cannot be resolved from this repository; direct source links are retained for later verification. Current authority: [PRODUCT.md](../../PRODUCT.md) and the [documentation guide](../README.md).
+Status: imported research dated 2026-10-20; claims not independently reverified during cleanup. Native Claude Code, Matt Pocock's skills, and Superpowers were rechecked on 2026-11-08 ([note](2026-11-08-flow-alternatives.md)); its description of Pocock's catalog is out of date. Recommendations, including tables labeled ADOPT or REJECT, are proposals—not Flow decisions. The report assumes a fixed lifecycle that current Flow documentation does not adopt. Original session citation tokens cannot be resolved from this repository; direct source links are retained for later verification. Current authority: [PRODUCT.md](../../PRODUCT.md) and the [documentation guide](../README.md).
 
 ## Executive assessment and research method
 

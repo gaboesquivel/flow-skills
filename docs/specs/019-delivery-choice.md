@@ -4,7 +4,7 @@ Status: implemented (2026-10-28). Issue: [#89](https://github.com/gaboesquivel/f
 
 ## Problem Statement
 
-**Nobody asks how work lands.** Process depth is asked only by `start` and by "set up Flow here". The delivery mode is never asked: `flow` leaves `Delivery:` unset ([flow](../../skills/flow/SKILL.md#flow-block)), and `build` infers it at build time, defaulting to pull-request mode when it cannot see branch protection ([build](../../skills/build/SKILL.md#delivery-mode)). A user who says "I want feature X" in a project with no Flow block is asked neither question, and `to-spec` may open a public issue before any mode was chosen.
+**Nobody asks how work lands.** Process depth is asked only by `start` and by "set up Flow here". The delivery mode is never asked: `flow` leaves `Delivery:` unset ([flow](../../skills/sync-docs/SKILL.md#flow-block)), and `build` infers it at build time, defaulting to pull-request mode when it cannot see branch protection ([build](../../skills/build/SKILL.md#delivery-mode)). A user who says "I want feature X" in a project with no Flow block is asked neither question, and `to-spec` may open a public issue before any mode was chosen.
 
 **Local mode needs a remote.** Local `ship` fast-forwards `main` from the remote, merges the spec branch with `--no-ff`, and pushes `main` ([ship](../../skills/ship/SKILL.md#merge)). A fresh `start` project has no remote, so `build` picks pull-request mode and then stops at the push.
 

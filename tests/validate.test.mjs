@@ -226,7 +226,7 @@ test('plugin check catches a renamed or drifted manifest and a hook pointing at 
 })
 
 test('skill word budget fails above the limit and reports the total', (t) => {
-  assert.equal(SKILL_WORD_BUDGET, 10_000)
+  assert.equal(SKILL_WORD_BUDGET, 10_500)
   assert.deepEqual(collectSkillWordErrors(skillsRoot), [], 'the catalog fits the budget')
   const dir = tempDir(t, 'flow-words-')
   for (const [name, words] of [['a', 6], ['b', 5]]) {

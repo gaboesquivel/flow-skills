@@ -12,7 +12,7 @@ disable-model-invocation: false
 
 Fetch and run `node scripts/gh-route.mjs` (mode and route). Ship the named work, else the current branch, else the one unmerged work branch; ask only when several remain. Never edit another agent's checkout.
 
-**Spec status gate.** Only `accepted` or `implemented` specs land; "ship it" on a `draft` accepts it (`to-spec`). Any other status, an unresolvable spec, unfinished tasks (unless the user says ship it partial), or a linked decision still **Proposed** stops ship. A complete spec missing `Status: implemented` gets it in the landed change.
+**Spec status gate.** Only `accepted` or `implemented` specs land; "ship it" on a `draft` accepts it (`to-spec`). Any other status, an unresolvable spec, unfinished tasks (unless the user says ship it partial), or a decision the spec links still **Proposed** stops ship; acceptance is scoped as in `to-spec`, so an unrelated proposal on the branch is neither accepted nor blocking. A complete spec missing `Status: implemented` gets it in the landed change.
 
 ## Build
 

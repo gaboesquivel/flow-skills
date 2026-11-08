@@ -59,7 +59,7 @@ describe("retrieval and extractive answers", () => {
       expect(sitePaths.has(s.path)).toBe(true);
       expect(s.url).toBe(`${ORIGIN}${s.path}`);
     });
-    expect(sources.some((s) => s.path.startsWith("/skills/flow") || s.path.startsWith("/skills/product") || s.path.includes("align"))).toBe(true);
+    expect(sources.some((s) => s.path.startsWith("/skills/sync-docs") || s.path.startsWith("/skills/align") || s.path.includes("align"))).toBe(true);
   });
 
   it("cites only sources that exist", () => {
