@@ -1,6 +1,6 @@
 # 070 — Explore as a product-engineering partner
 
-Status: draft (2026-11-08). Appetite: one session. Decision: [0070](../decisions/0070-research-and-clearer-names.md).
+Status: accepted (2026-11-08). Appetite: one session. Decision: [0070](../decisions/0070-research-and-clearer-names.md).
 
 ## Problem
 

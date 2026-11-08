@@ -1,6 +1,6 @@
 # 0070 — A research skill, clearer names, and an outcome in every initiative spec
 
-Status: **Proposed** (2026-11-08). Spec: [070](../specs/070-product-engineering-partner.md). Amends [0062](0062-claude-code-first.md) (catalog: `product` and `flow` renamed, `research` added after spec 059 removed `competitors`). Builds on [0041](0041-align-skill.md), [0046](0046-measurement-assistance.md), and [0068](0068-experience-skill.md) (the new-skill test).
+Status: **Accepted** (2026-11-08). Spec: [070](../specs/070-product-engineering-partner.md). Amends [0062](0062-claude-code-first.md) (catalog: `product` and `flow` renamed, `research` added after spec 059 removed `competitors`). Builds on [0041](0041-align-skill.md), [0046](0046-measurement-assistance.md), and [0068](0068-experience-skill.md) (the new-skill test).
 
 ## Context
 
