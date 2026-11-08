@@ -1,0 +1,5 @@
+interface:
+  display_name: "Sync Docs"
+  short_description: "Update root docs to accepted direction; set up Flow"
+policy:
+  allow_implicit_invocation: true

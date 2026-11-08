@@ -21,7 +21,7 @@ Agent speed creates costs that green checks do not show: code no one understands
 
 ## Clarify intent
 
-Work backwards from the user outcome, keep doing nothing as an alternative, and offer the smallest investigation when one uncertainty blocks a choice; [`experience`](../skills/experience/SKILL.md) observes the finished journey. Sources: [research note](research/2026-11-04-judgment-and-experience.md).
+Work backwards from the user outcome, keep doing nothing as an alternative, and offer the smallest investigation when one uncertainty blocks a choice. Before building something substantial, ask how the problem is solved today: an existing product, open-source tool, host feature, or manual workaround may already answer it, and adopting, integrating, deferring, or stopping are outcomes as valid as building; [`experience`](../skills/experience/SKILL.md) observes the finished journey. Sources: [research note](research/2026-11-04-judgment-and-experience.md).
 
 Combine focused questions, research, suggested directions, and exploration of alternatives. Reuse known context. Establish the intended outcome, consequential assumptions, existing evidence, and how the next test will inform a decision.
 
@@ -39,11 +39,11 @@ During delivery, new scope gets a [scope trade-off](../GLOSSARY.md#scope-trade-o
 
 ## Observe and revisit
 
-Use One Metric That Matters (OMTM) when a measurable focus can guide the current product decision. Explain the uncertainty it addresses, define the population, calculation, time window, and data source, and establish a baseline or mark it unknown. Set a justified target and review point with the intended decision response; retain supporting evidence and guardrails. Early discovery may need qualitative evidence before a useful metric can be selected. [`product`](../skills/product/SKILL.md) evaluates evidence against these definitions and names what blocks a conclusion.
+Use One Metric That Matters (OMTM) when a measurable focus can guide the current product decision. Explain the uncertainty it addresses, define the population, calculation, time window, and data source, and establish a baseline or mark it unknown. Set a justified target and review point with the intended decision response; retain supporting evidence and guardrails. Early discovery may need qualitative evidence before a useful metric can be selected. [`align`](../skills/align/SKILL.md) evaluates evidence against these definitions and names what blocks a conclusion.
 
 Identify relevant product and system signals while planning the work. Assess findings against the intended outcome, record limitations, and decide whether to continue, change direction, or stop. Update affected context when a decision changes.
 
-Keep implementation correctness and evidence of customer value distinct. A working feature does not establish that it improved the intended outcome. Specific growth frameworks remain [proposals under assessment](research/2026-10-19-productskills-and-lean.md#business-context-growth-and-skill-boundaries).
+Keep implementation correctness and evidence of customer value distinct. A working feature does not establish that it improved the intended outcome. An initiative's spec says, in one sentence, what should change for whom, what evidence will be looked at, and which decision it informs; delivery proves the evidence can be obtained, and the judgment comes after shipping, when unknowns stay unknown. A typo or internal cleanup needs none of this. Specific growth frameworks remain [proposals under assessment](research/2026-10-19-productskills-and-lean.md#business-context-growth-and-skill-boundaries).
 
 ## Design for the purpose
 
@@ -55,7 +55,7 @@ Keep shared visual decisions in DESIGN.md and page-specific intent in a small br
 
 Keep product intent, experience design, and architecture distinct while allowing findings in one to inform the others. Use the [documentation guide](README.md) for ownership and [AGENTS.md](../AGENTS.md) for maintenance rules. Source assessments live in [research](research), indexed in [references](references.md).
 
-After meaningful changes, align root documents with [`flow`](../skills/flow/SKILL.md) or equivalent manual edits. Implementation work may update owning docs per [build](../skills/build/SKILL.md).
+After meaningful changes, align root documents with [`sync-docs`](../skills/sync-docs/SKILL.md) or equivalent manual edits. Implementation work may update owning docs per [build](../skills/build/SKILL.md).
 
 ## Coordinate independent sessions
 

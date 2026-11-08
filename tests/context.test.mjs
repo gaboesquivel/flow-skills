@@ -29,7 +29,7 @@ test('total SKILL.md words are summed across installed skills against the budget
   assert.ok(m.onDemand.skillWords > 0)
   assert.equal(m.over.skillWords, false)
   const repo = measure(new URL('..', import.meta.url).pathname)
-  assert.ok(repo.onDemand.skillWords <= 10_000, `catalog has ${repo.onDemand.skillWords} SKILL.md words`)
+  assert.ok(repo.onDemand.skillWords <= 10_500, `catalog has ${repo.onDemand.skillWords} SKILL.md words`)
 })
 
 test('install drift against the lock is reported both ways', () => {

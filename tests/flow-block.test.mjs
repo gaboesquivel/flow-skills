@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
-import { BEGIN, END, LEADING_PHRASES, alignTable, buildFlowBlock, describeLayout, ensureImport, instructionFile, readDelivery, upsertFlowBlock, removeFlowBlock, writeFlowBlock } from '../skills/flow/lib/flow-block.mjs'
+import { BEGIN, END, LEADING_PHRASES, alignTable, buildFlowBlock, describeLayout, ensureImport, instructionFile, readDelivery, upsertFlowBlock, removeFlowBlock, writeFlowBlock } from '../skills/sync-docs/lib/flow-block.mjs'
 
 const skillsRoot = join(dirname(fileURLToPath(import.meta.url)), '..', 'skills')
 
@@ -16,7 +16,8 @@ test('block has markers, the flow pointer, a Delivery line only when a mode is g
   assert.match(buildFlowBlock({ delivery: 'local' }), /^Delivery: local$/mu)
   assert.doesNotMatch(buildFlowBlock({ delivery: 'bogus' }), /^Delivery:/mu)
   assert.doesNotMatch(block, /^Process:/mu)
-  assert.match(block, /`flow` skill/u)
+  assert.match(block, /`sync-docs` skill/u)
+  assert.doesNotMatch(block, /`flow` skill/u)
   for (const phrase of LEADING_PHRASES) assert.ok(block.includes(`"${phrase}"`), `block names "${phrase}"`)
   assert.doesNotMatch(block, /^\|/mu, 'the block carries no phrase table')
   assert.ok(block.split('\n').length <= 10)
@@ -260,7 +261,7 @@ test('symlinked or shared instruction files are not written', (t) => {
   assert.match(writeFlowBlock(staleLink).refused, /AGENTS\.md is a symlink/u)
   assert.equal(readFileSync(join(staleLink, 'CLAUDE.md'), 'utf8'), '# Claude\n')
 
-  const run = spawnSync(process.execPath, [join(skillsRoot, 'flow', 'lib', 'flow-block.mjs'), linked, 'local'], { encoding: 'utf8' })
+  const run = spawnSync(process.execPath, [join(skillsRoot, 'sync-docs', 'lib', 'flow-block.mjs'), linked, 'local'], { encoding: 'utf8' })
   assert.equal(run.status, 1)
   assert.match(run.stderr, /Refused: CLAUDE\.md is a symlink/u)
 })
@@ -291,7 +292,7 @@ test('CLI writes the block when run through a symlinked skills directory', (t) =
   const project = join(dir, 'project')
   mkdirSync(project)
   symlinkSync(skillsRoot, join(dir, 'skills-link'))
-  const run = spawnSync(process.execPath, [join(dir, 'skills-link', 'flow', 'lib', 'flow-block.mjs'), project, 'local'], { encoding: 'utf8' })
+  const run = spawnSync(process.execPath, [join(dir, 'skills-link', 'sync-docs', 'lib', 'flow-block.mjs'), project, 'local'], { encoding: 'utf8' })
   assert.equal(run.status, 0, run.stderr)
   assert.match(run.stdout, /Wrote: .*CLAUDE\.md/u)
   assert.equal(readDelivery(readFileSync(join(project, 'CLAUDE.md'), 'utf8')), 'local')
@@ -299,9 +300,26 @@ test('CLI writes the block when run through a symlinked skills directory', (t) =
 
 test('CLI wires the import and prints the layout', (t) => {
   const dir = repo(t, { '.gitignore': 'AGENTS.md\n', 'CLAUDE.md': '# Claude\n' })
-  const run = spawnSync(process.execPath, [join(skillsRoot, 'flow', 'lib', 'flow-block.mjs'), dir, 'local'], { encoding: 'utf8' })
+  const run = spawnSync(process.execPath, [join(skillsRoot, 'sync-docs', 'lib', 'flow-block.mjs'), dir, 'local'], { encoding: 'utf8' })
   assert.equal(run.status, 0, run.stderr)
   assert.match(run.stdout, /Wrote: .*CLAUDE\.md/u)
   assert.match(run.stdout, /Imported: @AGENTS\.md/u)
   assert.match(run.stdout, /Layout: .*"blockFile":"CLAUDE\.md".*"tracked":true.*"@AGENTS\.md"/u)
+})
+
+test('an older block that names the `flow` skill is refreshed in place, keeping Delivery and adopter text (decision 0070)', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'flow-block-rename-'))
+  const old = [BEGIN, '', '## Flow', '', 'This project uses Flow skills, reached by plain language ("explore this", "spec it", "build it", "ship it"; each skill\'s description lists its phrases). The installed `flow` skill owns this block; delete it to opt out.', '', 'Delivery: local', '', END].join('\n')
+  const before = `# Team rules\n\nKeep PRs small.\n\n${old}\n\n## Custom\n\nOur own notes stay.\n`
+  writeFileSync(join(dir, 'AGENTS.md'), before)
+  const first = writeFlowBlock(dir)
+  const after = readFileSync(join(dir, 'AGENTS.md'), 'utf8')
+  assert.equal(first.changed, true)
+  assert.match(after, /`sync-docs` skill owns this block/u)
+  assert.doesNotMatch(after, /`flow` skill/u)
+  assert.equal(readDelivery(after), 'local')
+  assert.ok(after.startsWith('# Team rules\n\nKeep PRs small.\n\n'), 'text before the block is unchanged')
+  assert.ok(after.endsWith('\n\n## Custom\n\nOur own notes stay.\n'), 'text after the block is unchanged')
+  assert.equal(writeFlowBlock(dir).changed, false, 'a second write is idempotent')
+  rmSync(dir, { recursive: true, force: true })
 })

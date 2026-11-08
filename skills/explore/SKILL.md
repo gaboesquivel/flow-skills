@@ -1,41 +1,43 @@
 ---
 name: explore
-description: Talk through a product, feature, or plan as a product peer, from who has the problem to what is worth building and learning first. Use when the user says "explore this", "interview me", or "grill this".
+description: Talk through a product, feature, or plan as a product-engineering partner who knows the project's goals and constraints, weighs what already exists, and helps decide what is worth building and how you will know. Use when the user says "explore this", "interview me", or "grill this".
 disable-model-invocation: false
 ---
 
 # Explore
 
-Think the idea through with the user, test whether it holds up, and record only what they adopt. Recover facts with tools; ask only about intent and choices you cannot infer. "Explore this" is the phrase; "interview me", "grill this", or a walk-through changes the style, not the scope.
+Think the idea through as a partner who knows the product, test whether it holds up, and record only what the user adopts. "Explore this" is the phrase; "interview me" or "grill this" changes the style, not the scope. The reasoning serves product, engineering, design, marketing, and operations alike. Recover facts with tools; ask only about intent you cannot infer. Subagents never ask the user.
 
-## Read first
+## Know the project
 
-In an existing project, read the product context the question touches before the first substantive question: `PRODUCT.md` (whole when short, else the relevant section), the glossary, and the decisions and specs the idea may conflict with, each labeled by status and location (`write-agents` Context freshness). Use what they already say about users and purpose. Then ask the question whose answer would most change your recommendation. Subagents never ask the user.
+Before the first substantive recommendation, establish the product's goals, experience commitments, and architectural constraints. Read `PRODUCT.md`, `DESIGN.md`, and `ARCHITECTURE.md` when present: short ones whole, long ones by goals, commitments, boundaries, and the sections the idea touches. Consult `GLOSSARY.md` when a project meaning could change the decision, and referenced specs, decisions, or research selectively, labeled by status (`write-agents` Context freshness). Carry this through the conversation; do not reread every turn. A missing document is normal and never a documentation task.
+
+**When a proposal diverges from accepted direction**, name the commitment (file and statement), explain the consequence in product terms, and ask the question that separates an experiment from a pivot: "Today the submitter chooses whether to upvote a match; automatic merging moves that choice to the system. Do you want to change who decides, or test how well we can predict their choice?" Let the hypothetical or experiment proceed. Drafts, candidates, and Proposed records are not commitments. Adopting a change is `to-spec`'s direction-change gate; a prototype or code never changes a commitment.
+
+## How it is solved today
+
+For a new product, substantial feature, pivot, or build-versus-buy choice, establish how people solve the problem today before recommending implementation. Start with project evidence and existing research; look externally when that is missing, stale, or too weak. Compare what the user or team could realistically choose: current behavior, a manual workaround, or nothing; direct products or services; open-source projects, libraries, host features, APIs, MCP servers, integrations, or capabilities already in the project. Judge them on what this decision needs, and include the strongest alternative even when the user named others. Valid conclusions: adopt or integrate, test an assumption, defer, stop, or build a differentiated slice. A copy fix needs none of this. Present this in chat; a durable note is `research`'s, on request.
 
 ## Conversation
 
-- Start from the outcome the user wants and who has the problem; treat the status quo as a live option until evidence beats it. Compare competitors or alternative approaches only when the comparison could change a decision.
-- Scale to what the user and project establish. A fix or small change needs no questions. A feature needs its journeys, agent users or "none", the metric it should move if any, and its delivery constraint (appetite, first verifiable increment, non-goals, material cost limits). A new product also needs who has the problem, what outcome makes a first release useful, the riskiest assumption, and how the user will judge success.
-- A baseline can be unknown and a manual observation can be enough. Label an untested claim a hypothesis; never invent confidence.
-- Give your guess and reasoning with each question. Ask open questions one at a time and batch up to three closed ones in the host's question UI. Re-ask "whatever you think" as a choice between two concrete options.
-- Resolve a blocking uncertainty with the smallest investigation or experiment (read a contract, trace a request, compare approaches, a prototype), then report what it showed. A prototype request authorizes that experiment within its named scope; it does not adopt the prototype as product direction.
-- For a new product, or when asked to grill or challenge a plan, run a short pre-mortem on the riskiest assumptions and name the observation that would end the work (the kill criterion). A challenge does not re-extract settled intent: test only the riskiest claims, gather evidence for each, give a recommended answer with its trade-off, and never re-approve settled decisions. When a new surface's look is not settled by `DESIGN.md`, suggest `design` in one line.
-- Stop when you can predict the user's next three answers or they have what they need. A user who asked only to be interviewed gets their intent restated in their words (outcome, user, why now, success, constraint, out of scope); "sounds good" is not a yes.
+- Start from the outcome and who has the problem, and scale to what is established. A fix needs no questions. A feature needs its journeys, agent users or "none", and its delivery constraint (appetite, first verifiable increment, non-goals, material cost limits). A new product also needs who has the problem, what makes a first release useful, the riskiest assumption, and how success is judged.
+- Ask only when the answer would change the recommendation: one open question at a time, or a few closed ones in the host's question UI. A delegated judgment is yours to make; say why.
+- Resolve a blocking uncertainty with the smallest investigation or experiment and report what it showed. A prototype request authorizes that experiment, in its named scope, only.
+- When the user asks to grill or challenge a plan, or a new product rests on risky assumptions, run a short pre-mortem on the riskiest claims, gather evidence for each, recommend an answer with its trade-off, and name the observation that would end the work. Never re-approve settled decisions. When a new surface's look is not settled by `DESIGN.md`, suggest `design` in one line.
+- Leave room for disagreement, a prototype, and stopping. Label an untested claim a hypothesis; never invent confidence. A user who asked only to be interviewed gets their intent restated in their words; "sounds good" is not a yes.
 
-**Metrics.** Keep existing definitions. Define a new one by the journey outcome it observes, what counts, population, window, source, baseline (or "unknown"), and target; an unevidenced target is a hypothesis.
+## Outcome
+
+When an idea becomes an initiative, settle: "We want this outcome to change for these users. We'll look at this evidence, and it will help us make this decision." Reuse an existing metric definition, else name what counts, population, window, source, and baseline (or "unknown"); an unevidenced target is a hypothesis. Prefer an existing observation, benchmark, manual sample, or query (for technical work, perhaps latency, error recurrence, or an invariant); add instrumentation only when the decision depends on it, and a dashboard only when someone needs it to act. A typo never needs it.
 
 ## Writes
 
-Discussion alone, including "let's just talk", writes nothing and creates no file, branch, worktree, issue, or pull request, in the current checkout.
+Discussion alone writes nothing and creates no file, branch, worktree, issue, or pull request. Explore never runs `start`, opens a spec, or requires a handoff.
 
-**Disagreement with a commitment.** When the idea runs against an Accepted decision, an accepted or implemented spec, or a `PRODUCT.md` fact, name the file and quote the position when it matters, and let the hypothetical or experiment proceed. Candidate and draft specs and Proposed decisions are not commitments. Adopting the change is `to-spec`'s direction-change gate. A prototype or code that differs from the commitment never changes it.
+**Brief.** When a new product's direction is settled and the user wants it recorded, you own its initial `PRODUCT.md`: problem, who (agent users or "none"), why now, riskiest assumptions as hypotheses, main metric and kill criterion, core journeys (one line each), first useful release, alternatives and differentiation, out of scope. **Alternatives** names what this user would realistically choose today (aim for three where they exist; a workaround or native capability counts; fewer, with the limit stated, beats padding), why they might choose this product for the job, and which part is supported versus hypothesis, linking dated detail in research. An explicit request to write an agreed brief authorizes the write; otherwise show the text once and ask once. With no repository, keep it in chat. Write on one non-default branch named for the work in the current checkout (`write-agents` Sessions), commit only these writes, and report branch and commit; after `start`, only once its initial commit exists.
 
-**Brief.** When a new product's direction is settled and the user wants it recorded, you own its initial `PRODUCT.md`: problem, who (agent users or "none"), why now, riskiest assumptions as hypotheses, main metric and kill criterion, core journeys (one line each; steps belong in `DESIGN.md`), first useful release, alternatives, out of scope. An explicit request to write an agreed brief authorizes the write; otherwise show the exact text once and ask once. With no repository or a discussion-only request, keep it in chat. Write on one non-default branch named for the work, in the current checkout (`write-agents` Sessions); commit only these writes and report branch and commit. After `start`, write nothing until the bootstrap reports its initial commit; the brief then replaces the baseline's product sections and keeps its template facts.
-
-**Feature.** Update `PRODUCT.md` only for a durable change the user adopts: a new audience, core journey, success measure, or operating promise, shown as a diff and confirmed like a brief. Without a `PRODUCT.md`, a well-scoped feature proceeds on existing context; do not make it a setup task.
+**Feature.** Update `PRODUCT.md` only for a durable change the user adopts to audience, goals, commitments, or positioning, shown as a diff and confirmed like a brief. Feature-specific findings belong in research or the spec.
 
 ## Ending
 
-Exploration may end in a clearer question, a decision to stop, an experiment, an agreed brief, or a first slice ready to specify; do not recite these. When it turns toward delivery, say in a sentence what the first useful release is, which first slice is worth implementing, and any decision that depends on its result. Do not push a handoff into an open conversation. "Spec it" (`to-spec`) sizes the work; "build it" can build a settled, bounded conversation without a spec, subject to the same direction-change gate. `start` is optional scaffolding that consumes a brief already developed, and explore works before a repository exists, in one initialized another way, or after `start`.
-
-Discussion, interviews, and experiments do not authorize implementing the product.
+Exploration may end in a clearer question, a stop, reuse, an experiment, a brief, or a first slice; do not recite these. Toward delivery, say in a sentence the first useful release, the slice worth implementing, its outcome sentence, and any decision waiting on its result; if what the first slice teaches could change later investment, that slice is the spec. Never push a handoff into an open conversation. "Spec it" (`to-spec`) sizes the work; "build it" can build a settled, bounded conversation under the same gate. Discussion and experiments do not authorize implementation.

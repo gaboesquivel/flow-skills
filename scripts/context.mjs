@@ -15,7 +15,7 @@ export const BUDGETS = {
   descriptionChars: 1024,
   skillBodyLines: 500,
   skillBodyTokens: 5000,
-  skillWords: 10000,
+  skillWords: 10500,
   designCoreTokens: 3000,
 }
 

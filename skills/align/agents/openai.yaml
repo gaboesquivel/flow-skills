@@ -1,0 +1,5 @@
+interface:
+  display_name: "Align"
+  short_description: "Check product fit and outcome evidence; read-only"
+policy:
+  allow_implicit_invocation: true

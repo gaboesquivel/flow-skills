@@ -21,7 +21,7 @@ The earlier split is mostly closed. Flow is no longer described as a shipped Lea
 | Earlier finding | Current tree |
 | --- | --- |
 | Do not call the engineering catalog a Lean Startup methodology | [PRODUCT.md](../../PRODUCT.md) defines Flow as a lightweight, human-led product engineering methodology. The flow-skills section says validation-board UI, OMTM automation, and commercial discovery pipelines are not shipped. |
-| `flow` was spec-to-ship | [skills/flow/SKILL.md](../../skills/flow/SKILL.md) aligns root docs. It refuses to run a pipeline or to scaffold a repository. |
+| `flow` was spec-to-ship | [skills/sync-docs/SKILL.md](../../skills/sync-docs/SKILL.md) aligns root docs. It refuses to run a pipeline or to scaffold a repository. |
 | Install path conflict between decisions 0002 and 0003 | [0004](../decisions/0004-portable-skill-catalog.md) is the install decision: `npx skills add gaboesquivel/flow-skills`. [0002](../decisions/0002-local-skill-ownership.md) marks its install path superseded. README matches 0004. |
 | Catalog count and stale indexes | `skills/` has exactly the fourteen names in `EXPECTED_SKILL_NAMES` in [scripts/validate.mjs](../../scripts/validate.mjs). Ideas and initiatives are archived. |
 | No product-discovery behavior in skills | `interview`, `jtbd`, and `competitors` are in the catalog. Each returns a frame or a guide and says it does not authorize implementation. |
@@ -46,7 +46,7 @@ That matches the decision to keep measurement as optional practice. It also mean
 
 ### F3. The catalog page still draws a pipeline
 
-[docs/skills.md](../skills.md) says every step is skippable and that no order is required. The diagram under that sentence is a single path: explore, grill, to-spec, to-tasks, implement, review, retro. [PRODUCT.md](../../PRODUCT.md) and [skills/flow/SKILL.md](../../skills/flow/SKILL.md) say there is no mandatory sequence. The diagram is the instruction a skimming agent will follow.
+[docs/skills.md](../skills.md) says every step is skippable and that no order is required. The diagram under that sentence is a single path: explore, grill, to-spec, to-tasks, implement, review, retro. [PRODUCT.md](../../PRODUCT.md) and [skills/sync-docs/SKILL.md](../../skills/sync-docs/SKILL.md) say there is no mandatory sequence. The diagram is the instruction a skimming agent will follow.
 
 ### F4. Flow Lite’s discoverable metadata is carefully worded and untested on an adopter
 

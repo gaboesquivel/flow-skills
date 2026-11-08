@@ -26,7 +26,7 @@ Flow should help a person discover that something already solves the problem, de
 
 ## Consequences
 
-- The catalog grows to 15 skills; words stay within the 10,000 budget by trimming.
+- The catalog grows to 15 skills, and the skill-word budget from 10,000 to 10,500 (spec 070).
 - Users with saved `/flow:product` or `/flow:flow` habits must use the new paths; phrases are unaffected.
 - `explore` looks for existing alternatives on substantial work, which costs a search on those decisions and saves a build when something already fits.
 - Whether the research artifact and the alternatives step change decisions is unmeasured; spec 070's outcome line names the observation.

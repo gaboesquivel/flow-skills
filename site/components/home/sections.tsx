@@ -130,7 +130,7 @@ const STAGES: Stage[] = [
     kicker: "Learning",
     title: "Measure",
     body: "Evaluate results against intent. Learn whether to improve, change direction, expand or stop.",
-    skills: ["product"],
+    skills: ["align"],
     dot: "#f0a6cf",
     example: {
       kicker: "Evidence & next decision",

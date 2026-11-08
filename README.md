@@ -31,11 +31,11 @@ Flow keeps its work in Git: specs, decision records, and the product brief are f
 
 | You use | You need |
 | --- | --- |
-| Thinking skills: `council`, `product`, `experience`, `domain-modeling`, and `write-agents` | Nothing. Any folder works, with or without Git. |
-| The delivery chain: `flow`'s setup, `start`, `explore`, `to-spec`, `to-tasks`, `build`, `review`, `ship` | A Git repository. Outside one, the skill offers `git init` and stops if you say no. |
+| Thinking skills: `council`, `align`, `research` (in chat), `experience`, `domain-modeling`, and `write-agents` | Nothing. Any folder works, with or without Git. |
+| The delivery chain: `sync-docs`'s setup, `research` notes, `start`, `explore`, `to-spec`, `to-tasks`, `build`, `review`, `ship` | A Git repository. Outside one, the skill offers `git init` and stops if you say no. |
 | GitHub mode | GitHub access as well: pull requests and CI live there. |
 
-The rules Flow follows in a project live in Git too. "Set up Flow here" writes one [Flow block](GLOSSARY.md#flow-block) into the instruction file Git tracks: `AGENTS.md`, or `CLAUDE.md` with an `@AGENTS.md` import when `AGENTS.md` is ignored. The block holds a pointer to `flow` and, when you set one, a `Delivery:` override, and every agent and teammate who clones the repository reads the same rules. Delete the block to opt out.
+The rules Flow follows in a project live in Git too. "Set up Flow here" writes one [Flow block](GLOSSARY.md#flow-block) into the instruction file Git tracks: `AGENTS.md`, or `CLAUDE.md` with an `@AGENTS.md` import when `AGENTS.md` is ignored. The block holds a pointer to `sync-docs` and, when you set one, a `Delivery:` override, and every agent and teammate who clones the repository reads the same rules. Delete the block to opt out.
 
 ## Local or GitHub delivery
 
@@ -93,10 +93,11 @@ flowchart LR
 
 Thick arrow: an automatic hand-off, behind your yes. Dashed arrow: you say the next phrase.
 
-- **Skills suggest the next step and wait.** The only automatic hand-off is `start` → `explore`, when the request describes the product and behind your yes ([decision 0024](docs/decisions/0024-gated-hand-offs.md)). `explore` asks in proportion to the change: nothing for a fix, more for a new product. "Interview me" and "grill this" reach it too.
+- **Skills suggest the next step and wait.** The only automatic hand-off is `start` → `explore`, when the request describes the product and behind your yes ([decision 0024](docs/decisions/0024-gated-hand-offs.md)). `explore` asks in proportion to the change: nothing for a fix, more for a new product, and for substantial work it asks how the problem is solved today, so reusing something or stopping is a valid answer. "Interview me" and "grill this" reach it too.
 - **No spec required.** "Build it" works on a plain request ([decision 0039](docs/decisions/0039-build-never-requires-a-spec.md)); see [work without a spec](#work-without-a-spec).
 - **`ship` lands in both modes.** It builds first unless the branch is already verified, merges, then checks the shipped commit is live (decisions [0044](docs/decisions/0044-fast-delivery.md) and [0048](docs/decisions/0048-delivery-phrases-are-approvals.md)).
-- **Context stays aligned.** "Update the docs" has `flow` align `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md`.
+- **Context stays aligned.** "Sync the docs" has `sync-docs` update `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` to accepted direction; "check alignment" has `align` report, read-only, whether the product still fits its goals and what the outcome evidence shows.
+- **Research leaves a note.** "Research X" or "competitors for X" writes a dated, sourced note another session can decide from; "just tell me here" keeps it in chat.
 
 | Path | You say |
 | --- | --- |
@@ -105,7 +106,7 @@ Thick arrow: an automatic hand-off, behind your yes. Dashed arrow: you say the n
 | Tracked work | "explore this" → "spec it" → "break it down" → "build it" → "ship it" |
 | New project | "start a Next.js project" (`explore` alongside when you describe the product) |
 
-Every other skill (`council`, `product`, `design`, …) can run at any time and never blocks delivery.
+Every other skill (`council`, `align`, `research`, `design`, …) can run at any time and never blocks delivery.
 
 ### Specs, tasks, and decisions
 
@@ -119,13 +120,13 @@ Details and links to every `SKILL.md`: **[docs/skills.md](docs/skills.md)**.
 
 | Group | Skills |
 | --- | --- |
-| Context alignment | `flow` |
+| Context alignment | `sync-docs` |
 | Delivery | `explore`, `to-spec`, `to-tasks`, `build`, `review`, `ship` |
 | Advisory | `council` |
 | Experience | `experience` (read-only walk of a running product) |
 | Design | `design` (prototypes too) |
 | Shared language | `domain-modeling` |
-| Product discovery | `product` |
+| Product discovery | `research`, `align` |
 | Writing | `write-agents` |
 | Project start | `start` |
 

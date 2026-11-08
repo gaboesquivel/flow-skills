@@ -31,7 +31,7 @@ export function normalizeMode(value) {
   return MODES.includes(mode) ? mode : null
 }
 
-/** The `Delivery:` line inside the Flow block of a text (the format `flow`'s flow-block.mjs writes); null when absent. */
+/** The `Delivery:` line inside the Flow block of a text (the format `sync-docs`'s flow-block.mjs writes); null when absent. */
 export function readDelivery(text) {
   const block = /<!-- BEGIN FLOW -->([\s\S]*?)<!-- END FLOW -->/u.exec(String(text ?? ''))?.[1]
   return block ? normalizeMode(/^Delivery:[ \t]*(.*)$/imu.exec(block)?.[1]) : null

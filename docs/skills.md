@@ -4,77 +4,90 @@ Skills live in [`skills/`](../skills/); `scripts/validate.mjs` holds the authori
 
 [Agent compatibility](agent-compatibility.md) · [Decision 0006](decisions/0006-flow-lite-and-flat-docs.md) · [Decision 0009](decisions/0009-adopter-product-context.md) · [Decision 0015](decisions/0015-tasks-and-domain-modeling.md) · [Decision 0019](decisions/0019-voice-first-invocation.md) · [Decision 0062](decisions/0062-claude-code-first.md) · [Spec 002](specs/002-flow-lite-and-flat-docs.md) · [Spec 059](specs/059-claude-code-first.md)
 
-Talk to your agent, by typing or dictation. Each skill has a [leading word](../GLOSSARY.md#leading-word): the phrase you say to reach it. The first phrase is listed below; most descriptions carry two or more variants, while "build it" keeps one so dictation cannot blur it. Slash commands (`/explore`, `/ship`, …) remain optional shortcuts. No skill must be named explicitly.
+Talk to your agent, by typing or dictation. Each skill has a [leading word](../GLOSSARY.md#leading-word): the phrase you say to reach it. Each row below gives that phrase, what you get, and what it writes; the skill link has the procedure. Most descriptions carry two or more variants, while "build it" keeps one so dictation cannot blur it. Slash commands (`/explore`, `/ship`, …) remain optional shortcuts. No skill must be named explicitly.
 
 ## Process
 
 1. **Install** — the Claude Code plugin, the Cursor plugin, or the Agent Skills CLI, which copies this repository's `skills/` tree into the agent you choose. One of those, not several.
-2. **Work** — Build your product and say what you want; "update the docs" aligns root context with **`flow`**. Work needs no spec unless you want one: say "build it" for [unspecced work](../GLOSSARY.md#unspecced-work), or just ask your agent ([work without a spec](../README.md#work-without-a-spec)).
+2. **Work** — Build your product and say what you want; "sync the docs" updates root context with **`sync-docs`**. Work needs no spec unless you want one: say "build it" for [unspecced work](../GLOSSARY.md#unspecced-work), or just ask your agent ([work without a spec](../README.md#work-without-a-spec)).
 3. **Document** — When saving artifacts, default to `docs/specs/NNN-short-name.md` and `docs/decisions/NNN-short-name.md` unless the project already uses something else.
 
 The delivery skills and the paths between them are drawn in the README: [how it works](../README.md#how-it-works). Every step is skippable; there is no required order.
 
 Product discovery, writing, advisory, experience, and design skills are optional and do not block delivery.
 
+## Which one?
+
+| You say | You get | Writes |
+| --- | --- | --- |
+| Native Plan (Shift+Tab, `/plan`) | A plan for how to implement a change you already chose | Nothing until you approve |
+| "Explore this" | A partner that knows your goals and constraints, asks how the problem is solved today, and helps decide whether and what to build and how you'll know | Nothing; an agreed brief on request |
+| "Research X", "competitors for X" | A dated, sourced note another session can decide from | The note and an existing index; "just tell me here" stays in chat |
+| "Check alignment" | Whether the product still fits its goals and what the outcome evidence shows | Nothing |
+| "Sync the docs" | Root docs updated to match accepted direction | The affected root docs |
+
 ## Context alignment
 
-| Skill | Say | When to use |
+| Skill | Say | What happens |
 | --- | --- | --- |
-| [flow](../skills/flow/SKILL.md) | "update the docs" | Align the current project's root docs after meaningful changes; "set up Flow here" asks no delivery question, writes the opt-in [Flow block](../GLOSSARY.md#flow-block) into the instruction file Git tracks (adding an `@AGENTS.md` import to `CLAUDE.md` when needed, touching no adopter text outside the block and import), reports the layout, and names `explore` when the project has no goals yet. The block's `Delivery:` line only overrides the inferred [delivery mode](../GLOSSARY.md#delivery-mode) (decisions [0020](decisions/0020-flow-mode.md) and [0044](decisions/0044-fast-delivery.md)). Not a pipeline and not template initialization. |
+| [sync-docs](../skills/sync-docs/SKILL.md) | "sync the docs" | Updates `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` to accepted direction after meaningful changes; drafts and Proposed records stay labeled as proposals. "Set up Flow here" writes the opt-in [Flow block](../GLOSSARY.md#flow-block), touching no adopter text outside it, and refreshes an older block in place, keeping its `Delivery:` line. **Writes** those files. Not template initialization ([decision 0070](decisions/0070-research-and-clearer-names.md)). |
 
 ## Delivery
 
-| Skill | Say | When to use |
+| Skill | Say | What happens |
 | --- | --- | --- |
-| [explore](../skills/explore/SKILL.md) | "explore this" | A conversation with a product peer: reads the project's product context first, asks the one question that would most change the recommendation, and scales to what is already established (a fix gets none; a feature gets journeys, agent users, and the metric it should move; a new product adds who has the problem, the [first useful release](../GLOSSARY.md#first-useful-release), the riskiest assumption, and how success is judged). "Interview me" and "grill this" change the style, not the scope. Discussion alone writes nothing: no file, branch, worktree, issue, or pull request, and a prototype request authorizes only that experiment. It ends when the user has what they need; a settled new-product brief is written to `PRODUCT.md` on request, and a feature touches it only for a durable adopted change. Disagreement with an accepted commitment is surfaced, and gated at adoption by `to-spec` ([decision 0069](decisions/0069-direction-changes-at-adoption.md), amending [0038](decisions/0038-direction-changes-are-confirmed-and-recorded.md)). Next steps: "spec it", or "build it" for a settled, bounded conversation ([0039](decisions/0039-build-never-requires-a-spec.md), [0044](decisions/0044-fast-delivery.md)). |
-| [to-spec](../skills/to-spec/SKILL.md) | "spec it" | Turn conversation into a numbered spec file that says what and why, with contracts where agents or other systems depend on them, an [Exposure](../GLOSSARY.md#exposure) line and one required [acceptance scenario](../GLOSSARY.md#acceptance-scenario); label assumptions; decide unasked whether the work is one spec or several, writing later ones as `candidate` stub files on the spec's branch. Writes the spec as a `draft` on the work's branch, and any decision beside it as **Proposed**, and opens no issue unless you ask. "Accept the spec", or "build it" or "ship it" on a draft, accepts it; `to-spec` owns [the rule](../skills/to-spec/SKILL.md#status-and-acceptance). "Share the draft" opens a draft pull request linking the file ([0044](decisions/0044-fast-delivery.md)). |
-| [to-tasks](../skills/to-tasks/SKILL.md) | "break it down" | Vertical-slice tasks with blockers, listed as a checklist in the spec's Tasks section (GitHub sub-issues only on request); lets outcomes, dependencies, and integration cost set the count; gives each task an [area](../GLOSSARY.md#area), which may list several directories; reports the ready set and waits for "build it". |
-| [build](../skills/build/SKILL.md) | "build it" | Implement authorized work on a branch, then verify it without merging: the review at the tier its risk sets, fixes, checks once on the final head, and branch [liveness](../GLOSSARY.md#liveness). Ends with an open pull request (GitHub mode) or a committed branch (local mode), and reports any unfinished work with its branch. Slices work with several outcomes and leaves the fan-out to the host; [unspecced work](../GLOSSARY.md#unspecced-work) needs no spec. Owns the size guard (risk tiers judged by consequence, not novelty; human-tier paths ship on your yes) and proportional [tests](../skills/build/SKILL.md#tests) and [delivery mode](../skills/build/SKILL.md#delivery-mode) ([0044](decisions/0044-fast-delivery.md), [0048](decisions/0048-delivery-phrases-are-approvals.md)). |
-| [review](../skills/review/SKILL.md) | "review it", "deep review" | A fresh-context review through the [`flow-reviewer`](../agents/flow-reviewer.md) agent: Claude Code's `/code-review` at the size guard's tier (Quick → low, Standard → medium, Deep → high), plus what only Flow checks: [requirement verdicts](../GLOSSARY.md#requirement-verdict) on the acceptance scenario, scope, glossary naming, and `DESIGN.md` UI checks. Labels findings Important, Nit, or Pre-existing, repairs confirmed defects within three rounds ("review only" stays read-only). `build` runs it on every build ([0058](decisions/0058-review-passes-and-risk-tiers.md), [0062](decisions/0062-claude-code-first.md), [0065](decisions/0065-proportional-verification.md)). |
-| [ship](../skills/ship/SKILL.md) | "ship it" | Land on the default branch with no confirmation: `build` first unless the branch is already verified, then merge through the gate and report [liveness](../GLOSSARY.md#liveness) of the shipped commit from its `liveness.mjs` script. Refuses a partial spec unless told, work another session owns, and a head whose required checks are pending or failing. "Push it" pushes the current or named branch with no pull request, review, or CI wait, and the host deploys it ([0044](decisions/0044-fast-delivery.md), [0048](decisions/0048-delivery-phrases-are-approvals.md)). |
-
-## Shared language
-
-| Skill | Say | When to use |
-| --- | --- | --- |
-| [domain-modeling](../skills/domain-modeling/SKILL.md) | "what do we call this" | Refine terminology and update `GLOSSARY.md`; offer `docs/decisions/` records sparingly. |
-
-## Advisory
-
-| Skill | Say | When to use |
-| --- | --- | --- |
-| [council](../skills/council/SKILL.md) | "ask the council" | Independent perspectives on a consequential decision. It does not implement or approve. |
-| [experience](../skills/experience/SKILL.md) | "walk the experience" | Read-only walk of a running product as its user, with the host's own browser or screenshot tools: realistic starting state, reproduction steps, impact and confidence for each friction found, observations kept apart from hypotheses. Not a design, review, or metrics pass, and nothing requires it ([decision 0068](decisions/0068-experience-skill.md)). |
-
-## Design
-
-| Skill | Say | When to use |
-| --- | --- | --- |
-| [design](../skills/design/SKILL.md) | "design this" | Compare two to four rendered visual directions against `PRODUCT.md`, choose one, and record it with its canonical assets in `DESIGN.md`. Skip it when a change fits the existing `DESIGN.md` ([decision 0051](decisions/0051-design-skill.md)). "Prototype this" or "spike it" builds a throwaway: layout variants on the real route behind `?variant=`, or a one-file logic spike. |
-
-Debugging, code simplification, security audits, and performance work belong to the host ([0019](decisions/0019-voice-first-invocation.md), [0062](decisions/0062-claude-code-first.md)).
+| [explore](../skills/explore/SKILL.md) | "explore this" | A product-engineering conversation that reads the project's goals, commitments, and constraints first; for substantial work asks how the problem is solved today and can recommend adopting, integrating, testing, deferring, stopping, or a differentiated slice; names a diverging commitment and asks whether it is an experiment or a pivot; settles the outcome sentence when an idea becomes an initiative. "Interview me" and "grill this" change the style. **Writes nothing**; an agreed new-product brief goes to `PRODUCT.md` on request ([decision 0069](decisions/0069-direction-changes-at-adoption.md)). |
+| [to-spec](../skills/to-spec/SKILL.md) | "spec it" | A numbered draft spec: what and why, an Outcome sentence for initiatives, [Exposure](../GLOSSARY.md#exposure), and an [acceptance scenario](../GLOSSARY.md#acceptance-scenario); decides one spec or several. "Accept the spec", or "build it" or "ship it" on a draft, accepts it and only the records it links ([the rule](../skills/to-spec/SKILL.md#status-and-acceptance)). **Writes** the spec and any Proposed record on the work's branch; no issue unless asked. |
+| [to-tasks](../skills/to-tasks/SKILL.md) | "break it down" | Vertical-slice tasks with blockers and an [area](../GLOSSARY.md#area) each, and the ready set. **Writes** the spec's Tasks checklist. |
+| [build](../skills/build/SKILL.md) | "build it" | The identified work implemented, reviewed at its risk tier, checked once, and [live](../GLOSSARY.md#liveness) on its branch, never merged. **Writes** a branch: a ready pull request (GitHub mode) or a commit (local mode). [Unspecced work](../GLOSSARY.md#unspecced-work) needs no spec. |
+| [review](../skills/review/SKILL.md) | "review it" | A fresh-context review through [`flow-reviewer`](../agents/flow-reviewer.md) on top of `/code-review`, with [requirement verdicts](../GLOSSARY.md#requirement-verdict), scope, glossary, and `DESIGN.md` checks. **Writes** fixes for confirmed defects; "review only" writes nothing. |
+| [ship](../skills/ship/SKILL.md) | "ship it" | The work landed on the default branch with no confirmation, built first when needed, and the shipped commit's [liveness](../GLOSSARY.md#liveness). "Push it" pushes a branch with no pull request. **Writes** the default branch ([0048](decisions/0048-delivery-phrases-are-approvals.md)). |
 
 ## Product discovery
 
-| Skill | Say | When to use |
+| Skill | Say | What happens |
 | --- | --- | --- |
-| [product](../skills/product/SKILL.md) | "are we building the right thing", "did it land" | Read-only check of the whole product against its vision, problems, metrics, and roadmap, and of each metric and journey against the evidence, naming what blocks a conclusion ("measure our progress"). Decisions [0041](decisions/0041-align-skill.md) and [0046](decisions/0046-measurement-assistance.md). |
+| [research](../skills/research/SKILL.md) | "research X" | A sourced note answering the question, or a competitive brief for "competitors for X": the decision it serves, findings marked observed, claimed, or inferred, limits, and implications, updating a current note instead of duplicating it. **Writes** the note and an existing index; "just tell me here" answers in chat, and "should we research…?" is discussion ([decision 0070](decisions/0070-research-and-clearer-names.md)). |
+| [align](../skills/align/SKILL.md) | "check alignment" | The product compared with its goals, problems, and metrics, and each outcome with the evidence ("did it land", "are we building the right thing"); shipped with impact unknown is a valid answer. **Writes nothing** (decisions [0041](decisions/0041-align-skill.md), [0046](decisions/0046-measurement-assistance.md), [0070](decisions/0070-research-and-clearer-names.md)). |
+
+## Shared language
+
+| Skill | Say | What happens |
+| --- | --- | --- |
+| [domain-modeling](../skills/domain-modeling/SKILL.md) | "what do we call this" | Settled project terms. **Writes** `GLOSSARY.md`; decision records sparingly. |
+
+## Advisory
+
+| Skill | Say | What happens |
+| --- | --- | --- |
+| [council](../skills/council/SKILL.md) | "ask the council" | Independent perspectives on a consequential decision. **Writes nothing**. |
+| [experience](../skills/experience/SKILL.md) | "walk the experience" | A walk of a running product as its user, with reproduction steps, impact, and confidence for each friction found ([decision 0068](decisions/0068-experience-skill.md)). **Writes nothing**. |
+
+## Design
+
+| Skill | Say | What happens |
+| --- | --- | --- |
+| [design](../skills/design/SKILL.md) | "design this" | Two to four rendered visual directions; you choose. **Writes** the chosen direction to `DESIGN.md` with its assets ([decision 0051](decisions/0051-design-skill.md)). "Prototype this" or "spike it" builds a throwaway. |
+
+Debugging, code simplification, security audits, and performance work belong to the host ([0019](decisions/0019-voice-first-invocation.md), [0062](decisions/0062-claude-code-first.md)).
 
 ## Writing
 
-| Skill | Say | When to use |
+| Skill | Say | What happens |
 | --- | --- | --- |
-| [write-agents](../skills/write-agents/SKILL.md) | "write agent instructions" | Draft or edit agent instructions so each fact has one home. Owns the shared Sessions, Context freshness, and Tools rules; Sessions keeps what the host does not: isolate shared runtime state between parallel writers, and report sibling work you cannot see. |
+| [write-agents](../skills/write-agents/SKILL.md) | "write agent instructions" | Agent instructions with one home per fact; owns the shared Sessions, Context freshness, and Tools rules. **Writes** the instruction files you name. |
 
 ## Project start
 
-| Skill | Say | When to use |
+| Skill | Say | What happens |
 | --- | --- | --- |
-| [start](../skills/start/SKILL.md) | "start a Next.js project" | Initialize a clone of flow-next or flow-mono (created with `gh repo create --template`, then `pnpm setup`) in place, with `explore` alongside when the request describes a product, asking only what the request leaves open (a preset only when unclear, a GitHub repository only when no non-template remote exists); outside a template clone, falls back to copying the template ([spec 033](specs/033-template-fast-start.md)). Passes the preset as `FLOW_PRESET` to `pnpm setup` and does not provision from this skill. Renames identity, runs setup, QA, the identity scan, and the `.gitignore` check, writes baseline root docs and the Flow block, then makes one initial commit, on top of the template history in a clone ([spec 026](specs/026-clean-baseline-and-worktrees.md)). The initial commit is its done signal ([0067](decisions/0067-flow-boundaries.md)). "Set up Flow here" plus a template bootstrap. |
+| [start](../skills/start/SKILL.md) | "start a Next.js project" | A verified project from flow-next or flow-mono, with `explore` alongside when the request describes a product; asks only what the request leaves open ([spec 033](specs/033-template-fast-start.md)). **Writes** the renamed project, baseline root docs, the Flow block, and one initial commit, its done signal ([0067](decisions/0067-flow-boundaries.md)). |
 
 ## Retired
 
-[Decision 0062](decisions/0062-claude-code-first.md) moved these to Claude Code or into other skills: `interview` and `grill` (now `explore`), `align` and `measure` (now `product`), `prototype` (now `design`), `push` (now `ship`), `handoff` and `tldr` (the host's sessions, transcripts, and recaps), `debug` and `retro` (the host), and `board` (a maintainer script until 2026-11-03, then removed; spec status lines, pull requests, and the SessionStart work-in-flight report cover it). [Spec 059](specs/059-claude-code-first.md) removed `jtbd`, `competitors`, and `write-humans`: each tied with no skill in an on-trial comparison.
+[Decision 0062](decisions/0062-claude-code-first.md) moved these to Claude Code or into other skills: `interview` and `grill` (now `explore`), `align` and `measure` (merged as `product`, renamed `align` by [decision 0070](decisions/0070-research-and-clearer-names.md)), `prototype` (now `design`), `push` (now `ship`), `handoff` and `tldr` (the host's sessions, transcripts, and recaps), `debug` and `retro` (the host), and `board` (a maintainer script until 2026-11-03, then removed; spec status lines, pull requests, and the SessionStart work-in-flight report cover it). [Spec 059](specs/059-claude-code-first.md) removed `jtbd`, `competitors`, and `write-humans`: each tied with no skill in an on-trial comparison; competitive briefs return through `research` ([spec 070](specs/070-product-engineering-partner.md)).
+
+**Renamed in [decision 0070](decisions/0070-research-and-clearer-names.md):** `product` is `align` and `flow` is `sync-docs`. Natural phrases still reach them; explicit paths move (`/flow:product` → `/flow:align`, `/flow:flow` → `/flow:sync-docs`, or `/align` and `/sync-docs` on Agent Skills hosts). An existing Flow block that names `flow` is refreshed on the next "set up Flow here" or "sync the docs". `flow` remains the plugin and project name.
 
 ## Maintain (this repository)
 

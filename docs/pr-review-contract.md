@@ -1,6 +1,6 @@
 # Pull request review contract
 
-Agent-agnostic checklist for reviewing a pull request in a Flow-shaped repository. Matches the obligations of the **`review`** and **`flow`** skills plus [maintain connected context](methodology.md#maintain-connected-context). Use this file in any IDE or host; GitHub Actions in this repository run only the deterministic checks.
+Agent-agnostic checklist for reviewing a pull request in a Flow-shaped repository. Matches the obligations of the **`review`** and **`sync-docs`** skills plus [maintain connected context](methodology.md#maintain-connected-context). Use this file in any IDE or host; GitHub Actions in this repository run only the deterministic checks.
 
 ## Scope
 

@@ -54,7 +54,7 @@ export function buildFlowBlock({ delivery, eol = '\n' } = {}) {
     '',
     '## Flow',
     '',
-    `This project uses Flow skills, reached by plain language (${LEADING_PHRASES.map((p) => `"${p}"`).join(', ')}; each skill's description lists its phrases). The installed \`flow\` skill owns this block; delete it to opt out.`,
+    `This project uses Flow skills, reached by plain language (${LEADING_PHRASES.map((p) => `"${p}"`).join(', ')}; each skill's description lists its phrases). The installed \`sync-docs\` skill owns this block; delete it to opt out.`,
     '',
     ...(mode ? [`Delivery: ${mode}`, ''] : []),
     END,
@@ -98,7 +98,8 @@ function readLine(text, name) {
 export const readDelivery = (text) => normalizeDelivery(readLine(text, 'Delivery'))
 
 // Replaces the block in place (unless only its spacing differs) or appends it; text outside the markers is preserved byte for byte.
-// Retired lines (`Deploy:`, `Process:`, `Delivery: unset`) are dropped because the block is rebuilt from its known lines.
+// Retired lines (`Deploy:`, `Process:`, `Delivery: unset`) and an older pointer (the `flow` skill, renamed `sync-docs` in
+// decision 0070) are replaced because the block is rebuilt from its known lines.
 export function upsertFlowBlock(text, { delivery } = {}) {
   const eol = eolOf(text)
   const block = buildFlowBlock({ delivery: normalizeDelivery(delivery) ?? readDelivery(text), eol })

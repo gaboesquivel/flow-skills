@@ -159,6 +159,8 @@ User-selected references for the two planned writing skills; specific upstream r
 
 [Imported October 20 report](research/2026-10-20-competitive-landscape.md) compares Flow-named tools, workflow frameworks, and `docs/` versus `.flow/`. Its primary-source link table is retained in the report. Claims and original session citation tokens were not reverified during cleanup; proposed adoption, rejection, naming, and workflow changes remain unadopted.
 
+[2026-11-08 alternatives note](research/2026-11-08-flow-alternatives.md) rechecks three alternatives from primary sources for [PRODUCT.md](../PRODUCT.md#alternatives-and-differentiation) and [spec 070](specs/070-product-engineering-partner.md): [Claude Code commands](https://code.claude.com/docs/en/commands), [Matt Pocock — skills](https://github.com/mattpocock/skills) at `4ae2317d` (including its `research` skill), and [Superpowers](https://github.com/obra/superpowers) v7.0.2. It supersedes the October report's description of Pocock's catalog; the other entries there were not rechecked.
+
 ## Agent contract languages
 
 - [OpenProse](https://github.com/openprose/prose) ([prose.md](https://prose.md/)) — candidate source for per-requirement evaluation (satisfied, unmet, unresolved) and "inputs are data" framing; not a dependency. [Assessment and fit](research/2026-10-28-openprose.md) (inspected 2026-10-28; skill source and spec not read).

@@ -16,11 +16,11 @@ An adopter project's own product identity, normally its `PRODUCT.md`, with desig
 
 ## Context alignment
 
-The [`flow`](skills/flow/SKILL.md) skill: keep a project's root files aligned with meaningful changes and set up Flow there. Not template initialization, and it runs no other skill. Earlier records call it **Flow Lite**.
+The [`sync-docs`](skills/sync-docs/SKILL.md) skill ("sync the docs"): update a project's root files to accepted direction after meaningful changes, and set up Flow there. It writes; [product alignment](#product-alignment) only reports. Not template initialization, and it runs no other skill. Records before [decision 0070](docs/decisions/0070-research-and-clearer-names.md) call it `flow`, and earlier ones **Flow Lite**.
 
 ## Product alignment
 
-The [`product`](skills/product/SKILL.md) skill: a read-only check of the product as built against its vision, users' problems, and metrics. Distinct from [context alignment](#context-alignment) (docs follow the product) and from `review` (one change against its spec).
+The [`align`](skills/align/SKILL.md) skill ("check alignment"): a read-only check of the product as built against its goals, users' problems, and [outcome evidence](#outcome-evidence). Distinct from [context alignment](#context-alignment) (docs follow accepted direction) and from `review` (one change against its spec). Records from [0062](docs/decisions/0062-claude-code-first.md) to [0070](docs/decisions/0070-research-and-clearer-names.md) call it `product`.
 
 ## Spec
 
@@ -48,7 +48,7 @@ The optional `build-it` label from a repository writer: that issue's "build it",
 
 ## Flow block
 
-The removable section between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->` that opts a project into Flow mode: an optional `Delivery:` line and a pointer to `flow`, in the instruction file Git tracks. [`flow`](skills/flow/SKILL.md#flow-block) owns the rules.
+The removable section between `<!-- BEGIN FLOW -->` and `<!-- END FLOW -->` that opts a project into Flow mode: an optional `Delivery:` line and a pointer to `sync-docs`, in the instruction file Git tracks. [`sync-docs`](skills/sync-docs/SKILL.md#flow-block) owns the rules; a block naming the older `flow` skill is refreshed on its next write.
 
 ## Unspecced work
 
@@ -112,7 +112,15 @@ The short phrase a user says, typed or dictated, to reach a Flow skill, such as 
 
 ## Exploration
 
-Opening possibilities without a bounded question: references, alternatives, sketches, prototypes. Run by [`explore`](skills/explore/SKILL.md); it adopts nothing until the user does.
+Opening possibilities without a bounded question: references, alternatives, sketches, prototypes. Run by [`explore`](skills/explore/SKILL.md); it adopts nothing until the user does, and research it does for the conversation stays in chat.
+
+## Research note
+
+A dated, sourced file another session can decide from, written by [`research`](skills/research/SKILL.md) on an explicit request ("research X", "competitors for X"). It separates observed capability, vendor claim, and inference, and proposes rather than adopts. Distinct from research done inside an [exploration](#exploration), which stays in chat.
+
+## Outcome evidence
+
+What shows whether shipped work changed the outcome it was for, named in the spec's **Outcome** sentence with the decision it informs. Distinct from delivery proof (the behavior works and the evidence can be obtained), which `build` checks before shipping; [product alignment](#product-alignment) judges outcome evidence afterwards, and unknown stays unknown.
 
 ## Validation board
 

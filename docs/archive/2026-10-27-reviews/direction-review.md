@@ -25,7 +25,7 @@ Checked in the working tree on this date:
 - `skills/` contains 25 directories. Legacy directories `grilling`, `code-review`, `code-simplification`, `security-and-hardening`, `performance-optimization`, `systematic-debugging`, `verification-before-completion`, and `handoff` are gone.
 - [Decision 0003](../../decisions/0003-skill-naming.md) accepts the short names, adds `explore` and `requirements`, and sets `npx skills@latest add gaboesquivel/flow-skills` as the primary public installation.
 - [README.md](../../../README.md) groups skills as Core, Discovery, Delivery, Quality, and Writing, and leads with that `npx` command. The local `scripts/init/cli.mjs` path is described as optional bootstrap.
-- [skills/flow/SKILL.md](../../../skills/flow/SKILL.md) workflow is now Explore → Requirements → Spec → Tasks → Build → Review → Ship → Retro.
+- [skills/sync-docs/SKILL.md](../../../skills/sync-docs/SKILL.md) workflow is now Explore → Requirements → Spec → Tasks → Build → Review → Ship → Retro.
 - [tests/smoke/2026-10-27-scenario-status.md](../../../tests/smoke/2026-10-27-scenario-status.md) adds an "Explore and requirements boundaries" row, marked Pass from contracts.
 - [scripts/validate.mjs](../../../scripts/validate.mjs) requires exactly 25 skill directories.
 
@@ -40,7 +40,7 @@ Unchanged in substance:
 
 ### F1. The new Discovery group is a requirements front end
 
-`skills/explore/SKILL.md` maps users, jobs, constraints, risks, and open questions, then stops when the next activity is clear. It recommends `requirements`, `grill`, or `to-spec`. `skills/requirements/SKILL.md` captures problem, users, functional requirements, non-goals, and acceptance criteria, and says this skill captures what must be true for success. `skills/flow/SKILL.md` still opens with: "Turn a user request into a small, useful, verifiable software change."
+`skills/explore/SKILL.md` maps users, jobs, constraints, risks, and open questions, then stops when the next activity is clear. It recommends `requirements`, `grill`, or `to-spec`. `skills/requirements/SKILL.md` captures problem, users, functional requirements, non-goals, and acceptance criteria, and says this skill captures what must be true for success. `skills/sync-docs/SKILL.md` still opens with: "Turn a user request into a small, useful, verifiable software change."
 
 That is a better engineering sequence than spec-to-ship alone. It is the activity [PRODUCT.md](../../../PRODUCT.md) already separated from commercial discovery. The same section says installation does not implement commercial discovery, the validation board, methodology learning, or context initialization.
 

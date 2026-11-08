@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { collectLeadingPhraseErrors, skillDescriptions } from '../scripts/check-catalog-phrases.mjs'
-import { LEADING_PHRASES } from '../skills/flow/lib/flow-block.mjs'
+import { LEADING_PHRASES } from '../skills/sync-docs/lib/flow-block.mjs'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 

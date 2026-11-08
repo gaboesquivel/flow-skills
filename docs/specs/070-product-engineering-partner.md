@@ -27,12 +27,14 @@ Sharpen existing owners, add one skill, rename two. No hook, phrase parser, rese
 - **Acceptance scope.** "Build it" accepts the identified work and the linked, disclosed changes whose consequences the user has seen; an unrelated Proposed record on the branch gets no approval. `ship` and `to-spec` use the same rule.
 - **Catalog.** One phrase, the outcome, and whether it writes, per skill, plus a short distinction among native Plan, `explore`, `research`, `align`, and `sync-docs`.
 
+**Outcome:** We want product engineers who explore substantial work with Flow to reuse, test, defer, or stop when something already fits, instead of defaulting to a build; we'll look at the E44 live cases (does `explore` name the existing option in case 2, does a fresh session answer case 6 from the spec alone) and, in dogfood sessions after merge, how many `explore` conversations on substantial work named an existing alternative and how many ended in something other than a build; it informs whether to keep, tune, or drop the alternatives step and the `research` skill.
+
 ## Decisions
 
 - Recorded in [0070](../decisions/0070-research-and-clearer-names.md): add `research`, rename `product` → `align` and `flow` → `sync-docs`, and carry an outcome sentence from initiative to spec. Amends [0062](../decisions/0062-claude-code-first.md) (catalog) and builds on [0041](../decisions/0041-align-skill.md), [0046](../decisions/0046-measurement-assistance.md), and [0068](../decisions/0068-experience-skill.md)'s new-skill test.
 - **Acceptance scope** clarifies [0069](../decisions/0069-direction-changes-at-adoption.md) item 2 and [0048](../decisions/0048-delivery-phrases-are-approvals.md) (a phrase approves identified work); it chooses no new direction, so it is a bullet here.
 - **Migration.** Natural phrases carry over through descriptions. Explicit slash paths change (`/flow:product` → `/flow:align`, `/flow:flow` → `/flow:sync-docs`; unprefixed on Agent Skills hosts); no alias skill is kept, since an alias would advertise two identical skills. The Flow block is rewritten from known lines, so its pointer updates on the next write and `Delivery:` carries over. Plugin version stays at release time ([RELEASE.md](../RELEASE.md)).
-- **Skill words** stay within the 10,000-word budget by trimming existing skills.
+- **Skill words.** Spec 059's budget rises from 10,000 to 10,500. `research` adds about 450 words and `explore` about 130; trimming unrelated skills to fit would change behavior outside this increment. `pnpm context` still reports the total.
 
 ## Acceptance
 
@@ -47,7 +49,7 @@ Scenario: a maintainer of Signal, a feedback board whose `PRODUCT.md` says submi
 7. "Check alignment" writes nothing. "Sync the docs" updates the affected accepted context. Running the block helper on an old block that names the `flow` skill and records `Delivery: local` rewrites only the pointer and keeps the delivery line and adopter text.
 8. "Build it" on a branch with one disclosed linked decision and one unrelated Proposed record accepts only the linked one.
 
-Invariants: `pnpm validate` and `pnpm test` pass; skill words stay within budget; no hook changes.
+Invariants: `pnpm validate` and `pnpm test` pass; skill words stay within the 10,500 budget; no hook changes.
 
 ## Out of Scope
 

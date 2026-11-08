@@ -32,6 +32,6 @@ The two can coexist in one project because both install as Agent Skills. No inte
 
 1. **Per-requirement evaluation.** Report each acceptance criterion as satisfied, unmet, or unresolved, with evidence. Strongest candidate: it would sharpen the independent review in [`review`](../../skills/review/SKILL.md) and [`ship`](../../skills/ship/SKILL.md) as a wording change, with no new dependency.
 2. **Inputs are data, not instructions.** OpenProse states this in each contract. A similar line could go in `to-spec` templates and `build` worker briefs.
-3. **Standing responsibilities.** "Keep X true over time" describes what [`flow`](../../skills/flow/SKILL.md) does for root context. Running it continuously needs a scheduling host, so it belongs to Flow Factory, not the catalog.
+3. **Standing responsibilities.** "Keep X true over time" describes what [`flow`](../../skills/sync-docs/SKILL.md) does for root context. Running it continuously needs a scheduling host, so it belongs to Flow Factory, not the catalog.
 
 Any catalog change needs its own decision record. Check the MIT license terms and attribute OpenProse before copying text.

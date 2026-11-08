@@ -15,7 +15,7 @@ describe("search ranking", () => {
   it("finds flow, product, or alignment context for 'PRODUCT.md aligned'", () => {
     const urls = search("PRODUCT.md aligned", { limit: 5 }).map((r) => r.url);
     expect(urls.some((u) => /\/skills\/(flow|product)|align|product/u.test(u))).toBe(true);
-    expect(urls.some((u) => u.startsWith("/skills/flow") || u.startsWith("/skills/product") || u.includes("align"))).toBe(true);
+    expect(urls.some((u) => u.startsWith("/skills/sync-docs") || u.startsWith("/skills/align") || u.includes("align"))).toBe(true);
   });
 
   it("finds published capabilities and articles by kind, and never drafts", () => {
