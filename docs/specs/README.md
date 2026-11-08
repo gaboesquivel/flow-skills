@@ -73,6 +73,6 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [066-flow-boundaries.md](066-flow-boundaries.md) (implemented)
 - [067-host-delegation-remainder.md](067-host-delegation-remainder.md) (candidate)
 - [068-experience-judgment.md](068-experience-judgment.md) (implemented)
-- [069-product-peer-explore.md](069-product-peer-explore.md) (draft)
+- [069-product-peer-explore.md](069-product-peer-explore.md) (implemented)
 
 Significant standalone decisions belong in `docs/decisions/`, not in a spec. See [decisions](../decisions/README.md).

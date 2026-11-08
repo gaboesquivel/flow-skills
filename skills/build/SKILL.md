@@ -10,7 +10,7 @@ disable-model-invocation: false
 
 **"Build it"** said of identified work (the named, current, or only open work) is the approval: no confirmation after it. "What does build it do?", "should we build it?", and quoted examples are discussion, and a direct small edit ("fix this typo here") is made in place without becoming a delivery. It ends with a verified branch for `ship` to land: a ready pull request (GitHub mode) or a committed branch (local mode). Never commit, push, or merge to the default branch; never force-push or rewrite remote branches; never skip, disable, or weaken a check (the guard hook blocks the Git cases); nothing destructive or unrelated. "Don't commit" stops after the change.
 
-It accepts any **Proposed** direction-change record the branch adds, and a draft spec in the first commit (`to-spec`'s Status and acceptance). Write specs or tasks only when asked; for unclear intent on substantial work, suggest `explore` and wait.
+It accepts any **Proposed** direction-change record the branch adds, and a draft spec in the first commit (`to-spec`'s Status and acceptance). With no spec, a change that reverses or narrows an accepted commitment applies `to-spec`'s direction-change rule itself before the first write: name the statement, replacement, and consequence, get the yes, write any required record, and update the owner text and back-pointers in the same branch. Write specs or tasks only when asked; for unclear intent on substantial work, suggest `explore` and wait.
 
 ## Deliver
 
