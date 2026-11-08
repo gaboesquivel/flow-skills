@@ -6,7 +6,7 @@ disable-model-invocation: false
 
 # Ship
 
-**"Ship it"** is the approval: no confirmation after it. It never authorizes destructive Git, security bypasses, production promotion or rollback, or unrelated changes. Ship's landing is the only change to the default branch, apart from "push it" on a branch the user names. Never force-push or rewrite remote branches. Never push other people's work. Never approve your own pull request. Never bypass protection. Never skip, disable, or weaken a check. Scripts are in this skill's `scripts/`.
+**"Ship it"** said of identified work is the approval: no confirmation after it. "Should we ship it?" gets advice, and a question about the phrase or a quoted example is discussion. It never authorizes destructive Git, security bypasses, production promotion or rollback, or unrelated changes. Ship's landing is the only change to the default branch, apart from "push it" on a branch the user names. Never force-push or rewrite remote branches. Never push other people's work. Never approve your own pull request. Never bypass protection. Never skip, disable, or weaken a check. Scripts are in this skill's `scripts/`.
 
 ## Preflight
 

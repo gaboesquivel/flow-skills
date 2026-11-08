@@ -1,6 +1,6 @@
 # 0038 — Direction changes are confirmed and recorded
 
-Status: **Accepted** (2026-10-28). Amends the decisions [README](README.md) rule that accepted records are immutable. Spec: [024](../specs/024-direction-change-gate.md). Amended by [0044](0044-fast-delivery.md) (the decisions reader checks the current branch only; no scan of unmerged branches). Amended by [0052](0052-git-first-coordination.md) (targeted inspection of sibling branches and pull requests before consequential writes; still no full scan).
+Status: **Accepted** (2026-10-28). Amends the decisions [README](README.md) rule that accepted records are immutable. Spec: [024](../specs/024-direction-change-gate.md). Amended by [0044](0044-fast-delivery.md) (the decisions reader checks the current branch only; no scan of unmerged branches). Amended by [0069](0069-direction-changes-at-adoption.md) (item 1: the gate applies at adoption, not in discussion). Amended by [0052](0052-git-first-coordination.md) (targeted inspection of sibling branches and pull requests before consequential writes; still no full scan).
 
 ## Context
 

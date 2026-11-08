@@ -19,7 +19,7 @@ Never replace a project's product identity with Flow's tagline, mission, princip
 
 1. Read `PRODUCT.md`, `DESIGN.md`, `GLOSSARY.md`, and `ARCHITECTURE.md` when present. Read `docs/specs/` and `docs/decisions/` records only when they clarify the area. Align root files to accepted intent only; a draft spec or Proposed decision is labeled as a proposal, never written in as current (`write-agents` Context freshness).
 2. Update only affected sections, one writer per root file. Keep `DESIGN.md` consistent with what shipped; choosing a new visual direction is `design`'s. Keep one home per fact; link instead of duplicating.
-3. Create a root file only when it would hold meaningful content. No empty trees, methodology boilerplate, or parallel trackers (no PRD/PDR/ADR folders).
+3. Create a root file only when it would hold meaningful content, by `write-agents` Context freshness's owner test. No empty trees, methodology boilerplate, or parallel trackers (no PRD/PDR/ADR folders).
 
 **Goals.** When `PRODUCT.md` is missing or has no brief (problem, who, riskiest assumption, main metric and kill criterion, core journeys), align what exists and name `explore` once as the next step.
 
