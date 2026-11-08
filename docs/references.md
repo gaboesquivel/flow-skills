@@ -8,6 +8,7 @@ Current research notes record what was inspected and its limits. Sources found o
 
 Primary sources for the 2026 skill-reliability initiative. Flow adapts ideas; it does not vend, sync, or depend on these repositories at runtime. Full comparison: [research/2026-10-27-skill-engineering-methods.md](research/2026-10-27-skill-engineering-methods.md).
 
+- Kent C. Dodds and Dex Horthy — [product judgment and program design before implementation](research/2026-11-08-program-design.md). Workshop and interview evidence; adopted in part by [spec 071](specs/071-program-design.md) (2026-11-08).
 - [Matt Pocock — skills](https://github.com/mattpocock/skills) — `writing-for-agents`, `grill-me`, `grill-with-docs`, `prototype`, `handoff`, `implement` (inspected 2026-10-27).
 - [Lauren Tan — pstack](https://github.com/cursor/plugins/tree/main/pstack) — `correct`, `blast-radius`, `architect`, `how`, `why`, `interrogate`, `create-verification-skill`, `poteto-mode/playbooks/eval.md` (inspected 2026-10-27). Central mode and full playbook orchestration not adopted.
 - Addy Osmani — [Comprehension debt](https://addyosmani.com/blog/comprehension-debt/), [The Intent Debt](https://addyosmani.com/blog/intent-debt/), [The Orchestration Tax](https://addyosmani.com/blog/orchestration-tax/) — adopted as selective critical thinking; [research note](research/2026-11-03-velocity-with-intent.md).

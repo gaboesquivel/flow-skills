@@ -75,5 +75,6 @@ Specs in this repository, one per line so parallel branches merge cleanly:
 - [068-experience-judgment.md](068-experience-judgment.md) (implemented)
 - [069-product-peer-explore.md](069-product-peer-explore.md) (implemented)
 - [070-product-engineering-partner.md](070-product-engineering-partner.md) (implemented)
+- [071-program-design.md](071-program-design.md) (draft)
 
 Significant standalone decisions belong in `docs/decisions/`, not in a spec. See [decisions](../decisions/README.md).
